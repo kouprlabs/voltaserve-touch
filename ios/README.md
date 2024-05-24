@@ -1,0 +1,1 @@
+`Config.Prod.plist` or `Config.Dev.plist` should be duplicated as `Config.plist`, then configured accordingly.
