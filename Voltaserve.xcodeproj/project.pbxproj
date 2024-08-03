@@ -37,7 +37,7 @@
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
-				649066E02C5E35AD00BA3CCD /* Voltaserve */,
+				649066E02C5E35AD00BA3CCD /* Sources */,
 				649066DF2C5E35AD00BA3CCD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,7 +50,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		649066E02C5E35AD00BA3CCD /* Voltaserve */ = {
+		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
@@ -58,7 +58,7 @@
 				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
 				649066E72C5E35AE00BA3CCD /* Preview Content */,
 			);
-			path = Voltaserve;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		649066E72C5E35AE00BA3CCD /* Preview Content */ = {
@@ -279,7 +279,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Voltaserve/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Sources/Preview Content\"";
 				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -308,7 +308,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Voltaserve/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Sources/Preview Content\"";
 				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
