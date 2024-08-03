@@ -42,7 +42,7 @@ class MosaicViewModel: ObservableObject {
     @Published var grid: [[UIImage?]] = []
     @Published var concurrencyAllocations: [[Bool]] = []
     @Published var touchLocation: CGPoint = .zero
-    @Published var gridLoad = false
+    @Published var gridLoaded = false
     @Published var numberOfBackgroundThreads: Int = 0
 
     var apiUrl: String = "http://localhost:8080"
