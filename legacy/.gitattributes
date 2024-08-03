@@ -1,4 +1,0 @@
-Pods/** linguist-vendored
-Defyle.xcodeproj/** linguist-detectable=false
-ios/Defyle.xcworkspace/** linguist-detectable=false
-Podfile linguist-detectable=false
