@@ -7,62 +7,64 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		649066BC2C5E2B5B00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066BB2C5E2B5B00BA3CCD /* VoltaserveApp.swift */; };
-		649066BE2C5E2B5B00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066BD2C5E2B5B00BA3CCD /* ContentView.swift */; };
-		649066C02C5E2B5C00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066BF2C5E2B5C00BA3CCD /* Assets.xcassets */; };
-		649066C32C5E2B5C00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066C22C5E2B5C00BA3CCD /* Preview Assets.xcassets */; };
+		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
+		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
+		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
+		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
+		649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 649066F02C5E35E400BA3CCD /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		649066B82C5E2B5B00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		649066BB2C5E2B5B00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
-		649066BD2C5E2B5B00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		649066BF2C5E2B5C00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		649066C22C5E2B5C00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
+		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		649066B52C5E2B5B00BA3CCD /* Frameworks */ = {
+		649066DB2C5E35AD00BA3CCD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		649066AF2C5E2B5B00BA3CCD = {
+		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
-				649066BA2C5E2B5B00BA3CCD /* Voltaserve */,
-				649066B92C5E2B5B00BA3CCD /* Products */,
+				649066E02C5E35AD00BA3CCD /* Voltaserve */,
+				649066DF2C5E35AD00BA3CCD /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		649066B92C5E2B5B00BA3CCD /* Products */ = {
+		649066DF2C5E35AD00BA3CCD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				649066B82C5E2B5B00BA3CCD /* Voltaserve.app */,
+				649066DE2C5E35AD00BA3CCD /* Voltaserve.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		649066BA2C5E2B5B00BA3CCD /* Voltaserve */ = {
+		649066E02C5E35AD00BA3CCD /* Voltaserve */ = {
 			isa = PBXGroup;
 			children = (
-				649066BB2C5E2B5B00BA3CCD /* VoltaserveApp.swift */,
-				649066BD2C5E2B5B00BA3CCD /* ContentView.swift */,
-				649066BF2C5E2B5C00BA3CCD /* Assets.xcassets */,
-				649066C12C5E2B5C00BA3CCD /* Preview Content */,
+				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
+				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
+				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
+				649066E72C5E35AE00BA3CCD /* Preview Content */,
 			);
 			path = Voltaserve;
 			sourceTree = "<group>";
 		};
-		649066C12C5E2B5C00BA3CCD /* Preview Content */ = {
+		649066E72C5E35AE00BA3CCD /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				649066C22C5E2B5C00BA3CCD /* Preview Assets.xcassets */,
+				649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -70,39 +72,42 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		649066B72C5E2B5B00BA3CCD /* Voltaserve */ = {
+		649066DD2C5E35AD00BA3CCD /* Voltaserve */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 649066C62C5E2B5C00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */;
+			buildConfigurationList = 649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */;
 			buildPhases = (
-				649066B42C5E2B5B00BA3CCD /* Sources */,
-				649066B52C5E2B5B00BA3CCD /* Frameworks */,
-				649066B62C5E2B5B00BA3CCD /* Resources */,
+				649066DA2C5E35AD00BA3CCD /* Sources */,
+				649066DB2C5E35AD00BA3CCD /* Frameworks */,
+				649066DC2C5E35AD00BA3CCD /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Voltaserve;
+			packageProductDependencies = (
+				649066F02C5E35E400BA3CCD /* Alamofire */,
+			);
 			productName = Voltaserve;
-			productReference = 649066B82C5E2B5B00BA3CCD /* Voltaserve.app */;
+			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		649066B02C5E2B5B00BA3CCD /* Project object */ = {
+		649066D62C5E35AD00BA3CCD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
-					649066B72C5E2B5B00BA3CCD = {
+					649066DD2C5E35AD00BA3CCD = {
 						CreatedOnToolsVersion = 15.4;
 					};
 				};
 			};
-			buildConfigurationList = 649066B32C5E2B5B00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */;
+			buildConfigurationList = 649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -110,42 +115,45 @@
 				en,
 				Base,
 			);
-			mainGroup = 649066AF2C5E2B5B00BA3CCD;
-			productRefGroup = 649066B92C5E2B5B00BA3CCD /* Products */;
+			mainGroup = 649066D52C5E35AD00BA3CCD;
+			packageReferences = (
+				649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
+			productRefGroup = 649066DF2C5E35AD00BA3CCD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				649066B72C5E2B5B00BA3CCD /* Voltaserve */,
+				649066DD2C5E35AD00BA3CCD /* Voltaserve */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		649066B62C5E2B5B00BA3CCD /* Resources */ = {
+		649066DC2C5E35AD00BA3CCD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649066C32C5E2B5C00BA3CCD /* Preview Assets.xcassets in Resources */,
-				649066C02C5E2B5C00BA3CCD /* Assets.xcassets in Resources */,
+				649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */,
+				649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		649066B42C5E2B5B00BA3CCD /* Sources */ = {
+		649066DA2C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649066BE2C5E2B5B00BA3CCD /* ContentView.swift in Sources */,
-				649066BC2C5E2B5B00BA3CCD /* VoltaserveApp.swift in Sources */,
+				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
+				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		649066C42C5E2B5C00BA3CCD /* Debug */ = {
+		649066EA2C5E35AE00BA3CCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -208,7 +216,7 @@
 			};
 			name = Debug;
 		};
-		649066C52C5E2B5C00BA3CCD /* Release */ = {
+		649066EB2C5E35AE00BA3CCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -264,7 +272,7 @@
 			};
 			name = Release;
 		};
-		649066C72C5E2B5C00BA3CCD /* Debug */ = {
+		649066ED2C5E35AE00BA3CCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -293,7 +301,7 @@
 			};
 			name = Debug;
 		};
-		649066C82C5E2B5C00BA3CCD /* Release */ = {
+		649066EE2C5E35AE00BA3CCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -325,25 +333,44 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		649066B32C5E2B5B00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */ = {
+		649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				649066C42C5E2B5C00BA3CCD /* Debug */,
-				649066C52C5E2B5C00BA3CCD /* Release */,
+				649066EA2C5E35AE00BA3CCD /* Debug */,
+				649066EB2C5E35AE00BA3CCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		649066C62C5E2B5C00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */ = {
+		649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				649066C72C5E2B5C00BA3CCD /* Debug */,
-				649066C82C5E2B5C00BA3CCD /* Release */,
+				649066ED2C5E35AE00BA3CCD /* Debug */,
+				649066EE2C5E35AE00BA3CCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		649066F02C5E35E400BA3CCD /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 649066B02C5E2B5B00BA3CCD /* Project object */;
+	rootObject = 649066D62C5E35AD00BA3CCD /* Project object */;
 }
