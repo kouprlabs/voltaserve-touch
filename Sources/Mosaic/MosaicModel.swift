@@ -1,7 +1,7 @@
 import Foundation
 
 struct MosaicModel {
-    var zoomLevel: MosaicModel.MosaicZoomLevel?
+    var zoomLevel: MosaicModel.ZoomLevel?
 
     func sizeForCell(row: Int, col: Int) -> CGSize {
         if let zoomLevel {
@@ -37,15 +37,15 @@ struct MosaicModel {
         return .zero
     }
 
-    struct MosaicInfo: Codable {
-        var metadata: MosaicMetadata
+    struct Info: Codable {
+        var metadata: Metadata
     }
 
-    struct MosaicMetadata: Codable {
+    struct Metadata: Codable {
         var width: Int
         var height: Int
         var fileExtension: String
-        var zoomLevels: [MosaicZoomLevel]
+        var zoomLevels: [ZoomLevel]
 
         // swiftlint:disable:next nesting
         enum CodingKeys: String, CodingKey {
@@ -56,17 +56,17 @@ struct MosaicModel {
         }
     }
 
-    struct MosaicZoomLevel: Codable {
+    struct ZoomLevel: Codable {
         var index: Int
         var width: Int
         var height: Int
         var rows: Int
         var cols: Int
         var scaleDownPercentage: Float
-        var tile: MosaicTile
+        var tile: Tile
     }
 
-    struct MosaicTile: Codable {
+    struct Tile: Codable {
         var width: Int
         var height: Int
         var lastColWidth: Int

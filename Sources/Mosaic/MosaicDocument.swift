@@ -6,9 +6,9 @@ class MosaicDocument: ObservableObject {
     @Published var grid: [[UIImage?]] = []
     @Published var concurrentAllocations: [[Bool]] = []
     @Published var gridLoaded = false
-    @Published var numberOfBackgroundThreads = 0
+    @Published var backgroundThreadCount = 0
 
-    var zoomLevel: MosaicModel.MosaicZoomLevel? {
+    var zoomLevel: MosaicModel.ZoomLevel? {
         model.zoomLevel
     }
 
@@ -24,7 +24,7 @@ class MosaicDocument: ObservableObject {
         ).responseData { response in
             if let data = response.data {
                 do {
-                    let info = try JSONDecoder().decode(MosaicModel.MosaicInfo.self, from: data)
+                    let info = try JSONDecoder().decode(MosaicModel.Info.self, from: data)
                     self.model.zoomLevel = info.metadata.zoomLevels.first
                     DispatchQueue.main.async { [weak self] in
                         self?.fillGridWithImage()
@@ -47,7 +47,8 @@ class MosaicDocument: ObservableObject {
     func loadImage(row: Int, col: Int) {
         guard concurrentAllocations[row][col] == false else { return }
         concurrentAllocations[row][col] = true
-        numberOfBackgroundThreads += 1
+
+        backgroundThreadCount += 1
 
         if let image = model.zoomLevel {
             // swiftlint:disable:next line_length
@@ -55,7 +56,7 @@ class MosaicDocument: ObservableObject {
                 if let data = response.data, let image = UIImage(data: data) {
                     DispatchQueue.main.async {
                         self.grid[row][col] = image
-                        self.numberOfBackgroundThreads -= 1
+                        self.backgroundThreadCount -= 1
                     }
                 }
             }
