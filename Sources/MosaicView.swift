@@ -50,7 +50,7 @@ class MosaicViewModel: ObservableObject {
 
         gridLoaded = true
     }
-    
+
     struct MosaicInfo: Codable {
         var metadata: MosaicMetadata
     }
@@ -125,13 +125,13 @@ struct MosaicView: View {
             .gesture(
                 DragGesture()
                     .onChanged { value in
-                        self.dragOffset = CGSize(
-                            width: self.lastDragOffset.width + value.translation.width,
-                            height: self.lastDragOffset.height + value.translation.height
+                        dragOffset = CGSize(
+                            width: lastDragOffset.width + value.translation.width,
+                            height: lastDragOffset.height + value.translation.height
                         )
                     }
-                    .onEnded { value in
-                        self.lastDragOffset = self.dragOffset
+                    .onEnded { _ in
+                        lastDragOffset = dragOffset
                     }
             )
         }
@@ -157,14 +157,14 @@ struct MosaicView: View {
             let tile = image.tile
             var position: CGPoint = .zero
             if row == image.rows - 1 {
-                position.y = CGFloat(row * tile.height + tile.lastRowHeight/2)
+                position.y = CGFloat(row * tile.height + tile.lastRowHeight / 2)
             } else {
-                position.y = CGFloat(row * tile.height + tile.height/2)
+                position.y = CGFloat(row * tile.height + tile.height / 2)
             }
             if col == image.cols - 1 {
-                position.x = CGFloat(col * tile.width + tile.lastColWidth/2)
+                position.x = CGFloat(col * tile.width + tile.lastColWidth / 2)
             } else {
-                position.x = CGFloat(col * tile.width + tile.width/2)
+                position.x = CGFloat(col * tile.width + tile.width / 2)
             }
             return position
         }
