@@ -36,14 +36,6 @@ class MosaicDocument: ObservableObject {
         }
     }
 
-    func sizeForCell(row: Int, col: Int) -> CGSize {
-        model.sizeForCell(row: row, col: col)
-    }
-
-    func positionForCell(row: Int, col: Int) -> CGPoint {
-        model.positionForCell(row: row, col: col)
-    }
-
     func loadImage(row: Int, col: Int) {
         guard concurrentAllocations[row][col] == false else { return }
         concurrentAllocations[row][col] = true
@@ -81,5 +73,13 @@ class MosaicDocument: ObservableObject {
         }
 
         gridLoaded = true
+    }
+
+    func sizeForCell(row: Int, col: Int) -> CGSize {
+        model.sizeForCell(row: row, col: col)
+    }
+
+    func positionForCell(row: Int, col: Int) -> CGPoint {
+        model.positionForCell(row: row, col: col)
     }
 }
