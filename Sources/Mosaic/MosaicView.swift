@@ -16,9 +16,9 @@ struct MosaicView: View {
             )
 
             ZStack {
-                if viewModel.gridLoaded, viewModel.image != nil {
-                    ForEach(0 ..< viewModel.image!.rows, id: \.self) { row in
-                        ForEach(0 ..< viewModel.image!.cols, id: \.self) { col in
+                if let image = viewModel.image, viewModel.gridLoaded {
+                    ForEach(0 ..< image.rows, id: \.self) { row in
+                        ForEach(0 ..< image.cols, id: \.self) { col in
                             let size = viewModel.sizeForCell(row: row, col: col)
                             let position = viewModel.positionForCell(row: row, col: col)
 
