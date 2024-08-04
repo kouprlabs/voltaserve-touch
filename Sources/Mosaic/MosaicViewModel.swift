@@ -1,5 +1,5 @@
-import SwiftUI
 import Alamofire
+import SwiftUI
 
 class MosaicViewModel: ObservableObject {
     @Published var grid: [[UIImage?]] = []
@@ -32,6 +32,22 @@ class MosaicViewModel: ObservableObject {
         }
     }
 
+    func loadImage(row: Int, col: Int) {
+        guard concurrencyAllocations[row][col] == false else { return }
+        concurrencyAllocations[row][col] = true
+        numberOfBackgroundThreads += 1
+
+        AF.request("\(apiUrl)/v2/mosaics/\(fileId)/zoom_level/\(image!.index)/row/\(row)/col/\(col)/ext/jpg?access_token=\(accessToken)").responseData { response in
+            if let data = response.data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    print("Got image: \(row),\(col)")
+                    self.grid[row][col] = image
+                    self.numberOfBackgroundThreads -= 1
+                }
+            }
+        }
+    }
+
     func resetGrid() {
         gridLoaded = false
         grid = []
@@ -43,6 +59,40 @@ class MosaicViewModel: ObservableObject {
         grid = Array(repeating: Array(repeating: nil, count: image!.cols), count: image!.rows)
         concurrencyAllocations = Array(repeating: Array(repeating: false, count: image!.cols), count: image!.rows)
         gridLoaded = true
+    }
+
+    func sizeForCell(row: Int, col: Int) -> CGSize {
+        if let image {
+            let tile = image.tile
+            var size = CGSize(width: tile.width, height: tile.height)
+            if row == image.rows - 1 {
+                size.height = CGFloat(tile.lastRowHeight)
+            }
+            if col == image.cols - 1 {
+                size.width = CGFloat(tile.lastColWidth)
+            }
+            return size
+        }
+        return .zero
+    }
+
+    func positionForCell(row: Int, col: Int) -> CGPoint {
+        if let image {
+            let tile = image.tile
+            var position: CGPoint = .zero
+            if row == image.rows - 1 {
+                position.y = CGFloat(row * tile.height + tile.lastRowHeight / 2)
+            } else {
+                position.y = CGFloat(row * tile.height + tile.height / 2)
+            }
+            if col == image.cols - 1 {
+                position.x = CGFloat(col * tile.width + tile.lastColWidth / 2)
+            } else {
+                position.x = CGFloat(col * tile.width + tile.width / 2)
+            }
+            return position
+        }
+        return .zero
     }
 
     struct MosaicInfo: Codable {
