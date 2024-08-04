@@ -3,47 +3,11 @@ import Combine
 import SwiftUI
 import UIKit
 
-struct MosaicInfo: Codable {
-    var metadata: MosaicMetadata
-}
-
-struct MosaicMetadata: Codable {
-    var width: Int
-    var height: Int
-    var fileExtension: String
-    var zoomLevels: [MosaicZoomLevel]
-
-    enum CodingKeys: String, CodingKey {
-        case width
-        case height
-        case fileExtension = "extension"
-        case zoomLevels
-    }
-}
-
-struct MosaicZoomLevel: Codable {
-    var index: Int
-    var width: Int
-    var height: Int
-    var rows: Int
-    var cols: Int
-    var scaleDownPercentage: Float
-    var tile: MosaicTile
-}
-
-struct MosaicTile: Codable {
-    var width: Int
-    var height: Int
-    var lastColWidth: Int
-    var lastRowHeight: Int
-}
-
 class MosaicViewModel: ObservableObject {
     @Published var grid: [[UIImage?]] = []
     @Published var concurrencyAllocations: [[Bool]] = []
-    @Published var touchLocation: CGPoint = .zero
     @Published var gridLoaded = false
-    @Published var numberOfBackgroundThreads: Int = 0
+    @Published var numberOfBackgroundThreads = 0
 
     var apiUrl: String = "http://localhost:8080"
     var accessToken: String = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJaeEtHcWJXTmIiLCJpYXQiOjE3MjIxMjg1NDUsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCIsImV4cCI6MTcyNDcyMDU0NX0.xge1u8rXuaWWGHIXkRduDX7iJ0dsLgKGwoodZ8qU55Y"
@@ -86,6 +50,41 @@ class MosaicViewModel: ObservableObject {
 
         gridLoaded = true
     }
+    
+    struct MosaicInfo: Codable {
+        var metadata: MosaicMetadata
+    }
+
+    struct MosaicMetadata: Codable {
+        var width: Int
+        var height: Int
+        var fileExtension: String
+        var zoomLevels: [MosaicZoomLevel]
+
+        enum CodingKeys: String, CodingKey {
+            case width
+            case height
+            case fileExtension = "extension"
+            case zoomLevels
+        }
+    }
+
+    struct MosaicZoomLevel: Codable {
+        var index: Int
+        var width: Int
+        var height: Int
+        var rows: Int
+        var cols: Int
+        var scaleDownPercentage: Float
+        var tile: MosaicTile
+    }
+
+    struct MosaicTile: Codable {
+        var width: Int
+        var height: Int
+        var lastColWidth: Int
+        var lastRowHeight: Int
+    }
 }
 
 struct MosaicView: View {
@@ -97,18 +96,18 @@ struct MosaicView: View {
                 if viewModel.gridLoaded, viewModel.image != nil {
                     ForEach(0 ..< viewModel.image!.rows, id: \.self) { row in
                         ForEach(0 ..< viewModel.image!.cols, id: \.self) { col in
+                            let size = sizeForCell(row: row, col: col)
+                            let position = positionForCell(row: row, col: col)
                             if let image = viewModel.grid[row][col] {
                                 Image(uiImage: image)
                                     .resizable()
-                                    .frame(width: CGFloat(viewModel.image!.tile.width), height: CGFloat(viewModel.image!.tile.height))
-                                    .position(x: CGFloat(col * viewModel.image!.tile.width),
-                                              y: CGFloat(row * viewModel.image!.tile.height))
+                                    .frame(width: size.width, height: size.height)
+                                    .position(x: position.x, y: position.y)
                             } else {
                                 Rectangle()
                                     .fill(Color.black)
-                                    .frame(width: CGFloat(viewModel.image!.tile.width), height: CGFloat(viewModel.image!.tile.height))
-                                    .position(x: CGFloat(col * viewModel.image!.tile.width),
-                                              y: CGFloat(row * viewModel.image!.tile.height))
+                                    .frame(width: size.width, height: size.height)
+                                    .position(x: position.x, y: position.y)
                                     .onAppear {
                                         loadImage(row: row, col: col)
                                     }
@@ -124,11 +123,44 @@ struct MosaicView: View {
             .gesture(
                 DragGesture()
                     .onChanged { value in
-                        viewModel.touchLocation = value.location
-                        print("DragGesture.onChanged: (\(viewModel.touchLocation.x), \(viewModel.touchLocation.y))")
+                        print("DragGesture.onChanged: (\(value.location.x), \(value.location.y))")
                     }
             )
         }
+    }
+
+    func sizeForCell(row: Int, col: Int) -> CGSize {
+        if let image = viewModel.image {
+            let tile = image.tile
+            var size = CGSize(width: tile.width, height: tile.height)
+            if row == image.rows - 1 {
+                size.height = CGFloat(tile.lastRowHeight)
+            }
+            if col == image.cols - 1 {
+                size.width = CGFloat(tile.lastColWidth)
+            }
+            return size
+        }
+        return .zero
+    }
+
+    func positionForCell(row: Int, col: Int) -> CGPoint {
+        if let image = viewModel.image {
+            let tile = image.tile
+            var position: CGPoint = .zero
+            if row == image.rows - 1 {
+                position.y = CGFloat(row * tile.height + tile.lastRowHeight/2)
+            } else {
+                position.y = CGFloat(row * tile.height + tile.height/2)
+            }
+            if col == image.cols - 1 {
+                position.x = CGFloat(col * tile.width + tile.lastColWidth/2)
+            } else {
+                position.x = CGFloat(col * tile.width + tile.width/2)
+            }
+            return position
+        }
+        return .zero
     }
 
     private func loadImage(row: Int, col: Int) {
