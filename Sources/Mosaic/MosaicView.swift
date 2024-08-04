@@ -16,7 +16,7 @@ struct MosaicView: View {
             )
 
             ZStack {
-                if let zoomLevel = document.zoomLevel, document.gridLoaded {
+                if let zoomLevel = document.zoomLevel, !document.grid.isEmpty {
                     ForEach(0 ..< zoomLevel.rows, id: \.self) { row in
                         ForEach(0 ..< zoomLevel.cols, id: \.self) { col in
                             let size = document.sizeForCell(row: row, col: col)
