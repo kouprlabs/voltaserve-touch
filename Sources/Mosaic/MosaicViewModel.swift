@@ -8,6 +8,7 @@ class MosaicViewModel: ObservableObject {
     @Published var numberOfBackgroundThreads = 0
 
     var apiUrl: String = "http://localhost:8080"
+    // swiftlint:disable:next line_length
     var accessToken: String = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJaeEtHcWJXTmIiLCJpYXQiOjE3MjIxMjg1NDUsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCIsImV4cCI6MTcyNDcyMDU0NX0.xge1u8rXuaWWGHIXkRduDX7iJ0dsLgKGwoodZ8qU55Y"
     var fileId: String = "w5JLDMQwLbkry"
     var image: MosaicZoomLevel?
@@ -36,6 +37,7 @@ class MosaicViewModel: ObservableObject {
         concurrencyAllocations[row][col] = true
         numberOfBackgroundThreads += 1
 
+        // swiftlint:disable:next line_length
         AF.request("\(apiUrl)/v2/mosaics/\(fileId)/zoom_level/\(image!.index)/row/\(row)/col/\(col)/ext/jpg?access_token=\(accessToken)").responseData { response in
             if let data = response.data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {
