@@ -22,7 +22,7 @@ class MosaicViewModel: ObservableObject {
             if let data = response.data {
                 do {
                     let info = try JSONDecoder().decode(MosaicInfo.self, from: data)
-                    self.image = info.metadata.zoomLevels[9]
+                    self.image = info.metadata.zoomLevels.first
                     DispatchQueue.main.async { [weak self] in
                         print("Got info!")
                         self?.fillGridWithImage()
@@ -90,25 +90,43 @@ struct MosaicView: View {
 
     var body: some View {
         GeometryReader { geometry in
+            let visibleRect = CGRect(
+                origin: CGPoint(x: -dragOffset.width, y: -dragOffset.height),
+                size: geometry.size
+            )
+
             ZStack {
                 if viewModel.gridLoaded, viewModel.image != nil {
                     ForEach(0 ..< viewModel.image!.rows, id: \.self) { row in
                         ForEach(0 ..< viewModel.image!.cols, id: \.self) { col in
                             let size = sizeForCell(row: row, col: col)
                             let position = positionForCell(row: row, col: col)
-                            if let image = viewModel.grid[row][col] {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .frame(width: size.width, height: size.height)
-                                    .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
-                            } else {
-                                Rectangle()
-                                    .fill(Color.black)
-                                    .frame(width: size.width, height: size.height)
-                                    .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
-                                    .onAppear {
-                                        loadImage(row: row, col: col)
-                                    }
+                            
+                            // Calculate the frame of the cell
+                            let cellFrame = CGRect(
+                                x: position.x - (size.width / 2),
+                                y: position.y - (size.height / 2),
+                                width: size.width,
+                                height: size.height
+                            )
+                            
+                            // Check if the cell is within the visible bounds
+                            if visibleRect.intersects(cellFrame) {
+                                if let image = viewModel.grid[row][col] {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .frame(width: size.width, height: size.height)
+                                        .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
+                                }
+                                else {
+                                    Rectangle()
+                                        .fill(Color.black)
+                                        .frame(width: size.width, height: size.height)
+                                        .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
+                                        .onAppear {
+                                            loadImage(row: row, col: col)
+                                        }
+                                }
                             }
                         }
                     }
