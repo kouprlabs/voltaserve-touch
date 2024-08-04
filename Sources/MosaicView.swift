@@ -22,9 +22,7 @@ class MosaicViewModel: ObservableObject {
             if let data = response.data {
                 do {
                     let info = try JSONDecoder().decode(MosaicInfo.self, from: data)
-
                     self.image = info.metadata.zoomLevels[9]
-
                     DispatchQueue.main.async { [weak self] in
                         print("Got info!")
                         self?.fillGridWithImage()
@@ -44,10 +42,8 @@ class MosaicViewModel: ObservableObject {
 
     func fillGridWithImage() {
         resetGrid()
-
         grid = Array(repeating: Array(repeating: nil, count: image!.cols), count: image!.rows)
         concurrencyAllocations = Array(repeating: Array(repeating: false, count: image!.cols), count: image!.rows)
-
         gridLoaded = true
     }
 
@@ -173,7 +169,6 @@ struct MosaicView: View {
 
     private func loadImage(row: Int, col: Int) {
         guard viewModel.concurrencyAllocations[row][col] == false else { return }
-
         viewModel.concurrencyAllocations[row][col] = true
         viewModel.numberOfBackgroundThreads += 1
 
