@@ -89,6 +89,8 @@ class MosaicViewModel: ObservableObject {
 
 struct MosaicView: View {
     @ObservedObject var viewModel: MosaicViewModel
+    @State private var dragOffset = CGSize.zero
+    @State private var lastDragOffset = CGSize.zero
 
     var body: some View {
         GeometryReader { geometry in
@@ -102,12 +104,12 @@ struct MosaicView: View {
                                 Image(uiImage: image)
                                     .resizable()
                                     .frame(width: size.width, height: size.height)
-                                    .position(x: position.x, y: position.y)
+                                    .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
                             } else {
                                 Rectangle()
                                     .fill(Color.black)
                                     .frame(width: size.width, height: size.height)
-                                    .position(x: position.x, y: position.y)
+                                    .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
                                     .onAppear {
                                         loadImage(row: row, col: col)
                                     }
@@ -123,7 +125,13 @@ struct MosaicView: View {
             .gesture(
                 DragGesture()
                     .onChanged { value in
-                        print("DragGesture.onChanged: (\(value.location.x), \(value.location.y))")
+                        self.dragOffset = CGSize(
+                            width: self.lastDragOffset.width + value.translation.width,
+                            height: self.lastDragOffset.height + value.translation.height
+                        )
+                    }
+                    .onEnded { value in
+                        self.lastDragOffset = self.dragOffset
                     }
             )
         }
