@@ -105,6 +105,7 @@ class MosaicViewModel: ObservableObject {
         var fileExtension: String
         var zoomLevels: [MosaicZoomLevel]
 
+        // swiftlint:disable:next nesting
         enum CodingKeys: String, CodingKey {
             case width
             case height
