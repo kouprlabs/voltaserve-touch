@@ -21,17 +21,10 @@ struct MosaicView: View {
                         ForEach(0 ..< zoomLevel.cols, id: \.self) { col in
                             let size = document.sizeForCell(row: row, col: col)
                             let position = document.positionForCell(row: row, col: col)
-
-                            // Calculate the frame of the cell
-                            let cellFrame = CGRect(
-                                x: position.x - (size.width / 2),
-                                y: position.y - (size.height / 2),
-                                width: size.width,
-                                height: size.height
-                            )
+                            let frame = document.frameForCellAt(position: position, size: size)
 
                             // Check if the cell is within the visible bounds
-                            if visibleRect.intersects(cellFrame) {
+                            if visibleRect.intersects(frame) {
                                 if let image = document.grid[row][col] {
                                     Image(uiImage: image)
                                         .resizable()

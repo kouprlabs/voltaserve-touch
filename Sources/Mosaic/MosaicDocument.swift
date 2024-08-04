@@ -74,4 +74,8 @@ class MosaicDocument: ObservableObject {
     func positionForCell(row: Int, col: Int) -> CGPoint {
         model.positionForCell(row: row, col: col)
     }
+
+    func frameForCellAt(position: CGPoint, size: CGSize) -> CGRect {
+        model.frameForCellAt(position: position, size: size)
+    }
 }

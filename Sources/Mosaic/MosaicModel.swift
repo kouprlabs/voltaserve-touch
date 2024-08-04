@@ -37,6 +37,15 @@ struct MosaicModel {
         return .zero
     }
 
+    func frameForCellAt(position: CGPoint, size: CGSize) -> CGRect {
+        CGRect(
+            x: position.x - (size.width / 2),
+            y: position.y - (size.height / 2),
+            width: size.width,
+            height: size.height
+        )
+    }
+
     struct Info: Codable {
         var metadata: Metadata
     }
