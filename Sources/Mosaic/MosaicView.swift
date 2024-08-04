@@ -1,7 +1,5 @@
-import Alamofire
-import Combine
 import SwiftUI
-import UIKit
+import Alamofire
 
 struct MosaicView: View {
     @ObservedObject var document: MosaicDocument
