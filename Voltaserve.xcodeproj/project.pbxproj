@@ -13,7 +13,8 @@
 		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
 		649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 649066F02C5E35E400BA3CCD /* Alamofire */; };
 		649066F52C5E392600BA3CCD /* MosaicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F42C5E392600BA3CCD /* MosaicView.swift */; };
-		649066F82C5F34CD00BA3CCD /* MosaicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F72C5F34CD00BA3CCD /* MosaicViewModel.swift */; };
+		649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */; };
+		649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +24,8 @@
 		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		649066F42C5E392600BA3CCD /* MosaicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicView.swift; sourceTree = "<group>"; };
-		649066F72C5F34CD00BA3CCD /* MosaicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicViewModel.swift; sourceTree = "<group>"; };
+		649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicDocument.swift; sourceTree = "<group>"; };
+		649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,7 +80,8 @@
 			isa = PBXGroup;
 			children = (
 				649066F42C5E392600BA3CCD /* MosaicView.swift */,
-				649066F72C5F34CD00BA3CCD /* MosaicViewModel.swift */,
+				649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */,
+				649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */,
 			);
 			path = Mosaic;
 			sourceTree = "<group>";
@@ -182,7 +185,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649066F82C5F34CD00BA3CCD /* MosaicViewModel.swift in Sources */,
+				649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */,
+				649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */,
 				649066F52C5E392600BA3CCD /* MosaicView.swift in Sources */,
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,

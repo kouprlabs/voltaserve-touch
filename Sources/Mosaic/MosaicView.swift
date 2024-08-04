@@ -4,7 +4,7 @@ import SwiftUI
 import UIKit
 
 struct MosaicView: View {
-    @ObservedObject var viewModel: MosaicViewModel
+    @ObservedObject var document: MosaicDocument
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
 
@@ -16,11 +16,11 @@ struct MosaicView: View {
             )
 
             ZStack {
-                if let image = viewModel.image, viewModel.gridLoaded {
-                    ForEach(0 ..< image.rows, id: \.self) { row in
-                        ForEach(0 ..< image.cols, id: \.self) { col in
-                            let size = viewModel.sizeForCell(row: row, col: col)
-                            let position = viewModel.positionForCell(row: row, col: col)
+                if let zoomLevel = document.zoomLevel, document.gridLoaded {
+                    ForEach(0 ..< zoomLevel.rows, id: \.self) { row in
+                        ForEach(0 ..< zoomLevel.cols, id: \.self) { col in
+                            let size = document.sizeForCell(row: row, col: col)
+                            let position = document.positionForCell(row: row, col: col)
 
                             // Calculate the frame of the cell
                             let cellFrame = CGRect(
@@ -32,7 +32,7 @@ struct MosaicView: View {
 
                             // Check if the cell is within the visible bounds
                             if visibleRect.intersects(cellFrame) {
-                                if let image = viewModel.grid[row][col] {
+                                if let image = document.grid[row][col] {
                                     Image(uiImage: image)
                                         .resizable()
                                         .frame(width: size.width, height: size.height)
@@ -43,7 +43,7 @@ struct MosaicView: View {
                                         .frame(width: size.width, height: size.height)
                                         .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
                                         .onAppear {
-                                            viewModel.loadImage(row: row, col: col)
+                                            document.loadImage(row: row, col: col)
                                         }
                                 }
                             }
