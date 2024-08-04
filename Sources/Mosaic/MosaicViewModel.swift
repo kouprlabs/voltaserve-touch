@@ -22,7 +22,6 @@ class MosaicViewModel: ObservableObject {
                     let info = try JSONDecoder().decode(MosaicInfo.self, from: data)
                     self.image = info.metadata.zoomLevels.first
                     DispatchQueue.main.async { [weak self] in
-                        print("Got info!")
                         self?.fillGridWithImage()
                     }
                 } catch {
@@ -40,7 +39,6 @@ class MosaicViewModel: ObservableObject {
         AF.request("\(apiUrl)/v2/mosaics/\(fileId)/zoom_level/\(image!.index)/row/\(row)/col/\(col)/ext/jpg?access_token=\(accessToken)").responseData { response in
             if let data = response.data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {
-                    print("Got image: \(row),\(col)")
                     self.grid[row][col] = image
                     self.numberOfBackgroundThreads -= 1
                 }
