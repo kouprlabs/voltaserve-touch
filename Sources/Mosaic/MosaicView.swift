@@ -1,10 +1,11 @@
-import SwiftUI
 import Alamofire
+import SwiftUI
 
 struct MosaicView: View {
     @ObservedObject var document: MosaicDocument
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
+    var extraTilesToLoad = 1
 
     var body: some View {
         GeometryReader { geometry in
@@ -21,8 +22,11 @@ struct MosaicView: View {
                             let position = document.positionForCell(row: row, col: col)
                             let frame = document.frameForCellAt(position: position, size: size)
 
-                            // Check if the cell is within the visible bounds
-                            if visibleRect.intersects(frame) {
+                            // Check if the cell is within the visible bounds or the surrounding buffer
+                            if visibleRect.insetBy(
+                                dx: -CGFloat(extraTilesToLoad) * size.width,
+                                dy: -CGFloat(extraTilesToLoad) * size.height
+                            ).intersects(frame) {
                                 if let image = document.grid[row][col] {
                                     Image(uiImage: image)
                                         .resizable()
