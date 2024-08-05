@@ -3,6 +3,7 @@ import SwiftUI
 
 struct MosaicView: View {
     @ObservedObject var document: MosaicDocument
+
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
@@ -76,7 +77,7 @@ struct MosaicView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        if let zoomLevels = document.model.zoomLevels {
+                        if let zoomLevels = document.zoomLevels {
                             ForEach(zoomLevels, id: \.index) { zoomLevel in
                                 Button(action: {
                                     resetMosaicPosition()

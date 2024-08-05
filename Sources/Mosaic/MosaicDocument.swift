@@ -3,7 +3,7 @@ import SwiftUI
 
 class MosaicDocument: ObservableObject {
     @Published var grid: [[UIImage?]] = []
-    var model = MosaicModel()
+    private var model = MosaicModel()
     private var busy: [[Bool]] = []
     private var apiUrl: String = "http://localhost:8080"
     // swiftlint:disable:next line_length
@@ -12,6 +12,10 @@ class MosaicDocument: ObservableObject {
 
     var zoomLevel: MosaicModel.ZoomLevel? {
         model.zoomLevel
+    }
+
+    var zoomLevels: [MosaicModel.ZoomLevel]? {
+        model.zoomLevels
     }
 
     init() {

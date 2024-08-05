@@ -21,6 +21,7 @@ struct MosaicLauncher: View {
             .navigationTitle("Mosaic Launcher")
             .navigationBarHidden(true)
         }
-        .navigationViewStyle(StackNavigationViewStyle()) // Ensures it behaves like a single view, not split view
+        // Ensures it behaves like a single view, not split view
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
