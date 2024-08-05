@@ -7,7 +7,7 @@ struct MosaicLauncher: View {
         NavigationView {
             VStack {
                 Spacer()
-                Button(action: {}) {
+                Button(action: {}, label: {
                     NavigationLink(destination: MosaicView(document: document)) {
                         Text("Launch Mosaic View")
                             .padding()
@@ -15,7 +15,7 @@ struct MosaicLauncher: View {
                             .foregroundColor(.white)
                             .cornerRadius(8)
                     }
-                }
+                })
                 Spacer()
             }
             .navigationTitle("Mosaic Launcher")

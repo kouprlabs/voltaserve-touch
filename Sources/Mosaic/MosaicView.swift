@@ -80,9 +80,9 @@ struct MosaicView: View {
                             ForEach(zoomLevels, id: \.index) { zoomLevel in
                                 Button(action: {
                                     document.selectZoomLevel(zoomLevel)
-                                }) {
+                                }, label: {
                                     Text("\(Int(zoomLevel.scaleDownPercentage))%")
-                                }
+                                })
                             }
                         }
                     } label: {
