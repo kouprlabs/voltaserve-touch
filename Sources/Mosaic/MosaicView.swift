@@ -10,6 +10,11 @@ struct MosaicView: View {
 
     var extraTilesToLoad = 1
 
+    init(document: MosaicDocument) {
+        self.document = document
+        setupNavigationBarAppearance()
+    }
+
     var body: some View {
         GeometryReader { geometry in
             let visibleRect = CGRect(
@@ -81,10 +86,19 @@ struct MosaicView: View {
                             }
                         }
                     } label: {
-                        Label("Zoom Levels", systemImage: "magnifyingglass")
+                        Label("Zoom Levels", systemImage: "ellipsis.circle")
                     }
                 }
             }
         }
+    }
+
+    private func setupNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithDefaultBackground()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemMaterial)
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 }
