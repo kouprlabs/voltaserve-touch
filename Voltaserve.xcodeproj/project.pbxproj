@@ -16,6 +16,10 @@
 		649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */; };
 		649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */; };
 		649066FD2C60646000BA3CCD /* MosaicLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FC2C60646000BA3CCD /* MosaicLauncher.swift */; };
+		649067002C60952700BA3CCD /* V3DLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FF2C60952700BA3CCD /* V3DLauncher.swift */; };
+		649067022C60965100BA3CCD /* V3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649067012C60965100BA3CCD /* V3DView.swift */; };
+		649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 649067042C60979900BA3CCD /* GLTFKit2 */; };
+		649067072C60987E00BA3CCD /* V3DDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649067062C60987E00BA3CCD /* V3DDocument.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +32,9 @@
 		649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicDocument.swift; sourceTree = "<group>"; };
 		649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicModel.swift; sourceTree = "<group>"; };
 		649066FC2C60646000BA3CCD /* MosaicLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicLauncher.swift; sourceTree = "<group>"; };
+		649066FF2C60952700BA3CCD /* V3DLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V3DLauncher.swift; sourceTree = "<group>"; };
+		649067012C60965100BA3CCD /* V3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V3DView.swift; sourceTree = "<group>"; };
+		649067062C60987E00BA3CCD /* V3DDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V3DDocument.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +43,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */,
+				649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +69,7 @@
 		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				649066FE2C60950300BA3CCD /* 3D */,
 				649066F62C5F34BB00BA3CCD /* Mosaic */,
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
@@ -89,6 +98,16 @@
 			path = Mosaic;
 			sourceTree = "<group>";
 		};
+		649066FE2C60950300BA3CCD /* 3D */ = {
+			isa = PBXGroup;
+			children = (
+				649066FF2C60952700BA3CCD /* V3DLauncher.swift */,
+				649067012C60965100BA3CCD /* V3DView.swift */,
+				649067062C60987E00BA3CCD /* V3DDocument.swift */,
+			);
+			path = 3D;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -108,6 +127,7 @@
 			name = Voltaserve;
 			packageProductDependencies = (
 				649066F02C5E35E400BA3CCD /* Alamofire */,
+				649067042C60979900BA3CCD /* GLTFKit2 */,
 			);
 			productName = Voltaserve;
 			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
@@ -139,6 +159,7 @@
 			mainGroup = 649066D52C5E35AD00BA3CCD;
 			packageReferences = (
 				649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */,
+				649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */,
 			);
 			productRefGroup = 649066DF2C5E35AD00BA3CCD /* Products */;
 			projectDirPath = "";
@@ -188,11 +209,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				649067022C60965100BA3CCD /* V3DView.swift in Sources */,
 				649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */,
+				649067002C60952700BA3CCD /* V3DLauncher.swift in Sources */,
 				649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */,
 				649066F52C5E392600BA3CCD /* MosaicView.swift in Sources */,
 				649066FD2C60646000BA3CCD /* MosaicLauncher.swift in Sources */,
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
+				649067072C60987E00BA3CCD /* V3DDocument.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,6 +435,14 @@
 				minimumVersion = 5.9.1;
 			};
 		};
+		649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/warrenm/GLTFKit2.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.11;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -418,6 +450,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		649067042C60979900BA3CCD /* GLTFKit2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */;
+			productName = GLTFKit2;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
