@@ -60,6 +60,7 @@ struct MosaicView: View {
                     }
                     .onEnded { _ in
                         lastDragOffset = dragOffset
+                        document.unloadImagesOutsideBuffer(visibleRect: visibleRect, extraTilesToLoad: extraTilesToLoad)
                     }
             )
         }

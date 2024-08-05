@@ -50,6 +50,24 @@ class MosaicDocument: ObservableObject {
         }
     }
 
+    func unloadImagesOutsideBuffer(visibleRect: CGRect, extraTilesToLoad: Int) {
+        guard let zoomLevel else { return }
+
+        for row in 0 ..< zoomLevel.rows {
+            for col in 0 ..< zoomLevel.cols {
+                let size = sizeForCell(row: row, col: col)
+                let position = positionForCell(row: row, col: col)
+                let frame = frameForCellAt(position: position, size: size)
+                if !visibleRect.insetBy(
+                    dx: -CGFloat(extraTilesToLoad) * size.width,
+                    dy: -CGFloat(extraTilesToLoad) * size.height
+                ).intersects(frame) {
+                    grid[row][col] = nil
+                }
+            }
+        }
+    }
+
     func resetGrid() {
         grid = []
         busy = []
