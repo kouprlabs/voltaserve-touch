@@ -10,13 +10,15 @@ struct V3DView: UIViewRepresentable {
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
-        let camera = SCNCamera()
         let cameraNode = SCNNode()
 
         init(sceneView: SCNView, document: V3DDocument) {
             self.sceneView = sceneView
             self.document = document
+
+            let camera = SCNCamera()
             cameraNode.camera = camera
+            cameraNode.position = SCNVector3(x: 0, y: 0.5, z: 2)
         }
 
         func loadAsset() {
@@ -31,7 +33,9 @@ struct V3DView: UIViewRepresentable {
         private func setupScene() {
             guard let asset else { return }
             let source = GLTFSCNSceneSource(asset: asset)
-            sceneView.scene = source.defaultScene
+            if let scene = source.defaultScene {
+                sceneView.scene = scene
+            }
             animations = source.animations
             if let defaultAnimation = animations.first {
                 defaultAnimation.animationPlayer.animation.usesSceneTimeBase = false
