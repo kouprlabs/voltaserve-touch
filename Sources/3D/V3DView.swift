@@ -56,7 +56,8 @@ struct V3DView: UIViewRepresentable {
             camera.zFar = 100
             cameraNode.camera = camera
             super.init()
-            sceneView.delegate = self // Now correctly assigns self as the delegate
+            sceneView.delegate = self
+            sceneView.isPlaying = false // Initially pause the scene view
         }
 
         func loadAsset() {
@@ -136,9 +137,15 @@ struct V3DView: UIViewRepresentable {
             let distance = adjustedExtent * 2.0
 
             cameraNode.position = SCNVector3(center.x, center.y + extents.y / 2, center.z + distance)
-            cameraNode.look(at: center)
 
-            print("Camera positioned at: \(cameraNode.position)")
+            // Update the camera's look-at point on the main thread to ensure synchronization
+            DispatchQueue.main.async {
+                self.cameraNode.look(at: center)
+                print("Camera positioned at: \(self.cameraNode.position)")
+
+                // Only start playing the view after the camera is adjusted and asset is loaded
+                self.sceneView.isPlaying = true
+            }
         }
     }
 
@@ -150,7 +157,7 @@ struct V3DView: UIViewRepresentable {
         let sceneView = context.coordinator.sceneView
         sceneView.allowsCameraControl = true
         sceneView.autoenablesDefaultLighting = true
-        sceneView.backgroundColor = .black // Set a background color to help visualize models
+        sceneView.backgroundColor = .white // Set the background color to white
 
         context.coordinator.loadAsset()
 
