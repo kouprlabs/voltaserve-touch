@@ -79,6 +79,7 @@ struct MosaicView: View {
                         if let zoomLevels = document.model.zoomLevels {
                             ForEach(zoomLevels, id: \.index) { zoomLevel in
                                 Button(action: {
+                                    resetMosaicPosition()
                                     document.selectZoomLevel(zoomLevel)
                                 }, label: {
                                     Text("\(Int(zoomLevel.scaleDownPercentage))%")
@@ -100,5 +101,10 @@ struct MosaicView: View {
 
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+
+    private func resetMosaicPosition() {
+        dragOffset = .zero
+        lastDragOffset = .zero
     }
 }
