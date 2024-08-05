@@ -5,6 +5,9 @@ struct MosaicView: View {
     @ObservedObject var document: MosaicDocument
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
+    @State private var showZoomLevelMenu = false
+    @State private var selectedZoomLevel: MosaicModel.ZoomLevel?
+
     var extraTilesToLoad = 1
 
     var body: some View {
@@ -63,6 +66,25 @@ struct MosaicView: View {
                         document.unloadImagesOutsideBuffer(visibleRect: visibleRect, extraTilesToLoad: extraTilesToLoad)
                     }
             )
+            .navigationTitle("Mosaic View")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        if let zoomLevels = document.model.zoomLevels {
+                            ForEach(zoomLevels, id: \.index) { zoomLevel in
+                                Button(action: {
+                                    document.selectZoomLevel(zoomLevel)
+                                }) {
+                                    Text("\(Int(zoomLevel.scaleDownPercentage))%")
+                                }
+                            }
+                        }
+                    } label: {
+                        Label("Zoom Levels", systemImage: "magnifyingglass")
+                    }
+                }
+            }
         }
     }
 }

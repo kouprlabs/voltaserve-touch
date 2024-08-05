@@ -3,7 +3,7 @@ import SwiftUI
 
 class MosaicDocument: ObservableObject {
     @Published var grid: [[UIImage?]] = []
-    private var model = MosaicModel()
+    var model = MosaicModel()
     private var busy: [[Bool]] = []
     private var apiUrl: String = "http://localhost:8080"
     // swiftlint:disable:next line_length
@@ -15,6 +15,10 @@ class MosaicDocument: ObservableObject {
     }
 
     init() {
+        loadMosaicInfo()
+    }
+
+    func loadMosaicInfo() {
         AF.request(
             "\(apiUrl)/v2/mosaics/\(fileId)/info",
             headers: ["Authorization": "Bearer " + accessToken]
@@ -22,15 +26,21 @@ class MosaicDocument: ObservableObject {
             if let data = response.data {
                 do {
                     let info = try JSONDecoder().decode(MosaicModel.Info.self, from: data)
-                    self.model.zoomLevel = info.metadata.zoomLevels.first
-                    DispatchQueue.main.async { [weak self] in
-                        self?.allocateGrid()
+                    self.model.zoomLevels = info.metadata.zoomLevels
+                    DispatchQueue.main.async {
+                        self.model.zoomLevel = self.model.zoomLevels?.first
+                        self.allocateGrid()
                     }
                 } catch {
                     print(error.localizedDescription)
                 }
             }
         }
+    }
+
+    func selectZoomLevel(_ zoomLevel: MosaicModel.ZoomLevel) {
+        model.zoomLevel = zoomLevel
+        allocateGrid()
     }
 
     func loadImage(row: Int, col: Int) {

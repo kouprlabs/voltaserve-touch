@@ -2,11 +2,11 @@ import SwiftUI
 
 @main
 struct VoltaserveApp: App {
-    @StateObject private var viewModel = MosaicDocument()
+    @StateObject private var document = MosaicDocument()
 
     var body: some Scene {
         WindowGroup {
-            MosaicView(document: viewModel)
+            MosaicLauncher(document: document)
         }
     }
 }

@@ -15,6 +15,7 @@
 		649066F52C5E392600BA3CCD /* MosaicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F42C5E392600BA3CCD /* MosaicView.swift */; };
 		649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */; };
 		649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */; };
+		649066FD2C60646000BA3CCD /* MosaicLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FC2C60646000BA3CCD /* MosaicLauncher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		649066F42C5E392600BA3CCD /* MosaicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicView.swift; sourceTree = "<group>"; };
 		649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicDocument.swift; sourceTree = "<group>"; };
 		649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicModel.swift; sourceTree = "<group>"; };
+		649066FC2C60646000BA3CCD /* MosaicLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicLauncher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				649066F42C5E392600BA3CCD /* MosaicView.swift */,
 				649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */,
 				649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */,
+				649066FC2C60646000BA3CCD /* MosaicLauncher.swift */,
 			);
 			path = Mosaic;
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 				649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */,
 				649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */,
 				649066F52C5E392600BA3CCD /* MosaicView.swift in Sources */,
+				649066FD2C60646000BA3CCD /* MosaicLauncher.swift in Sources */,
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
 			);

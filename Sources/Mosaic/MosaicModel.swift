@@ -1,7 +1,8 @@
 import Foundation
 
 struct MosaicModel {
-    var zoomLevel: MosaicModel.ZoomLevel?
+    var zoomLevel: ZoomLevel?
+    var zoomLevels: [ZoomLevel]?
 
     func sizeForCell(row: Int, col: Int) -> CGSize {
         if let zoomLevel {
