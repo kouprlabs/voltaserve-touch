@@ -1,21 +1,24 @@
 import Alamofire
-import UIKit
+import Foundation
 
 struct MosaicStore {
+    var config: Config
+    var token: Token
     private(set) var zoomLevels: [ZoomLevel]?
-    private var apiUrl: String = "http://localhost:8080"
-    // swiftlint:disable:next line_length
-    private var accessToken: String = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJaeEtHcWJXTmIiLCJpYXQiOjE3MjIxMjg1NDUsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCIsImV4cCI6MTcyNDcyMDU0NX0.xge1u8rXuaWWGHIXkRduDX7iJ0dsLgKGwoodZ8qU55Y"
-    private var fileId: String = "w5JLDMQwLbkry"
+
+    init(config: Config, token: Token) {
+        self.config = config
+        self.token = token
+    }
 
     mutating func setZoomLevels(_ zoomLevels: [ZoomLevel]) {
         self.zoomLevels = zoomLevels
     }
 
-    mutating func fetchZoomLevels(completion: @escaping ([ZoomLevel]?, Error?) -> Void) {
+    func fetchZoomLevelsForFile(id: String, completion: @escaping ([ZoomLevel]?, Error?) -> Void) {
         AF.request(
-            "\(apiUrl)/v2/mosaics/\(fileId)/info",
-            headers: ["Authorization": "Bearer " + accessToken]
+            "\(config.apiUrl)/v2/mosaics/\(id)/info",
+            headers: ["Authorization": "Bearer \(token.accessToken)"]
         ).responseData { response in
             if let data = response.data {
                 do {
@@ -28,13 +31,14 @@ struct MosaicStore {
         }
     }
 
-    mutating func fetchDataAtZoomLevel(
-        _ zoomLevel: ZoomLevel,
+    func fetchDataForFile(
+        id: String,
+        zoomLevel: ZoomLevel,
         forCellAtRow row: Int, col: Int,
         completion: @escaping (Data?) -> Void
     ) {
         // swiftlint:disable:next line_length
-        AF.request("\(apiUrl)/v2/mosaics/\(fileId)/zoom_level/\(zoomLevel.index)/row/\(row)/col/\(col)/ext/jpg?access_token=\(accessToken)").responseData { response in
+        AF.request("\(config.apiUrl)/v2/mosaics/\(id)/zoom_level/\(zoomLevel.index)/row/\(row)/col/\(col)/ext/jpg?access_token=\(token.accessToken)").responseData { response in
             if let data = response.data {
                 completion(data)
             } else {

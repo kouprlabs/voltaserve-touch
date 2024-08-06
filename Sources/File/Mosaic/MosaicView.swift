@@ -2,8 +2,7 @@ import Alamofire
 import SwiftUI
 
 struct MosaicView: View {
-    @ObservedObject private var document = MosaicDocument()
-
+    @EnvironmentObject private var document: MosaicDocument
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false

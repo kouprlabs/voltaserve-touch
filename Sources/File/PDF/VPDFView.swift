@@ -2,12 +2,8 @@ import PDFKit
 import SwiftUI
 
 struct VPDFViewContainer: View {
-    @ObservedObject private var document = VPDFDocument()
+    @EnvironmentObject private var document: VPDFDocument
     @State private var showThumbnails: Bool = true
-
-    init() {
-        document.loadPDF()
-    }
 
     var body: some View {
         VStack {
@@ -19,9 +15,14 @@ struct VPDFViewContainer: View {
                 Button(action: {
                     showThumbnails.toggle()
                 }, label: {
-                    Label("Toggle Thumbnails", systemImage: showThumbnails ? "rectangle.bottomhalf.filled" : "rectangle.split.1x2")
+                    Label(
+                        "Toggle Thumbnails",
+                        systemImage: showThumbnails ? "rectangle.bottomhalf.filled" : "rectangle.split.1x2"
+                    )
                 })
             }
+        }.onAppear {
+            document.loadPDF()
         }
     }
 }

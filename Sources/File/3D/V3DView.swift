@@ -3,7 +3,24 @@ import SceneKit
 import SwiftUI
 
 struct V3DView: UIViewRepresentable {
-    @ObservedObject private var document = V3DDocument()
+    @EnvironmentObject private var document: V3DDocument
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = context.coordinator.sceneView
+        sceneView.allowsCameraControl = true
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.backgroundColor = .white
+
+        context.coordinator.loadAsset()
+
+        return sceneView
+    }
+
+    func updateUIView(_: SCNView, context _: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(sceneView: SCNView(), document: document)
+    }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
         var document: V3DDocument
@@ -101,23 +118,6 @@ struct V3DView: UIViewRepresentable {
             }
         }
     }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(sceneView: SCNView(), document: document)
-    }
-
-    func makeUIView(context: Context) -> SCNView {
-        let sceneView = context.coordinator.sceneView
-        sceneView.allowsCameraControl = true
-        sceneView.autoenablesDefaultLighting = true
-        sceneView.backgroundColor = .white
-
-        context.coordinator.loadAsset()
-
-        return sceneView
-    }
-
-    func updateUIView(_: SCNView, context _: Context) {}
 }
 
 extension SCNNode {

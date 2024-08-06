@@ -1,29 +1,32 @@
-import Foundation
 import PDFKit
+import SwiftUI
 
 class VPDFDocument: ObservableObject {
-    private var apiUrl: String = "http://localhost:8080"
-    // swiftlint:disable:next line_length
-    private var accessToken: String = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJaeEtHcWJXTmIiLCJpYXQiOjE3MjIxMjg1NDUsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCIsImV4cCI6MTcyNDcyMDU0NX0.xge1u8rXuaWWGHIXkRduDX7iJ0dsLgKGwoodZ8qU55Y"
-    private var fileId: String = "eV0k2Deym6ekZ"
-
     @Published var pdfDocument: PDFDocument?
+    private var store: VPDFStore
+    private var fileId: String {
+        Constants.fileIds.randomElement()!
+    }
 
-    var url: URL {
-        URL(string: "\(apiUrl)/v2/files/\(fileId)/preview.pdf?access_token=\(accessToken)")!
+    init(config: Config, token: Token) {
+        store = VPDFStore(config: config, token: token)
     }
 
     func loadPDF() {
         DispatchQueue.global().async {
-            print("Loading PDF from URL: \(self.url)")
-            if let loadedDocument = PDFDocument(url: self.url) {
+            if let loadedDocument = PDFDocument(url: self.store.urlForFile(id: self.fileId)) {
                 DispatchQueue.main.async {
-                    print("Successfully loaded PDF document")
                     self.pdfDocument = loadedDocument
                 }
-            } else {
-                print("Failed to load PDF document")
             }
         }
+    }
+
+    private enum Constants {
+        static let fileIds = [
+            "eV0k2Deym6ekZ", // hdr2023-24reporten
+            "XX7G1r3za358J", // human-freedom-index-2022
+            "kd9EWp2pDxX0Y" // Choose-an-automation-tool-ebook-Red-Hat-Developer
+        ]
     }
 }

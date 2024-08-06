@@ -2,17 +2,21 @@ import Alamofire
 import SwiftUI
 
 class MosaicDocument: ObservableObject {
-    @Published private var store = MosaicStore()
     @Published private(set) var zoomLevel: MosaicStore.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
     private var busy: [[Bool]] = []
+    private var store: MosaicStore
+    private var fileId: String {
+        Constants.fileIds.randomElement()!
+    }
 
     var zoomLevels: [MosaicStore.ZoomLevel]? {
         store.zoomLevels
     }
 
-    init() {
-        store.fetchZoomLevels { zoomLevels, error in
+    init(config: Config, token: Token) {
+        store = MosaicStore(config: config, token: token)
+        store.fetchZoomLevelsForFile(id: fileId) { zoomLevels, error in
             if let zoomLevels {
                 self.store.setZoomLevels(zoomLevels)
                 DispatchQueue.main.async {
@@ -44,7 +48,7 @@ class MosaicDocument: ObservableObject {
         guard busy[row][col] == false else { return }
         busy[row][col] = true
         if let zoomLevel {
-            store.fetchDataAtZoomLevel(zoomLevel, forCellAtRow: row, col: col) { data in
+            store.fetchDataForFile(id: fileId, zoomLevel: zoomLevel, forCellAtRow: row, col: col) { data in
                 self.busy[row][col] = false
                 if let data {
                     DispatchQueue.main.async {
@@ -114,5 +118,11 @@ class MosaicDocument: ObservableObject {
             width: size.width,
             height: size.height
         )
+    }
+
+    private enum Constants {
+        static let fileIds: [String] = [
+            "w5JLDMQwLbkry" // In_the_Conservatory
+        ]
     }
 }
