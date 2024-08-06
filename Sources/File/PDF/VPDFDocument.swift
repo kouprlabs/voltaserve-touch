@@ -25,7 +25,9 @@ class VPDFDocument: ObservableObject {
     }
 
     func shuffleFileId() {
+        pdfDocument = nil
         idRandomizer.shuffle()
+        loadPDF()
     }
 
     private enum Constants {
