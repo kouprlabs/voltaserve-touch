@@ -1,5 +1,5 @@
-import SwiftUI
 import PDFKit
+import SwiftUI
 
 struct VPDFThumbnailListView: View {
     let document: PDFDocument
@@ -8,7 +8,7 @@ struct VPDFThumbnailListView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
-                ForEach(0..<document.pageCount, id: \.self) { index in
+                ForEach(0 ..< document.pageCount, id: \.self) { index in
                     if let page = document.page(at: index) {
                         VPDFThumbnailView(page: page, pdfView: pdfView)
                     } else {

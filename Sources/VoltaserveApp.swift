@@ -10,7 +10,7 @@ struct VoltaserveApp: App {
         WindowGroup {
 //            MosaicLauncher(document: mosaicDocument)
 //            V3DLauncher(document: v3dDocument)
-            PDFLauncher(document: vpdfViewModel)
+            VPDFLauncher(document: vpdfViewModel)
         }
     }
 }

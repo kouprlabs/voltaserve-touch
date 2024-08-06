@@ -1,5 +1,5 @@
-import SwiftUI
 import PDFKit
+import SwiftUI
 
 struct VPDFThumbnailView: View {
     let page: PDFPage

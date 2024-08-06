@@ -29,7 +29,7 @@ struct VPDFView: UIViewRepresentable {
             pdfView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             pdfView.topAnchor.constraint(equalTo: containerView.topAnchor),
             pdfView.bottomAnchor.constraint(equalTo: hostingController.view.topAnchor),
-            
+
             hostingController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             hostingController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             hostingController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
@@ -41,7 +41,7 @@ struct VPDFView: UIViewRepresentable {
         return containerView
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {
+    func updateUIView(_: UIView, context: Context) {
         guard let pdfView = context.coordinator.pdfView else { return }
 
         if let pdfDocument = document.pdfDocument {

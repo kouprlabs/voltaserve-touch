@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct PDFLauncher: View {
+struct VPDFLauncher: View {
     @StateObject var document = VPDFDocument()
 
     var body: some View {
         NavigationView {
             VStack {
                 Spacer()
-                Button(action: {}) {
+                Button(action: {}, label: {
                     NavigationLink(destination: VPDFView(document: document)) {
                         Text("Launch PDF View")
                             .padding()
@@ -15,11 +15,11 @@ struct PDFLauncher: View {
                             .foregroundColor(.white)
                             .cornerRadius(8)
                     }
-                }
+                })
                 Spacer()
             }
             .navigationTitle("PDF Launcher")
-            .navigationBarTitleDisplayMode(.inline)  // Ensures inline title display
+            .navigationBarTitleDisplayMode(.inline) // Ensures inline title display
             .navigationBarItems(leading: EmptyView()) // Optional: remove back button
         }
         // Ensures it behaves like a single view, not split view
@@ -27,11 +27,5 @@ struct PDFLauncher: View {
         .onAppear {
             document.loadPDF()
         }
-    }
-}
-
-struct PDFLauncher_Previews: PreviewProvider {
-    static var previews: some View {
-        PDFLauncher()
     }
 }
