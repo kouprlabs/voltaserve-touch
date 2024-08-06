@@ -15,8 +15,10 @@ class VPDFDocument: ObservableObject {
 
     func loadPDF() {
         DispatchQueue.global().async {
+            print("Loading PDF from URL: \(self.url)")
             if let loadedDocument = PDFDocument(url: self.url) {
                 DispatchQueue.main.async {
+                    print("Successfully loaded PDF document")
                     self.pdfDocument = loadedDocument
                 }
             } else {

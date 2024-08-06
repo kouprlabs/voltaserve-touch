@@ -8,7 +8,7 @@ struct VPDFLauncher: View {
             VStack {
                 Spacer()
                 Button(action: {}, label: {
-                    NavigationLink(destination: VPDFView(document: document)) {
+                    NavigationLink(destination: VPDFViewContainer(document: document)) {
                         Text("Launch PDF View")
                             .padding()
                             .background(Color.blue)
@@ -20,7 +20,6 @@ struct VPDFLauncher: View {
             }
             .navigationTitle("PDF Launcher")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: EmptyView())
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
