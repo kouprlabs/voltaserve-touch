@@ -4,6 +4,7 @@ import SwiftUI
 class VPDFDocument: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var loadedThumbnails: [Int: UIImage] = [:]
+    @Published var isLoading: Bool = false
     private var store: VPDFStore
     private var idRandomizer = IdRandomizer(Constants.fileIds)
 
@@ -19,12 +20,18 @@ class VPDFDocument: ObservableObject {
         // Clear existing thumbnails
         DispatchQueue.main.async {
             self.loadedThumbnails = [:]
+            self.isLoading = true
         }
 
         DispatchQueue.global().async {
             if let loadedDocument = PDFDocument(url: self.store.urlForFile(id: self.fileId)) {
                 DispatchQueue.main.async {
                     self.pdfDocument = loadedDocument
+                    self.isLoading = false
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.isLoading = false
                 }
             }
         }

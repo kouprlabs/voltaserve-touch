@@ -7,8 +7,15 @@ struct VPDFViewContainer: View {
 
     var body: some View {
         VStack {
-            VPDFView(document: document, showThumbnails: $showThumbnails)
-                .edgesIgnoringSafeArea(.all)
+            if document.isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    // Try to match the style .large of UIKit's UIActivityIndicatorView
+                    .scaleEffect(1.85)
+            } else {
+                VPDFView(document: document, showThumbnails: $showThumbnails)
+                    .edgesIgnoringSafeArea(.all)
+            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
