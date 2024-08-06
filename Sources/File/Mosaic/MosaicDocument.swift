@@ -6,21 +6,22 @@ class MosaicDocument: ObservableObject {
     @Published private(set) var grid: [[UIImage?]] = []
     private var busy: [[Bool]] = []
     private var store: MosaicStore
-    private var fileId: String {
-        Constants.fileIds.randomElement()!
-    }
+    private var fileId = Constants.fileIds.randomElement()!
 
     var zoomLevels: [MosaicStore.ZoomLevel]? {
-        store.zoomLevels
+        store.info?.metadata.zoomLevels
     }
 
     init(config: Config, token: Token) {
         store = MosaicStore(config: config, token: token)
-        store.fetchZoomLevelsForFile(id: fileId) { zoomLevels, error in
-            if let zoomLevels {
-                self.store.setZoomLevels(zoomLevels)
+    }
+
+    func loadMosaic() {
+        store.fetchInfoForFile(id: fileId) { info, error in
+            if let info {
+                self.store.setInfo(info)
                 DispatchQueue.main.async {
-                    if let zoomLevel = zoomLevels.first {
+                    if let zoomLevel = self.store.info?.metadata.zoomLevels.first {
                         self.zoomLevel = zoomLevel
                         self.allocateGridForZoomLevel(zoomLevel)
                     }
@@ -47,8 +48,13 @@ class MosaicDocument: ObservableObject {
     func loadImageForCell(row: Int, col: Int) {
         guard busy[row][col] == false else { return }
         busy[row][col] = true
-        if let zoomLevel {
-            store.fetchDataForFile(id: fileId, zoomLevel: zoomLevel, forCellAtRow: row, col: col) { data in
+        if let zoomLevel, let fileExtension = store.info?.metadata.fileExtension {
+            store.fetchDataForFile(
+                id: fileId,
+                zoomLevel: zoomLevel,
+                forCellAtRow: row, col: col,
+                fileExtenion: String(fileExtension.dropFirst())
+            ) { data in
                 self.busy[row][col] = false
                 if let data {
                     DispatchQueue.main.async {
@@ -120,9 +126,15 @@ class MosaicDocument: ObservableObject {
         )
     }
 
+    func shuffleFileId() {
+        fileId = Constants.fileIds.randomElement()!
+    }
+
     private enum Constants {
         static let fileIds: [String] = [
-            "w5JLDMQwLbkry" // In_the_Conservatory
+            "w5JLDMQwLbkry", // In_the_Conservatory
+            "Lx5gXaBB7Mm8G", // Indio,_CA_from_scenic_outlook
+            "j5OdmVwewmX6o" // 1-PIA26246-Curiosity_Arrives_at_Upper_Gediz_Vallis
         ]
     }
 }

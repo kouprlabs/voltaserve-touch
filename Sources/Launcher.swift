@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct Launcher: View {
+    @EnvironmentObject private var v3dDocument: V3DDocument
+    @EnvironmentObject private var mosaicDocument: MosaicDocument
+    @EnvironmentObject private var vpdfDocument: VPDFDocument
+
     var body: some View {
         NavigationView {
             VStack {
@@ -8,12 +12,21 @@ struct Launcher: View {
                 mosaicButton
                     .padding()
                     .navigationBarHidden(true)
+                    .onAppear {
+                        mosaicDocument.shuffleFileId()
+                    }
                 v3dButton
                     .padding()
                     .navigationBarTitleDisplayMode(.inline)
+                    .onAppear {
+                        v3dDocument.shuffleFileId()
+                    }
                 vpdfButton
                     .padding()
                     .navigationBarTitleDisplayMode(.inline)
+                    .onAppear {
+                        vpdfDocument.shuffleFileId()
+                    }
                 Spacer()
             }
             .navigationTitle("Launcher")

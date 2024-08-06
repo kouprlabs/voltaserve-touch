@@ -86,6 +86,9 @@ struct MosaicView: View {
                     }
                 }
             }
+            .onAppear {
+                document.loadMosaic()
+            }
         }
     }
 

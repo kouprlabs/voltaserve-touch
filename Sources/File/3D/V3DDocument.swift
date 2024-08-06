@@ -3,22 +3,27 @@ import SwiftUI
 
 class V3DDocument: ObservableObject {
     private var store: V3DStore
-    private var fileId: String {
-        Constants.fileIds.randomElement()!
-    }
+    private var fileId = Constants.fileIds.randomElement()!
 
     init(config: Config, token: Token) {
         store = V3DStore(config: config, token: token)
     }
 
-    func loadAsset(completion: @escaping (GLTFAsset?) -> Void) {
+    func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {
         GLTFAsset.load(with: store.urlForFile(id: fileId), options: [:]) { _, status, maybeAsset, maybeError, _ in
-            if status == .complete {
-                completion(maybeAsset)
-            } else if let error = maybeError {
-                print("Failed to load glTF asset: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
+                if status == .complete {
+                    completion(maybeAsset, nil)
+                } else if let error = maybeError {
+                    completion(nil, error)
+                }
             }
         }
+    }
+
+    func shuffleFileId() {
+        fileId = Constants.fileIds.randomElement()!
     }
 
     private enum Constants {

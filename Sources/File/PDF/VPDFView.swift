@@ -3,7 +3,7 @@ import SwiftUI
 
 struct VPDFViewContainer: View {
     @EnvironmentObject private var document: VPDFDocument
-    @State private var showThumbnails: Bool = true
+    @State private var showThumbnails = true
 
     var body: some View {
         VStack {

@@ -4,18 +4,18 @@ import Foundation
 struct MosaicStore {
     var config: Config
     var token: Token
-    private(set) var zoomLevels: [ZoomLevel]?
+    private(set) var info: Info?
 
     init(config: Config, token: Token) {
         self.config = config
         self.token = token
     }
 
-    mutating func setZoomLevels(_ zoomLevels: [ZoomLevel]) {
-        self.zoomLevels = zoomLevels
+    mutating func setInfo(_ info: Info) {
+        self.info = info
     }
 
-    func fetchZoomLevelsForFile(id: String, completion: @escaping ([ZoomLevel]?, Error?) -> Void) {
+    func fetchInfoForFile(id: String, completion: @escaping (Info?, Error?) -> Void) {
         AF.request(
             "\(config.apiUrl)/v2/mosaics/\(id)/info",
             headers: ["Authorization": "Bearer \(token.accessToken)"]
@@ -23,7 +23,7 @@ struct MosaicStore {
             if let data = response.data {
                 do {
                     let info = try JSONDecoder().decode(Info.self, from: data)
-                    completion(info.metadata.zoomLevels, nil)
+                    completion(info, nil)
                 } catch {
                     completion(nil, error)
                 }
@@ -35,10 +35,12 @@ struct MosaicStore {
         id: String,
         zoomLevel: ZoomLevel,
         forCellAtRow row: Int, col: Int,
+        fileExtenion: String,
         completion: @escaping (Data?) -> Void
     ) {
-        // swiftlint:disable:next line_length
-        AF.request("\(config.apiUrl)/v2/mosaics/\(id)/zoom_level/\(zoomLevel.index)/row/\(row)/col/\(col)/ext/jpg?access_token=\(token.accessToken)").responseData { response in
+        let url = "\(config.apiUrl)/v2/mosaics/\(id)/zoom_level/\(zoomLevel.index)" +
+            "/row/\(row)/col/\(col)/ext/\(fileExtenion)?access_token=\(token.accessToken)"
+        AF.request(url).responseData { response in
             if let data = response.data {
                 completion(data)
             } else {

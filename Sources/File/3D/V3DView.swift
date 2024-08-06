@@ -48,12 +48,12 @@ struct V3DView: UIViewRepresentable {
         }
 
         func loadAsset() {
-            document.loadAsset { [self] asset in
+            document.loadAsset { [self] asset, error in
                 if let asset {
                     self.asset = asset
                     setupScene()
-                } else {
-                    print("Failed to load asset.")
+                } else if let error {
+                    print("Failed to load glTF asset: \(error.localizedDescription)")
                 }
             }
         }
