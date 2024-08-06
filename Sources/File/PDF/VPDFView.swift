@@ -1,6 +1,31 @@
 import PDFKit
 import SwiftUI
 
+struct VPDFViewContainer: View {
+    @ObservedObject private var document = VPDFDocument()
+    @State private var showThumbnails: Bool = true
+
+    init() {
+        document.loadPDF()
+    }
+
+    var body: some View {
+        VStack {
+            VPDFView(document: document, showThumbnails: $showThumbnails)
+                .edgesIgnoringSafeArea(.all)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    showThumbnails.toggle()
+                }, label: {
+                    Label("Toggle Thumbnails", systemImage: showThumbnails ? "rectangle.bottomhalf.filled" : "rectangle.split.1x2")
+                })
+            }
+        }
+    }
+}
+
 struct VPDFView: UIViewRepresentable {
     @ObservedObject var document: VPDFDocument
     @Binding var showThumbnails: Bool
@@ -103,27 +128,6 @@ struct VPDFThumbnailListViewContainer: View {
     }
 }
 
-struct VPDFViewContainer: View {
-    @ObservedObject var document: VPDFDocument
-    @State private var showThumbnails: Bool = true // State variable to track thumbnail visibility
-
-    var body: some View {
-        VStack {
-            VPDFView(document: document, showThumbnails: $showThumbnails)
-                .edgesIgnoringSafeArea(.all)
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) { // Place the toolbar item at top right
-                Button(action: {
-                    showThumbnails.toggle()
-                }, label: {
-                    Label("Toggle Thumbnails", systemImage: showThumbnails ? "rectangle.bottomhalf.filled" : "rectangle.split.1x2")
-                })
-            }
-        }
-    }
-}
-
 struct VPDFThumbnailView: View {
     let page: PDFPage
     let pdfView: PDFView
@@ -133,9 +137,8 @@ struct VPDFThumbnailView: View {
         Image(uiImage: thumbnail)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            // Optional: background to show when no image
+            // Background to show when no image
             .background(Color.gray.opacity(0.2))
-            // Optional: adjust frame as needed
             .frame(width: 100, height: 150, alignment: .center)
             .onTapGesture {
                 pdfView.go(to: page)

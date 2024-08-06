@@ -2,15 +2,14 @@ import Alamofire
 import SwiftUI
 
 struct MosaicView: View {
-    @ObservedObject var document: MosaicDocument
+    @ObservedObject private var document = MosaicDocument()
 
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
     @State private var selectedZoomLevel: MosaicStore.ZoomLevel?
 
-    init(document: MosaicDocument) {
-        self.document = document
+    init() {
         setupNavigationBarAppearance()
     }
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C1F40AD1A886853B784FE88 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F438F06338A16B1D46E37 /* Config.swift */; };
+		5C1F4264A888336664E4B7E4 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F44CFAF1D871B9011AC1C /* Token.swift */; };
 		5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4A155ED69CBA594C129F /* Launcher.swift */; };
 		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
 		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
@@ -25,6 +27,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C1F438F06338A16B1D46E37 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		5C1F44CFAF1D871B9011AC1C /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		5C1F4A155ED69CBA594C129F /* Launcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Launcher.swift; sourceTree = "<group>"; };
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
@@ -54,6 +58,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C1F40159602202402AD8601 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				5C1F44CFAF1D871B9011AC1C /* Token.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		5C1F428B1121990229FBDCC6 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				5C1F438F06338A16B1D46E37 /* Config.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +100,8 @@
 				5C1F4A155ED69CBA594C129F /* Launcher.swift */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
+				5C1F40159602202402AD8601 /* Auth */,
+				5C1F428B1121990229FBDCC6 /* Config */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -250,6 +272,8 @@
 				64C69BE12C6230FB00476A7D /* VPDFDocument.swift in Sources */,
 				64C69BDF2C6230FB00476A7D /* MosaicStore.swift in Sources */,
 				64C69BE22C6230FB00476A7D /* VPDFView.swift in Sources */,
+				5C1F4264A888336664E4B7E4 /* Token.swift in Sources */,
+				5C1F40AD1A886853B784FE88 /* Config.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

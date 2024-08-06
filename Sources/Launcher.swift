@@ -1,34 +1,29 @@
 import SwiftUI
 
 struct Launcher: View {
-    @StateObject var mosaicDocument: MosaicDocument
-    @StateObject var v3dDocument: V3DDocument
-    @StateObject var vpdfDocument: VPDFDocument
-
     var body: some View {
         NavigationView {
             VStack {
                 Spacer()
                 mosaicButton
                     .padding()
+                    .navigationBarHidden(true)
                 v3dButton
                     .padding()
+                    .navigationBarTitleDisplayMode(.inline)
                 vpdfButton
                     .padding()
+                    .navigationBarTitleDisplayMode(.inline)
                 Spacer()
             }
             .navigationTitle("Launcher")
-            .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .onAppear {
-            vpdfDocument.loadPDF()
-        }
     }
 
     var mosaicButton: some View {
         Button(action: {}, label: {
-            NavigationLink(destination: MosaicView(document: mosaicDocument)
+            NavigationLink(destination: MosaicView()
                 .navigationBarTitle("Mosaic View")) {
                     Text("Launch Mosaic View")
                 }
@@ -37,7 +32,7 @@ struct Launcher: View {
 
     var v3dButton: some View {
         Button(action: {}, label: {
-            NavigationLink(destination: V3DView(document: v3dDocument)
+            NavigationLink(destination: V3DView()
                 .navigationBarTitle("3D View")
             ) {
                 Text("Launch 3D View")
@@ -47,7 +42,7 @@ struct Launcher: View {
 
     var vpdfButton: some View {
         Button(action: {}, label: {
-            NavigationLink(destination: VPDFViewContainer(document: vpdfDocument)
+            NavigationLink(destination: VPDFViewContainer()
                 .navigationBarTitle("PDF View")
             ) {
                 Text("Launch PDF View")
@@ -57,9 +52,5 @@ struct Launcher: View {
 }
 
 #Preview {
-    Launcher(
-        mosaicDocument: MosaicDocument(),
-        v3dDocument: V3DDocument(),
-        vpdfDocument: VPDFDocument()
-    )
+    Launcher()
 }

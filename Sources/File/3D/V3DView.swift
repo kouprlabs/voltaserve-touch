@@ -3,7 +3,7 @@ import SceneKit
 import SwiftUI
 
 struct V3DView: UIViewRepresentable {
-    @ObservedObject var document: V3DDocument
+    @ObservedObject private var document = V3DDocument()
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
         var document: V3DDocument
@@ -21,9 +21,13 @@ struct V3DView: UIViewRepresentable {
             camera.zNear = 0.1
             camera.zFar = 100
             cameraNode.camera = camera
+
             super.init()
+
             sceneView.delegate = self
-            sceneView.isPlaying = false // Initially pause the scene view
+
+            // Initially pause the scene view
+            sceneView.isPlaying = false
         }
 
         func loadAsset() {
