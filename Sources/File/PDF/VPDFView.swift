@@ -3,7 +3,7 @@ import SwiftUI
 
 struct VPDFView: UIViewRepresentable {
     @ObservedObject var document: VPDFDocument
-    @Binding var showThumbnails: Bool // Using Binding to alter the state from the parent view
+    @Binding var showThumbnails: Bool
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -117,7 +117,7 @@ struct VPDFViewContainer: View {
                 Button(action: {
                     showThumbnails.toggle()
                 }, label: {
-                    Label("Toggle Thumbnails", systemImage: showThumbnails ? "square.grid.2x2.fill" : "square.grid.2x2")
+                    Label("Toggle Thumbnails", systemImage: showThumbnails ? "rectangle.bottomhalf.filled" : "rectangle.split.1x2")
                 })
             }
         }
@@ -133,8 +133,10 @@ struct VPDFThumbnailView: View {
         Image(uiImage: thumbnail)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .background(Color.gray.opacity(0.2)) // Optional: background to show when no image
-            .frame(width: 100, height: 150, alignment: .center) // Optional: adjust frame as needed
+            // Optional: background to show when no image
+            .background(Color.gray.opacity(0.2))
+            // Optional: adjust frame as needed
+            .frame(width: 100, height: 150, alignment: .center)
             .onTapGesture {
                 pdfView.go(to: page)
             }

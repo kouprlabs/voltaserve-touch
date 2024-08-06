@@ -7,9 +7,7 @@ struct MosaicView: View {
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
-    @State private var selectedZoomLevel: MosaicModel.ZoomLevel?
-
-    var extraTilesToLoad = 1
+    @State private var selectedZoomLevel: MosaicStore.ZoomLevel?
 
     init(document: MosaicDocument) {
         self.document = document
@@ -33,8 +31,8 @@ struct MosaicView: View {
 
                             // Check if the cell is within the visible bounds or the surrounding buffer
                             if visibleRect.insetBy(
-                                dx: -CGFloat(extraTilesToLoad) * size.width,
-                                dy: -CGFloat(extraTilesToLoad) * size.height
+                                dx: -CGFloat(Constants.extraTilesToLoad) * size.width,
+                                dy: -CGFloat(Constants.extraTilesToLoad) * size.height
                             ).intersects(frame) {
                                 if let image = document.grid[row][col] {
                                     Image(uiImage: image)
@@ -47,7 +45,7 @@ struct MosaicView: View {
                                         .frame(width: size.width, height: size.height)
                                         .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
                                         .onAppear {
-                                            document.loadImage(row: row, col: col)
+                                            document.loadImageForCell(row: row, col: col)
                                         }
                                 }
                             }
@@ -69,11 +67,9 @@ struct MosaicView: View {
                     }
                     .onEnded { _ in
                         lastDragOffset = dragOffset
-                        document.unloadImagesOutsideBuffer(visibleRect: visibleRect, extraTilesToLoad: extraTilesToLoad)
+                        document.unloadImagesOutsideRect(visibleRect, extraTilesToLoad: Constants.extraTilesToLoad)
                     }
             )
-            .navigationTitle("Mosaic View")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
@@ -107,5 +103,9 @@ struct MosaicView: View {
     private func resetMosaicPosition() {
         dragOffset = .zero
         lastDragOffset = .zero
+    }
+
+    private enum Constants {
+        static let extraTilesToLoad = 1
     }
 }

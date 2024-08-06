@@ -1,17 +1,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var mosaicDocument: MosaicDocument
+    @StateObject var v3dDocument: V3DDocument
+    @StateObject var vpdfDocument: VPDFDocument
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        Launcher(
+            mosaicDocument: mosaicDocument,
+            v3dDocument: v3dDocument,
+            vpdfDocument: vpdfDocument
+        )
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(
+        mosaicDocument: MosaicDocument(),
+        v3dDocument: V3DDocument(),
+        vpdfDocument: VPDFDocument()
+    )
 }

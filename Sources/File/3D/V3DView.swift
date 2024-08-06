@@ -116,8 +116,8 @@ struct V3DView: UIViewRepresentable {
     func updateUIView(_: SCNView, context _: Context) {}
 }
 
-// Helper function to calculate the bounding box considering all child nodes and transformations
 extension SCNNode {
+    // Helper function to calculate the bounding box considering all child nodes and transformations
     func boundingBoxRelativeToCurrentObject() -> (SCNVector3, SCNVector3) {
         var minVec: SCNVector3 = SCNVector3Zero
         var maxVec: SCNVector3 = SCNVector3Zero

@@ -7,40 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C1F439822E11B4C9C5CC73E /* VPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4C234092CD29E6E20282 /* VPDFView.swift */; };
-		5C1F4C2DE8F3A8C8204E0CDF /* VPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4CF84575934F70407386 /* VPDFDocument.swift */; };
-		5C1F4FE5372312757E934802 /* VPDFLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4B28ED6EB6A23D0EE037 /* VPDFLauncher.swift */; };
+		5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4A155ED69CBA594C129F /* Launcher.swift */; };
 		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
 		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
 		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
 		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
 		649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 649066F02C5E35E400BA3CCD /* Alamofire */; };
-		649066F52C5E392600BA3CCD /* MosaicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F42C5E392600BA3CCD /* MosaicView.swift */; };
-		649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */; };
-		649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */; };
-		649066FD2C60646000BA3CCD /* MosaicLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FC2C60646000BA3CCD /* MosaicLauncher.swift */; };
-		649067002C60952700BA3CCD /* V3DLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066FF2C60952700BA3CCD /* V3DLauncher.swift */; };
-		649067022C60965100BA3CCD /* V3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649067012C60965100BA3CCD /* V3DView.swift */; };
 		649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 649067042C60979900BA3CCD /* GLTFKit2 */; };
-		649067072C60987E00BA3CCD /* V3DDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649067062C60987E00BA3CCD /* V3DDocument.swift */; };
+		64C69BDC2C6230FB00476A7D /* V3DDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BCF2C6230FB00476A7D /* V3DDocument.swift */; };
+		64C69BDD2C6230FB00476A7D /* V3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD02C6230FB00476A7D /* V3DView.swift */; };
+		64C69BDE2C6230FB00476A7D /* MosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD22C6230FB00476A7D /* MosaicDocument.swift */; };
+		64C69BDF2C6230FB00476A7D /* MosaicStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD32C6230FB00476A7D /* MosaicStore.swift */; };
+		64C69BE02C6230FB00476A7D /* MosaicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD42C6230FB00476A7D /* MosaicView.swift */; };
+		64C69BE12C6230FB00476A7D /* VPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD62C6230FB00476A7D /* VPDFDocument.swift */; };
+		64C69BE22C6230FB00476A7D /* VPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD72C6230FB00476A7D /* VPDFView.swift */; };
+		64C69BE32C6230FB00476A7D /* WorkspaceList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BDA2C6230FB00476A7D /* WorkspaceList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5C1F4B28ED6EB6A23D0EE037 /* VPDFLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFLauncher.swift; sourceTree = "<group>"; };
-		5C1F4C234092CD29E6E20282 /* VPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFView.swift; sourceTree = "<group>"; };
-		5C1F4CF84575934F70407386 /* VPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFDocument.swift; sourceTree = "<group>"; };
+		5C1F4A155ED69CBA594C129F /* Launcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Launcher.swift; sourceTree = "<group>"; };
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
 		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		649066F42C5E392600BA3CCD /* MosaicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicView.swift; sourceTree = "<group>"; };
-		649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicDocument.swift; sourceTree = "<group>"; };
-		649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicModel.swift; sourceTree = "<group>"; };
-		649066FC2C60646000BA3CCD /* MosaicLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicLauncher.swift; sourceTree = "<group>"; };
-		649066FF2C60952700BA3CCD /* V3DLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V3DLauncher.swift; sourceTree = "<group>"; };
-		649067012C60965100BA3CCD /* V3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V3DView.swift; sourceTree = "<group>"; };
-		649067062C60987E00BA3CCD /* V3DDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V3DDocument.swift; sourceTree = "<group>"; };
+		64C69BCF2C6230FB00476A7D /* V3DDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = V3DDocument.swift; sourceTree = "<group>"; };
+		64C69BD02C6230FB00476A7D /* V3DView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = V3DView.swift; sourceTree = "<group>"; };
+		64C69BD22C6230FB00476A7D /* MosaicDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MosaicDocument.swift; sourceTree = "<group>"; };
+		64C69BD32C6230FB00476A7D /* MosaicStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MosaicStore.swift; sourceTree = "<group>"; };
+		64C69BD42C6230FB00476A7D /* MosaicView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MosaicView.swift; sourceTree = "<group>"; };
+		64C69BD62C6230FB00476A7D /* VPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFDocument.swift; sourceTree = "<group>"; };
+		64C69BD72C6230FB00476A7D /* VPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFView.swift; sourceTree = "<group>"; };
+		64C69BDA2C6230FB00476A7D /* WorkspaceList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,19 +54,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5C1F45C1915255111A39EBA3 /* PDF */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F4CF84575934F70407386 /* VPDFDocument.swift */,
-				5C1F4C234092CD29E6E20282 /* VPDFView.swift */,
-				5C1F4B28ED6EB6A23D0EE037 /* VPDFLauncher.swift */,
-			);
-			path = PDF;
-			sourceTree = "<group>";
-		};
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
+				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
+				649066E72C5E35AE00BA3CCD /* Preview Content */,
 				649066E02C5E35AD00BA3CCD /* Sources */,
 				649066DF2C5E35AD00BA3CCD /* Products */,
 			);
@@ -85,13 +75,11 @@
 		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				5C1F45C1915255111A39EBA3 /* PDF */,
-				649066FE2C60950300BA3CCD /* 3D */,
-				649066F62C5F34BB00BA3CCD /* Mosaic */,
-				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
+				64C69BD92C6230FB00476A7D /* File */,
+				64C69BDB2C6230FB00476A7D /* Workspace */,
+				5C1F4A155ED69CBA594C129F /* Launcher.swift */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
-				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
-				649066E72C5E35AE00BA3CCD /* Preview Content */,
+				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -104,25 +92,50 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		649066F62C5F34BB00BA3CCD /* Mosaic */ = {
+		64C69BD12C6230FB00476A7D /* 3D */ = {
 			isa = PBXGroup;
 			children = (
-				649066F42C5E392600BA3CCD /* MosaicView.swift */,
-				649066F72C5F34CD00BA3CCD /* MosaicDocument.swift */,
-				649066FA2C5F3A3B00BA3CCD /* MosaicModel.swift */,
-				649066FC2C60646000BA3CCD /* MosaicLauncher.swift */,
+				64C69BCF2C6230FB00476A7D /* V3DDocument.swift */,
+				64C69BD02C6230FB00476A7D /* V3DView.swift */,
+			);
+			path = 3D;
+			sourceTree = "<group>";
+		};
+		64C69BD52C6230FB00476A7D /* Mosaic */ = {
+			isa = PBXGroup;
+			children = (
+				64C69BD22C6230FB00476A7D /* MosaicDocument.swift */,
+				64C69BD32C6230FB00476A7D /* MosaicStore.swift */,
+				64C69BD42C6230FB00476A7D /* MosaicView.swift */,
 			);
 			path = Mosaic;
 			sourceTree = "<group>";
 		};
-		649066FE2C60950300BA3CCD /* 3D */ = {
+		64C69BD82C6230FB00476A7D /* PDF */ = {
 			isa = PBXGroup;
 			children = (
-				649066FF2C60952700BA3CCD /* V3DLauncher.swift */,
-				649067012C60965100BA3CCD /* V3DView.swift */,
-				649067062C60987E00BA3CCD /* V3DDocument.swift */,
+				64C69BD62C6230FB00476A7D /* VPDFDocument.swift */,
+				64C69BD72C6230FB00476A7D /* VPDFView.swift */,
 			);
-			path = 3D;
+			path = PDF;
+			sourceTree = "<group>";
+		};
+		64C69BD92C6230FB00476A7D /* File */ = {
+			isa = PBXGroup;
+			children = (
+				64C69BD12C6230FB00476A7D /* 3D */,
+				64C69BD52C6230FB00476A7D /* Mosaic */,
+				64C69BD82C6230FB00476A7D /* PDF */,
+			);
+			path = File;
+			sourceTree = "<group>";
+		};
+		64C69BDB2C6230FB00476A7D /* Workspace */ = {
+			isa = PBXGroup;
+			children = (
+				64C69BDA2C6230FB00476A7D /* WorkspaceList.swift */,
+			);
+			path = Workspace;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -226,18 +239,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649067022C60965100BA3CCD /* V3DView.swift in Sources */,
-				649066FB2C5F3A3B00BA3CCD /* MosaicModel.swift in Sources */,
-				649067002C60952700BA3CCD /* V3DLauncher.swift in Sources */,
-				649066F82C5F34CD00BA3CCD /* MosaicDocument.swift in Sources */,
-				649066F52C5E392600BA3CCD /* MosaicView.swift in Sources */,
-				649066FD2C60646000BA3CCD /* MosaicLauncher.swift in Sources */,
+				64C69BDD2C6230FB00476A7D /* V3DView.swift in Sources */,
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
-				649067072C60987E00BA3CCD /* V3DDocument.swift in Sources */,
+				64C69BDC2C6230FB00476A7D /* V3DDocument.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
-				5C1F4C2DE8F3A8C8204E0CDF /* VPDFDocument.swift in Sources */,
-				5C1F439822E11B4C9C5CC73E /* VPDFView.swift in Sources */,
-				5C1F4FE5372312757E934802 /* VPDFLauncher.swift in Sources */,
+				5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */,
+				64C69BDE2C6230FB00476A7D /* MosaicDocument.swift in Sources */,
+				64C69BE32C6230FB00476A7D /* WorkspaceList.swift in Sources */,
+				64C69BE02C6230FB00476A7D /* MosaicView.swift in Sources */,
+				64C69BE12C6230FB00476A7D /* VPDFDocument.swift in Sources */,
+				64C69BDF2C6230FB00476A7D /* MosaicStore.swift in Sources */,
+				64C69BE22C6230FB00476A7D /* VPDFView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,7 +382,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Sources/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -400,7 +412,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Sources/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
