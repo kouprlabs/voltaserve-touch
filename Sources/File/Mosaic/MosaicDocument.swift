@@ -48,18 +48,19 @@ class MosaicDocument: ObservableObject {
     func loadImageForCell(row: Int, col: Int) {
         guard busy[row][col] == false else { return }
         busy[row][col] = true
-        if let zoomLevel, let fileExtension = store.info?.metadata.fileExtension {
+        if let zoomLevel {
             store.fetchDataForFile(
                 id: fileId,
                 zoomLevel: zoomLevel,
-                forCellAtRow: row, col: col,
-                fileExtenion: String(fileExtension.dropFirst())
-            ) { data in
+                forCellAtRow: row, col: col
+            ) { data, error in
                 self.busy[row][col] = false
                 if let data {
                     DispatchQueue.main.async {
                         self.grid[row][col] = UIImage(data: data)
                     }
+                } else if let error {
+                    print(error.localizedDescription)
                 }
             }
         }

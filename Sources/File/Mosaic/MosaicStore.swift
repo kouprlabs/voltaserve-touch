@@ -31,20 +31,26 @@ struct MosaicStore {
         }
     }
 
+    struct InfoNotFound: Error {}
+
     func fetchDataForFile(
         id: String,
         zoomLevel: ZoomLevel,
         forCellAtRow row: Int, col: Int,
-        fileExtenion: String,
-        completion: @escaping (Data?) -> Void
+        completion: @escaping (Data?, Error?) -> Void
     ) {
+        guard let info else {
+            completion(nil, InfoNotFound())
+            return
+        }
         let url = "\(config.apiUrl)/v2/mosaics/\(id)/zoom_level/\(zoomLevel.index)" +
-            "/row/\(row)/col/\(col)/ext/\(fileExtenion)?access_token=\(token.accessToken)"
+            "/row/\(row)/col/\(col)/ext/\(String(info.metadata.fileExtension.dropFirst()))" +
+            "?access_token=\(token.accessToken)"
         AF.request(url).responseData { response in
             if let data = response.data {
-                completion(data)
+                completion(data, nil)
             } else {
-                completion(nil)
+                completion(nil, response.error)
             }
         }
     }
