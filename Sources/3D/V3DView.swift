@@ -11,12 +11,10 @@ extension SCNNode {
 
         enumerateChildNodes { node, _ in
             let (nodeMin, nodeMax) = node.boundingBox
-            var localMin = nodeMin
-            var localMax = nodeMax
 
             // Apply node transformation to the bounding box
-            let transformedMin = node.convertPosition(localMin, to: self)
-            let transformedMax = node.convertPosition(localMax, to: self)
+            let transformedMin = node.convertPosition(nodeMin, to: self)
+            let transformedMax = node.convertPosition(nodeMax, to: self)
 
             if first {
                 minVec = transformedMin
