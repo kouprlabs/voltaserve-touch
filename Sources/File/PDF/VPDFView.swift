@@ -121,8 +121,8 @@ struct VPDFThumbnailListViewContainer: View {
     var pdfView: PDFView
 
     var body: some View {
-        if let pdfDocument = document.pdfDocument {
-            VPDFThumbnailListView(document: pdfDocument, pdfView: pdfView)
+        if document.pdfDocument != nil {
+            VPDFThumbnailListView(document: document, pdfView: pdfView)
         } else {
             EmptyView()
         }
@@ -130,39 +130,76 @@ struct VPDFThumbnailListViewContainer: View {
 }
 
 struct VPDFThumbnailView: View {
-    let page: PDFPage
+    let index: Int
+    @ObservedObject var document: VPDFDocument
     let pdfView: PDFView
 
     var body: some View {
-        let thumbnail = page.thumbnail(of: CGSize(width: 100, height: 150), for: .mediaBox)
-        Image(uiImage: thumbnail)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            // Background to show when no image
-            .background(Color.gray.opacity(0.2))
-            .frame(width: 100, height: 150, alignment: .center)
-            .onTapGesture {
-                pdfView.go(to: page)
-            }
+        if let thumbnail = document.loadedThumbnails[index] {
+            Image(uiImage: thumbnail)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                // Background to show when no image
+                .background(Color.gray.opacity(0.2))
+                .frame(width: 100, height: 150, alignment: .center)
+                .onTapGesture {
+                    if let page = document.pdfDocument?.page(at: index) {
+                        pdfView.go(to: page)
+                    }
+                }
+        } else {
+            Color.gray.opacity(0.2)
+                .frame(width: 100, height: 150, alignment: .center)
+        }
     }
 }
 
 struct VPDFThumbnailListView: View {
-    let document: PDFDocument
+    @ObservedObject var document: VPDFDocument
     let pdfView: PDFView
+    @State private var visibleIndices: Set<Int> = []
+    @State private var isScrolling = false
+
+    private let chunkSize = 10
+    private let debounceTime = DispatchTimeInterval.milliseconds(200)
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
-                ForEach(0 ..< document.pageCount, id: \.self) { index in
-                    if let page = document.page(at: index) {
-                        VPDFThumbnailView(page: page, pdfView: pdfView)
-                    } else {
-                        Text("Error loading page")
-                    }
+                ForEach(0 ..< (document.pdfDocument?.pageCount ?? 0), id: \.self) { index in
+                    VPDFThumbnailView(index: index, document: document, pdfView: pdfView)
+                        .onAppear {
+                            visibleIndices.insert(index)
+                            loadThumbnailsDebounced()
+                        }
                 }
             }
             .padding(16)
+        }
+        .onChange(of: document.pdfDocument) { _ in
+            visibleIndices = []
+            loadThumbnailsIfNeeded()
+        }
+    }
+
+    private func loadThumbnailsDebounced() {
+        isScrolling = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + debounceTime) {
+            if isScrolling {
+                isScrolling = false
+                loadThumbnailsIfNeeded()
+            }
+        }
+    }
+
+    private func loadThumbnailsIfNeeded() {
+        let indicesToLoad = visibleIndices
+            .filter { document.loadedThumbnails[$0] == nil }
+            .prefix(chunkSize)
+
+        // Move thumbnail loading to a background queue
+        DispatchQueue.global(qos: .userInitiated).async {
+            document.loadThumbnails(for: Array(indicesToLoad))
         }
     }
 }

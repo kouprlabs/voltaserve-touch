@@ -3,6 +3,7 @@ import SwiftUI
 
 class VPDFDocument: ObservableObject {
     @Published var pdfDocument: PDFDocument?
+    @Published var loadedThumbnails: [Int: UIImage] = [:]
     private var store: VPDFStore
     private var idRandomizer = IdRandomizer(Constants.fileIds)
 
@@ -15,11 +16,31 @@ class VPDFDocument: ObservableObject {
     }
 
     func loadPDF() {
+        // Clear existing thumbnails
+        DispatchQueue.main.async {
+            self.loadedThumbnails = [:]
+        }
+
         DispatchQueue.global().async {
             if let loadedDocument = PDFDocument(url: self.store.urlForFile(id: self.fileId)) {
                 DispatchQueue.main.async {
                     self.pdfDocument = loadedDocument
                 }
+            }
+        }
+    }
+
+    func loadThumbnails(for indices: [Int]) {
+        guard let document = pdfDocument else { return }
+
+        let newThumbnails = indices.compactMap { index -> (Int, UIImage)? in
+            guard document.pageCount > index, let page = document.page(at: index) else { return nil }
+            let thumbnail = page.thumbnail(of: CGSize(width: 100, height: 150), for: .mediaBox)
+            return (index, thumbnail)
+        }
+        DispatchQueue.main.async {
+            for (index, thumbnail) in newThumbnails {
+                self.loadedThumbnails[index] = thumbnail
             }
         }
     }
