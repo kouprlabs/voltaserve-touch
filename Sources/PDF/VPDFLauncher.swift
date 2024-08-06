@@ -19,10 +19,9 @@ struct VPDFLauncher: View {
                 Spacer()
             }
             .navigationTitle("PDF Launcher")
-            .navigationBarTitleDisplayMode(.inline) // Ensures inline title display
-            .navigationBarItems(leading: EmptyView()) // Optional: remove back button
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading: EmptyView())
         }
-        // Ensures it behaves like a single view, not split view
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
             document.loadPDF()

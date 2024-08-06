@@ -19,9 +19,9 @@ struct V3DLauncher: View {
                 Spacer()
             }
             .navigationTitle("3D Launcher")
-            .navigationBarHidden(true)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading: EmptyView())
         }
-        // Ensures it behaves like a single view, not split view
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }
