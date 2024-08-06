@@ -176,7 +176,7 @@ struct VPDFThumbnailListView: View {
             }
             .padding(16)
         }
-        .onChange(of: document.pdfDocument) { _ in
+        .onChange(of: document.pdfDocument) {
             visibleIndices = []
             loadThumbnailsIfNeeded()
         }
