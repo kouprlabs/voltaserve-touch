@@ -14,6 +14,7 @@
 		5C1F4379925BBC8EF3C1FDDB /* V3DDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F48B57E8C1B4F44806112 /* V3DDocument.swift */; };
 		5C1F4D50BB6A79C22A8B5E86 /* V3DStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F45B436FB731FD8AE0ACB /* V3DStore.swift */; };
 		5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4A155ED69CBA594C129F /* Launcher.swift */; };
+		5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F439D83F669B3BB546312 /* IdRandomizer.swift */; };
 		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
 		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
 		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		5C1F438F06338A16B1D46E37 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		5C1F439D83F669B3BB546312 /* IdRandomizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdRandomizer.swift; sourceTree = "<group>"; };
 		5C1F43B045D2BE6B205B89E7 /* VPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFStore.swift; sourceTree = "<group>"; };
 		5C1F44CFAF1D871B9011AC1C /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		5C1F45B436FB731FD8AE0ACB /* V3DStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = V3DStore.swift; sourceTree = "<group>"; };
@@ -78,6 +80,14 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
+		5C1F4B378D21B386C917ECDA /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				5C1F439D83F669B3BB546312 /* IdRandomizer.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
@@ -106,6 +116,7 @@
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
 				5C1F40159602202402AD8601 /* Auth */,
 				5C1F428B1121990229FBDCC6 /* Config */,
+				5C1F4B378D21B386C917ECDA /* Helper */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -282,6 +293,7 @@
 				5C1F420A72CCF2F2109FCAC2 /* VPDFDocument.swift in Sources */,
 				5C1F4379925BBC8EF3C1FDDB /* V3DDocument.swift in Sources */,
 				5C1F4D50BB6A79C22A8B5E86 /* V3DStore.swift in Sources */,
+				5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

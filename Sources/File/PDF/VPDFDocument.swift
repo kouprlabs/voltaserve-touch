@@ -4,7 +4,11 @@ import SwiftUI
 class VPDFDocument: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     private var store: VPDFStore
-    private var fileId: String = Constants.fileIds.randomElement()!
+    private var idRandomizer = IdRandomizer(Constants.fileIds)
+
+    private var fileId: String {
+        idRandomizer.value
+    }
 
     init(config: Config, token: Token) {
         store = VPDFStore(config: config, token: token)
@@ -21,7 +25,7 @@ class VPDFDocument: ObservableObject {
     }
 
     func shuffleFileId() {
-        fileId = Constants.fileIds.randomElement()!
+        idRandomizer.shuffle()
     }
 
     private enum Constants {

@@ -6,7 +6,11 @@ class MosaicDocument: ObservableObject {
     @Published private(set) var grid: [[UIImage?]] = []
     private var busy: [[Bool]] = []
     private var store: MosaicStore
-    private var fileId = Constants.fileIds.randomElement()!
+    private var idRandomizer = IdRandomizer(Constants.fileIds)
+
+    private var fileId: String {
+        idRandomizer.value
+    }
 
     var zoomLevels: [MosaicStore.ZoomLevel]? {
         store.info?.metadata.zoomLevels
@@ -128,7 +132,7 @@ class MosaicDocument: ObservableObject {
     }
 
     func shuffleFileId() {
-        fileId = Constants.fileIds.randomElement()!
+        idRandomizer.shuffle()
     }
 
     private enum Constants {

@@ -3,7 +3,11 @@ import SwiftUI
 
 class V3DDocument: ObservableObject {
     private var store: V3DStore
-    private var fileId = Constants.fileIds.randomElement()!
+    private var idRandomizer = IdRandomizer(Constants.fileIds)
+
+    private var fileId: String {
+        idRandomizer.value
+    }
 
     init(config: Config, token: Token) {
         store = V3DStore(config: config, token: token)
@@ -23,7 +27,7 @@ class V3DDocument: ObservableObject {
     }
 
     func shuffleFileId() {
-        fileId = Constants.fileIds.randomElement()!
+        idRandomizer.shuffle()
     }
 
     private enum Constants {
