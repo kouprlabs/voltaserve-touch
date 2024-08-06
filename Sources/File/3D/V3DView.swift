@@ -4,22 +4,47 @@ import SwiftUI
 
 struct V3DView: UIViewRepresentable {
     @EnvironmentObject private var document: V3DDocument
+    @State private var isLoading: Bool = true
 
-    func makeUIView(context: Context) -> SCNView {
+    func makeUIView(context: Context) -> UIView {
+        let containerView = UIView(frame: .zero)
+
         let sceneView = context.coordinator.sceneView
         sceneView.allowsCameraControl = true
         sceneView.autoenablesDefaultLighting = true
         sceneView.backgroundColor = .white
 
+        sceneView.isHidden = true
+        containerView.addSubview(sceneView)
+        sceneView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            sceneView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            sceneView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            sceneView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            sceneView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+        ])
+
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.startAnimating()
+        containerView.addSubview(spinner)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            spinner.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+
+        context.coordinator.spinner = spinner
         context.coordinator.loadAsset()
 
-        return sceneView
+        return containerView
     }
 
-    func updateUIView(_: SCNView, context _: Context) {}
+    func updateUIView(_ uiView: UIView, context _: Context) {
+        uiView.subviews.first { $0 is SCNView }?.isHidden = isLoading
+    }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(sceneView: SCNView(), document: document)
+        Coordinator(sceneView: SCNView(), document: document, isLoading: $isLoading)
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
@@ -28,10 +53,13 @@ struct V3DView: UIViewRepresentable {
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
         let cameraNode = SCNNode()
+        var spinner: UIActivityIndicatorView?
+        @Binding var isLoading: Bool
 
-        init(sceneView: SCNView, document: V3DDocument) {
+        init(sceneView: SCNView, document: V3DDocument, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
             self.document = document
+            _isLoading = isLoading
 
             let camera = SCNCamera()
             camera.usesOrthographicProjection = false
@@ -52,6 +80,7 @@ struct V3DView: UIViewRepresentable {
                 if let asset {
                     self.asset = asset
                     setupScene()
+                    isLoading = false
                 } else if let error {
                     print("Failed to load glTF asset: \(error.localizedDescription)")
                 }
@@ -59,13 +88,16 @@ struct V3DView: UIViewRepresentable {
         }
 
         private func setupScene() {
-            guard let asset else {
-                return
-            }
+            guard let asset else { return }
             let source = GLTFSCNSceneSource(asset: asset)
             if let scene = source.defaultScene {
                 sceneView.scene = scene
                 sceneView.pointOfView = cameraNode
+
+                // Remove the spinner once the asset is loaded
+                DispatchQueue.main.async {
+                    self.spinner?.removeFromSuperview()
+                }
 
                 // Adjust the camera to fit the object using SceneKit's built-in API
                 adjustCameraToFitObject()
