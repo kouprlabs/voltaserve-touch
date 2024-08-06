@@ -123,3 +123,40 @@ struct VPDFViewContainer: View {
         }
     }
 }
+
+struct VPDFThumbnailView: View {
+    let page: PDFPage
+    let pdfView: PDFView
+
+    var body: some View {
+        let thumbnail = page.thumbnail(of: CGSize(width: 100, height: 150), for: .mediaBox)
+        Image(uiImage: thumbnail)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .background(Color.gray.opacity(0.2)) // Optional: background to show when no image
+            .frame(width: 100, height: 150, alignment: .center) // Optional: adjust frame as needed
+            .onTapGesture {
+                pdfView.go(to: page)
+            }
+    }
+}
+
+struct VPDFThumbnailListView: View {
+    let document: PDFDocument
+    let pdfView: PDFView
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ForEach(0 ..< document.pageCount, id: \.self) { index in
+                    if let page = document.page(at: index) {
+                        VPDFThumbnailView(page: page, pdfView: pdfView)
+                    } else {
+                        Text("Error loading page")
+                    }
+                }
+            }
+            .padding(16)
+        }
+    }
+}
