@@ -52,7 +52,8 @@ struct VPDFView: UIViewRepresentable {
         NSLayoutConstraint.activate([
             pdfView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             pdfView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            pdfView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor) // Use safeAreaLayoutGuide
+            // Use safeAreaLayoutGuide
+            pdfView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor)
         ])
 
         if showThumbnails {
@@ -67,12 +68,14 @@ struct VPDFView: UIViewRepresentable {
                 pdfView.bottomAnchor.constraint(equalTo: hostingController.view.topAnchor),
                 hostingController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
                 hostingController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                hostingController.view.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor), // Use safeAreaLayoutGuide
-                hostingController.view.heightAnchor.constraint(equalToConstant: 200)
+                // Use safeAreaLayoutGuide
+                hostingController.view.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor),
+                hostingController.view.heightAnchor.constraint(equalToConstant: 160)
             ])
         } else {
             NSLayoutConstraint.activate([
-                pdfView.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor) // Use safeAreaLayoutGuide
+                // Use safeAreaLayoutGuide
+                pdfView.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor)
             ])
         }
     }
@@ -113,9 +116,9 @@ struct VPDFViewContainer: View {
             ToolbarItem(placement: .navigationBarTrailing) { // Place the toolbar item at top right
                 Button(action: {
                     showThumbnails.toggle()
-                }) {
-                    Label("Toggle Thumbnails", systemImage: showThumbnails ? "rectangle.grid.1x2.fill" : "rectangle.grid.1x2")
-                }
+                }, label: {
+                    Label("Toggle Thumbnails", systemImage: showThumbnails ? "square.grid.2x2.fill" : "square.grid.2x2")
+                })
             }
         }
     }
