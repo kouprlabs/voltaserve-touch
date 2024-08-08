@@ -3,7 +3,7 @@ import SwiftUI
 struct Launcher: View {
     @EnvironmentObject private var v3dDocument: V3DDocument
     @EnvironmentObject private var mosaicDocument: MosaicDocument
-    @EnvironmentObject private var vpdfDocument: VPDFDocument
+    @EnvironmentObject private var vpdfDocument: VSegmentedPDFDocument
 
     var body: some View {
         NavigationView {
@@ -55,7 +55,7 @@ struct Launcher: View {
 
     var vpdfButton: some View {
         Button(action: {}, label: {
-            NavigationLink(destination: VPDFViewContainer()
+            NavigationLink(destination: VSegmentedPDFViewContainer()
                 .navigationBarTitle("PDF View")
             ) {
                 Text("Launch PDF View")

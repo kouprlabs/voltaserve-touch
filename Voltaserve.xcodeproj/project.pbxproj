@@ -8,13 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		5C1F40AD1A886853B784FE88 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F438F06338A16B1D46E37 /* Config.swift */; };
-		5C1F420A72CCF2F2109FCAC2 /* VPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F47970878FC80CC929622 /* VPDFDocument.swift */; };
+		5C1F40DDA34824C4610B63B3 /* VSegmentedPDFThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4DF5A90B91B1F3436E34 /* VSegmentedPDFThumbnailView.swift */; };
+		5C1F41019E009E9D6DE56C56 /* VSegmentedPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4102985E833395C64D5C /* VSegmentedPDFView.swift */; };
 		5C1F4264A888336664E4B7E4 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F44CFAF1D871B9011AC1C /* Token.swift */; };
-		5C1F429E1B59D0C8F178F018 /* VPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F43B045D2BE6B205B89E7 /* VPDFStore.swift */; };
 		5C1F4379925BBC8EF3C1FDDB /* V3DDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F48B57E8C1B4F44806112 /* V3DDocument.swift */; };
+		5C1F4624E96BDD9D3DC10185 /* VSegmentedPDFThumbnailListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F40B898AD7ECC00A15F9A /* VSegmentedPDFThumbnailListView.swift */; };
+		5C1F46EB87D32543C6963E4F /* VSegmentedPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4BAE8EFA95C145261136 /* VSegmentedPDFViewContainer.swift */; };
+		5C1F4B2D3E4232E61252DAF0 /* VSegmentedPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4EFFD073E933E381AD46 /* VSegmentedPDFStore.swift */; };
+		5C1F4D49DC68C2C0D42F0B98 /* VSegmentedPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4C0E26AFD7FF4CCDDC87 /* VSegmentedPDFDocument.swift */; };
 		5C1F4D50BB6A79C22A8B5E86 /* V3DStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F45B436FB731FD8AE0ACB /* V3DStore.swift */; };
 		5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4A155ED69CBA594C129F /* Launcher.swift */; };
 		5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F439D83F669B3BB546312 /* IdRandomizer.swift */; };
+		643FA5952C65379300CC11E8 /* VSegmentedPDFPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643FA5942C65379300CC11E8 /* VSegmentedPDFPageView.swift */; };
+		645B7ECB2C6541C100E9B684 /* VPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC62C6541C100E9B684 /* VPDFDocument.swift */; };
+		645B7ECC2C6541C100E9B684 /* VPDFThumbnailListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC72C6541C100E9B684 /* VPDFThumbnailListView.swift */; };
+		645B7ECD2C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC82C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift */; };
+		645B7ECE2C6541C100E9B684 /* VPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC92C6541C100E9B684 /* VPDFViewContainer.swift */; };
+		645B7ED22C65424A00E9B684 /* VPDFThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7ECF2C65424A00E9B684 /* VPDFThumbnailView.swift */; };
+		645B7ED32C65424A00E9B684 /* VPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7ED02C65424A00E9B684 /* VPDFStore.swift */; };
+		645B7ED42C65424A00E9B684 /* VPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7ED12C65424A00E9B684 /* VPDFView.swift */; };
 		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
 		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
 		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
@@ -25,22 +37,30 @@
 		64C69BDE2C6230FB00476A7D /* MosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD22C6230FB00476A7D /* MosaicDocument.swift */; };
 		64C69BDF2C6230FB00476A7D /* MosaicStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD32C6230FB00476A7D /* MosaicStore.swift */; };
 		64C69BE02C6230FB00476A7D /* MosaicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD42C6230FB00476A7D /* MosaicView.swift */; };
-		64C69BE22C6230FB00476A7D /* VPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C69BD72C6230FB00476A7D /* VPDFView.swift */; };
-		64DF2C8E2C64AE0F00A091F6 /* VPDFThumbnailListViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF2C8A2C64AE0E00A091F6 /* VPDFThumbnailListViewContainer.swift */; };
-		64DF2C8F2C64AE0F00A091F6 /* VPDFThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF2C8B2C64AE0E00A091F6 /* VPDFThumbnailView.swift */; };
-		64DF2C902C64AE0F00A091F6 /* VPDFThumbnailListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF2C8C2C64AE0F00A091F6 /* VPDFThumbnailListView.swift */; };
-		64DF2C912C64AE0F00A091F6 /* VPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF2C8D2C64AE0F00A091F6 /* VPDFViewContainer.swift */; };
+		64DF2C8E2C64AE0F00A091F6 /* VSegmentedPDFThumbnailListViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF2C8A2C64AE0E00A091F6 /* VSegmentedPDFThumbnailListViewContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C1F40B898AD7ECC00A15F9A /* VSegmentedPDFThumbnailListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFThumbnailListView.swift; sourceTree = "<group>"; };
+		5C1F4102985E833395C64D5C /* VSegmentedPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFView.swift; sourceTree = "<group>"; };
 		5C1F438F06338A16B1D46E37 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		5C1F439D83F669B3BB546312 /* IdRandomizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdRandomizer.swift; sourceTree = "<group>"; };
-		5C1F43B045D2BE6B205B89E7 /* VPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFStore.swift; sourceTree = "<group>"; };
 		5C1F44CFAF1D871B9011AC1C /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		5C1F45B436FB731FD8AE0ACB /* V3DStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = V3DStore.swift; sourceTree = "<group>"; };
-		5C1F47970878FC80CC929622 /* VPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFDocument.swift; sourceTree = "<group>"; };
 		5C1F48B57E8C1B4F44806112 /* V3DDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = V3DDocument.swift; sourceTree = "<group>"; };
 		5C1F4A155ED69CBA594C129F /* Launcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Launcher.swift; sourceTree = "<group>"; };
+		5C1F4BAE8EFA95C145261136 /* VSegmentedPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFViewContainer.swift; sourceTree = "<group>"; };
+		5C1F4C0E26AFD7FF4CCDDC87 /* VSegmentedPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFDocument.swift; sourceTree = "<group>"; };
+		5C1F4DF5A90B91B1F3436E34 /* VSegmentedPDFThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFThumbnailView.swift; sourceTree = "<group>"; };
+		5C1F4EFFD073E933E381AD46 /* VSegmentedPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFStore.swift; sourceTree = "<group>"; };
+		643FA5942C65379300CC11E8 /* VSegmentedPDFPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFPageView.swift; sourceTree = "<group>"; };
+		645B7EC62C6541C100E9B684 /* VPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFDocument.swift; sourceTree = "<group>"; };
+		645B7EC72C6541C100E9B684 /* VPDFThumbnailListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailListView.swift; sourceTree = "<group>"; };
+		645B7EC82C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailListViewContainer.swift; sourceTree = "<group>"; };
+		645B7EC92C6541C100E9B684 /* VPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFViewContainer.swift; sourceTree = "<group>"; };
+		645B7ECF2C65424A00E9B684 /* VPDFThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailView.swift; sourceTree = "<group>"; };
+		645B7ED02C65424A00E9B684 /* VPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFStore.swift; sourceTree = "<group>"; };
+		645B7ED12C65424A00E9B684 /* VPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFView.swift; sourceTree = "<group>"; };
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
 		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -50,11 +70,7 @@
 		64C69BD22C6230FB00476A7D /* MosaicDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MosaicDocument.swift; sourceTree = "<group>"; };
 		64C69BD32C6230FB00476A7D /* MosaicStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MosaicStore.swift; sourceTree = "<group>"; };
 		64C69BD42C6230FB00476A7D /* MosaicView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MosaicView.swift; sourceTree = "<group>"; };
-		64C69BD72C6230FB00476A7D /* VPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFView.swift; sourceTree = "<group>"; };
-		64DF2C8A2C64AE0E00A091F6 /* VPDFThumbnailListViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailListViewContainer.swift; sourceTree = "<group>"; };
-		64DF2C8B2C64AE0E00A091F6 /* VPDFThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailView.swift; sourceTree = "<group>"; };
-		64DF2C8C2C64AE0F00A091F6 /* VPDFThumbnailListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailListView.swift; sourceTree = "<group>"; };
-		64DF2C8D2C64AE0F00A091F6 /* VPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFViewContainer.swift; sourceTree = "<group>"; };
+		64DF2C8A2C64AE0E00A091F6 /* VSegmentedPDFThumbnailListViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFThumbnailListViewContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +108,20 @@
 				5C1F439D83F669B3BB546312 /* IdRandomizer.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		645B7ECA2C6541C100E9B684 /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				645B7ED02C65424A00E9B684 /* VPDFStore.swift */,
+				645B7ECF2C65424A00E9B684 /* VPDFThumbnailView.swift */,
+				645B7ED12C65424A00E9B684 /* VPDFView.swift */,
+				645B7EC62C6541C100E9B684 /* VPDFDocument.swift */,
+				645B7EC72C6541C100E9B684 /* VPDFThumbnailListView.swift */,
+				645B7EC82C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift */,
+				645B7EC92C6541C100E9B684 /* VPDFViewContainer.swift */,
+			);
+			path = PDF;
 			sourceTree = "<group>";
 		};
 		649066D52C5E35AD00BA3CCD = {
@@ -154,18 +184,19 @@
 			path = Mosaic;
 			sourceTree = "<group>";
 		};
-		64C69BD82C6230FB00476A7D /* PDF */ = {
+		64C69BD82C6230FB00476A7D /* SegmentedPDF */ = {
 			isa = PBXGroup;
 			children = (
-				64DF2C8C2C64AE0F00A091F6 /* VPDFThumbnailListView.swift */,
-				64DF2C8A2C64AE0E00A091F6 /* VPDFThumbnailListViewContainer.swift */,
-				64DF2C8B2C64AE0E00A091F6 /* VPDFThumbnailView.swift */,
-				64DF2C8D2C64AE0F00A091F6 /* VPDFViewContainer.swift */,
-				64C69BD72C6230FB00476A7D /* VPDFView.swift */,
-				5C1F43B045D2BE6B205B89E7 /* VPDFStore.swift */,
-				5C1F47970878FC80CC929622 /* VPDFDocument.swift */,
+				643FA5942C65379300CC11E8 /* VSegmentedPDFPageView.swift */,
+				64DF2C8A2C64AE0E00A091F6 /* VSegmentedPDFThumbnailListViewContainer.swift */,
+				5C1F4C0E26AFD7FF4CCDDC87 /* VSegmentedPDFDocument.swift */,
+				5C1F4EFFD073E933E381AD46 /* VSegmentedPDFStore.swift */,
+				5C1F40B898AD7ECC00A15F9A /* VSegmentedPDFThumbnailListView.swift */,
+				5C1F4DF5A90B91B1F3436E34 /* VSegmentedPDFThumbnailView.swift */,
+				5C1F4102985E833395C64D5C /* VSegmentedPDFView.swift */,
+				5C1F4BAE8EFA95C145261136 /* VSegmentedPDFViewContainer.swift */,
 			);
-			path = PDF;
+			path = SegmentedPDF;
 			sourceTree = "<group>";
 		};
 		64C69BD92C6230FB00476A7D /* File */ = {
@@ -173,7 +204,8 @@
 			children = (
 				64C69BD12C6230FB00476A7D /* 3D */,
 				64C69BD52C6230FB00476A7D /* Mosaic */,
-				64C69BD82C6230FB00476A7D /* PDF */,
+				645B7ECA2C6541C100E9B684 /* PDF */,
+				64C69BD82C6230FB00476A7D /* SegmentedPDF */,
 			);
 			path = File;
 			sourceTree = "<group>";
@@ -279,25 +311,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				64DF2C902C64AE0F00A091F6 /* VPDFThumbnailListView.swift in Sources */,
 				64C69BDD2C6230FB00476A7D /* V3DView.swift in Sources */,
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
+				645B7ECD2C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift in Sources */,
+				645B7ED32C65424A00E9B684 /* VPDFStore.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
 				5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */,
 				64C69BDE2C6230FB00476A7D /* MosaicDocument.swift in Sources */,
 				64C69BE02C6230FB00476A7D /* MosaicView.swift in Sources */,
-				64DF2C912C64AE0F00A091F6 /* VPDFViewContainer.swift in Sources */,
 				64C69BDF2C6230FB00476A7D /* MosaicStore.swift in Sources */,
-				64C69BE22C6230FB00476A7D /* VPDFView.swift in Sources */,
 				5C1F4264A888336664E4B7E4 /* Token.swift in Sources */,
+				645B7ECB2C6541C100E9B684 /* VPDFDocument.swift in Sources */,
 				5C1F40AD1A886853B784FE88 /* Config.swift in Sources */,
-				5C1F429E1B59D0C8F178F018 /* VPDFStore.swift in Sources */,
-				5C1F420A72CCF2F2109FCAC2 /* VPDFDocument.swift in Sources */,
 				5C1F4379925BBC8EF3C1FDDB /* V3DDocument.swift in Sources */,
 				5C1F4D50BB6A79C22A8B5E86 /* V3DStore.swift in Sources */,
-				64DF2C8E2C64AE0F00A091F6 /* VPDFThumbnailListViewContainer.swift in Sources */,
+				64DF2C8E2C64AE0F00A091F6 /* VSegmentedPDFThumbnailListViewContainer.swift in Sources */,
+				643FA5952C65379300CC11E8 /* VSegmentedPDFPageView.swift in Sources */,
 				5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */,
-				64DF2C8F2C64AE0F00A091F6 /* VPDFThumbnailView.swift in Sources */,
+				645B7ED22C65424A00E9B684 /* VPDFThumbnailView.swift in Sources */,
+				645B7ECE2C6541C100E9B684 /* VPDFViewContainer.swift in Sources */,
+				5C1F4D49DC68C2C0D42F0B98 /* VSegmentedPDFDocument.swift in Sources */,
+				5C1F4B2D3E4232E61252DAF0 /* VSegmentedPDFStore.swift in Sources */,
+				645B7ECC2C6541C100E9B684 /* VPDFThumbnailListView.swift in Sources */,
+				5C1F4624E96BDD9D3DC10185 /* VSegmentedPDFThumbnailListView.swift in Sources */,
+				5C1F40DDA34824C4610B63B3 /* VSegmentedPDFThumbnailView.swift in Sources */,
+				5C1F41019E009E9D6DE56C56 /* VSegmentedPDFView.swift in Sources */,
+				645B7ED42C65424A00E9B684 /* VPDFView.swift in Sources */,
+				5C1F46EB87D32543C6963E4F /* VSegmentedPDFViewContainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
