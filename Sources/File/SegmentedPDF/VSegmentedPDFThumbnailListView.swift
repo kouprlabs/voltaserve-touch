@@ -27,7 +27,6 @@ struct VSegmentedPDFThumbnailListView: View {
             loadThumbnailsIfNeeded()
         }
         .onAppear {
-            print("VPDFThumbnailListView appeared")
             loadThumbnailsIfNeeded()
         }
     }

@@ -16,14 +16,10 @@ struct VSegmentedPDFThumbnailView: View {
                 .onTapGesture {
                     document.currentPage = index
                     document.loadPage(at: index)
-                    print("Thumbnail \(index) tapped, navigating to page \(index)")
                 }
         } else {
             Color.gray.opacity(0.2)
                 .frame(width: 100, height: 150, alignment: .center)
-                .onAppear {
-                    print("Placeholder for thumbnail \(index)")
-                }
         }
     }
 }

@@ -9,7 +9,9 @@ class VSegmentedPDFDocument: ObservableObject {
     @Published var currentPage = 1
     private var store: VSegmentedPDFStore
     private var idRandomizer = IdRandomizer(Constants.fileIds)
-    private let preloadBufferSize = 5 // Number of pages to preload before and after the current page
+
+    // Number of pages to preload before and after the current page
+    private let preloadBufferSize = 5
 
     private var fileId: String {
         idRandomizer.value
@@ -21,25 +23,21 @@ class VSegmentedPDFDocument: ObservableObject {
 
     func loadPDF() {
         isLoading = true
-        print("Starting to load PDF...")
 
         store.fetchFile(id: fileId) { file, error in
-            if let error {
-                print("Failed to fetch file with error:", error)
+            if error != nil {
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
                 return
             }
             guard let file else {
-                print("Failed to fetch file: file is nil")
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
                 return
             }
             if let pages = file.snapshot?.preview?.pdf?.pages {
-                print("Total pages in document:", pages)
                 DispatchQueue.main.async {
                     self.totalPages = pages
                     self.loadPage(at: self.currentPage)
@@ -53,17 +51,15 @@ class VSegmentedPDFDocument: ObservableObject {
         guard index > 0, index <= totalPages else { return }
         isLoading = !isPreloaded(page: index)
 
-        print("Loading page at index:", index)
         store.fetchSegmentedPage(id: fileId, index) { data, error in
             if let error {
-                print("Failed to fetch page with error:", error)
+                print(error.localizedDescription)
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
                 return
             }
             guard let data else {
-                print("Failed to fetch page: data is nil")
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
@@ -74,14 +70,12 @@ class VSegmentedPDFDocument: ObservableObject {
                     self.pdfDocument = newDocument
                     self.currentPage = index
                     self.isLoading = false
-                    print("Page loaded successfully")
                     self.preloadSurroundingPages(for: index)
                 }
             } else {
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
-                print("Failed to create PDFDocument from the received data")
             }
         }
     }
@@ -90,13 +84,11 @@ class VSegmentedPDFDocument: ObservableObject {
         guard index > 0, index <= totalPages else { return }
         guard loadedThumbnails[index] == nil else { return }
 
-        print("Fetching thumbnail for page \(index)")
         store.fetchSegmentedThumbnail(id: fileId, index) { [weak self] data, error in
             guard let self else { return }
             if let data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {
                     self.loadedThumbnails[index] = image
-                    print("Thumbnail for page \(index) loaded successfully")
                     if index == 1 {
                         self.loadThumbnail(for: index + 1)
                     } else {
@@ -104,7 +96,7 @@ class VSegmentedPDFDocument: ObservableObject {
                     }
                 }
             } else if let error {
-                print("Failed to fetch thumbnail for page \(index):", error)
+                print(error.localizedDescription)
             }
         }
     }
@@ -130,11 +122,10 @@ class VSegmentedPDFDocument: ObservableObject {
                         let targetIndex = min(pageNumber - 1, (self.pdfDocument?.pageCount ?? 0))
                         if targetIndex >= 0, targetIndex < (self.pdfDocument?.pageCount ?? 0) {
                             self.pdfDocument?.insert(tempDoc.page(at: 0)!, at: targetIndex)
-                            print("Preloaded page \(pageNumber) successfully")
                         }
                     }
                 } else if let error {
-                    print("Failed to preload page \(pageNumber):", error)
+                    print(error.localizedDescription)
                 }
             }
         }

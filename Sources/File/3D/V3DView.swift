@@ -82,7 +82,7 @@ struct V3DView: UIViewRepresentable {
                     setupScene()
                     isLoading = false
                 } else if let error {
-                    print("Failed to load glTF asset: \(error.localizedDescription)")
+                    print(error.localizedDescription)
                 }
             }
         }

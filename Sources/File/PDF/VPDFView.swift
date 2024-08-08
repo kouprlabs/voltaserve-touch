@@ -26,14 +26,10 @@ struct VPDFView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        print("Updating UIView with document: \(document.pdfDocument?.documentURL?.absoluteString ?? "nil")")
         guard let pdfView = context.coordinator.pdfView else { return }
 
         if let pdfDocument = document.pdfDocument {
-            print("Setting PDF document to PDFView")
             pdfView.document = pdfDocument
-        } else {
-            print("No PDF document available to set")
         }
 
         // Update layout to reflect visibility changes
