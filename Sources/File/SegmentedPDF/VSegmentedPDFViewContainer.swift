@@ -11,13 +11,6 @@ struct VSegmentedPDFViewContainer: View {
             ZStack {
                 VSegmentedPDFPageView(document: document)
                     .edgesIgnoringSafeArea(.all)
-
-                if document.isLoading {
-                    Color.white.opacity(0.5)
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(1.85)
-                }
             }
 
             // Thumbnails view at bottom, always visible

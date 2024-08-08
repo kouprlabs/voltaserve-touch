@@ -4,7 +4,6 @@ import SwiftUI
 class VSegmentedPDFDocument: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var loadedThumbnails: [Int: UIImage] = [:]
-    @Published var isLoading: Bool = false
     @Published var totalPages = 0
     @Published var currentPage = 1
     private var store: VSegmentedPDFStore
@@ -22,60 +21,35 @@ class VSegmentedPDFDocument: ObservableObject {
     }
 
     func loadPDF() {
-        isLoading = true
-
         store.fetchFile(id: fileId) { file, error in
-            if error != nil {
-                DispatchQueue.main.async {
-                    self.isLoading = false
+            if let file {
+                if let pages = file.snapshot?.preview?.pdf?.pages {
+                    DispatchQueue.main.async {
+                        self.totalPages = pages
+                        self.loadPage(at: self.currentPage)
+                        self.preloadSurroundingPages(for: self.currentPage)
+                    }
                 }
-                return
-            }
-            guard let file else {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                }
-                return
-            }
-            if let pages = file.snapshot?.preview?.pdf?.pages {
-                DispatchQueue.main.async {
-                    self.totalPages = pages
-                    self.loadPage(at: self.currentPage)
-                    self.preloadSurroundingPages(for: self.currentPage)
-                }
+            } else if let error {
+                print(error.localizedDescription)
             }
         }
     }
 
     func loadPage(at index: Int) {
         guard index > 0, index <= totalPages else { return }
-        isLoading = !isPreloaded(page: index)
 
         store.fetchSegmentedPage(id: fileId, index) { data, error in
-            if let error {
+            if let data {
+                if let newDocument = PDFDocument(data: data) {
+                    DispatchQueue.main.async {
+                        self.pdfDocument = newDocument
+                        self.currentPage = index
+                        self.preloadSurroundingPages(for: index)
+                    }
+                }
+            } else if let error {
                 print(error.localizedDescription)
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                }
-                return
-            }
-            guard let data else {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                }
-                return
-            }
-            if let newDocument = PDFDocument(data: data) {
-                DispatchQueue.main.async {
-                    self.pdfDocument = newDocument
-                    self.currentPage = index
-                    self.isLoading = false
-                    self.preloadSurroundingPages(for: index)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                }
             }
         }
     }
