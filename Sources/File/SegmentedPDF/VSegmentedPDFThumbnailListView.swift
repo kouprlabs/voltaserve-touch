@@ -12,10 +12,10 @@ struct VSegmentedPDFThumbnailListView: View {
             ScrollViewReader { proxy in
                 HStack(spacing: 16) {
                     ForEach(0 ..< document.totalPages, id: \.self) { index in
-                    // Adjusted for 1-based indexing
+                        // Adjusted for 1-based indexing
                         VSegmentedPDFThumbnailView(index: index + 1, document: document, pdfView: pdfView)
                             .onAppear {
-                            // Adjusted for 1-based indexing
+                                // Adjusted for 1-based indexing
                                 visibleIndices.insert(index + 1)
                                 loadThumbnailsIfNeeded()
                             }
@@ -24,7 +24,7 @@ struct VSegmentedPDFThumbnailListView: View {
                     }
                 }
                 .padding(16)
-                .onChange(of: document.currentPage) { currentPage, _ in
+                .onChange(of: document.currentPage) { _, currentPage in
                     withAnimation {
                         proxy.scrollTo(currentPage - 1, anchor: .center)
                     }
