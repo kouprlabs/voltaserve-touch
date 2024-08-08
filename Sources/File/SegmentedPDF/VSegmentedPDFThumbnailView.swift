@@ -13,6 +13,7 @@ struct VSegmentedPDFThumbnailView: View {
                 .aspectRatio(contentMode: .fit)
                 .background(Color.gray.opacity(0.2))
                 .frame(width: 100, height: 150, alignment: .center)
+                .border(Color.black, width: document.currentPage == index ? 2 : 0)
                 .onTapGesture {
                     document.currentPage = index
                     document.loadPage(at: index)

@@ -9,18 +9,27 @@ struct VSegmentedPDFThumbnailListView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16) {
-                ForEach(0 ..< document.totalPages, id: \.self) { index in
+            ScrollViewReader { proxy in
+                HStack(spacing: 16) {
+                    ForEach(0 ..< document.totalPages, id: \.self) { index in
                     // Adjusted for 1-based indexing
-                    VSegmentedPDFThumbnailView(index: index + 1, document: document, pdfView: pdfView)
-                        .onAppear {
+                        VSegmentedPDFThumbnailView(index: index + 1, document: document, pdfView: pdfView)
+                            .onAppear {
                             // Adjusted for 1-based indexing
-                            visibleIndices.insert(index + 1)
-                            loadThumbnailsIfNeeded()
-                        }
+                                visibleIndices.insert(index + 1)
+                                loadThumbnailsIfNeeded()
+                            }
+                            // Provide an ID for scrolling
+                            .id(index)
+                    }
+                }
+                .padding(16)
+                .onChange(of: document.currentPage) { currentPage, _ in
+                    withAnimation {
+                        proxy.scrollTo(currentPage - 1, anchor: .center)
+                    }
                 }
             }
-            .padding(16)
         }
         .onChange(of: document.pdfDocument) {
             visibleIndices = []
