@@ -18,7 +18,7 @@ struct VSegmentedPDFViewContainer: View {
                 VSegmentedPDFThumbnailListView(document: document, pdfView: PDFView())
                     .frame(height: 150)
                     .background(Color.white)
-                    .transition(.slide)
+                    .transition(.move(edge: .bottom))
             }
         }
         .toolbar {
