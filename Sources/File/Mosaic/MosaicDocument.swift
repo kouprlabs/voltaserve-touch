@@ -137,9 +137,7 @@ class MosaicDocument: ObservableObject {
 
     private enum Constants {
         static let fileIds: [String] = [
-            "w5JLDMQwLbkry", // In_the_Conservatory
-            "Lx5gXaBB7Mm8G", // Indio,_CA_from_scenic_outlook
-            "j5OdmVwewmX6o" // 1-PIA26246-Curiosity_Arrives_at_Upper_Gediz_Vallis
+            "w5JLDMQwLbkry", //In_the_Conservatory
         ]
     }
 }
