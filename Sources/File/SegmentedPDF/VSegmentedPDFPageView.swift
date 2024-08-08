@@ -10,6 +10,10 @@ struct VSegmentedPDFPageView: UIViewRepresentable {
         /* Create and configure the PDFView */
         let pdfView = PDFView()
         pdfView.autoScales = true
+        pdfView.displaysAsBook = false
+        pdfView.displayMode = .singlePage
+        pdfView.displayDirection = .horizontal
+
         pdfView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(pdfView)
 
@@ -41,6 +45,9 @@ struct VSegmentedPDFPageView: UIViewRepresentable {
 
         if let pdfDocument = document.pdfDocument {
             pdfView.document = pdfDocument
+            pdfView.autoScales = true
+            // Force PDFView to fit width initially
+            pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
         }
 
         /* Update layout constraints */
