@@ -24,7 +24,7 @@ class VPDFDocument: ObservableObject {
         }
 
         DispatchQueue.global().async {
-            if let loadedDocument = PDFDocument(url: self.store.urlForFile(id: self.fileId)) {
+            if let loadedDocument = PDFDocument(url: self.store.urlForPreview(id: self.fileId)) {
                 DispatchQueue.main.async {
                     self.pdfDocument = loadedDocument
                     self.isLoading = false
@@ -59,10 +59,6 @@ class VPDFDocument: ObservableObject {
     }
 
     private enum Constants {
-        static let fileIds = [
-            "eV0k2Deym6ekZ", // hdr2023-24reporten
-            "XX7G1r3za358J", // human-freedom-index-2022
-            "kd9EWp2pDxX0Y" // Choose-an-automation-tool-ebook-Red-Hat-Developer
-        ]
+        static let fileIds = ["b2wEogJvlKwlW"]
     }
 }
