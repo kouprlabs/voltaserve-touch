@@ -11,6 +11,7 @@ struct VoltaserveApp: App {
             ContentView()
                 .environmentObject(V3DDocument(config: config, token: token))
                 .environmentObject(VSegmentedPDFDocument(config: config, token: token))
+                .environmentObject(VPDFDocument(config: config, token: token))
                 .environmentObject(MosaicDocument(config: config, token: token))
         }
     }
