@@ -74,7 +74,6 @@ struct VSegmentedPDFThumbnailListView: View {
 
             if !indicesToLoad.isEmpty {
                 DispatchQueue.main.async {
-                    print("Loading thumbnails for indices: \(indicesToLoad)")
                     for index in indicesToLoad {
                         self.document.loadThumbnail(for: index)
                     }
@@ -83,27 +82,16 @@ struct VSegmentedPDFThumbnailListView: View {
 
             // Offload thumbnails out of the visible range
             self.clearAllThumbnailsOutOfRange(firstIndex: firstIndex, lastIndex: lastIndex)
-
-            DispatchQueue.main.async {
-                print("Current scroll offset: \(self.scrollOffset)")
-                print("Visible thumbnail indices: \((firstIndex...lastIndex).map { $0 + 1 })")
-            }
         }
     }
 
     private func clearAllThumbnailsOutOfRange(firstIndex: Int, lastIndex: Int) {
         DispatchQueue.main.async {
             let range = (firstIndex - 10)...(lastIndex + 10)
-            var offloadedIndices = [Int]()
             for index in 1...self.document.totalPages {
                 if !range.contains(index - 1) {
-                    if self.document.loadedThumbnails.removeValue(forKey: index) != nil {
-                        offloadedIndices.append(index)
-                    }
+                    self.document.loadedThumbnails.removeValue(forKey: index)
                 }
-            }
-            if !offloadedIndices.isEmpty {
-                print("Offloading thumbnails for indices: \(offloadedIndices.sorted())")
             }
         }
     }
