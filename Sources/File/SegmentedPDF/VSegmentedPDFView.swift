@@ -29,7 +29,12 @@ struct VSegmentedPDFView: UIViewRepresentable {
         guard let pdfView = context.coordinator.pdfView else { return }
 
         if let pdfDocument = document.pdfDocument {
-            pdfView.document = pdfDocument
+            if pdfView.document != pdfDocument {
+                pdfView.document = pdfDocument
+                pdfView.autoScales = true
+                // Only set the scale factor if the document is changing
+                pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
+            }
         }
 
         // Update layout to reflect visibility changes

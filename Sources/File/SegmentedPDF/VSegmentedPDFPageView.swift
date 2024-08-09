@@ -18,6 +18,7 @@ struct VSegmentedPDFPageView: UIViewRepresentable {
         containerView.addSubview(pdfView)
 
         context.coordinator.pdfView = pdfView
+
         updateUIView(containerView, context: context)
 
         let swipeLeft = UISwipeGestureRecognizer(
@@ -40,14 +41,13 @@ struct VSegmentedPDFPageView: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         guard let pdfView = context.coordinator.pdfView else { return }
 
-        // Remove existing constraints before updating
-        uiView.constraints.forEach { uiView.removeConstraint($0) }
-
         if let pdfDocument = document.pdfDocument {
-            pdfView.document = pdfDocument
-            pdfView.autoScales = true
-            // Force PDFView to fit width initially
-            pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
+            if pdfView.document != pdfDocument {
+                pdfView.document = pdfDocument
+                pdfView.autoScales = true
+                // Force PDFView to fit width initially
+                pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
+            }
         }
 
         /* Update layout constraints */
