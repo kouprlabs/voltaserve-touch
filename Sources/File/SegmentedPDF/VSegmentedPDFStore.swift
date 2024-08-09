@@ -19,7 +19,7 @@ struct VSegmentedPDFStore {
 
     func urlForSegmentedThumbnail(id: String, page: Int) -> URL {
         // swiftlint:disable:next line_length
-        URL(string: "\(config.apiUrl)/v2/files/\(id)/segmentation/thumbnails/\(page).png?access_token=\(token.accessToken)")!
+        URL(string: "\(config.apiUrl)/v2/files/\(id)/segmentation/thumbnails/\(page).jpg?access_token=\(token.accessToken)")!
     }
 
     func fetchFile(id: String, completion: @escaping (File?, Error?) -> Void) {

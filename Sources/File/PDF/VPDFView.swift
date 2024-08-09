@@ -3,7 +3,6 @@ import SwiftUI
 
 struct VPDFView: UIViewRepresentable {
     @ObservedObject var document: VPDFDocument
-    @Binding var showThumbnails: Bool
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -52,28 +51,10 @@ struct VPDFView: UIViewRepresentable {
             pdfView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor)
         ])
 
-        if showThumbnails {
-            let thumbnailListView = VPDFThumbnailListViewContainer(document: document, pdfView: pdfView)
-            let hostingController = UIHostingController(rootView: thumbnailListView)
-            hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-            hostingController.view.backgroundColor = .clear
-            containerView.addSubview(hostingController.view)
-
-            // Add constraints for Thumbnails, respecting safe area
-            NSLayoutConstraint.activate([
-                pdfView.bottomAnchor.constraint(equalTo: hostingController.view.topAnchor),
-                hostingController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                hostingController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                // Use safeAreaLayoutGuide
-                hostingController.view.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor),
-                hostingController.view.heightAnchor.constraint(equalToConstant: 160)
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                // Use safeAreaLayoutGuide
-                pdfView.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor)
-            ])
-        }
+        NSLayoutConstraint.activate([
+            // Use safeAreaLayoutGuide
+            pdfView.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 
     class Coordinator: NSObject {

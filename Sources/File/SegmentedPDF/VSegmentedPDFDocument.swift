@@ -63,11 +63,7 @@ class VSegmentedPDFDocument: ObservableObject {
             if let data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {
                     self.loadedThumbnails[index] = image
-                    if index == 1 {
-                        self.loadThumbnail(for: index + 1)
-                    } else {
-                        self.loadThumbnail(for: index + 1)
-                    }
+                    self.loadThumbnail(for: index + 1)
                 }
             } else if let error {
                 print(error.localizedDescription)
@@ -113,7 +109,7 @@ class VSegmentedPDFDocument: ObservableObject {
 
     private enum Constants {
         static let fileIds = [
-            "b2wEogJvlKwlW" // human-freedom-index-2022
+            "YoXAmbYzmrZ9l" // human-freedom-index-2022
         ]
     }
 }

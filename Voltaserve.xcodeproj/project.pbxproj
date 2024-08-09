@@ -21,10 +21,7 @@
 		5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F439D83F669B3BB546312 /* IdRandomizer.swift */; };
 		643FA5952C65379300CC11E8 /* VSegmentedPDFPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643FA5942C65379300CC11E8 /* VSegmentedPDFPageView.swift */; };
 		645B7ECB2C6541C100E9B684 /* VPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC62C6541C100E9B684 /* VPDFDocument.swift */; };
-		645B7ECC2C6541C100E9B684 /* VPDFThumbnailListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC72C6541C100E9B684 /* VPDFThumbnailListView.swift */; };
-		645B7ECD2C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC82C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift */; };
 		645B7ECE2C6541C100E9B684 /* VPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7EC92C6541C100E9B684 /* VPDFViewContainer.swift */; };
-		645B7ED22C65424A00E9B684 /* VPDFThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7ECF2C65424A00E9B684 /* VPDFThumbnailView.swift */; };
 		645B7ED32C65424A00E9B684 /* VPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7ED02C65424A00E9B684 /* VPDFStore.swift */; };
 		645B7ED42C65424A00E9B684 /* VPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645B7ED12C65424A00E9B684 /* VPDFView.swift */; };
 		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
@@ -55,10 +52,7 @@
 		5C1F4EFFD073E933E381AD46 /* VSegmentedPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFStore.swift; sourceTree = "<group>"; };
 		643FA5942C65379300CC11E8 /* VSegmentedPDFPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSegmentedPDFPageView.swift; sourceTree = "<group>"; };
 		645B7EC62C6541C100E9B684 /* VPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFDocument.swift; sourceTree = "<group>"; };
-		645B7EC72C6541C100E9B684 /* VPDFThumbnailListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailListView.swift; sourceTree = "<group>"; };
-		645B7EC82C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailListViewContainer.swift; sourceTree = "<group>"; };
 		645B7EC92C6541C100E9B684 /* VPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFViewContainer.swift; sourceTree = "<group>"; };
-		645B7ECF2C65424A00E9B684 /* VPDFThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFThumbnailView.swift; sourceTree = "<group>"; };
 		645B7ED02C65424A00E9B684 /* VPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFStore.swift; sourceTree = "<group>"; };
 		645B7ED12C65424A00E9B684 /* VPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPDFView.swift; sourceTree = "<group>"; };
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,11 +108,8 @@
 			isa = PBXGroup;
 			children = (
 				645B7ED02C65424A00E9B684 /* VPDFStore.swift */,
-				645B7ECF2C65424A00E9B684 /* VPDFThumbnailView.swift */,
 				645B7ED12C65424A00E9B684 /* VPDFView.swift */,
 				645B7EC62C6541C100E9B684 /* VPDFDocument.swift */,
-				645B7EC72C6541C100E9B684 /* VPDFThumbnailListView.swift */,
-				645B7EC82C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift */,
 				645B7EC92C6541C100E9B684 /* VPDFViewContainer.swift */,
 			);
 			path = PDF;
@@ -313,7 +304,6 @@
 			files = (
 				64C69BDD2C6230FB00476A7D /* V3DView.swift in Sources */,
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
-				645B7ECD2C6541C100E9B684 /* VPDFThumbnailListViewContainer.swift in Sources */,
 				645B7ED32C65424A00E9B684 /* VPDFStore.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
 				5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */,
@@ -328,11 +318,9 @@
 				64DF2C8E2C64AE0F00A091F6 /* VSegmentedPDFThumbnailListViewContainer.swift in Sources */,
 				643FA5952C65379300CC11E8 /* VSegmentedPDFPageView.swift in Sources */,
 				5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */,
-				645B7ED22C65424A00E9B684 /* VPDFThumbnailView.swift in Sources */,
 				645B7ECE2C6541C100E9B684 /* VPDFViewContainer.swift in Sources */,
 				5C1F4D49DC68C2C0D42F0B98 /* VSegmentedPDFDocument.swift in Sources */,
 				5C1F4B2D3E4232E61252DAF0 /* VSegmentedPDFStore.swift in Sources */,
-				645B7ECC2C6541C100E9B684 /* VPDFThumbnailListView.swift in Sources */,
 				5C1F4624E96BDD9D3DC10185 /* VSegmentedPDFThumbnailListView.swift in Sources */,
 				5C1F40DDA34824C4610B63B3 /* VSegmentedPDFThumbnailView.swift in Sources */,
 				5C1F41019E009E9D6DE56C56 /* VSegmentedPDFView.swift in Sources */,
