@@ -123,14 +123,18 @@ struct VSegmentedPDFStore {
         let fileExtension: String?
         let size: Int?
         let image: ImageProps?
-        let pdf: PDFProps?
+        let document: DocumentProps?
+        let page: PageProps?
+        let thumbnail: ThumbnailProps?
 
         // swiftlint:disable:next nesting
         enum CodingKeys: String, CodingKey {
             case fileExtension = "extension"
             case size
             case image
-            case pdf
+            case document
+            case page
+            case thumbnail
         }
     }
 
@@ -139,7 +143,25 @@ struct VSegmentedPDFStore {
         let height: Int
     }
 
-    struct PDFProps: Decodable {
+    struct DocumentProps: Decodable {
         let pages: Int
+    }
+
+    struct PageProps: Decodable {
+        let fileExtension: String
+
+        // swiftlint:disable:next nesting
+        enum CodingKeys: String, CodingKey {
+            case fileExtension = "extension"
+        }
+    }
+
+    struct ThumbnailProps: Decodable {
+        let fileExtension: String
+
+        // swiftlint:disable:next nesting
+        enum CodingKeys: String, CodingKey {
+            case fileExtension = "extension"
+        }
     }
 }

@@ -35,7 +35,10 @@ struct VSegmentedPDFThumbnailListView: View {
                 }
             }
             .background(GeometryReader {
-                Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: -$0.frame(in: .named("scrollView")).origin.x)
+                Color.clear.preference(
+                    key: ScrollViewOffsetPreferenceKey.self,
+                    value: -$0.frame(in: .named("scrollView")).origin.x
+                )
             })
             .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
                 scrollOffset = value
@@ -70,7 +73,10 @@ struct VSegmentedPDFThumbnailListView: View {
             let start = max(0, firstIndex - 10)
             let end = min(document.totalPages, lastIndex + 10)
 
-            let indicesToLoad = Set((start ... end).map { $0 + 1 }.filter { document.loadedThumbnails[$0] == nil }).sorted()
+            let indicesToLoad = Set((start ... end)
+                .map { $0 + 1 }
+                .filter { document.loadedThumbnails[$0] == nil })
+                .sorted()
 
             if !indicesToLoad.isEmpty {
                 DispatchQueue.main.async {

@@ -23,7 +23,7 @@ class VSegmentedPDFDocument: ObservableObject {
     func loadPDF() {
         store.fetchFile(id: fileId) { file, error in
             if let file {
-                if let pages = file.snapshot?.preview?.pdf?.pages {
+                if let pages = file.snapshot?.preview?.document?.pages {
                     DispatchQueue.main.async {
                         self.totalPages = pages
                         self.loadPage(at: self.currentPage)
@@ -109,7 +109,7 @@ class VSegmentedPDFDocument: ObservableObject {
 
     private enum Constants {
         static let fileIds = [
-            "bQd3Oqydlyg35"
+            "JV1w2wLWvZAPk"
         ]
     }
 }
