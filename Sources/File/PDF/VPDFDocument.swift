@@ -60,7 +60,7 @@ class VPDFDocument: ObservableObject {
 
     private enum Constants {
         static let fileIds = [
-            "YoXAmbYzmrZ9l" // human-freedom-index-2022
+            "bQd3Oqydlyg35"
         ]
     }
 }
