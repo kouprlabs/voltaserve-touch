@@ -7,211 +7,210 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C1F40741CEA3EDF69049788 /* ViewerMosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F444F050194265C63B81E /* ViewerMosaicDocument.swift */; };
-		5C1F40AD1A886853B784FE88 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F438F06338A16B1D46E37 /* Config.swift */; };
-		5C1F416BA1F446DEC16EF1F7 /* ViewerPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F45CCB4D1131518F5723F /* ViewerPDFStore.swift */; };
-		5C1F4190CAFFAFA703B74770 /* ViewerMosaicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4BE79D887F7CB5209EC1 /* ViewerMosaicView.swift */; };
-		5C1F41C45E1F19CDE6A8A66D /* Viewer3DStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F40B2EEEF86A958C1D1B4 /* Viewer3DStore.swift */; };
-		5C1F4264A888336664E4B7E4 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F44CFAF1D871B9011AC1C /* Token.swift */; };
-		5C1F455702EBDBB64166A156 /* ViewerPDFThumbnailListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F492F125E4A3740101653 /* ViewerPDFThumbnailListView.swift */; };
-		5C1F45CA03C4322588DA1506 /* ViewerBasicPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F40FEB949738062E67BFD /* ViewerBasicPDFView.swift */; };
-		5C1F47BB97D8E4B7EA897C22 /* ViewerPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4D7D960B422B2C823E42 /* ViewerPDFDocument.swift */; };
-		5C1F482BBB030B7300EFA809 /* Viewer3DDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4E4A067B0CCFD03C71EC /* Viewer3DDocument.swift */; };
-		5C1F494B74A482A6B4805018 /* ViewerBasicPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4A7B8804162CC863743A /* ViewerBasicPDFDocument.swift */; };
-		5C1F4CAA508EB44E283F81F4 /* ViewerPDFThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F47C62B95423E76D8AFFD /* ViewerPDFThumbnailView.swift */; };
-		5C1F4CEB5BABA4866B951123 /* ViewerBasicPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4B93966810D7FB42908A /* ViewerBasicPDFStore.swift */; };
-		5C1F4DA0B515FB60E24A3BFB /* ViewerBasicPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4005632998C6FCE30F32 /* ViewerBasicPDFViewContainer.swift */; };
-		5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4A155ED69CBA594C129F /* Launcher.swift */; };
-		5C1F4E41AACBF8DCC5B17F1A /* ViewerPDFThumbnailListViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4F59E8BEFB05F777E03E /* ViewerPDFThumbnailListViewContainer.swift */; };
-		5C1F4EA0E94644DA5D2C9712 /* ViewerPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F474F3B7A4672831F53DC /* ViewerPDFViewContainer.swift */; };
-		5C1F4EF0044689EDC858C058 /* ViewerPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F432893D98DEA8742573D /* ViewerPDFView.swift */; };
-		5C1F4F57AE9B6AA6DE813163 /* ViewerPDFPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F432E0C0ABF14E9061F9F /* ViewerPDFPageView.swift */; };
-		5C1F4F7AF7DACBEEAA701D59 /* ViewerMosaicStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F42E724B1A372C1B4B887 /* ViewerMosaicStore.swift */; };
-		5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F439D83F669B3BB546312 /* IdRandomizer.swift */; };
-		648805732C66E44400D8A096 /* Viewer3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 648805722C66E44400D8A096 /* Viewer3DView.swift */; };
-		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
-		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
-		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
-		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
-		649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 649066F02C5E35E400BA3CCD /* Alamofire */; };
-		649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 649067042C60979900BA3CCD /* GLTFKit2 */; };
+		5C1F40A22219589210260252 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C1F48B6B1BF7A16CD6812CE /* Assets.xcassets */; };
+		5C1F45B626603B49F787FFAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4161A3DC4E0ECE17366A /* AppDelegate.swift */; };
+		5C1F4652414FA94069D208D3 /* ViewerBasicPDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F49E7D419EBA332E61BB7 /* ViewerBasicPDFViewController.swift */; };
+		5C1F47159D2AB0D3D26835DF /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4D083B20CFBF37BFEE26 /* Token.swift */; };
+		5C1F499E0006EF1B5D00EB20 /* ViewerMosaicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F427C195F5E197F2B5D0C /* ViewerMosaicViewController.swift */; };
+		5C1F4B8273A23A9E0CE6288B /* LauncherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4E9C506CEE6A1515DD0F /* LauncherViewController.swift */; };
+		5C1F4D48ECD30FB728231D85 /* Viewer3DViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4D62E7993B8973427580 /* Viewer3DViewController.swift */; };
+		5C1F4E64206FDC3B23D6977B /* ViewerPDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4203FF7280C88B7D83B4 /* ViewerPDFViewController.swift */; };
+		5C1F4EC6763E83F3F7EA4038 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4BA7BEDC96E886272577 /* Config.swift */; };
+		647B761E2C67DE9D0003E648 /* Viewer3DDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76052C67DE9D0003E648 /* Viewer3DDocument.swift */; };
+		647B761F2C67DE9D0003E648 /* Viewer3DStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76062C67DE9D0003E648 /* Viewer3DStore.swift */; };
+		647B76202C67DE9D0003E648 /* Viewer3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76072C67DE9D0003E648 /* Viewer3DView.swift */; };
+		647B76212C67DE9D0003E648 /* ViewerMosaicDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76092C67DE9D0003E648 /* ViewerMosaicDocument.swift */; };
+		647B76222C67DE9D0003E648 /* ViewerMosaicStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B760A2C67DE9D0003E648 /* ViewerMosaicStore.swift */; };
+		647B76232C67DE9D0003E648 /* ViewerMosaicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B760B2C67DE9D0003E648 /* ViewerMosaicView.swift */; };
+		647B76242C67DE9D0003E648 /* ViewerBasicPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B760D2C67DE9D0003E648 /* ViewerBasicPDFDocument.swift */; };
+		647B76252C67DE9D0003E648 /* ViewerBasicPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B760E2C67DE9D0003E648 /* ViewerBasicPDFStore.swift */; };
+		647B76262C67DE9D0003E648 /* ViewerBasicPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B760F2C67DE9D0003E648 /* ViewerBasicPDFView.swift */; };
+		647B76272C67DE9D0003E648 /* ViewerBasicPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76102C67DE9D0003E648 /* ViewerBasicPDFViewContainer.swift */; };
+		647B76282C67DE9D0003E648 /* ViewerPDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76122C67DE9D0003E648 /* ViewerPDFDocument.swift */; };
+		647B76292C67DE9D0003E648 /* ViewerPDFPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76132C67DE9D0003E648 /* ViewerPDFPageView.swift */; };
+		647B762A2C67DE9D0003E648 /* ViewerPDFStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76142C67DE9D0003E648 /* ViewerPDFStore.swift */; };
+		647B762B2C67DE9D0003E648 /* ViewerPDFThumbnailListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76152C67DE9D0003E648 /* ViewerPDFThumbnailListView.swift */; };
+		647B762C2C67DE9D0003E648 /* ViewerPDFThumbnailListViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76162C67DE9D0003E648 /* ViewerPDFThumbnailListViewContainer.swift */; };
+		647B762D2C67DE9D0003E648 /* ViewerPDFThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76172C67DE9D0003E648 /* ViewerPDFThumbnailView.swift */; };
+		647B762E2C67DE9D0003E648 /* ViewerPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76182C67DE9D0003E648 /* ViewerPDFView.swift */; };
+		647B762F2C67DE9D0003E648 /* ViewerPDFViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B76192C67DE9D0003E648 /* ViewerPDFViewContainer.swift */; };
+		647B76302C67DE9D0003E648 /* IdRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B761C2C67DE9D0003E648 /* IdRandomizer.swift */; };
+		647B76332C67DEB50003E648 /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 647B76322C67DEB50003E648 /* GLTFKit2 */; };
+		647B76362C67DEC20003E648 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 647B76352C67DEC20003E648 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5C1F4005632998C6FCE30F32 /* ViewerBasicPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFViewContainer.swift; sourceTree = "<group>"; };
-		5C1F40B2EEEF86A958C1D1B4 /* Viewer3DStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewer3DStore.swift; sourceTree = "<group>"; };
-		5C1F40FEB949738062E67BFD /* ViewerBasicPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFView.swift; sourceTree = "<group>"; };
-		5C1F42E724B1A372C1B4B887 /* ViewerMosaicStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerMosaicStore.swift; sourceTree = "<group>"; };
-		5C1F432893D98DEA8742573D /* ViewerPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFView.swift; sourceTree = "<group>"; };
-		5C1F432E0C0ABF14E9061F9F /* ViewerPDFPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFPageView.swift; sourceTree = "<group>"; };
-		5C1F438F06338A16B1D46E37 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
-		5C1F439D83F669B3BB546312 /* IdRandomizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdRandomizer.swift; sourceTree = "<group>"; };
-		5C1F444F050194265C63B81E /* ViewerMosaicDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerMosaicDocument.swift; sourceTree = "<group>"; };
-		5C1F44CFAF1D871B9011AC1C /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
-		5C1F45CCB4D1131518F5723F /* ViewerPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFStore.swift; sourceTree = "<group>"; };
-		5C1F474F3B7A4672831F53DC /* ViewerPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFViewContainer.swift; sourceTree = "<group>"; };
-		5C1F47C62B95423E76D8AFFD /* ViewerPDFThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFThumbnailView.swift; sourceTree = "<group>"; };
-		5C1F492F125E4A3740101653 /* ViewerPDFThumbnailListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFThumbnailListView.swift; sourceTree = "<group>"; };
-		5C1F4A155ED69CBA594C129F /* Launcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Launcher.swift; sourceTree = "<group>"; };
-		5C1F4A7B8804162CC863743A /* ViewerBasicPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFDocument.swift; sourceTree = "<group>"; };
-		5C1F4B93966810D7FB42908A /* ViewerBasicPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFStore.swift; sourceTree = "<group>"; };
-		5C1F4BE79D887F7CB5209EC1 /* ViewerMosaicView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerMosaicView.swift; sourceTree = "<group>"; };
-		5C1F4D7D960B422B2C823E42 /* ViewerPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFDocument.swift; sourceTree = "<group>"; };
-		5C1F4E4A067B0CCFD03C71EC /* Viewer3DDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewer3DDocument.swift; sourceTree = "<group>"; };
-		5C1F4F59E8BEFB05F777E03E /* ViewerPDFThumbnailListViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFThumbnailListViewContainer.swift; sourceTree = "<group>"; };
-		648805722C66E44400D8A096 /* Viewer3DView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewer3DView.swift; sourceTree = "<group>"; };
-		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
-		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5C1F4161A3DC4E0ECE17366A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5C1F4203FF7280C88B7D83B4 /* ViewerPDFViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFViewController.swift; sourceTree = "<group>"; };
+		5C1F427C195F5E197F2B5D0C /* ViewerMosaicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerMosaicViewController.swift; sourceTree = "<group>"; };
+		5C1F46B4A92E220F8A4E5845 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		5C1F48B6B1BF7A16CD6812CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5C1F49E7D419EBA332E61BB7 /* ViewerBasicPDFViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFViewController.swift; sourceTree = "<group>"; };
+		5C1F4BA7BEDC96E886272577 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		5C1F4D083B20CFBF37BFEE26 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		5C1F4D62E7993B8973427580 /* Viewer3DViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewer3DViewController.swift; sourceTree = "<group>"; };
+		5C1F4E9C506CEE6A1515DD0F /* LauncherViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LauncherViewController.swift; sourceTree = "<group>"; };
+		647B76052C67DE9D0003E648 /* Viewer3DDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewer3DDocument.swift; sourceTree = "<group>"; };
+		647B76062C67DE9D0003E648 /* Viewer3DStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewer3DStore.swift; sourceTree = "<group>"; };
+		647B76072C67DE9D0003E648 /* Viewer3DView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewer3DView.swift; sourceTree = "<group>"; };
+		647B76092C67DE9D0003E648 /* ViewerMosaicDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerMosaicDocument.swift; sourceTree = "<group>"; };
+		647B760A2C67DE9D0003E648 /* ViewerMosaicStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerMosaicStore.swift; sourceTree = "<group>"; };
+		647B760B2C67DE9D0003E648 /* ViewerMosaicView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerMosaicView.swift; sourceTree = "<group>"; };
+		647B760D2C67DE9D0003E648 /* ViewerBasicPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFDocument.swift; sourceTree = "<group>"; };
+		647B760E2C67DE9D0003E648 /* ViewerBasicPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFStore.swift; sourceTree = "<group>"; };
+		647B760F2C67DE9D0003E648 /* ViewerBasicPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFView.swift; sourceTree = "<group>"; };
+		647B76102C67DE9D0003E648 /* ViewerBasicPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerBasicPDFViewContainer.swift; sourceTree = "<group>"; };
+		647B76122C67DE9D0003E648 /* ViewerPDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFDocument.swift; sourceTree = "<group>"; };
+		647B76132C67DE9D0003E648 /* ViewerPDFPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFPageView.swift; sourceTree = "<group>"; };
+		647B76142C67DE9D0003E648 /* ViewerPDFStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFStore.swift; sourceTree = "<group>"; };
+		647B76152C67DE9D0003E648 /* ViewerPDFThumbnailListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFThumbnailListView.swift; sourceTree = "<group>"; };
+		647B76162C67DE9D0003E648 /* ViewerPDFThumbnailListViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFThumbnailListViewContainer.swift; sourceTree = "<group>"; };
+		647B76172C67DE9D0003E648 /* ViewerPDFThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFThumbnailView.swift; sourceTree = "<group>"; };
+		647B76182C67DE9D0003E648 /* ViewerPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFView.swift; sourceTree = "<group>"; };
+		647B76192C67DE9D0003E648 /* ViewerPDFViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewerPDFViewContainer.swift; sourceTree = "<group>"; };
+		647B761C2C67DE9D0003E648 /* IdRandomizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdRandomizer.swift; sourceTree = "<group>"; };
+		6488057D2C67127600D8A096 /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		649066DB2C5E35AD00BA3CCD /* Frameworks */ = {
+		6488057A2C67127600D8A096 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */,
-				649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */,
+				647B76332C67DEB50003E648 /* GLTFKit2 in Frameworks */,
+				647B76362C67DEC20003E648 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5C1F40159602202402AD8601 /* Auth */ = {
+		5C1F45D4C1EF269323F5401F /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				5C1F44CFAF1D871B9011AC1C /* Token.swift */,
+				5C1F4D083B20CFBF37BFEE26 /* Token.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
 		};
-		5C1F40893794644B65C6A83A /* Viewer */ = {
+		5C1F491EC8371DCB14346854 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				5C1F47A3DE106DC64EB7A869 /* Mosaic */,
-				5C1F4BC01BF9A4A41C71394C /* PDF */,
-				5C1F4F9F7C25E5C17AA528BF /* 3D */,
-			);
-			path = Viewer;
-			sourceTree = "<group>";
-		};
-		5C1F428B1121990229FBDCC6 /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F438F06338A16B1D46E37 /* Config.swift */,
-			);
-			path = Config;
-			sourceTree = "<group>";
-		};
-		5C1F4321C1A1732D964CB5FA /* Basic */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F4A7B8804162CC863743A /* ViewerBasicPDFDocument.swift */,
-				5C1F4B93966810D7FB42908A /* ViewerBasicPDFStore.swift */,
-				5C1F40FEB949738062E67BFD /* ViewerBasicPDFView.swift */,
-				5C1F4005632998C6FCE30F32 /* ViewerBasicPDFViewContainer.swift */,
-			);
-			path = Basic;
-			sourceTree = "<group>";
-		};
-		5C1F47A3DE106DC64EB7A869 /* Mosaic */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F444F050194265C63B81E /* ViewerMosaicDocument.swift */,
-				5C1F42E724B1A372C1B4B887 /* ViewerMosaicStore.swift */,
-				5C1F4BE79D887F7CB5209EC1 /* ViewerMosaicView.swift */,
-			);
-			path = Mosaic;
-			sourceTree = "<group>";
-		};
-		5C1F4B378D21B386C917ECDA /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F439D83F669B3BB546312 /* IdRandomizer.swift */,
-			);
-			path = Helper;
-			sourceTree = "<group>";
-		};
-		5C1F4BC01BF9A4A41C71394C /* PDF */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F4321C1A1732D964CB5FA /* Basic */,
-				5C1F4D7D960B422B2C823E42 /* ViewerPDFDocument.swift */,
-				5C1F432E0C0ABF14E9061F9F /* ViewerPDFPageView.swift */,
-				5C1F45CCB4D1131518F5723F /* ViewerPDFStore.swift */,
-				5C1F492F125E4A3740101653 /* ViewerPDFThumbnailListView.swift */,
-				5C1F4F59E8BEFB05F777E03E /* ViewerPDFThumbnailListViewContainer.swift */,
-				5C1F47C62B95423E76D8AFFD /* ViewerPDFThumbnailView.swift */,
-				5C1F432893D98DEA8742573D /* ViewerPDFView.swift */,
-				5C1F474F3B7A4672831F53DC /* ViewerPDFViewContainer.swift */,
-			);
-			path = PDF;
-			sourceTree = "<group>";
-		};
-		5C1F4F9F7C25E5C17AA528BF /* 3D */ = {
-			isa = PBXGroup;
-			children = (
-				648805722C66E44400D8A096 /* Viewer3DView.swift */,
-				5C1F40B2EEEF86A958C1D1B4 /* Viewer3DStore.swift */,
-				5C1F4E4A067B0CCFD03C71EC /* Viewer3DDocument.swift */,
-			);
-			path = 3D;
-			sourceTree = "<group>";
-		};
-		649066D52C5E35AD00BA3CCD = {
-			isa = PBXGroup;
-			children = (
-				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
-				649066E72C5E35AE00BA3CCD /* Preview Content */,
-				649066E02C5E35AD00BA3CCD /* Sources */,
-				649066DF2C5E35AD00BA3CCD /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		649066DF2C5E35AD00BA3CCD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				649066DE2C5E35AD00BA3CCD /* Voltaserve.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		649066E02C5E35AD00BA3CCD /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F4A155ED69CBA594C129F /* Launcher.swift */,
-				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
-				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
-				5C1F40159602202402AD8601 /* Auth */,
-				5C1F428B1121990229FBDCC6 /* Config */,
-				5C1F4B378D21B386C917ECDA /* Helper */,
-				5C1F40893794644B65C6A83A /* Viewer */,
+				647B761D2C67DE9D0003E648 /* Helper */,
+				647B761B2C67DE9D0003E648 /* Viewer */,
+				5C1F45D4C1EF269323F5401F /* Auth */,
+				5C1F4EA1DB539733547F60FA /* Config */,
+				5C1F4E9C506CEE6A1515DD0F /* LauncherViewController.swift */,
+				5C1F4D62E7993B8973427580 /* Viewer3DViewController.swift */,
+				5C1F49E7D419EBA332E61BB7 /* ViewerBasicPDFViewController.swift */,
+				5C1F427C195F5E197F2B5D0C /* ViewerMosaicViewController.swift */,
+				5C1F4203FF7280C88B7D83B4 /* ViewerPDFViewController.swift */,
+				5C1F4161A3DC4E0ECE17366A /* AppDelegate.swift */,
+				5C1F48B6B1BF7A16CD6812CE /* Assets.xcassets */,
+				5C1F46B4A92E220F8A4E5845 /* Info.plist */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		649066E72C5E35AE00BA3CCD /* Preview Content */ = {
+		5C1F4EA1DB539733547F60FA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */,
+				5C1F4BA7BEDC96E886272577 /* Config.swift */,
 			);
-			path = "Preview Content";
+			path = Config;
+			sourceTree = "<group>";
+		};
+		647B76082C67DE9D0003E648 /* 3D */ = {
+			isa = PBXGroup;
+			children = (
+				647B76052C67DE9D0003E648 /* Viewer3DDocument.swift */,
+				647B76062C67DE9D0003E648 /* Viewer3DStore.swift */,
+				647B76072C67DE9D0003E648 /* Viewer3DView.swift */,
+			);
+			path = 3D;
+			sourceTree = "<group>";
+		};
+		647B760C2C67DE9D0003E648 /* Mosaic */ = {
+			isa = PBXGroup;
+			children = (
+				647B76092C67DE9D0003E648 /* ViewerMosaicDocument.swift */,
+				647B760A2C67DE9D0003E648 /* ViewerMosaicStore.swift */,
+				647B760B2C67DE9D0003E648 /* ViewerMosaicView.swift */,
+			);
+			path = Mosaic;
+			sourceTree = "<group>";
+		};
+		647B76112C67DE9D0003E648 /* Basic */ = {
+			isa = PBXGroup;
+			children = (
+				647B760D2C67DE9D0003E648 /* ViewerBasicPDFDocument.swift */,
+				647B760E2C67DE9D0003E648 /* ViewerBasicPDFStore.swift */,
+				647B760F2C67DE9D0003E648 /* ViewerBasicPDFView.swift */,
+				647B76102C67DE9D0003E648 /* ViewerBasicPDFViewContainer.swift */,
+			);
+			path = Basic;
+			sourceTree = "<group>";
+		};
+		647B761A2C67DE9D0003E648 /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				647B76112C67DE9D0003E648 /* Basic */,
+				647B76122C67DE9D0003E648 /* ViewerPDFDocument.swift */,
+				647B76132C67DE9D0003E648 /* ViewerPDFPageView.swift */,
+				647B76142C67DE9D0003E648 /* ViewerPDFStore.swift */,
+				647B76152C67DE9D0003E648 /* ViewerPDFThumbnailListView.swift */,
+				647B76162C67DE9D0003E648 /* ViewerPDFThumbnailListViewContainer.swift */,
+				647B76172C67DE9D0003E648 /* ViewerPDFThumbnailView.swift */,
+				647B76182C67DE9D0003E648 /* ViewerPDFView.swift */,
+				647B76192C67DE9D0003E648 /* ViewerPDFViewContainer.swift */,
+			);
+			path = PDF;
+			sourceTree = "<group>";
+		};
+		647B761B2C67DE9D0003E648 /* Viewer */ = {
+			isa = PBXGroup;
+			children = (
+				647B76082C67DE9D0003E648 /* 3D */,
+				647B760C2C67DE9D0003E648 /* Mosaic */,
+				647B761A2C67DE9D0003E648 /* PDF */,
+			);
+			path = Viewer;
+			sourceTree = "<group>";
+		};
+		647B761D2C67DE9D0003E648 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				647B761C2C67DE9D0003E648 /* IdRandomizer.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		648805742C67127600D8A096 = {
+			isa = PBXGroup;
+			children = (
+				6488057E2C67127600D8A096 /* Products */,
+				5C1F491EC8371DCB14346854 /* Sources */,
+			);
+			sourceTree = "<group>";
+		};
+		6488057E2C67127600D8A096 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6488057D2C67127600D8A096 /* Voltaserve.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		649066DD2C5E35AD00BA3CCD /* Voltaserve */ = {
+		6488057C2C67127600D8A096 /* Voltaserve */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */;
+			buildConfigurationList = 648805912C67127800D8A096 /* Build configuration list for PBXNativeTarget "Voltaserve" */;
 			buildPhases = (
-				649066F92C5F38F900BA3CCD /* SwiftLint */,
-				649066DA2C5E35AD00BA3CCD /* Sources */,
-				649066DB2C5E35AD00BA3CCD /* Frameworks */,
-				649066DC2C5E35AD00BA3CCD /* Resources */,
+				648805792C67127600D8A096 /* Sources */,
+				6488057A2C67127600D8A096 /* Frameworks */,
+				6488057B2C67127600D8A096 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -219,29 +218,29 @@
 			);
 			name = Voltaserve;
 			packageProductDependencies = (
-				649066F02C5E35E400BA3CCD /* Alamofire */,
-				649067042C60979900BA3CCD /* GLTFKit2 */,
+				647B76322C67DEB50003E648 /* GLTFKit2 */,
+				647B76352C67DEC20003E648 /* Alamofire */,
 			);
 			productName = Voltaserve;
-			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
+			productReference = 6488057D2C67127600D8A096 /* Voltaserve.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		649066D62C5E35AD00BA3CCD /* Project object */ = {
+		648805752C67127600D8A096 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
-					649066DD2C5E35AD00BA3CCD = {
+					6488057C2C67127600D8A096 = {
 						CreatedOnToolsVersion = 15.4;
 					};
 				};
 			};
-			buildConfigurationList = 649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */;
+			buildConfigurationList = 648805782C67127600D8A096 /* Build configuration list for PBXProject "Voltaserve" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -249,90 +248,70 @@
 				en,
 				Base,
 			);
-			mainGroup = 649066D52C5E35AD00BA3CCD;
+			mainGroup = 648805742C67127600D8A096;
 			packageReferences = (
-				649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */,
-				649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */,
+				647B76312C67DEB50003E648 /* XCRemoteSwiftPackageReference "GLTFKit2" */,
+				647B76342C67DEC20003E648 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
-			productRefGroup = 649066DF2C5E35AD00BA3CCD /* Products */;
+			productRefGroup = 6488057E2C67127600D8A096 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				649066DD2C5E35AD00BA3CCD /* Voltaserve */,
+				6488057C2C67127600D8A096 /* Voltaserve */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		649066DC2C5E35AD00BA3CCD /* Resources */ = {
+		6488057B2C67127600D8A096 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */,
-				649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */,
+				5C1F40A22219589210260252 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		649066F92C5F38F900BA3CCD /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x /opt/homebrew/bin/swiftlint ]; then\n    /opt/homebrew/bin/swiftlint .\nelse\n    echo \"warning: SwiftLint not installed, install with Homebrew: brew install swiftlint\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		649066DA2C5E35AD00BA3CCD /* Sources */ = {
+		648805792C67127600D8A096 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
-				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
-				5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */,
-				5C1F4264A888336664E4B7E4 /* Token.swift in Sources */,
-				5C1F40AD1A886853B784FE88 /* Config.swift in Sources */,
-				5C1F4FE595D813914DFEC6DE /* IdRandomizer.swift in Sources */,
-				5C1F41C45E1F19CDE6A8A66D /* Viewer3DStore.swift in Sources */,
-				5C1F482BBB030B7300EFA809 /* Viewer3DDocument.swift in Sources */,
-				5C1F40741CEA3EDF69049788 /* ViewerMosaicDocument.swift in Sources */,
-				648805732C66E44400D8A096 /* Viewer3DView.swift in Sources */,
-				5C1F4F7AF7DACBEEAA701D59 /* ViewerMosaicStore.swift in Sources */,
-				5C1F4190CAFFAFA703B74770 /* ViewerMosaicView.swift in Sources */,
-				5C1F47BB97D8E4B7EA897C22 /* ViewerPDFDocument.swift in Sources */,
-				5C1F4F57AE9B6AA6DE813163 /* ViewerPDFPageView.swift in Sources */,
-				5C1F416BA1F446DEC16EF1F7 /* ViewerPDFStore.swift in Sources */,
-				5C1F455702EBDBB64166A156 /* ViewerPDFThumbnailListView.swift in Sources */,
-				5C1F4E41AACBF8DCC5B17F1A /* ViewerPDFThumbnailListViewContainer.swift in Sources */,
-				5C1F4CAA508EB44E283F81F4 /* ViewerPDFThumbnailView.swift in Sources */,
-				5C1F4EF0044689EDC858C058 /* ViewerPDFView.swift in Sources */,
-				5C1F4EA0E94644DA5D2C9712 /* ViewerPDFViewContainer.swift in Sources */,
-				5C1F494B74A482A6B4805018 /* ViewerBasicPDFDocument.swift in Sources */,
-				5C1F4CEB5BABA4866B951123 /* ViewerBasicPDFStore.swift in Sources */,
-				5C1F45CA03C4322588DA1506 /* ViewerBasicPDFView.swift in Sources */,
-				5C1F4DA0B515FB60E24A3BFB /* ViewerBasicPDFViewContainer.swift in Sources */,
+				5C1F47159D2AB0D3D26835DF /* Token.swift in Sources */,
+				647B761E2C67DE9D0003E648 /* Viewer3DDocument.swift in Sources */,
+				647B76222C67DE9D0003E648 /* ViewerMosaicStore.swift in Sources */,
+				647B762F2C67DE9D0003E648 /* ViewerPDFViewContainer.swift in Sources */,
+				647B762E2C67DE9D0003E648 /* ViewerPDFView.swift in Sources */,
+				5C1F4EC6763E83F3F7EA4038 /* Config.swift in Sources */,
+				647B76202C67DE9D0003E648 /* Viewer3DView.swift in Sources */,
+				5C1F4B8273A23A9E0CE6288B /* LauncherViewController.swift in Sources */,
+				5C1F4D48ECD30FB728231D85 /* Viewer3DViewController.swift in Sources */,
+				647B76212C67DE9D0003E648 /* ViewerMosaicDocument.swift in Sources */,
+				647B762B2C67DE9D0003E648 /* ViewerPDFThumbnailListView.swift in Sources */,
+				5C1F4652414FA94069D208D3 /* ViewerBasicPDFViewController.swift in Sources */,
+				5C1F499E0006EF1B5D00EB20 /* ViewerMosaicViewController.swift in Sources */,
+				647B76242C67DE9D0003E648 /* ViewerBasicPDFDocument.swift in Sources */,
+				647B762A2C67DE9D0003E648 /* ViewerPDFStore.swift in Sources */,
+				5C1F4E64206FDC3B23D6977B /* ViewerPDFViewController.swift in Sources */,
+				647B76302C67DE9D0003E648 /* IdRandomizer.swift in Sources */,
+				647B761F2C67DE9D0003E648 /* Viewer3DStore.swift in Sources */,
+				647B76232C67DE9D0003E648 /* ViewerMosaicView.swift in Sources */,
+				647B76282C67DE9D0003E648 /* ViewerPDFDocument.swift in Sources */,
+				647B76272C67DE9D0003E648 /* ViewerBasicPDFViewContainer.swift in Sources */,
+				647B762D2C67DE9D0003E648 /* ViewerPDFThumbnailView.swift in Sources */,
+				647B76262C67DE9D0003E648 /* ViewerBasicPDFView.swift in Sources */,
+				5C1F45B626603B49F787FFAB /* AppDelegate.swift in Sources */,
+				647B76292C67DE9D0003E648 /* ViewerPDFPageView.swift in Sources */,
+				647B762C2C67DE9D0003E648 /* ViewerPDFThumbnailListViewContainer.swift in Sources */,
+				647B76252C67DE9D0003E648 /* ViewerBasicPDFStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		649066EA2C5E35AE00BA3CCD /* Debug */ = {
+		6488058F2C67127800D8A096 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -395,7 +374,7 @@
 			};
 			name = Debug;
 		};
-		649066EB2C5E35AE00BA3CCD /* Release */ = {
+		648805902C67127800D8A096 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -451,21 +430,18 @@
 			};
 			name = Release;
 		};
-		649066ED2C5E35AE00BA3CCD /* Debug */ = {
+		648805922C67127800D8A096 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				DEVELOPMENT_TEAM = 945C8BFVW3;
-				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -481,21 +457,18 @@
 			};
 			name = Debug;
 		};
-		649066EE2C5E35AE00BA3CCD /* Release */ = {
+		648805932C67127800D8A096 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				DEVELOPMENT_TEAM = 945C8BFVW3;
-				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -514,20 +487,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */ = {
+		648805782C67127600D8A096 /* Build configuration list for PBXProject "Voltaserve" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				649066EA2C5E35AE00BA3CCD /* Debug */,
-				649066EB2C5E35AE00BA3CCD /* Release */,
+				6488058F2C67127800D8A096 /* Debug */,
+				648805902C67127800D8A096 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */ = {
+		648805912C67127800D8A096 /* Build configuration list for PBXNativeTarget "Voltaserve" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				649066ED2C5E35AE00BA3CCD /* Debug */,
-				649066EE2C5E35AE00BA3CCD /* Release */,
+				648805922C67127800D8A096 /* Debug */,
+				648805932C67127800D8A096 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -535,15 +508,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.9.1;
-			};
-		};
-		649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */ = {
+		647B76312C67DEB50003E648 /* XCRemoteSwiftPackageReference "GLTFKit2" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/warrenm/GLTFKit2.git";
 			requirement = {
@@ -551,20 +516,28 @@
 				minimumVersion = 0.5.11;
 			};
 		};
+		647B76342C67DEC20003E648 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		649066F02C5E35E400BA3CCD /* Alamofire */ = {
+		647B76322C67DEB50003E648 /* GLTFKit2 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		649067042C60979900BA3CCD /* GLTFKit2 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */;
+			package = 647B76312C67DEB50003E648 /* XCRemoteSwiftPackageReference "GLTFKit2" */;
 			productName = GLTFKit2;
+		};
+		647B76352C67DEC20003E648 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 647B76342C67DEC20003E648 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 649066D62C5E35AD00BA3CCD /* Project object */;
+	rootObject = 648805752C67127600D8A096 /* Project object */;
 }
