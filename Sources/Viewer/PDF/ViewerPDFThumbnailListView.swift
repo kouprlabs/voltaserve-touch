@@ -2,8 +2,8 @@ import Combine
 import PDFKit
 import SwiftUI
 
-struct VSegmentedPDFThumbnailListView: View {
-    @ObservedObject var document: VSegmentedPDFDocument
+struct ViewerPDFThumbnailListView: View {
+    @ObservedObject var document: ViewerPDFDocument
     let pdfView: PDFView
     @State private var visibleIndices: Set<Int> = []
     @State private var isScrolling = false
@@ -19,7 +19,7 @@ struct VSegmentedPDFThumbnailListView: View {
             ScrollViewReader { proxy in
                 HStack(spacing: thumbnailSpacing) {
                     ForEach(0 ..< document.totalPages, id: \.self) { index in
-                        VSegmentedPDFThumbnailView(index: index + 1, document: document, pdfView: pdfView)
+                        ViewerPDFThumbnailView(index: index + 1, document: document, pdfView: pdfView)
                             .onAppear {
                                 visibleIndices.insert(index + 1)
                             }

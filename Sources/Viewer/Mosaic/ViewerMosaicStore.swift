@@ -1,7 +1,7 @@
 import Alamofire
 import Foundation
 
-struct MosaicStore {
+struct ViewerMosaicStore {
     var config: Config
     var token: Token
     private(set) var info: Info?

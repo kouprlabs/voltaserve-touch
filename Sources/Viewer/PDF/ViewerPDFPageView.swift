@@ -1,8 +1,8 @@
 import PDFKit
 import SwiftUI
 
-struct VSegmentedPDFPageView: UIViewRepresentable {
-    @ObservedObject var document: VSegmentedPDFDocument
+struct ViewerPDFPageView: UIViewRepresentable {
+    @ObservedObject var document: ViewerPDFDocument
 
     func makeUIView(context: Context) -> UIView {
         let containerView = UIView()
@@ -66,9 +66,9 @@ struct VSegmentedPDFPageView: UIViewRepresentable {
 
     class Coordinator: NSObject {
         var pdfView: PDFView?
-        var parent: VSegmentedPDFPageView
+        var parent: ViewerPDFPageView
 
-        init(_ parent: VSegmentedPDFPageView) {
+        init(_ parent: ViewerPDFPageView) {
             self.parent = parent
         }
 

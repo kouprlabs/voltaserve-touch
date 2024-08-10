@@ -2,8 +2,8 @@ import GLTFKit2
 import SceneKit
 import SwiftUI
 
-struct V3DView: UIViewRepresentable {
-    @EnvironmentObject private var document: V3DDocument
+struct Viewer3DView: UIViewRepresentable {
+    @EnvironmentObject private var document: Viewer3DDocument
     @State private var isLoading: Bool = true
 
     func makeUIView(context: Context) -> UIView {
@@ -48,7 +48,7 @@ struct V3DView: UIViewRepresentable {
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var document: V3DDocument
+        var document: Viewer3DDocument
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
@@ -56,7 +56,7 @@ struct V3DView: UIViewRepresentable {
         var spinner: UIActivityIndicatorView?
         @Binding var isLoading: Bool
 
-        init(sceneView: SCNView, document: V3DDocument, isLoading: Binding<Bool>) {
+        init(sceneView: SCNView, document: Viewer3DDocument, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
             self.document = document
             _isLoading = isLoading

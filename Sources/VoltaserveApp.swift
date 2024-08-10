@@ -9,10 +9,10 @@ struct VoltaserveApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(V3DDocument(config: config, token: token))
-                .environmentObject(VSegmentedPDFDocument(config: config, token: token))
-                .environmentObject(VPDFDocument(config: config, token: token))
-                .environmentObject(MosaicDocument(config: config, token: token))
+                .environmentObject(Viewer3DDocument(config: config, token: token))
+                .environmentObject(ViewerPDFDocument(config: config, token: token))
+                .environmentObject(ViewerBasicPDFDocument(config: config, token: token))
+                .environmentObject(ViewerMosaicDocument(config: config, token: token))
         }
     }
 }

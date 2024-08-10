@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct Launcher: View {
-    @EnvironmentObject private var v3dDocument: V3DDocument
-    @EnvironmentObject private var mosaicDocument: MosaicDocument
-    @EnvironmentObject private var vpdfDocument: VSegmentedPDFDocument
+    @EnvironmentObject private var viewer3DDocument: Viewer3DDocument
+    @EnvironmentObject private var viewerMosaicDocument: ViewerMosaicDocument
+    @EnvironmentObject private var viewerBasicPDFDocument: ViewerBasicPDFDocument
+    @EnvironmentObject private var viewerPDFDocument: ViewerPDFDocument
 
     var body: some View {
         NavigationView {
@@ -13,19 +14,25 @@ struct Launcher: View {
                     .padding()
                     .navigationBarHidden(true)
                     .onAppear {
-                        mosaicDocument.shuffleFileId()
+                        viewerMosaicDocument.shuffleFileId()
                     }
-                v3dButton
+                viewer3DButton
                     .padding()
                     .navigationBarTitleDisplayMode(.inline)
                     .onAppear {
-                        v3dDocument.shuffleFileId()
+                        viewer3DDocument.shuffleFileId()
                     }
-                vpdfButton
+                viewerBasicPDFButton
                     .padding()
                     .navigationBarTitleDisplayMode(.inline)
                     .onAppear {
-                        vpdfDocument.shuffleFileId()
+                        viewerBasicPDFDocument.shuffleFileId()
+                    }
+                viewerPDFButton
+                    .padding()
+                    .navigationBarTitleDisplayMode(.inline)
+                    .onAppear {
+                        viewerPDFDocument.shuffleFileId()
                     }
                 Spacer()
             }
@@ -36,29 +43,39 @@ struct Launcher: View {
 
     var mosaicButton: some View {
         Button(action: {}, label: {
-            NavigationLink(destination: MosaicView()
-                .navigationBarTitle("Mosaic View")) {
-                    Text("Launch Mosaic View")
+            NavigationLink(destination: ViewerMosaicView()
+                .navigationBarTitle("Mosaic Viewer")) {
+                    Text("Launch Mosaic Viewer")
                 }
         })
     }
 
-    var v3dButton: some View {
+    var viewer3DButton: some View {
         Button(action: {}, label: {
-            NavigationLink(destination: V3DView()
-                .navigationBarTitle("3D View")
+            NavigationLink(destination: Viewer3DView()
+                .navigationBarTitle("3D Viewer")
             ) {
-                Text("Launch 3D View")
+                Text("Launch 3D Viewer")
             }
         })
     }
 
-    var vpdfButton: some View {
+    var viewerBasicPDFButton: some View {
         Button(action: {}, label: {
-            NavigationLink(destination: VSegmentedPDFViewContainer()
-                .navigationBarTitle("PDF View")
+            NavigationLink(destination: ViewerBasicPDFViewContainer()
+                .navigationBarTitle("Basic PDF Viewer")
             ) {
-                Text("Launch PDF View")
+                Text("Launch Basic PDF Viewer")
+            }
+        })
+    }
+
+    var viewerPDFButton: some View {
+        Button(action: {}, label: {
+            NavigationLink(destination: ViewerPDFViewContainer()
+                .navigationBarTitle("PDF Viewer")
+            ) {
+                Text("Launch PDF Viewer")
             }
         })
     }

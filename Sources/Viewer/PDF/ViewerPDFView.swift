@@ -1,8 +1,8 @@
 import PDFKit
 import SwiftUI
 
-struct VSegmentedPDFView: UIViewRepresentable {
-    @ObservedObject var document: VSegmentedPDFDocument
+struct ViewerPDFView: UIViewRepresentable {
+    @ObservedObject var document: ViewerPDFDocument
     @Binding var showThumbnails: Bool
 
     func makeCoordinator() -> Coordinator {
@@ -58,7 +58,7 @@ struct VSegmentedPDFView: UIViewRepresentable {
         ])
 
         if showThumbnails {
-            let thumbnailListView = VSegmentedPDFThumbnailListViewContainer(document: document, pdfView: pdfView)
+            let thumbnailListView = ViewerPDFThumbnailListViewContainer(document: document, pdfView: pdfView)
             let hostingController = UIHostingController(rootView: thumbnailListView)
             hostingController.view.translatesAutoresizingMaskIntoConstraints = false
             hostingController.view.backgroundColor = .clear
@@ -83,9 +83,9 @@ struct VSegmentedPDFView: UIViewRepresentable {
 
     class Coordinator: NSObject {
         var pdfView: PDFView?
-        var parent: VSegmentedPDFView
+        var parent: ViewerPDFView
 
-        init(_ parent: VSegmentedPDFView) {
+        init(_ parent: ViewerPDFView) {
             self.parent = parent
         }
     }

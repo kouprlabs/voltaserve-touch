@@ -1,11 +1,11 @@
 import PDFKit
 import SwiftUI
 
-class VPDFDocument: ObservableObject {
+class ViewerBasicPDFDocument: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var isLoading: Bool = false
-    private var store: VPDFStore
+    private var store: ViewerBasicPDFStore
     private var idRandomizer = IdRandomizer(Constants.fileIds)
 
     private var fileId: String {
@@ -13,7 +13,7 @@ class VPDFDocument: ObservableObject {
     }
 
     init(config: Config, token: Token) {
-        store = VPDFStore(config: config, token: token)
+        store = ViewerBasicPDFStore(config: config, token: token)
     }
 
     func loadPDF() {

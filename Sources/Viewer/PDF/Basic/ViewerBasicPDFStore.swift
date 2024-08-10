@@ -1,7 +1,7 @@
 import Alamofire
 import Foundation
 
-struct VSegmentedPDFStore {
+struct ViewerBasicPDFStore {
     var config: Config
     var token: Token
 
@@ -19,7 +19,7 @@ struct VSegmentedPDFStore {
 
     func urlForSegmentedThumbnail(id: String, page: Int) -> URL {
         // swiftlint:disable:next line_length
-        URL(string: "\(config.apiUrl)/v2/files/\(id)/segmentation/thumbnails/\(page).jpg?access_token=\(token.accessToken)")!
+        URL(string: "\(config.apiUrl)/v2/files/\(id)/segmentation/thumbnails/\(page).png?access_token=\(token.accessToken)")!
     }
 
     func fetchFile(id: String, completion: @escaping (File?, Error?) -> Void) {
@@ -123,18 +123,14 @@ struct VSegmentedPDFStore {
         let fileExtension: String?
         let size: Int?
         let image: ImageProps?
-        let document: DocumentProps?
-        let page: PageProps?
-        let thumbnail: ThumbnailProps?
+        let pdf: PDFProps?
 
         // swiftlint:disable:next nesting
         enum CodingKeys: String, CodingKey {
             case fileExtension = "extension"
             case size
             case image
-            case document
-            case page
-            case thumbnail
+            case pdf
         }
     }
 
@@ -143,25 +139,7 @@ struct VSegmentedPDFStore {
         let height: Int
     }
 
-    struct DocumentProps: Decodable {
+    struct PDFProps: Decodable {
         let pages: Int
-    }
-
-    struct PageProps: Decodable {
-        let fileExtension: String
-
-        // swiftlint:disable:next nesting
-        enum CodingKeys: String, CodingKey {
-            case fileExtension = "extension"
-        }
-    }
-
-    struct ThumbnailProps: Decodable {
-        let fileExtension: String
-
-        // swiftlint:disable:next nesting
-        enum CodingKeys: String, CodingKey {
-            case fileExtension = "extension"
-        }
     }
 }

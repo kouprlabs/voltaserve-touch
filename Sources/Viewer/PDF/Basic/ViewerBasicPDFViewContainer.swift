@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct VPDFViewContainer: View {
-    @EnvironmentObject private var document: VPDFDocument
+struct ViewerBasicPDFViewContainer: View {
+    @EnvironmentObject private var document: ViewerBasicPDFDocument
 
     var body: some View {
         VStack {
@@ -11,7 +11,7 @@ struct VPDFViewContainer: View {
                     // Try to match the style .large of UIKit's UIActivityIndicatorView
                     .scaleEffect(1.85)
             } else {
-                VPDFView(document: document)
+                ViewerBasicPDFView(document: document)
                     .edgesIgnoringSafeArea(.all)
             }
         }.onAppear {

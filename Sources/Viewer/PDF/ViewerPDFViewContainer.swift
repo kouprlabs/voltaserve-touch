@@ -1,21 +1,21 @@
 import PDFKit
 import SwiftUI
 
-struct VSegmentedPDFViewContainer: View {
-    @EnvironmentObject private var document: VSegmentedPDFDocument
+struct ViewerPDFViewContainer: View {
+    @EnvironmentObject private var document: ViewerPDFDocument
     @State private var showThumbnails = true
 
     var body: some View {
         VStack {
             // Separate top part with loading spinner if needed
             ZStack {
-                VSegmentedPDFPageView(document: document)
+                ViewerPDFPageView(document: document)
                     .edgesIgnoringSafeArea(.all)
             }
 
             // Thumbnails view at bottom, always visible
             if showThumbnails {
-                VSegmentedPDFThumbnailListView(document: document, pdfView: PDFView())
+                ViewerPDFThumbnailListView(document: document, pdfView: PDFView())
                     .frame(height: 150)
                     .background(Color.white)
                     .transition(.move(edge: .bottom))

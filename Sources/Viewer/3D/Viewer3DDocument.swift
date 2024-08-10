@@ -1,8 +1,8 @@
 import GLTFKit2
 import SwiftUI
 
-class V3DDocument: ObservableObject {
-    private var store: V3DStore
+class Viewer3DDocument: ObservableObject {
+    private var store: Viewer3DStore
     private var idRandomizer = IdRandomizer(Constants.fileIds)
 
     private var fileId: String {
@@ -10,7 +10,7 @@ class V3DDocument: ObservableObject {
     }
 
     init(config: Config, token: Token) {
-        store = V3DStore(config: config, token: token)
+        store = Viewer3DStore(config: config, token: token)
     }
 
     func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {

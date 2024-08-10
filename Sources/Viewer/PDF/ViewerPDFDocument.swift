@@ -1,12 +1,12 @@
 import PDFKit
 import SwiftUI
 
-class VSegmentedPDFDocument: ObservableObject {
+class ViewerPDFDocument: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var totalPages = 0
     @Published var currentPage = 1
-    private var store: VSegmentedPDFStore
+    private var store: ViewerPDFStore
     private var idRandomizer = IdRandomizer(Constants.fileIds)
 
     // Number of pages to preload before and after the current page
@@ -17,7 +17,7 @@ class VSegmentedPDFDocument: ObservableObject {
     }
 
     init(config: Config, token: Token) {
-        store = VSegmentedPDFStore(config: config, token: token)
+        store = ViewerPDFStore(config: config, token: token)
     }
 
     func loadPDF() {

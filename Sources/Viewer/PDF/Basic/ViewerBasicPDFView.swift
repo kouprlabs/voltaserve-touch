@@ -1,8 +1,8 @@
 import PDFKit
 import SwiftUI
 
-struct VPDFView: UIViewRepresentable {
-    @ObservedObject var document: VPDFDocument
+struct ViewerBasicPDFView: UIViewRepresentable {
+    @ObservedObject var document: ViewerBasicPDFDocument
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -59,9 +59,9 @@ struct VPDFView: UIViewRepresentable {
 
     class Coordinator: NSObject {
         var pdfView: PDFView?
-        var parent: VPDFView
+        var parent: ViewerBasicPDFView
 
-        init(_ parent: VPDFView) {
+        init(_ parent: ViewerBasicPDFView) {
             self.parent = parent
         }
     }

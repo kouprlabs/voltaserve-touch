@@ -1,9 +1,9 @@
 import PDFKit
 import SwiftUI
 
-struct VSegmentedPDFThumbnailView: View {
+struct ViewerPDFThumbnailView: View {
     let index: Int
-    @ObservedObject var document: VSegmentedPDFDocument
+    @ObservedObject var document: ViewerPDFDocument
     let pdfView: PDFView
 
     var body: some View {

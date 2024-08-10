@@ -1,6 +1,6 @@
 import Foundation
 
-struct V3DStore {
+struct Viewer3DStore {
     var config: Config
     var token: Token
 
