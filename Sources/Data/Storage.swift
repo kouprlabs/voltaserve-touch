@@ -1,8 +1,8 @@
 import Foundation
 
-struct StorageData {
+struct Storage {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     struct Usage: Decodable {
         let bytes: Int

@@ -1,9 +1,9 @@
 import Alamofire
 import Foundation
 
-struct MosaicData {
+struct Mosaic {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     func fetchInfoForFile(id: String, completion: @escaping (Info?, Error?) -> Void) {
         AF.request(

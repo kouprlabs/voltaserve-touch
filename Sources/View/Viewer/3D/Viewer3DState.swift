@@ -1,16 +1,16 @@
 import GLTFKit2
 import SwiftUI
 
-class Viewer3DViewModel: ObservableObject {
-    private var data: FileData
+class Viewer3DState: ObservableObject {
+    private var data: File
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    init(config: Config, token: TokenData.Value) {
-        data = FileData(config: config, token: token)
+    init(config: Config, token: Token.Value) {
+        data = File(config: config, token: token)
     }
 
     func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {

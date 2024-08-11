@@ -1,6 +1,6 @@
 import Foundation
 
-enum TokenData {
+enum Token {
     struct Value {
         var accessToken: String
     }

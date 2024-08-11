@@ -1,6 +1,6 @@
 import Foundation
 
-struct PermissionData {
+struct Permission {
     enum Value: String, Decodable {
         case viewer
         case editor

@@ -1,8 +1,8 @@
 import Foundation
 
-struct SnapshotData {
+struct Snapshot {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
         case version

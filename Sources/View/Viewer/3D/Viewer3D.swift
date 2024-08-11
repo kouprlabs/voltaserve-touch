@@ -3,7 +3,7 @@ import SceneKit
 import SwiftUI
 
 struct Viewer3D: UIViewRepresentable {
-    @EnvironmentObject private var vm: Viewer3DViewModel
+    @EnvironmentObject private var vm: Viewer3DState
     @State private var isLoading: Bool = true
 
     func makeUIView(context: Context) -> UIView {
@@ -48,7 +48,7 @@ struct Viewer3D: UIViewRepresentable {
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var document: Viewer3DViewModel
+        var document: Viewer3DState
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
@@ -56,7 +56,7 @@ struct Viewer3D: UIViewRepresentable {
         var spinner: UIActivityIndicatorView?
         @Binding var isLoading: Bool
 
-        init(sceneView: SCNView, document: Viewer3DViewModel, isLoading: Binding<Bool>) {
+        init(sceneView: SCNView, document: Viewer3DState, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
             self.document = document
             _isLoading = isLoading

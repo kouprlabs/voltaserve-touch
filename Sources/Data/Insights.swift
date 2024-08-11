@@ -1,8 +1,8 @@
 import Foundation
 
-struct InsightsData {
+struct Insights {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     struct Language: Decodable {
         let id: String
@@ -13,7 +13,7 @@ struct InsightsData {
     struct Info: Decodable {
         let isAvailable: Bool
         let isOutdated: Bool
-        let snapshot: SnapshotData.Entity?
+        let snapshot: Snapshot.Entity?
     }
 
     struct Entity: Decodable {

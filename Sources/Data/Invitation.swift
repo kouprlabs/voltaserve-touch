@@ -1,8 +1,8 @@
 import Foundation
 
-struct InvitationData {
+struct Invitation {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
         case email
@@ -34,9 +34,9 @@ struct InvitationData {
 
     struct Entity: Decodable {
         let id: String
-        let owner: UserData.Entity
+        let owner: User.Entity
         let email: [String]
-        let organization: OrganizationData.Entity
+        let organization: Organization.Entity
         let status: InvitationStatus
         let createTime: String
         let updateTime: String?

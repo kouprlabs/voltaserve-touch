@@ -1,8 +1,8 @@
 import Foundation
 
-struct WorkspaceData {
+struct Organization {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
         case name
@@ -29,10 +29,7 @@ struct WorkspaceData {
     struct Entity: Decodable {
         let id: String
         let name: String
-        let permission: PermissionData.Value
-        let storageCapacity: Int
-        let rootId: String
-        let organization: OrganizationData.Entity
+        let permission: Permission.Value
         let createTime: String
         let updateTime: String?
     }

@@ -1,22 +1,19 @@
 import Foundation
 
-struct OrganizationData {
+struct User {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
-        case name
-        case dateCreated
-        case dateModified
+        case email
+        case fullName
 
         var description: String {
             switch self {
-            case .name:
-                "name"
-            case .dateCreated:
-                "date_created"
-            case .dateModified:
-                "date_modified"
+            case .email:
+                "email"
+            case .fullName:
+                "full_name"
             }
         }
     }
@@ -28,10 +25,10 @@ struct OrganizationData {
 
     struct Entity: Decodable {
         let id: String
-        let name: String
-        let permission: PermissionData.Value
-        let createTime: String
-        let updateTime: String?
+        let username: String
+        let email: String
+        let fullName: String
+        let picture: String?
     }
 
     struct List: Decodable {

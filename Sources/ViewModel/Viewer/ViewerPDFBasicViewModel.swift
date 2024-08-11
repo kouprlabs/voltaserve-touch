@@ -6,15 +6,15 @@ class ViewerPDFBasicViewModel: ObservableObject {
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var isLoading = false
 
-    private var data: FileData
+    private var data: File
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    init(config: Config, token: TokenData.Value) {
-        data = FileData(config: config, token: token)
+    init(config: Config, token: Token.Value) {
+        data = File(config: config, token: token)
     }
 
     func loadPDF() {

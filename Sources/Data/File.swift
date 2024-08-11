@@ -1,9 +1,9 @@
 import Alamofire
 import Foundation
 
-struct FileData {
+struct File {
     var config: Config
-    var token: TokenData.Value
+    var token: Token.Value
 
     func fetch(id: String, completion: @escaping (Entity?, Error?) -> Void) {
         AF.request(
@@ -113,7 +113,7 @@ struct FileData {
         let parentId: String
         let permission: PermissionType
         let isShared: Bool
-        let snapshot: SnapshotData.Entity?
+        let snapshot: Snapshot.Entity?
         let createTime: String
         let updateTime: String?
     }
@@ -129,13 +129,13 @@ struct FileData {
 
     struct UserPermission: Decodable {
         let id: String
-        let user: UserData.Entity
+        let user: User.Entity
         let permission: String
     }
 
     struct GroupPermission: Decodable {
         let id: String
-        let group: GroupData.Entity
+        let group: Group.Entity
         let permission: String
     }
 

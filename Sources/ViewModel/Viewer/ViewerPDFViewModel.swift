@@ -7,16 +7,16 @@ class ViewerPDFViewModel: ObservableObject {
     @Published var totalPages = 0
     @Published var currentPage = 1
 
-    private var model: FileData
-    private var file: FileData.Entity?
+    private var model: File
+    private var file: File.Entity?
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    init(config: Config, token: TokenData.Value) {
-        model = FileData(config: config, token: token)
+    init(config: Config, token: Token.Value) {
+        model = File(config: config, token: token)
     }
 
     func loadPDF() {
