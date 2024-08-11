@@ -1,7 +1,7 @@
 import Alamofire
 import SwiftUI
 
-class ViewerMosaicViewModel: ObservableObject {
+class ViewerMosaicState: ObservableObject {
     @Published private(set) var info: Mosaic.Info?
     @Published private(set) var zoomLevel: Mosaic.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []

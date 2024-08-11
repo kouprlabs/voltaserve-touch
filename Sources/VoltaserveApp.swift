@@ -12,7 +12,7 @@ struct VoltaserveApp: App {
                 .environmentObject(Viewer3DState(config: config, token: token))
                 .environmentObject(ViewerPDFViewModel(config: config, token: token))
                 .environmentObject(ViewerPDFBasicViewModel(config: config, token: token))
-                .environmentObject(ViewerMosaicViewModel(config: config, token: token))
+                .environmentObject(ViewerMosaicState(config: config, token: token))
         }
     }
 }

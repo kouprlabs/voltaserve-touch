@@ -2,7 +2,7 @@ import SwiftUI
 
 struct Launcher: View {
     @EnvironmentObject private var viewer3DVM: Viewer3DState
-    @EnvironmentObject private var viewerMosaicVM: ViewerMosaicViewModel
+    @EnvironmentObject private var viewerMosaicVM: ViewerMosaicState
     @EnvironmentObject private var viewerBasicPDFVM: ViewerPDFBasicViewModel
     @EnvironmentObject private var viewerPDFVM: ViewerPDFViewModel
 

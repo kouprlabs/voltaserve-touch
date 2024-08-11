@@ -2,7 +2,7 @@ import Alamofire
 import SwiftUI
 
 struct ViewerMosaic: View {
-    @EnvironmentObject private var vm: ViewerMosaicViewModel
+    @EnvironmentObject private var vm: ViewerMosaicState
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
