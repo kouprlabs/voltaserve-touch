@@ -13,7 +13,7 @@
 		647B76362C67DEC20003E648 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 647B76352C67DEC20003E648 /* Alamofire */; };
 		64BDC3F82C67ED57005D3A81 /* ReSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 64BDC3F72C67ED57005D3A81 /* ReSwift */; };
 		64BDC4312C687E6C005D3A81 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC3F92C687E6C005D3A81 /* Config.swift */; };
-		64BDC4322C687E6C005D3A81 /* IdRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC3FB2C687E6C005D3A81 /* IdRandomizer.swift */; };
+		64BDC4322C687E6C005D3A81 /* IDRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC3FB2C687E6C005D3A81 /* IDRandomizer.swift */; };
 		64BDC4332C687E6C005D3A81 /* AccountSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC3FD2C687E6C005D3A81 /* AccountSettingsViewModel.swift */; };
 		64BDC4342C687E6C005D3A81 /* FileListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC3FF2C687E6C005D3A81 /* FileListViewModel.swift */; };
 		64BDC4352C687E6C005D3A81 /* GroupListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC4012C687E6C005D3A81 /* GroupListViewModel.swift */; };
@@ -57,7 +57,7 @@
 		5C1F48B6B1BF7A16CD6812CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6488057D2C67127600D8A096 /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64BDC3F92C687E6C005D3A81 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
-		64BDC3FB2C687E6C005D3A81 /* IdRandomizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdRandomizer.swift; sourceTree = "<group>"; };
+		64BDC3FB2C687E6C005D3A81 /* IDRandomizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IDRandomizer.swift; sourceTree = "<group>"; };
 		64BDC3FD2C687E6C005D3A81 /* AccountSettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsViewModel.swift; sourceTree = "<group>"; };
 		64BDC3FF2C687E6C005D3A81 /* FileListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListViewModel.swift; sourceTree = "<group>"; };
 		64BDC4012C687E6C005D3A81 /* GroupListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupListViewModel.swift; sourceTree = "<group>"; };
@@ -151,7 +151,7 @@
 		64BDC3FC2C687E6C005D3A81 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				64BDC3FB2C687E6C005D3A81 /* IdRandomizer.swift */,
+				64BDC3FB2C687E6C005D3A81 /* IDRandomizer.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -420,7 +420,7 @@
 				64BDC4362C687E6C005D3A81 /* OrganizationListViewModel.swift in Sources */,
 				64BDC44A2C687E6C005D3A81 /* ViewerPDFPage.swift in Sources */,
 				5C1F45B626603B49F787FFAB /* AppDelegate.swift in Sources */,
-				64BDC4322C687E6C005D3A81 /* IdRandomizer.swift in Sources */,
+				64BDC4322C687E6C005D3A81 /* IDRandomizer.swift in Sources */,
 				64BDC4552C687E6C005D3A81 /* User.swift in Sources */,
 				64BDC4452C687E6C005D3A81 /* ViewerMosaicViewController.swift in Sources */,
 				64BDC43D2C687E6C005D3A81 /* AccountSettingsViewController.swift in Sources */,

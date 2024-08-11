@@ -1,6 +1,6 @@
 import Foundation
 
-struct IdRandomizer {
+struct IDRandomizer {
     private var _value: String?
     private var lastValue: String?
     private var ids: [String]

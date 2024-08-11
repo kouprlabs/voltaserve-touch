@@ -6,8 +6,9 @@ class ViewerPDFViewModel: ObservableObject {
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var totalPages = 0
     @Published var currentPage = 1
-    private var store: ViewerPDFStore
-    private var idRandomizer = IdRandomizer(Constants.fileIds)
+    
+    private var store: FileModel
+    private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     // Number of pages to preload before and after the current page
     private let preloadBufferSize = 5
@@ -17,13 +18,13 @@ class ViewerPDFViewModel: ObservableObject {
     }
 
     init(config: Config, token: Token) {
-        store = ViewerPDFStore(config: config, token: token)
+        store = FileModel(config: config, token: token)
     }
 
     func loadPDF() {
-        store.fetchFile(id: fileId) { file, error in
+        store.fetch(id: fileId) { file, error in
             if let file {
-                if let pages = file.snapshot?.preview?.document?.pages {
+                if let pages = file.snapshot?.preview?.document?.pages?.count {
                     DispatchQueue.main.async {
                         self.totalPages = pages
                         self.loadPage(at: self.currentPage)

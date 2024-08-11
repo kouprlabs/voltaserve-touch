@@ -4,9 +4,10 @@ import SwiftUI
 class ViewerMosaicViewModel: ObservableObject {
     @Published private(set) var zoomLevel: ViewerMosaicStore.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
+    
     private var busy: [[Bool]] = []
     private var store: ViewerMosaicStore
-    private var idRandomizer = IdRandomizer(Constants.fileIds)
+    private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
