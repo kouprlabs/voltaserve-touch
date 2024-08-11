@@ -7,7 +7,7 @@ class ViewerMosaicState: ObservableObject {
     @Published private(set) var grid: [[UIImage?]] = []
 
     private var busy: [[Bool]] = []
-    private var model: Mosaic
+    private var data: Mosaic
     private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
@@ -19,11 +19,11 @@ class ViewerMosaicState: ObservableObject {
     }
 
     init(config: Config, token: Token.Value) {
-        model = Mosaic(config: config, token: token)
+        data = Mosaic(config: config, token: token)
     }
 
     func loadMosaic() {
-        model.fetchInfoForFile(id: fileId) { info, error in
+        data.fetchInfoForFile(id: fileId) { info, error in
             if let info {
                 self.info = info
                 DispatchQueue.main.async {
@@ -55,7 +55,7 @@ class ViewerMosaicState: ObservableObject {
         guard busy[row][col] == false else { return }
         busy[row][col] = true
         if let zoomLevel, let info {
-            model.fetchDataForFile(
+            data.fetchDataForFile(
                 id: fileId,
                 zoomLevel: zoomLevel,
                 forCellAtRow: row, col: col,

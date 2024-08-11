@@ -7,7 +7,7 @@ class ViewerPDFState: ObservableObject {
     @Published var totalPages = 0
     @Published var currentPage = 1
 
-    private var model: File
+    private var data: File
     private var file: File.Entity?
     private var idRandomizer = Randomizer(Constants.fileIds)
 
@@ -16,11 +16,11 @@ class ViewerPDFState: ObservableObject {
     }
 
     init(config: Config, token: Token.Value) {
-        model = File(config: config, token: token)
+        data = File(config: config, token: token)
     }
 
     func loadPDF() {
-        model.fetch(id: fileId) { file, error in
+        data.fetch(id: fileId) { file, error in
             if let file {
                 self.file = file
                 if let pages = file.snapshot?.preview?.document?.pages?.count {
@@ -39,7 +39,7 @@ class ViewerPDFState: ObservableObject {
     func loadPage(at index: Int) {
         guard index > 0, index <= totalPages else { return }
 
-        model.fetchSegmentedPage(id: fileId, index) { data, error in
+        data.fetchSegmentedPage(id: fileId, index) { data, error in
             if let data {
                 if let newDocument = PDFDocument(data: data) {
                     DispatchQueue.main.async {
@@ -59,7 +59,7 @@ class ViewerPDFState: ObservableObject {
         guard loadedThumbnails[index] == nil else { return }
         guard let fileExtension = file?.snapshot?.segmentation?.document?.thumbnails?.fileExtension else { return }
 
-        model.fetchSegmentedThumbnail(
+        data.fetchSegmentedThumbnail(
             id: fileId,
             page: index, fileExtension: fileExtension
         ) { [weak self] data, error in
@@ -85,7 +85,7 @@ class ViewerPDFState: ObservableObject {
         let end = min(totalPages, index + Constants.preloadBufferSize)
 
         for pageNumber in start ... end where !isPreloaded(page: pageNumber) {
-            model.fetchSegmentedPage(id: fileId, pageNumber) { data, error in
+            data.fetchSegmentedPage(id: fileId, pageNumber) { data, error in
                 // Preload pages silently without affecting loading state of main view.
                 if let data, let tempDoc = PDFDocument(data: data) {
                     DispatchQueue.main.async {

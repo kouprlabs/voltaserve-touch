@@ -1,6 +1,6 @@
 import Foundation
 
-struct Permission {
+enum Permission {
     enum Value: String, Decodable {
         case viewer
         case editor
@@ -16,53 +16,25 @@ struct Permission {
                 3
             }
         }
-    }
 
-    func gtViewerPermission(permission: Value) -> Bool {
-        permission.weight() > Value.viewer.weight()
-    }
+        func gt(_ permission: Value) -> Bool {
+            weight() > permission.weight()
+        }
 
-    func gtEditorPermission(permission: Value) -> Bool {
-        permission.weight() > Value.editor.weight()
-    }
+        func ge(_ permission: Value) -> Bool {
+            weight() >= permission.weight()
+        }
 
-    func gtOwnerPermission(permission: Value) -> Bool {
-        permission.weight() > Value.owner.weight()
-    }
+        func lt(_ permission: Value) -> Bool {
+            weight() < permission.weight()
+        }
 
-    func geViewerPermission(permission: Value) -> Bool {
-        permission.weight() >= Value.viewer.weight()
-    }
+        func le(_ permission: Value) -> Bool {
+            weight() <= permission.weight()
+        }
 
-    func geEditorPermission(permission: Value) -> Bool {
-        permission.weight() >= Value.editor.weight()
-    }
-
-    func geOwnerPermission(permission: Value) -> Bool {
-        permission.weight() >= Value.owner.weight()
-    }
-
-    func ltViewerPermission(permission: Value) -> Bool {
-        permission.weight() < Value.viewer.weight()
-    }
-
-    func ltEditorPermission(permission: Value) -> Bool {
-        permission.weight() < Value.editor.weight()
-    }
-
-    func ltOwnerPermission(permission: Value) -> Bool {
-        permission.weight() < Value.owner.weight()
-    }
-
-    func leViewerPermission(permission: Value) -> Bool {
-        permission.weight() <= Value.viewer.weight()
-    }
-
-    func leEditorPermission(permission: Value) -> Bool {
-        permission.weight() <= Value.editor.weight()
-    }
-
-    func leOwnerPermission(permission: Value) -> Bool {
-        permission.weight() <= Value.owner.weight()
+        func eq(_ permission: Value) -> Bool {
+            weight() == permission.weight()
+        }
     }
 }
