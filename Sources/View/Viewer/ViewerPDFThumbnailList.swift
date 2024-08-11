@@ -97,10 +97,8 @@ struct ViewerPDFThumbnailList: View {
     private func clearAllThumbnailsOutOfRange(firstIndex: Int, lastIndex: Int) {
         DispatchQueue.main.async {
             let range = (firstIndex - 10) ... (lastIndex + 10)
-            for index in 1 ... vm.totalPages {
-                if !range.contains(index - 1) {
-                    vm.loadedThumbnails.removeValue(forKey: index)
-                }
+            for index in 1 ... vm.totalPages where !range.contains(index - 1) {
+                vm.loadedThumbnails.removeValue(forKey: index)
             }
         }
     }

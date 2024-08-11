@@ -7,23 +7,22 @@ class ViewerPDFViewModel: ObservableObject {
     @Published var totalPages = 0
     @Published var currentPage = 1
 
-    private var store: FileModel
+    private var model: FileModel
+    private var file: FileModel.File?
     private var idRandomizer = IDRandomizer(Constants.fileIds)
-
-    // Number of pages to preload before and after the current page
-    private let preloadBufferSize = 5
 
     private var fileId: String {
         idRandomizer.value
     }
 
     init(config: Config, token: TokenModel.Token) {
-        store = FileModel(config: config, token: token)
+        model = FileModel(config: config, token: token)
     }
 
     func loadPDF() {
-        store.fetch(id: fileId) { file, error in
+        model.fetch(id: fileId) { file, error in
             if let file {
+                self.file = file
                 if let pages = file.snapshot?.preview?.document?.pages?.count {
                     DispatchQueue.main.async {
                         self.totalPages = pages
@@ -40,7 +39,7 @@ class ViewerPDFViewModel: ObservableObject {
     func loadPage(at index: Int) {
         guard index > 0, index <= totalPages else { return }
 
-        store.fetchSegmentedPage(id: fileId, index) { data, error in
+        model.fetchSegmentedPage(id: fileId, index) { data, error in
             if let data {
                 if let newDocument = PDFDocument(data: data) {
                     DispatchQueue.main.async {
@@ -58,8 +57,12 @@ class ViewerPDFViewModel: ObservableObject {
     func loadThumbnail(for index: Int) {
         guard index > 0, index <= totalPages else { return }
         guard loadedThumbnails[index] == nil else { return }
+        guard let fileExtension = file?.snapshot?.segmentation?.document?.thumbnails?.fileExtension else { return }
 
-        store.fetchSegmentedThumbnail(id: fileId, index) { [weak self] data, error in
+        model.fetchSegmentedThumbnail(
+            id: fileId,
+            page: index, fileExtension: fileExtension
+        ) { [weak self] data, error in
             guard let self else { return }
             if let data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {
@@ -78,11 +81,11 @@ class ViewerPDFViewModel: ObservableObject {
     }
 
     private func preloadSurroundingPages(for index: Int) {
-        let start = max(1, index - preloadBufferSize)
-        let end = min(totalPages, index + preloadBufferSize)
+        let start = max(1, index - Constants.preloadBufferSize)
+        let end = min(totalPages, index + Constants.preloadBufferSize)
 
         for pageNumber in start ... end where !isPreloaded(page: pageNumber) {
-            store.fetchSegmentedPage(id: fileId, pageNumber) { data, error in
+            model.fetchSegmentedPage(id: fileId, pageNumber) { data, error in
                 // Preload pages silently without affecting loading state of main view.
                 if let data, let tempDoc = PDFDocument(data: data) {
                     DispatchQueue.main.async {
@@ -110,7 +113,10 @@ class ViewerPDFViewModel: ObservableObject {
 
     private enum Constants {
         static let fileIds = [
-            "MaARV6ZzvPLxZ"
+            "OvoGXwrqo6J8r"
         ]
+
+        // Number of pages to preload before and after the current page
+        static let preloadBufferSize = 5
     }
 }

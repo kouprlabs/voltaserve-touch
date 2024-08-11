@@ -34,9 +34,14 @@ struct FileModel {
         }
     }
 
-    func fetchSegmentedThumbnail(id: String, _ page: Int, completion: @escaping (Data?, Error?) -> Void) {
+    func fetchSegmentedThumbnail(
+        id: String,
+        page: Int,
+        fileExtension: String,
+        completion: @escaping (Data?, Error?) -> Void
+    ) {
         AF.request(
-            urlForSegmentedThumbnail(id: id, page: page),
+            urlForSegmentedThumbnail(id: id, page: page, fileExtension: String(fileExtension.dropFirst())),
             headers: headersWithAuthorization(token.accessToken)
         ).responseData { response in
             if let data = response.data {
@@ -62,8 +67,8 @@ struct FileModel {
             "access_token=\(token.accessToken)")!
     }
 
-    func urlForSegmentedThumbnail(id: String, page: Int) -> URL {
-        URL(string: "\(config.apiUrl)/v2/files/\(id)/segmentation/thumbnails/\(page).png?" +
+    func urlForSegmentedThumbnail(id: String, page: Int, fileExtension: String) -> URL {
+        URL(string: "\(config.apiUrl)/v2/files/\(id)/segmentation/thumbnails/\(page).\(fileExtension)?" +
             "access_token=\(token.accessToken)")!
     }
 

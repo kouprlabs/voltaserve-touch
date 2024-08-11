@@ -1,7 +1,7 @@
 import PDFKit
 import SwiftUI
 
-struct ViewerPDFView: View {
+struct ViewerPDFContainer: View {
     @EnvironmentObject private var vm: ViewerPDFViewModel
     @State private var showThumbnails = true
 

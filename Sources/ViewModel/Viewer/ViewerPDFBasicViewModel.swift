@@ -6,7 +6,7 @@ class ViewerPDFBasicViewModel: ObservableObject {
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var isLoading = false
 
-    private var store: FileModel
+    private var model: FileModel
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
@@ -14,7 +14,7 @@ class ViewerPDFBasicViewModel: ObservableObject {
     }
 
     init(config: Config, token: TokenModel.Token) {
-        store = FileModel(config: config, token: token)
+        model = FileModel(config: config, token: token)
     }
 
     func loadPDF() {
@@ -25,7 +25,7 @@ class ViewerPDFBasicViewModel: ObservableObject {
         }
 
         DispatchQueue.global().async {
-            if let loadedDocument = PDFDocument(url: self.store.urlForPreview(id: self.fileId, fileExtension: "pdf")) {
+            if let loadedDocument = PDFDocument(url: self.model.urlForPreview(id: self.fileId, fileExtension: "pdf")) {
                 DispatchQueue.main.async {
                     self.pdfDocument = loadedDocument
                     self.isLoading = false
@@ -61,7 +61,7 @@ class ViewerPDFBasicViewModel: ObservableObject {
 
     private enum Constants {
         static let fileIds = [
-            "MaARV6ZzvPLxZ"
+            "OvoGXwrqo6J8r"
         ]
     }
 }
