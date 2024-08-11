@@ -34,7 +34,7 @@ struct InvitationModel {
 
     struct Invitation: Decodable {
         let id: String
-        let owner: APIUserModel.User
+        let owner: UserModel.User
         let email: [String]
         let organization: OrganizationModel.Organization
         let status: InvitationStatus

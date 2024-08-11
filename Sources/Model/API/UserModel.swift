@@ -1,6 +1,6 @@
 import Foundation
 
-struct APIUserModel {
+struct UserModel {
     var config: Config
     var token: TokenModel.Token
 

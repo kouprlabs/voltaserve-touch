@@ -129,7 +129,7 @@ struct FileModel {
 
     struct UserPermission: Decodable {
         let id: String
-        let user: APIUserModel.User
+        let user: UserModel.User
         let permission: String
     }
 
