@@ -82,9 +82,9 @@ struct ViewerPDFThumbnailList: View {
                 .sorted()
 
             if !indicesToLoad.isEmpty {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     for index in indicesToLoad {
-                        state.loadThumbnail(for: index)
+                        await state.loadThumbnail(for: index)
                     }
                 }
             }

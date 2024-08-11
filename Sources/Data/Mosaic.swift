@@ -5,39 +5,46 @@ struct Mosaic {
     var config: Config
     var token: Token.Value
 
-    func fetchInfoForFile(id: String, completion: @escaping (Info?, Error?) -> Void) {
-        AF.request(
-            "\(config.apiUrl)/v2/mosaics/\(id)/info",
-            headers: headersWithAuthorization(token.accessToken)
-        ).responseData { response in
-            if let data = response.data {
-                do {
-                    let info = try JSONDecoder().decode(Info.self, from: data)
-                    completion(info, nil)
-                } catch {
-                    completion(nil, error)
+    func fetchInfoForFile(id: String) async throws -> Info {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                "\(config.apiUrl)/v2/mosaics/\(id)/info",
+                headers: headersWithAuthorization(token.accessToken)
+            ).responseData { response in
+                if let data = response.data {
+                    do {
+                        let result = try JSONDecoder().decode(Info.self, from: data)
+                        continuation.resume(returning: result)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
         }
     }
 
-    func fetchDataForFile(
-        id: String,
-        zoomLevel: ZoomLevel,
-        forCellAtRow row: Int, col: Int,
-        fileExtension: String,
-        completion: @escaping (Data?, Error?) -> Void
-    ) {
-        let url = "\(config.apiUrl)/v2/mosaics/\(id)/zoom_level/\(zoomLevel.index)" +
-            "/row/\(row)/col/\(col)/ext/\(fileExtension)?" +
-            "access_token=\(token.accessToken)"
-        AF.request(url).responseData { response in
-            if let data = response.data {
-                completion(data, nil)
-            } else {
-                completion(nil, response.error)
+    func fetchDataForFile(id: String,
+                          zoomLevel: ZoomLevel,
+                          forCellAtRow row: Int, col: Int,
+                          fileExtension: String) async throws -> Data {
+        try await withCheckedThrowingContinuation { continuation in
+            let url = "\(config.apiUrl)/v2/mosaics/\(id)/zoom_level/\(zoomLevel.index)" +
+                "/row/\(row)/col/\(col)/ext/\(fileExtension)?" +
+                "access_token=\(token.accessToken)"
+            AF.request(url).responseData { response in
+                if let data = response.data {
+                    continuation.resume(returning: data)
+                } else if let error = response.error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(throwing: MosaicError.unknown)
+                }
             }
         }
+    }
+
+    enum MosaicError: Error {
+        case unknown
     }
 
     struct Info: Codable {

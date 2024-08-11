@@ -32,7 +32,9 @@ struct Launcher: View {
                     .padding()
                     .navigationBarTitleDisplayMode(.inline)
                     .onAppear {
-                        viewerPDFVM.shuffleFileId()
+                        Task {
+                            await viewerPDFVM.shuffleFileId()
+                        }
                     }
                 Spacer()
             }

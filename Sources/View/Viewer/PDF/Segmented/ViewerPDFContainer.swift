@@ -35,7 +35,9 @@ struct ViewerPDFContainer: View {
                 })
             }
         }.onAppear {
-            state.loadPDF()
+            Task {
+                await state.loadPDF()
+            }
         }
     }
 }

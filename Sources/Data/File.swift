@@ -5,49 +5,58 @@ struct File {
     var config: Config
     var token: Token.Value
 
-    func fetch(id: String, completion: @escaping (Entity?, Error?) -> Void) {
-        AF.request(
-            URL(string: "\(config.apiUrl)/v2/files/\(id)")!,
-            headers: headersWithAuthorization(token.accessToken)
-        ).responseData { response in
-            if let data = response.data {
-                do {
-                    let info = try JSONDecoder().decode(Entity.self, from: data)
-                    completion(info, nil)
-                } catch {
-                    completion(nil, error)
+    func fetch(id: String) async throws -> Entity {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                URL(string: "\(config.apiUrl)/v2/files/\(id)")!,
+                headers: headersWithAuthorization(token.accessToken)
+            ).responseData { response in
+                if let data = response.data {
+                    do {
+                        let result = try JSONDecoder().decode(Entity.self, from: data)
+                        continuation.resume(returning: result)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                } else if let error = response.error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(throwing: FileError.unknown)
                 }
             }
         }
     }
 
-    func fetchSegmentedPage(id: String, _ page: Int, completion: @escaping (Data?, Error?) -> Void) {
-        AF.request(
-            urlForSegmentedPage(id: id, page: page),
-            headers: headersWithAuthorization(token.accessToken)
-        ).responseData { response in
-            if let data = response.data {
-                completion(data, nil)
-            } else if let error = response.error {
-                completion(nil, error)
+    func fetchSegmentedPage(id: String, page: Int) async throws -> Data {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForSegmentedPage(id: id, page: page),
+                headers: headersWithAuthorization(token.accessToken)
+            ).responseData { response in
+                if let data = response.data {
+                    continuation.resume(returning: data)
+                } else if let error = response.error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(throwing: FileError.unknown)
+                }
             }
         }
     }
 
-    func fetchSegmentedThumbnail(
-        id: String,
-        page: Int,
-        fileExtension: String,
-        completion: @escaping (Data?, Error?) -> Void
-    ) {
-        AF.request(
-            urlForSegmentedThumbnail(id: id, page: page, fileExtension: String(fileExtension.dropFirst())),
-            headers: headersWithAuthorization(token.accessToken)
-        ).responseData { response in
-            if let data = response.data {
-                completion(data, nil)
-            } else if let error = response.error {
-                completion(nil, error)
+    func fetchSegmentedThumbnail(id: String, page: Int, fileExtension: String) async throws -> Data {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                urlForSegmentedThumbnail(id: id, page: page, fileExtension: String(fileExtension.dropFirst())),
+                headers: headersWithAuthorization(token.accessToken)
+            ).responseData { response in
+                if let data = response.data {
+                    continuation.resume(returning: data)
+                } else if let error = response.error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(throwing: FileError.unknown)
+                }
             }
         }
     }
@@ -70,6 +79,10 @@ struct File {
     func urlForSegmentedThumbnail(id: String, page: Int, fileExtension: String) -> URL {
         URL(string: "\(config.apiUrl)/v2/files/\(id)/segmentation/thumbnails/\(page).\(fileExtension)?" +
             "access_token=\(token.accessToken)")!
+    }
+
+    enum FileError: Error {
+        case unknown
     }
 
     enum FileType: String, Decodable {

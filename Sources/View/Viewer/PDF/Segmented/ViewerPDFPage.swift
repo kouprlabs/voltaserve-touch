@@ -77,13 +77,17 @@ struct ViewerPDFPage: UIViewRepresentable {
                 return
             }
             parent.state.currentPage += 1
-            parent.state.loadPage(at: parent.state.currentPage)
+            Task {
+                await parent.state.loadPage(at: parent.state.currentPage)
+            }
         }
 
         @objc func swipeRight() {
             guard parent.state.currentPage > 1 else { return }
             parent.state.currentPage -= 1
-            parent.state.loadPage(at: parent.state.currentPage)
+            Task {
+                await parent.state.loadPage(at: parent.state.currentPage)
+            }
         }
     }
 }

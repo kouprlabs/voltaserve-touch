@@ -1,6 +1,6 @@
 import Foundation
 
-struct Task {
+struct TaskData {
     var config: Config
     var token: Token.Value
 

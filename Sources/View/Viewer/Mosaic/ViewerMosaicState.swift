@@ -22,19 +22,18 @@ class ViewerMosaicState: ObservableObject {
         data = Mosaic(config: config, token: token)
     }
 
-    func loadMosaic() {
-        data.fetchInfoForFile(id: fileId) { info, error in
-            if let info {
-                self.info = info
-                DispatchQueue.main.async {
-                    if let zoomLevel = self.info?.metadata.zoomLevels.first {
-                        self.zoomLevel = zoomLevel
-                        self.allocateGridForZoomLevel(zoomLevel)
-                    }
+    func loadMosaic() async throws {
+        do {
+            let info = try await data.fetchInfoForFile(id: fileId)
+            self.info = info
+            Task { @MainActor in
+                if let zoomLevel = self.info?.metadata.zoomLevels.first {
+                    self.zoomLevel = zoomLevel
+                    self.allocateGridForZoomLevel(zoomLevel)
                 }
-            } else if let error {
-                print(error.localizedDescription)
             }
+        } catch {
+            print(error.localizedDescription)
         }
     }
 
@@ -55,18 +54,19 @@ class ViewerMosaicState: ObservableObject {
         guard busy[row][col] == false else { return }
         busy[row][col] = true
         if let zoomLevel, let info {
-            data.fetchDataForFile(
-                id: fileId,
-                zoomLevel: zoomLevel,
-                forCellAtRow: row, col: col,
-                fileExtension: String(info.metadata.fileExtension.dropFirst())
-            ) { data, error in
-                self.busy[row][col] = false
-                if let data {
-                    DispatchQueue.main.async {
+            Task {
+                do {
+                    let data = try await data.fetchDataForFile(
+                        id: fileId,
+                        zoomLevel: zoomLevel,
+                        forCellAtRow: row, col: col,
+                        fileExtension: String(info.metadata.fileExtension.dropFirst())
+                    )
+                    self.busy[row][col] = false
+                    Task { @MainActor in
                         self.grid[row][col] = UIImage(data: data)
                     }
-                } else if let error {
+                } catch {
                     print(error.localizedDescription)
                 }
             }

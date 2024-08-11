@@ -19,59 +19,57 @@ class ViewerPDFState: ObservableObject {
         data = File(config: config, token: token)
     }
 
-    func loadPDF() {
-        data.fetch(id: fileId) { file, error in
-            if let file {
-                self.file = file
-                if let pages = file.snapshot?.preview?.document?.pages?.count {
-                    DispatchQueue.main.async {
-                        self.totalPages = pages
-                        self.loadPage(at: self.currentPage)
-                        self.preloadSurroundingPages(for: self.currentPage)
-                    }
+    func loadPDF() async {
+        do {
+            let file = try await data.fetch(id: fileId)
+            self.file = file
+            if let pages = file.snapshot?.preview?.document?.pages?.count {
+                Task { @MainActor in
+                    self.totalPages = pages
+                    await self.loadPage(at: self.currentPage)
+                    await self.preloadSurroundingPages(for: self.currentPage)
                 }
-            } else if let error {
-                print(error.localizedDescription)
             }
+        } catch {
+            print(error.localizedDescription)
         }
     }
 
-    func loadPage(at index: Int) {
+    func loadPage(at index: Int) async {
         guard index > 0, index <= totalPages else { return }
 
-        data.fetchSegmentedPage(id: fileId, index) { data, error in
-            if let data {
-                if let newDocument = PDFDocument(data: data) {
-                    DispatchQueue.main.async {
-                        self.pdfDocument = newDocument
-                        self.currentPage = index
-                        self.preloadSurroundingPages(for: index)
-                    }
+        do {
+            let data = try await data.fetchSegmentedPage(id: fileId, page: index)
+            if let newDocument = PDFDocument(data: data) {
+                Task { @MainActor in
+                    self.pdfDocument = newDocument
+                    self.currentPage = index
+                    await self.preloadSurroundingPages(for: index)
                 }
-            } else if let error {
-                print(error.localizedDescription)
             }
+        } catch {
+            print(error.localizedDescription)
         }
     }
 
-    func loadThumbnail(for index: Int) {
+    func loadThumbnail(for index: Int) async {
         guard index > 0, index <= totalPages else { return }
         guard loadedThumbnails[index] == nil else { return }
         guard let fileExtension = file?.snapshot?.segmentation?.document?.thumbnails?.fileExtension else { return }
 
-        data.fetchSegmentedThumbnail(
-            id: fileId,
-            page: index, fileExtension: fileExtension
-        ) { [weak self] data, error in
-            guard let self else { return }
-            if let data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
+        do {
+            let data = try await data.fetchSegmentedThumbnail(
+                id: fileId,
+                page: index, fileExtension: fileExtension
+            )
+            if let image = UIImage(data: data) {
+                Task { @MainActor in
                     self.loadedThumbnails[index] = image
-                    self.loadThumbnail(for: index + 1)
+                    await self.loadThumbnail(for: index + 1)
                 }
-            } else if let error {
-                print(error.localizedDescription)
             }
+        } catch {
+            print(error.localizedDescription)
         }
     }
 
@@ -80,14 +78,15 @@ class ViewerPDFState: ObservableObject {
         pdfDocument?.page(at: index - 1) != nil
     }
 
-    private func preloadSurroundingPages(for index: Int) {
+    private func preloadSurroundingPages(for index: Int) async {
         let start = max(1, index - Constants.preloadBufferSize)
         let end = min(totalPages, index + Constants.preloadBufferSize)
 
         for pageNumber in start ... end where !isPreloaded(page: pageNumber) {
-            data.fetchSegmentedPage(id: fileId, pageNumber) { data, error in
+            do {
+                let data = try await data.fetchSegmentedPage(id: fileId, page: pageNumber)
                 // Preload pages silently without affecting loading state of main view.
-                if let data, let tempDoc = PDFDocument(data: data) {
+                if let tempDoc = PDFDocument(data: data) {
                     DispatchQueue.main.async {
                         if self.pdfDocument?.pageCount == 0 {
                             self.pdfDocument = PDFDocument()
@@ -98,17 +97,19 @@ class ViewerPDFState: ObservableObject {
                             self.pdfDocument?.insert(tempDoc.page(at: 0)!, at: targetIndex)
                         }
                     }
-                } else if let error {
-                    print(error.localizedDescription)
                 }
+            } catch {
+                print(error.localizedDescription)
             }
         }
     }
 
-    func shuffleFileId() {
-        pdfDocument = nil
+    func shuffleFileId() async {
+        Task { @MainActor in
+            pdfDocument = nil
+        }
         idRandomizer.shuffle()
-        loadPDF()
+        await loadPDF()
     }
 
     private enum Constants {

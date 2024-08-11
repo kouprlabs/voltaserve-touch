@@ -87,7 +87,9 @@ struct ViewerMosaic: View {
                 }
             }
             .onAppear {
-                state.loadMosaic()
+                Task {
+                    try await state.loadMosaic()
+                }
             }
         }
     }
