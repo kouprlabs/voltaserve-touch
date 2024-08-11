@@ -1,18 +1,18 @@
 import Alamofire
 import Foundation
 
-struct FileModel {
+struct FileData {
     var config: Config
-    var token: TokenModel.Token
+    var token: TokenData.Value
 
-    func fetch(id: String, completion: @escaping (File?, Error?) -> Void) {
+    func fetch(id: String, completion: @escaping (Entity?, Error?) -> Void) {
         AF.request(
             URL(string: "\(config.apiUrl)/v2/files/\(id)")!,
             headers: headersWithAuthorization(token.accessToken)
         ).responseData { response in
             if let data = response.data {
                 do {
-                    let info = try JSONDecoder().decode(File.self, from: data)
+                    let info = try JSONDecoder().decode(Entity.self, from: data)
                     completion(info, nil)
                 } catch {
                     completion(nil, error)
@@ -105,7 +105,7 @@ struct FileModel {
         case desc
     }
 
-    struct File: Decodable {
+    struct Entity: Decodable {
         let id: String
         let workspaceId: String
         let name: String
@@ -113,13 +113,13 @@ struct FileModel {
         let parentId: String
         let permission: PermissionType
         let isShared: Bool
-        let snapshot: SnapshotModel.Snapshot?
+        let snapshot: SnapshotData.Entity?
         let createTime: String
         let updateTime: String?
     }
 
     struct List: Decodable {
-        let data: [File]
+        let data: [Entity]
         let totalPages: Int
         let totalElements: Int
         let page: Int
@@ -129,13 +129,13 @@ struct FileModel {
 
     struct UserPermission: Decodable {
         let id: String
-        let user: UserModel.User
+        let user: UserData.Entity
         let permission: String
     }
 
     struct GroupPermission: Decodable {
         let id: String
-        let group: GroupModel.Group
+        let group: GroupData.Entity
         let permission: String
     }
 

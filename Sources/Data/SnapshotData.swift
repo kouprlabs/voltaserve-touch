@@ -1,8 +1,8 @@
 import Foundation
 
-struct SnapshotModel {
+struct SnapshotData {
     var config: Config
-    var token: TokenModel.Token
+    var token: TokenData.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
         case version
@@ -26,7 +26,7 @@ struct SnapshotModel {
         case desc
     }
 
-    struct Snapshot: Decodable {
+    struct Entity: Decodable {
         let id: String
         let version: Int
         let status: Status
@@ -46,7 +46,7 @@ struct SnapshotModel {
     }
 
     struct List: Decodable {
-        let data: [Snapshot]
+        let data: [Entity]
         let totalPages: Int
         let totalElements: Int
         let page: Int

@@ -1,8 +1,8 @@
 import Foundation
 
-struct UserModel {
+struct UserData {
     var config: Config
-    var token: TokenModel.Token
+    var token: TokenData.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
         case email
@@ -23,7 +23,7 @@ struct UserModel {
         case desc
     }
 
-    struct User: Decodable {
+    struct Entity: Decodable {
         let id: String
         let username: String
         let email: String
@@ -32,7 +32,7 @@ struct UserModel {
     }
 
     struct List: Decodable {
-        let data: [User]
+        let data: [Entity]
         let totalPages: Int
         let totalElements: Int
         let page: Int

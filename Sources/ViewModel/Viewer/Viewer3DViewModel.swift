@@ -2,20 +2,20 @@ import GLTFKit2
 import SwiftUI
 
 class Viewer3DViewModel: ObservableObject {
-    private var model: FileModel
+    private var data: FileData
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    init(config: Config, token: TokenModel.Token) {
-        model = FileModel(config: config, token: token)
+    init(config: Config, token: TokenData.Value) {
+        data = FileData(config: config, token: token)
     }
 
     func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {
         GLTFAsset.load(
-            with: model.urlForPreview(
+            with: data.urlForPreview(
                 id: fileId,
                 fileExtension: "glb"
             ),

@@ -1,8 +1,8 @@
 import Foundation
 
-struct GroupModel {
+struct OrganizationData {
     var config: Config
-    var token: TokenModel.Token
+    var token: TokenData.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
         case name
@@ -26,17 +26,16 @@ struct GroupModel {
         case desc
     }
 
-    struct Group: Decodable {
+    struct Entity: Decodable {
         let id: String
         let name: String
-        let organization: OrganizationModel.Organization
-        let permission: String
+        let permission: PermissionData.Value
         let createTime: String
         let updateTime: String?
     }
 
     struct List: Decodable {
-        let data: [Group]
+        let data: [Entity]
         let totalPages: Int
         let totalElements: Int
         let page: Int

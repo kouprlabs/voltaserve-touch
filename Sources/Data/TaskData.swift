@@ -1,8 +1,8 @@
 import Foundation
 
-struct TaskModel {
+struct TaskData {
     var config: Config
-    var token: TokenModel.Token
+    var token: TokenData.Value
 
     enum SortBy: Decodable, CustomStringConvertible {
         case name
@@ -26,7 +26,7 @@ struct TaskModel {
         case desc
     }
 
-    struct Task: Decodable {
+    struct Entity: Decodable {
         let id: String
         let name: String
         let error: String?
@@ -34,7 +34,7 @@ struct TaskModel {
         let isIndeterminate: Bool
         let userId: String
         let status: Status
-        let payload: TaskPayload?
+        let payload: Payload?
     }
 
     enum Status: String, Decodable {
@@ -44,7 +44,7 @@ struct TaskModel {
         case error
     }
 
-    struct TaskPayload: Decodable {
+    struct Payload: Decodable {
         let taskObject: String?
 
         enum CodingKeys: String, CodingKey {
@@ -53,7 +53,7 @@ struct TaskModel {
     }
 
     struct List: Decodable {
-        let data: [Task]
+        let data: [Entity]
         let totalPages: Int
         let totalElements: Int
         let page: Int

@@ -1,10 +1,10 @@
 import Foundation
 
-struct StorageModel {
+struct StorageData {
     var config: Config
-    var token: TokenModel.Token
+    var token: TokenData.Value
 
-    struct StorageUsage: Decodable {
+    struct Usage: Decodable {
         let bytes: Int
         let maxBytes: Int
         let percentage: Int

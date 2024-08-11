@@ -28,7 +28,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		641C35802C690B1B00B207F3 /* Helper */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helper; sourceTree = "<group>"; };
 		641C35822C690B1B00B207F3 /* Infra */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Infra; sourceTree = "<group>"; };
-		641C35952C690B1B00B207F3 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
+		641C35952C690B1B00B207F3 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
 		641C35AC2C690B1B00B207F3 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
 		641C35BC2C690B1B00B207F3 /* ViewModel */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewModel; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -69,7 +69,7 @@
 			children = (
 				641C35802C690B1B00B207F3 /* Helper */,
 				641C35822C690B1B00B207F3 /* Infra */,
-				641C35952C690B1B00B207F3 /* Model */,
+				641C35952C690B1B00B207F3 /* Data */,
 				641C35AC2C690B1B00B207F3 /* View */,
 				641C35BC2C690B1B00B207F3 /* ViewModel */,
 				5C1F4A155ED69CBA594C129F /* Launcher.swift */,
@@ -106,7 +106,7 @@
 			fileSystemSynchronizedGroups = (
 				641C35802C690B1B00B207F3 /* Helper */,
 				641C35822C690B1B00B207F3 /* Infra */,
-				641C35952C690B1B00B207F3 /* Model */,
+				641C35952C690B1B00B207F3 /* Data */,
 				641C35AC2C690B1B00B207F3 /* View */,
 				641C35BC2C690B1B00B207F3 /* ViewModel */,
 			);

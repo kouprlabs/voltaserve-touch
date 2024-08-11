@@ -2,24 +2,24 @@ import Alamofire
 import SwiftUI
 
 class ViewerMosaicViewModel: ObservableObject {
-    @Published private(set) var info: MosaicModel.Info?
-    @Published private(set) var zoomLevel: MosaicModel.ZoomLevel?
+    @Published private(set) var info: MosaicData.Info?
+    @Published private(set) var zoomLevel: MosaicData.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
 
     private var busy: [[Bool]] = []
-    private var model: MosaicModel
+    private var model: MosaicData
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    var zoomLevels: [MosaicModel.ZoomLevel]? {
+    var zoomLevels: [MosaicData.ZoomLevel]? {
         info?.metadata.zoomLevels
     }
 
-    init(config: Config, token: TokenModel.Token) {
-        model = MosaicModel(config: config, token: token)
+    init(config: Config, token: TokenData.Value) {
+        model = MosaicData(config: config, token: token)
     }
 
     func loadMosaic() {
@@ -38,7 +38,7 @@ class ViewerMosaicViewModel: ObservableObject {
         }
     }
 
-    func allocateGridForZoomLevel(_ zoomLevel: MosaicModel.ZoomLevel) {
+    func allocateGridForZoomLevel(_ zoomLevel: MosaicData.ZoomLevel) {
         grid = Array(repeating: Array(repeating: nil, count: zoomLevel.cols), count: zoomLevel.rows)
         busy = Array(
             repeating: Array(repeating: false, count: zoomLevel.cols),
@@ -46,7 +46,7 @@ class ViewerMosaicViewModel: ObservableObject {
         )
     }
 
-    func selectZoomLevel(_ zoomLevel: MosaicModel.ZoomLevel) {
+    func selectZoomLevel(_ zoomLevel: MosaicData.ZoomLevel) {
         self.zoomLevel = zoomLevel
         allocateGridForZoomLevel(zoomLevel)
     }
