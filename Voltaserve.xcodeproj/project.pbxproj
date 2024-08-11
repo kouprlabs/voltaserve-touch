@@ -37,6 +37,7 @@
 		647B76302C67DE9D0003E648 /* IdRandomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647B761C2C67DE9D0003E648 /* IdRandomizer.swift */; };
 		647B76332C67DEB50003E648 /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 647B76322C67DEB50003E648 /* GLTFKit2 */; };
 		647B76362C67DEC20003E648 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 647B76352C67DEC20003E648 /* Alamofire */; };
+		64BDC3F82C67ED57005D3A81 /* ReSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 64BDC3F72C67ED57005D3A81 /* ReSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64BDC3F82C67ED57005D3A81 /* ReSwift in Frameworks */,
 				647B76332C67DEB50003E648 /* GLTFKit2 in Frameworks */,
 				647B76362C67DEC20003E648 /* Alamofire in Frameworks */,
 			);
@@ -106,7 +108,6 @@
 				5C1F427C195F5E197F2B5D0C /* ViewerMosaicViewController.swift */,
 				5C1F4203FF7280C88B7D83B4 /* ViewerPDFViewController.swift */,
 				5C1F4161A3DC4E0ECE17366A /* AppDelegate.swift */,
-				5C1F48B6B1BF7A16CD6812CE /* Assets.xcassets */,
 				5C1F46B4A92E220F8A4E5845 /* Info.plist */,
 			);
 			path = Sources;
@@ -188,6 +189,7 @@
 		648805742C67127600D8A096 = {
 			isa = PBXGroup;
 			children = (
+				5C1F48B6B1BF7A16CD6812CE /* Assets.xcassets */,
 				6488057E2C67127600D8A096 /* Products */,
 				5C1F491EC8371DCB14346854 /* Sources */,
 			);
@@ -220,6 +222,7 @@
 			packageProductDependencies = (
 				647B76322C67DEB50003E648 /* GLTFKit2 */,
 				647B76352C67DEC20003E648 /* Alamofire */,
+				64BDC3F72C67ED57005D3A81 /* ReSwift */,
 			);
 			productName = Voltaserve;
 			productReference = 6488057D2C67127600D8A096 /* Voltaserve.app */;
@@ -252,6 +255,7 @@
 			packageReferences = (
 				647B76312C67DEB50003E648 /* XCRemoteSwiftPackageReference "GLTFKit2" */,
 				647B76342C67DEC20003E648 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				64BDC3F62C67ED57005D3A81 /* XCRemoteSwiftPackageReference "ReSwift" */,
 			);
 			productRefGroup = 6488057E2C67127600D8A096 /* Products */;
 			projectDirPath = "";
@@ -524,6 +528,14 @@
 				minimumVersion = 5.9.1;
 			};
 		};
+		64BDC3F62C67ED57005D3A81 /* XCRemoteSwiftPackageReference "ReSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReSwift/ReSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -536,6 +548,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 647B76342C67DEC20003E648 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		64BDC3F72C67ED57005D3A81 /* ReSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 64BDC3F62C67ED57005D3A81 /* XCRemoteSwiftPackageReference "ReSwift" */;
+			productName = ReSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

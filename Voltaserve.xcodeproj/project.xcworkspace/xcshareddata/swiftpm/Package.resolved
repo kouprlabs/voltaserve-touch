@@ -1,5 +1,5 @@
 {
-  "originHash" : "c0a58165e1c2bde415d3ad5e5c0498b08b94d3c29c2c4225ad24f49a3abb977e",
+  "originHash" : "76e27b8e1e9f2e123871b664bc64fe573dfa9e2f4f6ebf6bdfb9d04d4f9be673",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "0e399286a29580a6f3c0f49aa01075b5c43a9ce2",
         "version" : "0.5.11"
+      }
+    },
+    {
+      "identity" : "reswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReSwift/ReSwift.git",
+      "state" : {
+        "revision" : "cb5c3c02f652420ef413dea41e13ac5a76b6c0fd",
+        "version" : "6.1.1"
       }
     }
   ],
