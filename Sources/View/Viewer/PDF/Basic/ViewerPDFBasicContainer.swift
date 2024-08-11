@@ -1,21 +1,21 @@
 import SwiftUI
 
 struct ViewerPDFBasicContainer: View {
-    @EnvironmentObject private var vm: ViewerPDFBasicViewModel
+    @EnvironmentObject private var state: ViewerPDFBasicState
 
     var body: some View {
         VStack {
-            if vm.isLoading {
+            if state.isLoading {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                     // Try to match the style .large of UIKit's UIActivityIndicatorView
                     .scaleEffect(1.85)
             } else {
-                ViewerPDFBasic(vm: vm)
+                ViewerPDFBasic(state: state)
                     .edgesIgnoringSafeArea(.all)
             }
         }.onAppear {
-            vm.loadPDF()
+            state.loadPDF()
         }
     }
 }

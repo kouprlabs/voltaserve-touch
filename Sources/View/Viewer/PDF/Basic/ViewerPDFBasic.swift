@@ -2,7 +2,7 @@ import PDFKit
 import SwiftUI
 
 struct ViewerPDFBasic: UIViewRepresentable {
-    @ObservedObject var vm: ViewerPDFBasicViewModel
+    @ObservedObject var state: ViewerPDFBasicState
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -27,7 +27,7 @@ struct ViewerPDFBasic: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         guard let pdfView = context.coordinator.pdfView else { return }
 
-        if let pdfDocument = vm.pdfDocument {
+        if let pdfDocument = state.pdfDocument {
             pdfView.document = pdfDocument
         }
 

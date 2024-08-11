@@ -3,7 +3,7 @@ import SceneKit
 import SwiftUI
 
 struct Viewer3D: UIViewRepresentable {
-    @EnvironmentObject private var vm: Viewer3DState
+    @EnvironmentObject private var state: Viewer3DState
     @State private var isLoading: Bool = true
 
     func makeUIView(context: Context) -> UIView {
@@ -44,7 +44,7 @@ struct Viewer3D: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(sceneView: SCNView(), document: vm, isLoading: $isLoading)
+        Coordinator(sceneView: SCNView(), document: state, isLoading: $isLoading)
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {

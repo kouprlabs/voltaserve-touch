@@ -2,7 +2,7 @@ import Alamofire
 import SwiftUI
 
 struct ViewerMosaic: View {
-    @EnvironmentObject private var vm: ViewerMosaicState
+    @EnvironmentObject private var state: ViewerMosaicState
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
@@ -20,19 +20,19 @@ struct ViewerMosaic: View {
             )
 
             ZStack {
-                if let zoomLevel = vm.zoomLevel, !vm.grid.isEmpty {
+                if let zoomLevel = state.zoomLevel, !state.grid.isEmpty {
                     ForEach(0 ..< zoomLevel.rows, id: \.self) { row in
                         ForEach(0 ..< zoomLevel.cols, id: \.self) { col in
-                            let size = vm.sizeForCell(row: row, col: col)
-                            let position = vm.positionForCell(row: row, col: col)
-                            let frame = vm.frameForCellAt(position: position, size: size)
+                            let size = state.sizeForCell(row: row, col: col)
+                            let position = state.positionForCell(row: row, col: col)
+                            let frame = state.frameForCellAt(position: position, size: size)
 
                             // Check if the cell is within the visible bounds or the surrounding buffer
                             if visibleRect.insetBy(
                                 dx: -CGFloat(Constants.extraTilesToLoad) * size.width,
                                 dy: -CGFloat(Constants.extraTilesToLoad) * size.height
                             ).intersects(frame) {
-                                if let image = vm.grid[row][col] {
+                                if let image = state.grid[row][col] {
                                     Image(uiImage: image)
                                         .resizable()
                                         .frame(width: size.width, height: size.height)
@@ -43,7 +43,7 @@ struct ViewerMosaic: View {
                                         .frame(width: size.width, height: size.height)
                                         .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
                                         .onAppear {
-                                            vm.loadImageForCell(row: row, col: col)
+                                            state.loadImageForCell(row: row, col: col)
                                         }
                                 }
                             }
@@ -65,17 +65,17 @@ struct ViewerMosaic: View {
                     }
                     .onEnded { _ in
                         lastDragOffset = dragOffset
-                        vm.unloadImagesOutsideRect(visibleRect, extraTilesToLoad: Constants.extraTilesToLoad)
+                        state.unloadImagesOutsideRect(visibleRect, extraTilesToLoad: Constants.extraTilesToLoad)
                     }
             )
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        if let zoomLevels = vm.zoomLevels {
+                        if let zoomLevels = state.zoomLevels {
                             ForEach(zoomLevels, id: \.index) { zoomLevel in
                                 Button(action: {
                                     resetMosaicPosition()
-                                    vm.selectZoomLevel(zoomLevel)
+                                    state.selectZoomLevel(zoomLevel)
                                 }, label: {
                                     Text("\(Int(zoomLevel.scaleDownPercentage))%")
                                 })
@@ -87,7 +87,7 @@ struct ViewerMosaic: View {
                 }
             }
             .onAppear {
-                vm.loadMosaic()
+                state.loadMosaic()
             }
         }
     }

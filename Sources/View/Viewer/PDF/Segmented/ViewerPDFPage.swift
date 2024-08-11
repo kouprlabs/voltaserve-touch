@@ -2,7 +2,7 @@ import PDFKit
 import SwiftUI
 
 struct ViewerPDFPage: UIViewRepresentable {
-    @ObservedObject var vm: ViewerPDFViewModel
+    @ObservedObject var state: ViewerPDFState
 
     func makeUIView(context: Context) -> UIView {
         let containerView = UIView()
@@ -41,7 +41,7 @@ struct ViewerPDFPage: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         guard let pdfView = context.coordinator.pdfView else { return }
 
-        if let pdfDocument = vm.pdfDocument {
+        if let pdfDocument = state.pdfDocument {
             if pdfView.document != pdfDocument {
                 pdfView.document = pdfDocument
                 pdfView.autoScales = true
@@ -73,17 +73,17 @@ struct ViewerPDFPage: UIViewRepresentable {
         }
 
         @objc func swipeLeft() {
-            guard parent.vm.currentPage < parent.vm.totalPages else {
+            guard parent.state.currentPage < parent.state.totalPages else {
                 return
             }
-            parent.vm.currentPage += 1
-            parent.vm.loadPage(at: parent.vm.currentPage)
+            parent.state.currentPage += 1
+            parent.state.loadPage(at: parent.state.currentPage)
         }
 
         @objc func swipeRight() {
-            guard parent.vm.currentPage > 1 else { return }
-            parent.vm.currentPage -= 1
-            parent.vm.loadPage(at: parent.vm.currentPage)
+            guard parent.state.currentPage > 1 else { return }
+            parent.state.currentPage -= 1
+            parent.state.loadPage(at: parent.state.currentPage)
         }
     }
 }

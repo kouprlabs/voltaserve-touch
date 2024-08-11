@@ -8,7 +8,7 @@ class ViewerMosaicState: ObservableObject {
 
     private var busy: [[Bool]] = []
     private var model: Mosaic
-    private var idRandomizer = IDRandomizer(Constants.fileIds)
+    private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value

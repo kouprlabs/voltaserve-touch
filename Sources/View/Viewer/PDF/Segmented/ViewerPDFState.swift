@@ -1,7 +1,7 @@
 import PDFKit
 import SwiftUI
 
-class ViewerPDFViewModel: ObservableObject {
+class ViewerPDFState: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var totalPages = 0
@@ -9,7 +9,7 @@ class ViewerPDFViewModel: ObservableObject {
 
     private var model: File
     private var file: File.Entity?
-    private var idRandomizer = IDRandomizer(Constants.fileIds)
+    private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value

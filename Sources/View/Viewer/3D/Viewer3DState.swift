@@ -3,7 +3,7 @@ import SwiftUI
 
 class Viewer3DState: ObservableObject {
     private var data: File
-    private var idRandomizer = IDRandomizer(Constants.fileIds)
+    private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value

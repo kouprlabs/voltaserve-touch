@@ -3,7 +3,7 @@ import PDFKit
 import SwiftUI
 
 struct ViewerPDFThumbnailList: View {
-    @ObservedObject var vm: ViewerPDFViewModel
+    @ObservedObject var state: ViewerPDFState
 
     let pdfView: PDFView
 
@@ -21,8 +21,8 @@ struct ViewerPDFThumbnailList: View {
         ScrollView(.horizontal, showsIndicators: false) {
             ScrollViewReader { proxy in
                 HStack(spacing: thumbnailSpacing) {
-                    ForEach(0 ..< vm.totalPages, id: \.self) { index in
-                        ViewerPDFThumbnail(index: index + 1, vm: vm, pdfView: pdfView)
+                    ForEach(0 ..< state.totalPages, id: \.self) { index in
+                        ViewerPDFThumbnail(state: state, index: index + 1, pdfView: pdfView)
                             .onAppear {
                                 visibleIndices.insert(index + 1)
                             }
@@ -31,7 +31,7 @@ struct ViewerPDFThumbnailList: View {
                     }
                 }
                 .padding(16)
-                .onChange(of: vm.currentPage) { _, currentPage in
+                .onChange(of: state.currentPage) { _, currentPage in
                     withAnimation {
                         proxy.scrollTo(currentPage - 1, anchor: .center)
                     }
@@ -71,20 +71,20 @@ struct ViewerPDFThumbnailList: View {
             let totalItemWidth = thumbnailWidth + thumbnailSpacing
             let firstIndex = max(0, Int(scrollOffset / totalItemWidth))
             let lastVisibleOffset = scrollOffset + screenWidth
-            let lastIndex = min(vm.totalPages - 1, Int(lastVisibleOffset / totalItemWidth))
+            let lastIndex = min(state.totalPages - 1, Int(lastVisibleOffset / totalItemWidth))
 
             let start = max(0, firstIndex - 10)
-            let end = min(vm.totalPages, lastIndex + 10)
+            let end = min(state.totalPages, lastIndex + 10)
 
             let indicesToLoad = Set((start ... end)
                 .map { $0 + 1 }
-                .filter { vm.loadedThumbnails[$0] == nil })
+                .filter { state.loadedThumbnails[$0] == nil })
                 .sorted()
 
             if !indicesToLoad.isEmpty {
                 DispatchQueue.main.async {
                     for index in indicesToLoad {
-                        vm.loadThumbnail(for: index)
+                        state.loadThumbnail(for: index)
                     }
                 }
             }
@@ -97,8 +97,8 @@ struct ViewerPDFThumbnailList: View {
     private func clearAllThumbnailsOutOfRange(firstIndex: Int, lastIndex: Int) {
         DispatchQueue.main.async {
             let range = (firstIndex - 10) ... (lastIndex + 10)
-            for index in 1 ... vm.totalPages where !range.contains(index - 1) {
-                vm.loadedThumbnails.removeValue(forKey: index)
+            for index in 1 ... state.totalPages where !range.contains(index - 1) {
+                state.loadedThumbnails.removeValue(forKey: index)
             }
         }
     }

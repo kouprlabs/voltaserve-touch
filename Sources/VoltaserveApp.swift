@@ -10,8 +10,8 @@ struct VoltaserveApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(Viewer3DState(config: config, token: token))
-                .environmentObject(ViewerPDFViewModel(config: config, token: token))
-                .environmentObject(ViewerPDFBasicViewModel(config: config, token: token))
+                .environmentObject(ViewerPDFState(config: config, token: token))
+                .environmentObject(ViewerPDFBasicState(config: config, token: token))
                 .environmentObject(ViewerMosaicState(config: config, token: token))
         }
     }

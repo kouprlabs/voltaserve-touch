@@ -30,7 +30,6 @@
 		641C35822C690B1B00B207F3 /* Infra */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Infra; sourceTree = "<group>"; };
 		641C35952C690B1B00B207F3 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
 		641C35AC2C690B1B00B207F3 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
-		641C35BC2C690B1B00B207F3 /* ViewModel */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewModel; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +70,6 @@
 				641C35822C690B1B00B207F3 /* Infra */,
 				641C35952C690B1B00B207F3 /* Data */,
 				641C35AC2C690B1B00B207F3 /* View */,
-				641C35BC2C690B1B00B207F3 /* ViewModel */,
 				5C1F4A155ED69CBA594C129F /* Launcher.swift */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
@@ -108,7 +106,6 @@
 				641C35822C690B1B00B207F3 /* Infra */,
 				641C35952C690B1B00B207F3 /* Data */,
 				641C35AC2C690B1B00B207F3 /* View */,
-				641C35BC2C690B1B00B207F3 /* ViewModel */,
 			);
 			name = Voltaserve;
 			packageProductDependencies = (

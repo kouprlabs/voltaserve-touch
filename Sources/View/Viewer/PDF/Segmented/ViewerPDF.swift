@@ -2,7 +2,7 @@ import PDFKit
 import SwiftUI
 
 struct ViewerPDF: UIViewRepresentable {
-    @ObservedObject var vm: ViewerPDFViewModel
+    @ObservedObject var state: ViewerPDFState
     @Binding var showThumbnails: Bool
 
     func makeCoordinator() -> Coordinator {
@@ -28,7 +28,7 @@ struct ViewerPDF: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         guard let pdfView = context.coordinator.pdfView else { return }
 
-        if let pdfDocument = vm.pdfDocument {
+        if let pdfDocument = state.pdfDocument {
             if pdfView.document != pdfDocument {
                 pdfView.document = pdfDocument
                 pdfView.autoScales = true
@@ -58,7 +58,7 @@ struct ViewerPDF: UIViewRepresentable {
         ])
 
         if showThumbnails {
-            let thumbnailListView = ViewerPDFThumbnailListContainer(vm: vm, pdfView: pdfView)
+            let thumbnailListView = ViewerPDFThumbnailListContainer(state: state, pdfView: pdfView)
             let hostingController = UIHostingController(rootView: thumbnailListView)
             hostingController.view.translatesAutoresizingMaskIntoConstraints = false
             hostingController.view.backgroundColor = .clear

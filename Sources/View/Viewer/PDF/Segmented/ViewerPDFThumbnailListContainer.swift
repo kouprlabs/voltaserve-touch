@@ -2,12 +2,12 @@ import PDFKit
 import SwiftUI
 
 struct ViewerPDFThumbnailListContainer: View {
-    @ObservedObject var vm: ViewerPDFViewModel
+    @ObservedObject var state: ViewerPDFState
     var pdfView: PDFView
 
     var body: some View {
-        if vm.pdfDocument != nil {
-            ViewerPDFThumbnailList(vm: vm, pdfView: pdfView)
+        if state.pdfDocument != nil {
+            ViewerPDFThumbnailList(state: state, pdfView: pdfView)
         } else {
             EmptyView()
         }

@@ -3,8 +3,8 @@ import SwiftUI
 struct Launcher: View {
     @EnvironmentObject private var viewer3DVM: Viewer3DState
     @EnvironmentObject private var viewerMosaicVM: ViewerMosaicState
-    @EnvironmentObject private var viewerBasicPDFVM: ViewerPDFBasicViewModel
-    @EnvironmentObject private var viewerPDFVM: ViewerPDFViewModel
+    @EnvironmentObject private var viewerBasicPDFVM: ViewerPDFBasicState
+    @EnvironmentObject private var viewerPDFVM: ViewerPDFState
 
     var body: some View {
         NavigationView {
