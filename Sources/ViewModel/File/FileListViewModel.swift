@@ -1,4 +1,3 @@
 import UIKit
 
-class FileListViewModel: UIViewController {
-}
+class FileListViewModel: UIViewController {}

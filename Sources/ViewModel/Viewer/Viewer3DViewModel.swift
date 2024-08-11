@@ -9,12 +9,18 @@ class Viewer3DViewModel: ObservableObject {
         idRandomizer.value
     }
 
-    init(config: Config, token: Token) {
+    init(config: Config, token: TokenModel.Token) {
         store = FileModel(config: config, token: token)
     }
 
     func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {
-        GLTFAsset.load(with: store.url(id: fileId), options: [:]) { _, status, maybeAsset, maybeError, _ in
+        GLTFAsset.load(
+            with: store.urlForOriginal(
+                id: fileId,
+                fileExtension: "glb"
+            ),
+            options: [:]
+        ) { _, status, maybeAsset, maybeError, _ in
             DispatchQueue.main.async {
                 self.objectWillChange.send()
                 if status == .complete {
@@ -37,7 +43,7 @@ class Viewer3DViewModel: ObservableObject {
             "ApNxljyZG3AYd", // car
             "nDBzl4JE3M4vN", // mixer
             "Q9BEQVo3x4dqn", // vase
-            "7DjrG5Vy3pqRX"  // sofa
+            "7DjrG5Vy3pqRX" // sofa
         ]
     }
 }

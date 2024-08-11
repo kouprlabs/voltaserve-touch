@@ -6,7 +6,7 @@ struct ViewerMosaic: View {
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
-    @State private var selectedZoomLevel: ViewerMosaicStore.ZoomLevel?
+    @State private var selectedZoomLevel: MosaicModel.ZoomLevel?
 
     init() {
         setupNavigationBarAppearance()

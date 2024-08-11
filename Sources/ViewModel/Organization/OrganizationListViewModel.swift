@@ -1,4 +1,3 @@
 import Foundation
 
-class OrganizationListViewModel {
-}
+class OrganizationListViewModel {}

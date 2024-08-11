@@ -1,24 +1,14 @@
-import Foundation
 import Alamofire
+import Foundation
 
-struct ViewerMosaicStore {
+struct MosaicModel {
     var config: Config
-    var token: Token
-    private(set) var info: Info?
-
-    init(config: Config, token: Token) {
-        self.config = config
-        self.token = token
-    }
-
-    mutating func setInfo(_ info: Info) {
-        self.info = info
-    }
+    var token: TokenModel.Token
 
     func fetchInfoForFile(id: String, completion: @escaping (Info?, Error?) -> Void) {
         AF.request(
             "\(config.apiUrl)/v2/mosaics/\(id)/info",
-            headers: ["Authorization": "Bearer \(token.accessToken)"]
+            headers: headersWithAuthorization(token.accessToken)
         ).responseData { response in
             if let data = response.data {
                 do {
@@ -31,21 +21,16 @@ struct ViewerMosaicStore {
         }
     }
 
-    struct InfoNotFound: Error {}
-
     func fetchDataForFile(
         id: String,
         zoomLevel: ZoomLevel,
         forCellAtRow row: Int, col: Int,
+        fileExtension: String,
         completion: @escaping (Data?, Error?) -> Void
     ) {
-        guard let info else {
-            completion(nil, InfoNotFound())
-            return
-        }
         let url = "\(config.apiUrl)/v2/mosaics/\(id)/zoom_level/\(zoomLevel.index)" +
-            "/row/\(row)/col/\(col)/ext/\(String(info.metadata.fileExtension.dropFirst()))" +
-            "?access_token=\(token.accessToken)"
+            "/row/\(row)/col/\(col)/ext/\(fileExtension)?" +
+            "access_token=\(token.accessToken)"
         AF.request(url).responseData { response in
             if let data = response.data {
                 completion(data, nil)
@@ -65,7 +50,6 @@ struct ViewerMosaicStore {
         var fileExtension: String
         var zoomLevels: [ZoomLevel]
 
-        // swiftlint:disable:next nesting
         enum CodingKeys: String, CodingKey {
             case width
             case height

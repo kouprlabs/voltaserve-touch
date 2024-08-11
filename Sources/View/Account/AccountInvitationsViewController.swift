@@ -1,4 +1,3 @@
 import UIKit
 
-class AccountInvitationsViewController: UIViewController {
-}
+class AccountInvitationsViewController: UIViewController {}

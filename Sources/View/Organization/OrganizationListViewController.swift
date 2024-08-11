@@ -1,4 +1,3 @@
 import UIKit
 
-class OrganizationListViewController: UIViewController {
-}
+class OrganizationListViewController: UIViewController {}

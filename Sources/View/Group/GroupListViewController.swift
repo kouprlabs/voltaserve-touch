@@ -1,4 +1,3 @@
 import UIKit
 
-class GroupListViewController: UIViewController {
-}
+class GroupListViewController: UIViewController {}

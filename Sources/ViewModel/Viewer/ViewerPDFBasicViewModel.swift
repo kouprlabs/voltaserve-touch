@@ -4,8 +4,8 @@ import SwiftUI
 class ViewerPDFBasicViewModel: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var loadedThumbnails: [Int: UIImage] = [:]
-    @Published var isLoading: Bool = false
-    
+    @Published var isLoading = false
+
     private var store: FileModel
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
@@ -13,7 +13,7 @@ class ViewerPDFBasicViewModel: ObservableObject {
         idRandomizer.value
     }
 
-    init(config: Config, token: Token) {
+    init(config: Config, token: TokenModel.Token) {
         store = FileModel(config: config, token: token)
     }
 

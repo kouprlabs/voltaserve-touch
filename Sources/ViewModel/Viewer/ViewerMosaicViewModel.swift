@@ -2,31 +2,32 @@ import Alamofire
 import SwiftUI
 
 class ViewerMosaicViewModel: ObservableObject {
-    @Published private(set) var zoomLevel: ViewerMosaicStore.ZoomLevel?
+    @Published private(set) var info: MosaicModel.Info?
+    @Published private(set) var zoomLevel: MosaicModel.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
-    
+
     private var busy: [[Bool]] = []
-    private var store: ViewerMosaicStore
+    private var store: MosaicModel
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    var zoomLevels: [ViewerMosaicStore.ZoomLevel]? {
-        store.info?.metadata.zoomLevels
+    var zoomLevels: [MosaicModel.ZoomLevel]? {
+        info?.metadata.zoomLevels
     }
 
-    init(config: Config, token: Token) {
-        store = ViewerMosaicStore(config: config, token: token)
+    init(config: Config, token: TokenModel.Token) {
+        store = MosaicModel(config: config, token: token)
     }
 
     func loadMosaic() {
         store.fetchInfoForFile(id: fileId) { info, error in
             if let info {
-                self.store.setInfo(info)
+                self.info = info
                 DispatchQueue.main.async {
-                    if let zoomLevel = self.store.info?.metadata.zoomLevels.first {
+                    if let zoomLevel = self.info?.metadata.zoomLevels.first {
                         self.zoomLevel = zoomLevel
                         self.allocateGridForZoomLevel(zoomLevel)
                     }
@@ -37,7 +38,7 @@ class ViewerMosaicViewModel: ObservableObject {
         }
     }
 
-    func allocateGridForZoomLevel(_ zoomLevel: ViewerMosaicStore.ZoomLevel) {
+    func allocateGridForZoomLevel(_ zoomLevel: MosaicModel.ZoomLevel) {
         grid = Array(repeating: Array(repeating: nil, count: zoomLevel.cols), count: zoomLevel.rows)
         busy = Array(
             repeating: Array(repeating: false, count: zoomLevel.cols),
@@ -45,7 +46,7 @@ class ViewerMosaicViewModel: ObservableObject {
         )
     }
 
-    func selectZoomLevel(_ zoomLevel: ViewerMosaicStore.ZoomLevel) {
+    func selectZoomLevel(_ zoomLevel: MosaicModel.ZoomLevel) {
         self.zoomLevel = zoomLevel
         allocateGridForZoomLevel(zoomLevel)
     }
@@ -53,11 +54,12 @@ class ViewerMosaicViewModel: ObservableObject {
     func loadImageForCell(row: Int, col: Int) {
         guard busy[row][col] == false else { return }
         busy[row][col] = true
-        if let zoomLevel {
+        if let zoomLevel, let info {
             store.fetchDataForFile(
                 id: fileId,
                 zoomLevel: zoomLevel,
-                forCellAtRow: row, col: col
+                forCellAtRow: row, col: col,
+                fileExtension: info.metadata.fileExtension
             ) { data, error in
                 self.busy[row][col] = false
                 if let data {

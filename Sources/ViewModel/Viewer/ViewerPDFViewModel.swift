@@ -6,7 +6,7 @@ class ViewerPDFViewModel: ObservableObject {
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var totalPages = 0
     @Published var currentPage = 1
-    
+
     private var store: FileModel
     private var idRandomizer = IDRandomizer(Constants.fileIds)
 
@@ -17,7 +17,7 @@ class ViewerPDFViewModel: ObservableObject {
         idRandomizer.value
     }
 
-    init(config: Config, token: Token) {
+    init(config: Config, token: TokenModel.Token) {
         store = FileModel(config: config, token: token)
     }
 

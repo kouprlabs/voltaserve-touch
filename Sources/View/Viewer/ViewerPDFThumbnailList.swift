@@ -4,16 +4,16 @@ import SwiftUI
 
 struct ViewerPDFThumbnailList: View {
     @ObservedObject var vm: ViewerPDFViewModel
-    
+
     let pdfView: PDFView
-    
+
     @State private var visibleIndices: Set<Int> = []
     @State private var isScrolling = false
     @State private var scrollOffset: CGFloat = 0
     @State private var timerCancellable: AnyCancellable?
     // Assuming the width of the viewport
     @State private var screenWidth: CGFloat = UIScreen.main.bounds.width
-    
+
     let thumbnailWidth: CGFloat = 100
     let thumbnailSpacing: CGFloat = 16
 
