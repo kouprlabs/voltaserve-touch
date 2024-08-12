@@ -2,3 +2,4 @@ disabled_rules:
     - identifier_name
     - function_parameter_count
     - nesting
+    - type_body_length

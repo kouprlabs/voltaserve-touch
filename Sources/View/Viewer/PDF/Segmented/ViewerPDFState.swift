@@ -37,9 +37,14 @@ class ViewerPDFState: ObservableObject {
 
     func loadPage(at index: Int) async {
         guard index > 0, index <= totalPages else { return }
+        guard let fileExtension = file?.snapshot?.segmentation?.document?.pages?.fileExtension else { return }
 
         do {
-            let data = try await data.fetchSegmentedPage(id: fileId, page: index)
+            let data = try await data.fetchSegmentedPage(
+                id: fileId,
+                page: index,
+                fileExtension: String(fileExtension.dropFirst())
+            )
             if let newDocument = PDFDocument(data: data) {
                 Task { @MainActor in
                     self.pdfDocument = newDocument
@@ -79,12 +84,17 @@ class ViewerPDFState: ObservableObject {
     }
 
     private func preloadSurroundingPages(for index: Int) async {
+        guard let fileExtension = file?.snapshot?.segmentation?.document?.pages?.fileExtension else { return }
         let start = max(1, index - Constants.preloadBufferSize)
         let end = min(totalPages, index + Constants.preloadBufferSize)
 
         for pageNumber in start ... end where !isPreloaded(page: pageNumber) {
             do {
-                let data = try await data.fetchSegmentedPage(id: fileId, page: pageNumber)
+                let data = try await data.fetchSegmentedPage(
+                    id: fileId,
+                    page: pageNumber,
+                    fileExtension: String(fileExtension.dropFirst())
+                )
                 // Preload pages silently without affecting loading state of main view.
                 if let tempDoc = PDFDocument(data: data) {
                     DispatchQueue.main.async {

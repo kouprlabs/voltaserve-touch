@@ -4,7 +4,7 @@ struct User {
     var config: Config
     var token: Token.Value
 
-    enum SortBy: Decodable, CustomStringConvertible {
+    enum SortBy: Codable, CustomStringConvertible {
         case email
         case fullName
 
@@ -18,12 +18,12 @@ struct User {
         }
     }
 
-    enum SortOrder: String, Decodable {
+    enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Decodable {
+    struct Entity: Codable {
         let id: String
         let username: String
         let email: String
@@ -31,7 +31,7 @@ struct User {
         let picture: String?
     }
 
-    struct List: Decodable {
+    struct List: Codable {
         let data: [Entity]
         let totalPages: Int
         let totalElements: Int

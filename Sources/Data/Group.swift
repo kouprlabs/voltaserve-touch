@@ -4,7 +4,7 @@ struct Group {
     var config: Config
     var token: Token.Value
 
-    enum SortBy: Decodable, CustomStringConvertible {
+    enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated
         case dateModified
@@ -21,12 +21,12 @@ struct Group {
         }
     }
 
-    enum SortOrder: String, Decodable {
+    enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Decodable {
+    struct Entity: Codable {
         let id: String
         let name: String
         let organization: Organization.Entity
@@ -35,7 +35,7 @@ struct Group {
         let updateTime: String?
     }
 
-    struct List: Decodable {
+    struct List: Codable {
         let data: [Entity]
         let totalPages: Int
         let totalElements: Int

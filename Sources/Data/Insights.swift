@@ -4,25 +4,25 @@ struct Insights {
     var config: Config
     var token: Token.Value
 
-    struct Language: Decodable {
+    struct Language: Codable {
         let id: String
         let iso6393: String
         let name: String
     }
 
-    struct Info: Decodable {
+    struct Info: Codable {
         let isAvailable: Bool
         let isOutdated: Bool
         let snapshot: Snapshot.Entity?
     }
 
-    struct Entity: Decodable {
+    struct Entity: Codable {
         let text: String
         let label: String
         let frequency: Int
     }
 
-    struct EntityList: Decodable {
+    struct EntityList: Codable {
         let data: [Entity]
         let totalPages: Int
         let totalElements: Int
@@ -30,12 +30,12 @@ struct Insights {
         let size: Int
     }
 
-    enum SortBy: String, Decodable {
+    enum SortBy: String, Codable {
         case name
         case frequency
     }
 
-    enum SortOrder: String, Decodable {
+    enum SortOrder: String, Codable {
         case asc
         case sesc
     }

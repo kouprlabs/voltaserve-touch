@@ -4,7 +4,7 @@ struct TaskData {
     var config: Config
     var token: Token.Value
 
-    enum SortBy: Decodable, CustomStringConvertible {
+    enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated
         case dateModified
@@ -21,12 +21,12 @@ struct TaskData {
         }
     }
 
-    enum SortOrder: String, Decodable {
+    enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Decodable {
+    struct Entity: Codable {
         let id: String
         let name: String
         let error: String?
@@ -37,14 +37,14 @@ struct TaskData {
         let payload: Payload?
     }
 
-    enum Status: String, Decodable {
+    enum Status: String, Codable {
         case waiting
         case running
         case success
         case error
     }
 
-    struct Payload: Decodable {
+    struct Payload: Codable {
         let taskObject: String?
 
         enum CodingKeys: String, CodingKey {
@@ -52,7 +52,7 @@ struct TaskData {
         }
     }
 
-    struct List: Decodable {
+    struct List: Codable {
         let data: [Entity]
         let totalPages: Int
         let totalElements: Int

@@ -1,7 +1,7 @@
 import Foundation
 
 enum Permission {
-    enum Value: String, Decodable {
+    enum Value: String, Codable {
         case viewer
         case editor
         case owner

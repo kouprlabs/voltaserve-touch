@@ -4,7 +4,7 @@ struct Invitation {
     var config: Config
     var token: Token.Value
 
-    enum SortBy: Decodable, CustomStringConvertible {
+    enum SortBy: Codable, CustomStringConvertible {
         case email
         case dateCreated
         case dateModified
@@ -21,18 +21,18 @@ struct Invitation {
         }
     }
 
-    enum SortOrder: String, Decodable {
+    enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    enum InvitationStatus: String, Decodable {
+    enum InvitationStatus: String, Codable {
         case pending
         case accepted
         case declined
     }
 
-    struct Entity: Decodable {
+    struct Entity: Codable {
         let id: String
         let owner: User.Entity
         let email: [String]
@@ -42,7 +42,7 @@ struct Invitation {
         let updateTime: String?
     }
 
-    struct List: Decodable {
+    struct List: Codable {
         let data: [Entity]
         let totalPages: Int
         let totalElements: Int

@@ -4,7 +4,7 @@ struct Snapshot {
     var config: Config
     var token: Token.Value
 
-    enum SortBy: Decodable, CustomStringConvertible {
+    enum SortBy: Codable, CustomStringConvertible {
         case version
         case dateCreated
         case dateModified
@@ -21,12 +21,12 @@ struct Snapshot {
         }
     }
 
-    enum SortOrder: String, Decodable {
+    enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Decodable {
+    struct Entity: Codable {
         let id: String
         let version: Int
         let status: Status
@@ -45,7 +45,7 @@ struct Snapshot {
         let updateTime: String?
     }
 
-    struct List: Decodable {
+    struct List: Codable {
         let data: [Entity]
         let totalPages: Int
         let totalElements: Int
@@ -53,19 +53,19 @@ struct Snapshot {
         let size: Int
     }
 
-    enum Status: String, Decodable {
+    enum Status: String, Codable {
         case waiting
         case processing
         case ready
         case error
     }
 
-    struct TaskInfo: Decodable {
+    struct TaskInfo: Codable {
         let id: String
         let isPending: Bool
     }
 
-    struct Download: Decodable {
+    struct Download: Codable {
         let fileExtension: String?
         let size: Int?
         let image: ImageProps?
@@ -79,18 +79,18 @@ struct Snapshot {
         }
     }
 
-    struct ImageProps: Decodable {
+    struct ImageProps: Codable {
         let width: Int
         let height: Int
         let zoomLevels: [ZoomLevel]?
     }
 
-    struct DocumentProps: Decodable {
+    struct DocumentProps: Codable {
         let pages: PagesProps?
         let thumbnails: ThumbnailsProps?
     }
 
-    struct PagesProps: Decodable {
+    struct PagesProps: Codable {
         let count: Int
         let fileExtension: String
 
@@ -100,7 +100,7 @@ struct Snapshot {
         }
     }
 
-    struct ThumbnailsProps: Decodable {
+    struct ThumbnailsProps: Codable {
         let fileExtension: String
 
         enum CodingKeys: String, CodingKey {
@@ -108,14 +108,14 @@ struct Snapshot {
         }
     }
 
-    struct Tile: Decodable {
+    struct Tile: Codable {
         let width: Int
         let height: Int
         let lastColWidth: Int
         let lastRowHeight: Int
     }
 
-    struct ZoomLevel: Decodable {
+    struct ZoomLevel: Codable {
         let index: Int
         let width: Int
         let height: Int

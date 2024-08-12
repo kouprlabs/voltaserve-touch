@@ -4,7 +4,7 @@ struct Workspace {
     var config: Config
     var token: Token.Value
 
-    enum SortBy: Decodable, CustomStringConvertible {
+    enum SortBy: Codable, CustomStringConvertible {
         case name
         case dateCreated
         case dateModified
@@ -21,12 +21,12 @@ struct Workspace {
         }
     }
 
-    enum SortOrder: String, Decodable {
+    enum SortOrder: String, Codable {
         case asc
         case desc
     }
 
-    struct Entity: Decodable {
+    struct Entity: Codable {
         let id: String
         let name: String
         let permission: Permission.Value
@@ -37,7 +37,7 @@ struct Workspace {
         let updateTime: String?
     }
 
-    struct List: Decodable {
+    struct List: Codable {
         let data: [Entity]
         let totalPages: Int
         let totalElements: Int

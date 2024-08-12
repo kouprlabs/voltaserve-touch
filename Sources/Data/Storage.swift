@@ -4,7 +4,7 @@ struct Storage {
     var config: Config
     var token: Token.Value
 
-    struct Usage: Decodable {
+    struct Usage: Codable {
         let bytes: Int
         let maxBytes: Int
         let percentage: Int
