@@ -11,7 +11,7 @@ class Viewer3DState: ObservableObject {
     }
 
     init(config: Config, token: VOToken.Value) {
-        data = VOFile(baseURL: config.apiUrl, accessToken: token.accessToken)
+        data = VOFile(baseURL: config.apiURL, accessToken: token.accessToken)
     }
 
     func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {

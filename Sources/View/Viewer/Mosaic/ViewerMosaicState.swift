@@ -20,7 +20,7 @@ class ViewerMosaicState: ObservableObject {
     }
 
     init(config: Config, token: VOToken.Value) {
-        data = VOMosaic(baseURL: config.apiUrl, accessToken: token.accessToken)
+        data = VOMosaic(baseURL: config.apiURL, accessToken: token.accessToken)
     }
 
     func loadMosaic() async throws {
