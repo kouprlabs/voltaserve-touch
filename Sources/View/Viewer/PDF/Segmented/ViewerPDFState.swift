@@ -1,5 +1,6 @@
 import PDFKit
 import SwiftUI
+import Voltaserve
 
 class ViewerPDFState: ObservableObject {
     @Published var pdfDocument: PDFDocument?
@@ -7,21 +8,21 @@ class ViewerPDFState: ObservableObject {
     @Published var totalPages = 0
     @Published var currentPage = 1
 
-    private var data: File
-    private var file: File.Entity?
+    private var data: VOFile
+    private var file: VOFile.Entity?
     private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    init(config: Config, token: Token.Value) {
-        data = File(config: config, token: token)
+    init(config: Config, token: VOToken.Value) {
+        data = VOFile(baseURL: config.apiUrl, accessToken: token.accessToken)
     }
 
     func loadPDF() async {
         do {
-            let file = try await data.fetch(id: fileId)
+            let file = try await data.fetch(fileId)
             self.file = file
             if let pages = file.snapshot?.preview?.document?.pages?.count {
                 Task { @MainActor in
@@ -41,7 +42,7 @@ class ViewerPDFState: ObservableObject {
 
         do {
             let data = try await data.fetchSegmentedPage(
-                id: fileId,
+                fileId,
                 page: index,
                 fileExtension: String(fileExtension.dropFirst())
             )
@@ -64,7 +65,7 @@ class ViewerPDFState: ObservableObject {
 
         do {
             let data = try await data.fetchSegmentedThumbnail(
-                id: fileId,
+                fileId,
                 page: index, fileExtension: fileExtension
             )
             if let image = UIImage(data: data) {
@@ -91,7 +92,7 @@ class ViewerPDFState: ObservableObject {
         for pageNumber in start ... end where !isPreloaded(page: pageNumber) {
             do {
                 let data = try await data.fetchSegmentedPage(
-                    id: fileId,
+                    fileId,
                     page: pageNumber,
                     fileExtension: String(fileExtension.dropFirst())
                 )
@@ -124,7 +125,7 @@ class ViewerPDFState: ObservableObject {
 
     private enum Constants {
         static let fileIds = [
-            "OvoGXwrqo6J8r"
+            "6A5POegb8wwn7" // human-freedom-index-2022
         ]
 
         // Number of pages to preload before and after the current page

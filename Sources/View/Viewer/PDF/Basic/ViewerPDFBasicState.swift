@@ -1,20 +1,21 @@
 import PDFKit
 import SwiftUI
+import Voltaserve
 
 class ViewerPDFBasicState: ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var loadedThumbnails: [Int: UIImage] = [:]
     @Published var isLoading = false
 
-    private var data: File
+    private var data: VOFile
     private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    init(config: Config, token: Token.Value) {
-        data = File(config: config, token: token)
+    init(config: Config, token: VOToken.Value) {
+        data = VOFile(baseURL: config.apiUrl, accessToken: token.accessToken)
     }
 
     func loadPDF() {
@@ -61,7 +62,7 @@ class ViewerPDFBasicState: ObservableObject {
 
     private enum Constants {
         static let fileIds = [
-            "OvoGXwrqo6J8r"
+            "2WNJM7poqKLjP" // hdr2023-24reporten
         ]
     }
 }

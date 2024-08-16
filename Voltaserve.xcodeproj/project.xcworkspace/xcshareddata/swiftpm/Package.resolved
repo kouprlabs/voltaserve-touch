@@ -1,5 +1,5 @@
 {
-  "originHash" : "17a73bae12bf2c991acb0b3a463178b7dbfa1bf41002a5caf40823bd2fc094b4",
+  "originHash" : "cc833c37a041665bfdd1439c4a368bee0eb4241be026d34695b4e0d336eaf2ff",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -17,6 +17,24 @@
       "state" : {
         "revision" : "0e399286a29580a6f3c0f49aa01075b5c43a9ce2",
         "version" : "0.5.11"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "9ad9487c2448b3f1265ea2cc8af246b9cae6878d",
+        "version" : "0.56.1"
+      }
+    },
+    {
+      "identity" : "voltaserve-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kouprlabs/voltaserve-swift.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ce7097283123f8c0e70a3be64c12818413e0b09c"
       }
     }
   ],

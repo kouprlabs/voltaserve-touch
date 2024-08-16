@@ -1,12 +1,13 @@
 import Alamofire
 import SwiftUI
+import Voltaserve
 
 struct ViewerMosaic: View {
     @EnvironmentObject private var state: ViewerMosaicState
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
-    @State private var selectedZoomLevel: Mosaic.ZoomLevel?
+    @State private var selectedZoomLevel: VOMosaic.ZoomLevel?
 
     init() {
         setupNavigationBarAppearance()

@@ -18,6 +18,7 @@
 		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
 		649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 649066F02C5E35E400BA3CCD /* Alamofire */; };
 		649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 649067042C60979900BA3CCD /* GLTFKit2 */; };
+		64FD0A632C6F59790091E4CB /* Voltaserve in Frameworks */ = {isa = PBXBuildFile; productRef = 64FD0A622C6F59790091E4CB /* Voltaserve */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +27,7 @@
 		64562B692C69EC2A00E10D97 /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		64562B6A2C69EC2A00E10D97 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
 		64562B6B2C69EC2A00E10D97 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		649066DE2C5E35AD00BA3CCD /* VoltaserveApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoltaserveApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
 		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -36,7 +37,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		641C35802C690B1B00B207F3 /* Helper */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helper; sourceTree = "<group>"; };
 		641C35822C690B1B00B207F3 /* Infra */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Infra; sourceTree = "<group>"; };
-		641C35952C690B1B00B207F3 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
 		641C35AC2C690B1B00B207F3 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -45,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64FD0A632C6F59790091E4CB /* Voltaserve in Frameworks */,
 				649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */,
 				649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */,
 			);
@@ -70,7 +71,7 @@
 		649066DF2C5E35AD00BA3CCD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				649066DE2C5E35AD00BA3CCD /* Voltaserve.app */,
+				649066DE2C5E35AD00BA3CCD /* VoltaserveApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,7 +81,6 @@
 			children = (
 				641C35802C690B1B00B207F3 /* Helper */,
 				641C35822C690B1B00B207F3 /* Infra */,
-				641C35952C690B1B00B207F3 /* Data */,
 				641C35AC2C690B1B00B207F3 /* View */,
 				5C1F4A155ED69CBA594C129F /* Launcher.swift */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
@@ -100,9 +100,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		649066DD2C5E35AD00BA3CCD /* Voltaserve */ = {
+		649066DD2C5E35AD00BA3CCD /* VoltaserveApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */;
+			buildConfigurationList = 649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "VoltaserveApp" */;
 			buildPhases = (
 				649066F92C5F38F900BA3CCD /* SwiftLint */,
 				649066DA2C5E35AD00BA3CCD /* Sources */,
@@ -116,16 +116,16 @@
 			fileSystemSynchronizedGroups = (
 				641C35802C690B1B00B207F3 /* Helper */,
 				641C35822C690B1B00B207F3 /* Infra */,
-				641C35952C690B1B00B207F3 /* Data */,
 				641C35AC2C690B1B00B207F3 /* View */,
 			);
-			name = Voltaserve;
+			name = VoltaserveApp;
 			packageProductDependencies = (
 				649066F02C5E35E400BA3CCD /* Alamofire */,
 				649067042C60979900BA3CCD /* GLTFKit2 */,
+				64FD0A622C6F59790091E4CB /* Voltaserve */,
 			);
 			productName = Voltaserve;
-			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
+			productReference = 649066DE2C5E35AD00BA3CCD /* VoltaserveApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -155,12 +155,13 @@
 			packageReferences = (
 				649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */,
 				649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */,
+				64FD0A612C6F59790091E4CB /* XCRemoteSwiftPackageReference "voltaserve-swift" */,
 			);
 			productRefGroup = 649066DF2C5E35AD00BA3CCD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				649066DD2C5E35AD00BA3CCD /* Voltaserve */,
+				649066DD2C5E35AD00BA3CCD /* VoltaserveApp */,
 			);
 		};
 /* End PBXProject section */
@@ -348,6 +349,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -359,6 +361,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.koupr.Voltaserve;
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -378,6 +381,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -389,6 +393,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.koupr.Voltaserve;
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -408,7 +413,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "Voltaserve" */ = {
+		649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "VoltaserveApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				649066ED2C5E35AE00BA3CCD /* Debug */,
@@ -436,6 +441,14 @@
 				minimumVersion = 0.5.11;
 			};
 		};
+		64FD0A612C6F59790091E4CB /* XCRemoteSwiftPackageReference "voltaserve-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kouprlabs/voltaserve-swift.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -448,6 +461,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */;
 			productName = GLTFKit2;
+		};
+		64FD0A622C6F59790091E4CB /* Voltaserve */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 64FD0A612C6F59790091E4CB /* XCRemoteSwiftPackageReference "voltaserve-swift" */;
+			productName = Voltaserve;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

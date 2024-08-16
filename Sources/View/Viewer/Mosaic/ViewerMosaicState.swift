@@ -1,25 +1,26 @@
 import Alamofire
 import SwiftUI
+import Voltaserve
 
 class ViewerMosaicState: ObservableObject {
-    @Published private(set) var info: Mosaic.Info?
-    @Published private(set) var zoomLevel: Mosaic.ZoomLevel?
+    @Published private(set) var info: VOMosaic.Info?
+    @Published private(set) var zoomLevel: VOMosaic.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
 
     private var busy: [[Bool]] = []
-    private var data: Mosaic
+    private var data: VOMosaic
     private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    var zoomLevels: [Mosaic.ZoomLevel]? {
+    var zoomLevels: [VOMosaic.ZoomLevel]? {
         info?.metadata.zoomLevels
     }
 
-    init(config: Config, token: Token.Value) {
-        data = Mosaic(config: config, token: token)
+    init(config: Config, token: VOToken.Value) {
+        data = VOMosaic(baseURL: config.apiUrl, accessToken: token.accessToken)
     }
 
     func loadMosaic() async throws {
@@ -37,7 +38,7 @@ class ViewerMosaicState: ObservableObject {
         }
     }
 
-    func allocateGridForZoomLevel(_ zoomLevel: Mosaic.ZoomLevel) {
+    func allocateGridForZoomLevel(_ zoomLevel: VOMosaic.ZoomLevel) {
         grid = Array(repeating: Array(repeating: nil, count: zoomLevel.cols), count: zoomLevel.rows)
         busy = Array(
             repeating: Array(repeating: false, count: zoomLevel.cols),
@@ -45,7 +46,7 @@ class ViewerMosaicState: ObservableObject {
         )
     }
 
-    func selectZoomLevel(_ zoomLevel: Mosaic.ZoomLevel) {
+    func selectZoomLevel(_ zoomLevel: VOMosaic.ZoomLevel) {
         self.zoomLevel = zoomLevel
         allocateGridForZoomLevel(zoomLevel)
     }
@@ -57,7 +58,7 @@ class ViewerMosaicState: ObservableObject {
             Task {
                 do {
                     let data = try await data.fetchDataForFile(
-                        id: fileId,
+                        fileId,
                         zoomLevel: zoomLevel,
                         forCellAtRow: row, col: col,
                         fileExtension: String(info.metadata.fileExtension.dropFirst())
@@ -140,7 +141,7 @@ class ViewerMosaicState: ObservableObject {
 
     private enum Constants {
         static let fileIds: [String] = [
-            "w5JLDMQwLbkry" // In_the_Conservatory
+            "O4vlbKm7YDBak" // In_the_Conservatory
         ]
     }
 }

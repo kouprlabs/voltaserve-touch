@@ -1,16 +1,17 @@
 import GLTFKit2
 import SwiftUI
+import Voltaserve
 
 class Viewer3DState: ObservableObject {
-    private var data: File
+    private var data: VOFile
     private var idRandomizer = Randomizer(Constants.fileIds)
 
     private var fileId: String {
         idRandomizer.value
     }
 
-    init(config: Config, token: Token.Value) {
-        data = File(config: config, token: token)
+    init(config: Config, token: VOToken.Value) {
+        data = VOFile(baseURL: config.apiUrl, accessToken: token.accessToken)
     }
 
     func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {
@@ -38,12 +39,12 @@ class Viewer3DState: ObservableObject {
 
     private enum Constants {
         static let fileIds: [String] = [
-            "X5B4GmoRWNO4W", // girl
-            "mqMeKPo7zza5p", // armstrong
-            "ApNxljyZG3AYd", // car
-            "nDBzl4JE3M4vN", // mixer
-            "Q9BEQVo3x4dqn", // vase
-            "7DjrG5Vy3pqRX" // sofa
+            "Zae0LX1ZPEP3b", // Girl
+            "dNj541y607koV", // Armstrong
+            "2BAexoMypBzre", // Car
+            "6VrYB5PK0rWVn", // Mixer
+            "ZaELK7w1V0aLP", // Vase
+            "D51zAXO1P5Yen" // Chair
         ]
     }
 }
