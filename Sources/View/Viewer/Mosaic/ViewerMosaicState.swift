@@ -25,7 +25,7 @@ class ViewerMosaicState: ObservableObject {
 
     func loadMosaic() async throws {
         do {
-            let info = try await data.fetchInfoForFile(id: fileId)
+            let info = try await data.fetchInfoForFile(fileId)
             Task { @MainActor in
                 self.info = info
                 if let zoomLevel = self.info?.metadata.zoomLevels.first {
