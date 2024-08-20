@@ -16,10 +16,7 @@ class Viewer3DState: ObservableObject {
 
     func loadAsset(completion: @escaping (GLTFAsset?, Error?) -> Void) {
         GLTFAsset.load(
-            with: data.urlForPreview(
-                id: fileId,
-                fileExtension: "glb"
-            ),
+            with: data.urlForPreview(fileId, fileExtension: "glb"),
             options: [:]
         ) { _, status, maybeAsset, maybeError, _ in
             DispatchQueue.main.async {

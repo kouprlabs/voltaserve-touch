@@ -26,7 +26,7 @@ class ViewerPDFBasicState: ObservableObject {
         }
 
         DispatchQueue.global().async {
-            if let loadedDocument = PDFDocument(url: self.data.urlForPreview(id: self.fileId, fileExtension: "pdf")) {
+            if let loadedDocument = PDFDocument(url: self.data.urlForPreview(self.fileId, fileExtension: "pdf")) {
                 DispatchQueue.main.async {
                     self.pdfDocument = loadedDocument
                     self.isLoading = false

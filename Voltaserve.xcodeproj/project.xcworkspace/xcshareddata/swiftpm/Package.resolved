@@ -20,21 +20,12 @@
       }
     },
     {
-      "identity" : "swiftlintplugins",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
-      "state" : {
-        "revision" : "9ad9487c2448b3f1265ea2cc8af246b9cae6878d",
-        "version" : "0.56.1"
-      }
-    },
-    {
       "identity" : "voltaserve-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kouprlabs/voltaserve-swift.git",
       "state" : {
         "branch" : "main",
-        "revision" : "cb5695aa269837a76412f8bd46426f8398a3629c"
+        "revision" : "bc1530ab00d555d00108b934c8a38ec2f010faf3"
       }
     }
   ],
