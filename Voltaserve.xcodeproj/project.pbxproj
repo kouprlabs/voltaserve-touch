@@ -16,7 +16,6 @@
 		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
 		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
 		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
-		649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 649066F02C5E35E400BA3CCD /* Alamofire */; };
 		649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 649067042C60979900BA3CCD /* GLTFKit2 */; };
 		64FD0A632C6F59790091E4CB /* Voltaserve in Frameworks */ = {isa = PBXBuildFile; productRef = 64FD0A622C6F59790091E4CB /* Voltaserve */; };
 /* End PBXBuildFile section */
@@ -46,7 +45,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				64FD0A632C6F59790091E4CB /* Voltaserve in Frameworks */,
-				649066F12C5E35E400BA3CCD /* Alamofire in Frameworks */,
 				649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -120,7 +118,6 @@
 			);
 			name = VoltaserveApp;
 			packageProductDependencies = (
-				649066F02C5E35E400BA3CCD /* Alamofire */,
 				649067042C60979900BA3CCD /* GLTFKit2 */,
 				64FD0A622C6F59790091E4CB /* Voltaserve */,
 			);
@@ -153,7 +150,6 @@
 			);
 			mainGroup = 649066D52C5E35AD00BA3CCD;
 			packageReferences = (
-				649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */,
 				649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */,
 				64FD0A612C6F59790091E4CB /* XCRemoteSwiftPackageReference "voltaserve-swift" */,
 			);
@@ -425,14 +421,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.9.1;
-			};
-		};
 		649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/warrenm/GLTFKit2.git";
@@ -452,11 +440,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		649066F02C5E35E400BA3CCD /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 649066EF2C5E35E400BA3CCD /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
 		649067042C60979900BA3CCD /* GLTFKit2 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */;
