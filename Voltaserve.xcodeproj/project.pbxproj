@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F4A155ED69CBA594C129F /* Launcher.swift */; };
 		64562B6C2C69EC2A00E10D97 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 64562B6A2C69EC2A00E10D97 /* .swiftformat */; };
 		64562B6D2C69EC2A00E10D97 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 64562B682C69EC2A00E10D97 /* .gitignore */; };
 		64562B6E2C69EC2A00E10D97 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 64562B6B2C69EC2A00E10D97 /* .swiftlint.yml */; };
@@ -21,7 +20,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5C1F4A155ED69CBA594C129F /* Launcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Launcher.swift; sourceTree = "<group>"; };
 		64562B682C69EC2A00E10D97 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		64562B692C69EC2A00E10D97 /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		64562B6A2C69EC2A00E10D97 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
@@ -33,10 +31,75 @@
 		649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Account.swift,
+				AccountStore.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		64D538C62C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				FileList.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		64D538C72C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				GroupList.swift,
+				GroupMembers.swift,
+				GroupStore.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		64D538C82C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				OrganizationList.swift,
+				OrganizationMembers.swift,
+				OrganizationStore.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		64D538C92C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				3D/Viewer3D.swift,
+				3D/Viewer3DStore.swift,
+				Mosaic/ViewerMosaic.swift,
+				Mosaic/ViewerMosaicStore.swift,
+				PDF/Basic/ViewerPDFBasic.swift,
+				PDF/Basic/ViewerPDFBasicStore.swift,
+				PDF/Segmented/ViewerPDF.swift,
+				PDF/Segmented/ViewerPDFPage.swift,
+				PDF/Segmented/ViewerPDFStore.swift,
+				PDF/Segmented/ViewerPDFThumbnail.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		64D538CA2C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				WorkspaceList.swift,
+				WorkspaceStore.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		641C35802C690B1B00B207F3 /* Helper */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helper; sourceTree = "<group>"; };
-		641C35822C690B1B00B207F3 /* Infra */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Infra; sourceTree = "<group>"; };
-		641C35AC2C690B1B00B207F3 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
+		64ADECE62C78CAED00AD945F /* Common */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Common; sourceTree = "<group>"; };
+		64D538872C78CA920055240F /* Account */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Account; sourceTree = "<group>"; };
+		64D5388A2C78CA920055240F /* File */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C62C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = File; sourceTree = "<group>"; };
+		64D5388D2C78CA920055240F /* Group */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C72C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Group; sourceTree = "<group>"; };
+		64D538902C78CA920055240F /* Invitation */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Invitation; sourceTree = "<group>"; };
+		64D538932C78CA920055240F /* Organization */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C82C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Organization; sourceTree = "<group>"; };
+		64D538A72C78CA920055240F /* Viewer */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C92C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Viewer; sourceTree = "<group>"; };
+		64D538AA2C78CA920055240F /* Workspace */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538CA2C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Workspace; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,10 +140,14 @@
 		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				641C35802C690B1B00B207F3 /* Helper */,
-				641C35822C690B1B00B207F3 /* Infra */,
-				641C35AC2C690B1B00B207F3 /* View */,
-				5C1F4A155ED69CBA594C129F /* Launcher.swift */,
+				64ADECE62C78CAED00AD945F /* Common */,
+				64D538872C78CA920055240F /* Account */,
+				64D5388A2C78CA920055240F /* File */,
+				64D5388D2C78CA920055240F /* Group */,
+				64D538902C78CA920055240F /* Invitation */,
+				64D538932C78CA920055240F /* Organization */,
+				64D538A72C78CA920055240F /* Viewer */,
+				64D538AA2C78CA920055240F /* Workspace */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
 			);
@@ -102,7 +169,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "VoltaserveApp" */;
 			buildPhases = (
-				649066F92C5F38F900BA3CCD /* SwiftLint */,
 				649066DA2C5E35AD00BA3CCD /* Sources */,
 				649066DB2C5E35AD00BA3CCD /* Frameworks */,
 				649066DC2C5E35AD00BA3CCD /* Resources */,
@@ -112,9 +178,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				641C35802C690B1B00B207F3 /* Helper */,
-				641C35822C690B1B00B207F3 /* Infra */,
-				641C35AC2C690B1B00B207F3 /* View */,
+				64ADECE62C78CAED00AD945F /* Common */,
+				64D538902C78CA920055240F /* Invitation */,
 			);
 			name = VoltaserveApp;
 			packageProductDependencies = (
@@ -178,28 +243,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		649066F92C5F38F900BA3CCD /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x /opt/homebrew/bin/swiftlint ]; then\n    /opt/homebrew/bin/swiftlint .\nelse\n    echo \"warning: SwiftLint not installed, install with Homebrew: brew install swiftlint\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		649066DA2C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -207,7 +250,6 @@
 			files = (
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
-				5C1F4DD24AE0E2E8D7514204 /* Launcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,6 +393,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -383,6 +426,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -10,15 +10,18 @@ struct VoltaserveApp: App {
         tokenType: "Bearer",
         refreshToken: "f7599a593043424eb74e1a3c3614146e"
     )
-    var config = Config(apiURL: "http://localhost:8080/v2")
+    var config = Config(
+        apiURL: "http://localhost:8080/v2",
+        idpURL: "http://localhost:8081/v2"
+    )
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(Viewer3DState(config: config, token: token))
-                .environmentObject(ViewerPDFState(config: config, token: token))
-                .environmentObject(ViewerPDFBasicState(config: config, token: token))
-                .environmentObject(ViewerMosaicState(config: config, token: token))
+                .environmentObject(Viewer3DStore(config: config, token: token))
+                .environmentObject(ViewerPDFStore(config: config, token: token))
+                .environmentObject(ViewerPDFBasicStore(config: config, token: token))
+                .environmentObject(ViewerMosaicStore(config: config, token: token))
         }
     }
 }
