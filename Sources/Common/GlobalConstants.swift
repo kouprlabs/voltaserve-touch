@@ -10,7 +10,7 @@ enum GlobalConstants {
         refreshToken: "f7599a593043424eb74e1a3c3614146e"
     )
     static let config = Config(
-        apiURL: "http://localhost:8080/v2",
-        idpURL: "http://localhost:8081/v2"
+        apiURL: "http://192.168.100.24:8080/v2",
+        idpURL: "http://192.168.100.24:8081/v2"
     )
 }

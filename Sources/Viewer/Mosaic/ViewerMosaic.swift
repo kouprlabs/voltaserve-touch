@@ -11,17 +11,12 @@ struct ViewerMosaic: View {
     @State private var showZoomLevelMenu = false
     @State private var selectedZoomLevel: VOMosaic.ZoomLevel?
 
-    init() {
-        setupNavigationBarAppearance()
-    }
-
     var body: some View {
         GeometryReader { geometry in
             let visibleRect = CGRect(
                 origin: CGPoint(x: -dragOffset.width, y: -dragOffset.height),
                 size: geometry.size
             )
-
             ZStack {
                 if let zoomLevel = state.zoomLevel, !state.grid.isEmpty {
                     ForEach(0 ..< zoomLevel.rows, id: \.self) { row in
@@ -96,15 +91,6 @@ struct ViewerMosaic: View {
                 }
             }
         }
-    }
-
-    private func setupNavigationBarAppearance() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithDefaultBackground()
-        appearance.backgroundEffect = UIBlurEffect(style: .systemMaterial)
-
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 
     private func resetMosaicPosition() {
