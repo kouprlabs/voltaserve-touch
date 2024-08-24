@@ -13,9 +13,6 @@ struct ViewerPDF: View {
             ViewerPDFPage(state: state)
             if showThumbnails {
                 ViewerPDFThumbnailList(state: state, pdfView: PDFView())
-                    .frame(height: 150)
-                    .background(Color.white)
-                    .transition(.move(edge: .bottom))
             }
         }
         .clipped()

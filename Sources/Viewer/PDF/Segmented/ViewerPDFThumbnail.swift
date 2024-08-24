@@ -13,9 +13,11 @@ struct ViewerPDFThumbnail: View {
             Image(uiImage: thumbnail)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .background(Color.gray.opacity(0.2))
                 .frame(width: 100, height: 150, alignment: .center)
-                .border(Color.black, width: state.currentPage == index ? 2 : 0)
+                .overlay {
+                    Color.black.opacity(state.currentPage == index ? 0 : 0.4)
+                }
+                .clipped()
                 .onTapGesture {
                     Task {
                         state.currentPage = index
@@ -38,30 +40,24 @@ struct ViewerPDFThumbnailList: View {
     @State private var isScrolling = false
     @State private var scrollOffset: CGFloat = 0
     @State private var timerCancellable: AnyCancellable?
-    // Assuming the width of the viewport
     @State private var screenWidth: CGFloat = UIScreen.main.bounds.width
-
-    let thumbnailWidth: CGFloat = 100
-    let thumbnailSpacing: CGFloat = 16
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             ScrollViewReader { proxy in
-                HStack(spacing: thumbnailSpacing) {
+                HStack(spacing: 0) {
                     ForEach(0 ..< state.totalPages, id: \.self) { index in
                         ViewerPDFThumbnail(state: state, index: index + 1, pdfView: pdfView)
+                            .padding(.leading, Constants.thumbnailSpacing)
+                            .padding(.bottom, Constants.thumbnailSpacing)
                             .onAppear {
                                 visibleIndices.insert(index + 1)
                             }
-                            // Provide an ID for scrolling
                             .id(index)
                     }
                 }
-                .padding(16)
                 .onChange(of: state.currentPage) { _, currentPage in
-                    withAnimation {
-                        proxy.scrollTo(currentPage - 1, anchor: .center)
-                    }
+                    proxy.scrollTo(currentPage - 1, anchor: .center)
                 }
             }
             .background(GeometryReader {
@@ -95,7 +91,7 @@ struct ViewerPDFThumbnailList: View {
 
     private func updateVisibleThumbnails() {
         DispatchQueue.global(qos: .background).async {
-            let totalItemWidth = thumbnailWidth + thumbnailSpacing
+            let totalItemWidth = Constants.thumbnailWidth + Constants.thumbnailSpacing
             let firstIndex = max(0, Int(scrollOffset / totalItemWidth))
             let lastVisibleOffset = scrollOffset + screenWidth
             let lastIndex = min(state.totalPages - 1, Int(lastVisibleOffset / totalItemWidth))
@@ -116,7 +112,6 @@ struct ViewerPDFThumbnailList: View {
                 }
             }
 
-            // Offload thumbnails out of the visible range
             clearAllThumbnailsOutOfRange(firstIndex: firstIndex, lastIndex: lastIndex)
         }
     }
@@ -129,9 +124,13 @@ struct ViewerPDFThumbnailList: View {
             }
         }
     }
+
+    private enum Constants {
+        static let thumbnailWidth: CGFloat = 100
+        static let thumbnailSpacing: CGFloat = 16
+    }
 }
 
-// Preference key for scroll offset
 struct ScrollViewOffsetPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
