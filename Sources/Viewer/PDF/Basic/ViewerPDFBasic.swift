@@ -1,7 +1,27 @@
 import PDFKit
 import SwiftUI
 
-struct ViewerPDFBasic: UIViewRepresentable {
+struct ViewerPDFBasic: View {
+    @ObservedObject var store = ViewerPDFBasicStore(
+        config: GlobalConstants.config,
+        token: GlobalConstants.token
+    )
+
+    var body: some View {
+        VStack {
+            if store.isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+            } else {
+                ViewerPDFBasicRenderer(store: store)
+            }
+        }.onAppear {
+            store.loadPDF()
+        }
+    }
+}
+
+struct ViewerPDFBasicRenderer: UIViewRepresentable {
     var store: ViewerPDFBasicStore
 
     func makeCoordinator() -> Coordinator {
@@ -11,7 +31,6 @@ struct ViewerPDFBasic: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let containerView = UIView()
 
-        // Create and configure the PDFView
         let pdfView = PDFView()
         pdfView.autoScales = true
         pdfView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +50,6 @@ struct ViewerPDFBasic: UIViewRepresentable {
             pdfView.document = pdfDocument
         }
 
-        // Update layout to reflect visibility changes
         updateLayout(containerView: uiView, context: context)
     }
 
@@ -43,49 +61,23 @@ struct ViewerPDFBasic: UIViewRepresentable {
         pdfView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(pdfView)
 
-        // Add constraints for PDFView, respecting safe area
         NSLayoutConstraint.activate([
             pdfView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             pdfView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            // Use safeAreaLayoutGuide
             pdfView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor)
         ])
 
         NSLayoutConstraint.activate([
-            // Use safeAreaLayoutGuide
             pdfView.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 
     class Coordinator: NSObject {
         var pdfView: PDFView?
-        var parent: ViewerPDFBasic
+        var parent: ViewerPDFBasicRenderer
 
-        init(_ parent: ViewerPDFBasic) {
+        init(_ parent: ViewerPDFBasicRenderer) {
             self.parent = parent
-        }
-    }
-}
-
-struct ViewerPDFBasicContainer: View {
-    @ObservedObject var store = ViewerPDFBasicStore(
-        config: GlobalConstants.config,
-        token: GlobalConstants.token
-    )
-
-    var body: some View {
-        VStack {
-            if store.isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    // Try to match the style .large of UIKit's UIActivityIndicatorView
-                    .scaleEffect(1.85)
-            } else {
-                ViewerPDFBasic(store: store)
-                    .edgesIgnoringSafeArea(.all)
-            }
-        }.onAppear {
-            store.loadPDF()
         }
     }
 }

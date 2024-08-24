@@ -9,15 +9,15 @@ struct ViewerSelector: View {
 
     var body: some View {
         if file == "File 1" {
-            ViewerPDFBasicContainer()
+            ViewerPDFBasic()
         } else if file == "File 2" {
-            ViewerPDFContainer()
+            ViewerPDF()
         } else if file == "File 3" {
             Viewer3D()
         } else if file == "File 4" {
             ViewerMosaic()
         } else {
-            ViewerPDFBasicContainer()
+            ViewerPDFBasic()
         }
     }
 }

@@ -8,7 +8,7 @@ struct WorkspaceList: View {
     init(showingAccount: Bool = false, selection: String? = nil, workspaces _: [String] = []) {
         self.showingAccount = showingAccount
         self.selection = selection
-        for index in 0 ..< 50 {
+        for index in 1 ..< 50 {
             workspaces.append("Workspace \(index)")
         }
     }
