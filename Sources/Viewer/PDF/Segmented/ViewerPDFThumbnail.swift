@@ -57,7 +57,9 @@ struct ViewerPDFThumbnailList: View {
                     }
                 }
                 .onChange(of: state.currentPage) { _, currentPage in
-                    proxy.scrollTo(currentPage - 1, anchor: .center)
+                    withAnimation {
+                        proxy.scrollTo(currentPage - 1, anchor: .center)
+                    }
                 }
             }
             .background(GeometryReader {
@@ -118,9 +120,15 @@ struct ViewerPDFThumbnailList: View {
 
     private func clearAllThumbnailsOutOfRange(firstIndex: Int, lastIndex: Int) {
         DispatchQueue.main.async {
-            let range = (firstIndex - 10) ... (lastIndex + 10)
-            for index in 1 ... state.totalPages where !range.contains(index - 1) {
-                state.loadedThumbnails.removeValue(forKey: index)
+            var lowerBound = firstIndex - 10
+            if lowerBound < 0 {
+                lowerBound = 0
+            }
+            let upperBound = lastIndex + 10
+            if lowerBound <= upperBound, state.totalPages >= 1 {
+                for index in 1 ... state.totalPages where !(lowerBound ... upperBound).contains(index - 1) {
+                    state.loadedThumbnails.removeValue(forKey: index)
+                }
             }
         }
     }
