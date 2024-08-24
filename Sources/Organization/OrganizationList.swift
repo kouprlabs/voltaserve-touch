@@ -15,6 +15,7 @@ struct OrganizationList: View {
                         .navigationTitle(organization)
                 }
             }
+            .navigationTitle("Organizations")
         }
     }
 }

@@ -44,6 +44,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				FileList.swift,
+				FileStore.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
 		};
@@ -78,6 +79,7 @@
 				PDF/Segmented/ViewerPDFPage.swift,
 				PDF/Segmented/ViewerPDFStore.swift,
 				PDF/Segmented/ViewerPDFThumbnail.swift,
+				ViewerSelector.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
 		};

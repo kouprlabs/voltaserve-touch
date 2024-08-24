@@ -15,6 +15,7 @@ struct GroupList: View {
                         .navigationTitle(group)
                 }
             }
+            .navigationTitle("Groups")
         }
     }
 }

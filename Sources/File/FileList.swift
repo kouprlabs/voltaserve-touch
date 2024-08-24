@@ -13,21 +13,11 @@ struct FileList: View {
         NavigationStack {
             List(files, id: \.self) { file in
                 NavigationLink(file) {
-                    if file == "File 1" {
-                        ViewerPDFBasicContainer()
-                            .navigationTitle(file)
-                    } else if file == "File 2" {
-                        ViewerPDFContainer()
-                            .navigationTitle(file)
-                    } else if file == "File 3" {
-                        Viewer3D()
-                            .navigationTitle(file)
-                    } else {
-                        ViewerPDFBasicContainer()
-                            .navigationTitle(file)
-                    }
+                    ViewerSelector(file: file)
+                        .navigationTitle(file)
                 }
             }
+            .listStyle(.inset)
         }
     }
 }
