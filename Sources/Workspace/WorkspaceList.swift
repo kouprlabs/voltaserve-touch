@@ -2,16 +2,12 @@ import SwiftUI
 
 struct WorkspaceList: View {
     @State var showingAccount = false
-    @State var selection: String?
-    var workspaces: [String] = []
-
-    init(showingAccount: Bool = false, selection: String? = nil, workspaces _: [String] = []) {
-        self.showingAccount = showingAccount
-        self.selection = selection
-        for index in 1 ..< 50 {
-            workspaces.append("Workspace \(index)")
-        }
-    }
+    @State var selection: String? = nil
+    var workspaces = [
+        "Workspace Alpha",
+        "Workspace Teta",
+        "Workspace Omega"
+    ]
 
     var body: some View {
         NavigationStack {
@@ -20,7 +16,7 @@ struct WorkspaceList: View {
                     FileList()
                         .navigationTitle(workspace)
                 } label: {
-                    Text(workspace)
+                    WorkspaceRow(workspace)
                 }
             }
             .navigationTitle("Home")

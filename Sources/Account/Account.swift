@@ -1,12 +1,27 @@
 import SwiftUI
+import Voltaserve
 
 struct Account: View {
     @Environment(\.presentationMode) private var presentationMode
-    @State private var fullName = "Anass Bouassaba"
-    @State private var email = "anasss@koupr.com"
+    @State private var user: VOUser.Entity
+    @State private var fullName: String
+    @State private var email: String
     @State private var password = "xxxxxx"
     @State private var showDeleteAlert = false
     @State private var isLoading = false
+
+    init() {
+        let user = VOUser.Entity(
+            id: UUID().uuidString,
+            username: "anass@koupr.com",
+            email: "anass@koupr.com",
+            fullName: "Anass Bouassaba",
+            createTime: Date().ISO8601Format()
+        )
+        self.user = user
+        fullName = user.fullName
+        email = user.email
+    }
 
     var body: some View {
         NavigationView {
@@ -15,6 +30,7 @@ struct Account: View {
                     ProgressView()
                         .progressViewStyle(.circular)
                 } else {
+                    Avatar(name: user.fullName, size: 100)
                     Form {
                         Section(header: Text("Basics")) {
                             TextField("Full name", text: $fullName)

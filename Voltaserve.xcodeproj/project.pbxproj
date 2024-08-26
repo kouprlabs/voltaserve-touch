@@ -32,6 +32,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6444CDEF2C7CF7E400FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Config.swift,
+				GlobalConstants.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		6444CDF02C7CF7E700FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Randomizer.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
 		64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -53,6 +68,7 @@
 			membershipExceptions = (
 				GroupList.swift,
 				GroupMembers.swift,
+				GroupRow.swift,
 				GroupStore.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
@@ -62,6 +78,7 @@
 			membershipExceptions = (
 				OrganizationList.swift,
 				OrganizationMembers.swift,
+				OrganizationRow.swift,
 				OrganizationStore.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
@@ -87,6 +104,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				WorkspaceList.swift,
+				WorkspaceRow.swift,
 				WorkspaceStore.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
@@ -94,7 +112,9 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		64ADECE62C78CAED00AD945F /* Common */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Common; sourceTree = "<group>"; };
+		6444CDED2C7CF7D300FB37E6 /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6444CDF02C7CF7E700FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
+		6444CDEE2C7CF7E000FB37E6 /* Infra */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6444CDEF2C7CF7E400FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Infra; sourceTree = "<group>"; };
+		64ADECE62C78CAED00AD945F /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		64D538872C78CA920055240F /* Account */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Account; sourceTree = "<group>"; };
 		64D5388A2C78CA920055240F /* File */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C62C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = File; sourceTree = "<group>"; };
 		64D5388D2C78CA920055240F /* Group */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C72C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Group; sourceTree = "<group>"; };
@@ -142,7 +162,9 @@
 		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				64ADECE62C78CAED00AD945F /* Common */,
+				6444CDEE2C7CF7E000FB37E6 /* Infra */,
+				6444CDED2C7CF7D300FB37E6 /* Helpers */,
+				64ADECE62C78CAED00AD945F /* Shared */,
 				64D538872C78CA920055240F /* Account */,
 				64D5388A2C78CA920055240F /* File */,
 				64D5388D2C78CA920055240F /* Group */,
@@ -180,7 +202,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				64ADECE62C78CAED00AD945F /* Common */,
+				64ADECE62C78CAED00AD945F /* Shared */,
 				64D538902C78CA920055240F /* Invitation */,
 			);
 			name = VoltaserveApp;

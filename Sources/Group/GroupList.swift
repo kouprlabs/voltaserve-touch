@@ -2,17 +2,19 @@ import SwiftUI
 
 struct GroupList: View {
     var groups = [
-        "Group 1",
-        "Group 2",
-        "Group 3"
+        "Group One",
+        "Group Two",
+        "Group Three"
     ]
 
     var body: some View {
         NavigationStack {
             List(groups, id: \.self) { group in
-                NavigationLink(group) {
+                NavigationLink {
                     GroupMembers()
                         .navigationTitle(group)
+                } label: {
+                    GroupRow(group)
                 }
             }
             .navigationTitle("Groups")
