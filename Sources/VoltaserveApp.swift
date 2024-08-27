@@ -18,6 +18,7 @@ struct VoltaserveApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(AccountStore())
                 .environmentObject(Viewer3DStore(config: config, token: token))
                 .environmentObject(ViewerPDFStore(config: config, token: token))
                 .environmentObject(ViewerPDFBasicStore(config: config, token: token))

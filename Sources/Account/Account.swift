@@ -2,34 +2,21 @@ import SwiftUI
 import Voltaserve
 
 struct Account: View {
+    @EnvironmentObject private var store: AccountStore
     @Environment(\.presentationMode) private var presentationMode
-    @State private var user: VOUser.Entity
-    @State private var fullName: String
-    @State private var email: String
+    @State private var fullName = ""
+    @State private var email = ""
     @State private var password = "xxxxxx"
     @State private var showDeleteAlert = false
     @State private var isLoading = false
 
-    init() {
-        let user = VOUser.Entity(
-            id: UUID().uuidString,
-            username: "anass@koupr.com",
-            email: "anass@koupr.com",
-            fullName: "Anass Bouassaba",
-            createTime: Date().ISO8601Format()
-        )
-        self.user = user
-        fullName = user.fullName
-        email = user.email
-    }
-
     var body: some View {
         NavigationView {
             VStack {
-                if isLoading {
+                if isLoading || store.user == nil {
                     ProgressView()
                         .progressViewStyle(.circular)
-                } else {
+                } else if let user = store.user {
                     Avatar(name: user.fullName, size: 100)
                     Form {
                         Section(header: Text("Basics")) {
@@ -54,8 +41,14 @@ struct Account: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        presentationMode.wrappedValue.dismiss()
+                        Task { @MainActor in
+                            isLoading = true
+                            try await store.update(email: email, fullName: fullName)
+                            isLoading = false
+                            presentationMode.wrappedValue.dismiss()
+                        }
                     }
+                    .disabled(isLoading)
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
@@ -68,12 +61,24 @@ struct Account: View {
                     isLoading = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                         isLoading = false
+                        presentationMode.wrappedValue.dismiss()
                     }
-                    print("Perform account deletion...")
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Are you sure want to delete your account?")
+            }
+        }
+        .onAppear {
+            if let user = store.user {
+                fullName = user.fullName
+                email = user.email
+            }
+        }
+        .onChange(of: store.user) { _, newUser in
+            if let user = newUser {
+                fullName = user.fullName
+                email = user.email
             }
         }
     }
@@ -81,4 +86,5 @@ struct Account: View {
 
 #Preview {
     Account()
+        .environmentObject(AccountStore())
 }
