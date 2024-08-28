@@ -28,7 +28,7 @@ struct OrganizationMembers: View {
 
     var body: some View {
         List(members, id: \.id) { member in
-            UserRow(member)
+            VOUserRow(member)
         }
     }
 }

@@ -9,7 +9,7 @@ struct WorkspaceRow: View {
 
     var body: some View {
         HStack(spacing: 15) {
-            Avatar(name: name, size: 45)
+            VOAvatar(name: name, size: 45)
             Text(name)
         }
     }

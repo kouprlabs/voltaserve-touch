@@ -17,7 +17,7 @@ struct Account: View {
                     ProgressView()
                         .progressViewStyle(.circular)
                 } else if let user = store.user {
-                    Avatar(name: user.fullName, size: 100)
+                    VOAvatar(name: user.fullName, size: 100)
                     Form {
                         Section(header: Text("Basics")) {
                             TextField("Full name", text: $fullName)

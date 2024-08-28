@@ -1,7 +1,7 @@
 import SwiftUI
 import Voltaserve
 
-struct UserRow: View {
+struct VOUserRow: View {
     var user: VOUser.Entity
 
     init(_ user: VOUser.Entity) {
@@ -10,7 +10,7 @@ struct UserRow: View {
 
     var body: some View {
         HStack(spacing: 15) {
-            Avatar(name: user.fullName, size: 45)
+            VOAvatar(name: user.fullName, size: 45)
             VStack(alignment: .leading) {
                 Text(user.fullName)
                 Text(user.email)
@@ -22,7 +22,7 @@ struct UserRow: View {
 }
 
 #Preview {
-    UserRow(VOUser.Entity(
+    VOUserRow(VOUser.Entity(
         id: UUID().uuidString,
         username: "brucelee@example.com",
         email: "brucelee@example.com",

@@ -20,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6446B6212C7F61FD00868B3E /* VoltaserveApp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "VoltaserveApp-Info.plist"; sourceTree = "<group>"; };
 		64562B682C69EC2A00E10D97 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		64562B692C69EC2A00E10D97 /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		64562B6A2C69EC2A00E10D97 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
@@ -44,6 +45,30 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Randomizer.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		6446B6192C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SignIn.swift,
+				SignInStore.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		6446B61A2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SignUp.swift,
+				SignUpStore.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+		};
+		6446B61B2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ForgotPassword.swift,
+				ForgotPasswordStore.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
 		};
@@ -114,7 +139,11 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6444CDED2C7CF7D300FB37E6 /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6444CDF02C7CF7E700FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
 		6444CDEE2C7CF7E000FB37E6 /* Infra */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6444CDEF2C7CF7E400FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Infra; sourceTree = "<group>"; };
-		64ADECE62C78CAED00AD945F /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		6446B61E2C7F617300868B3E /* Fonts */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Fonts; sourceTree = "<group>"; };
+		647151662C7F59F1001AF90B /* SignIn */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B6192C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SignIn; sourceTree = "<group>"; };
+		647151672C7F5A01001AF90B /* SignUp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B61A2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SignUp; sourceTree = "<group>"; };
+		6471516B2C7F5A49001AF90B /* ForgotPassword */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B61B2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ForgotPassword; sourceTree = "<group>"; };
+		64ADECE62C78CAED00AD945F /* Common */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Common; sourceTree = "<group>"; };
 		64D538872C78CA920055240F /* Account */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Account; sourceTree = "<group>"; };
 		64D5388A2C78CA920055240F /* File */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C62C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = File; sourceTree = "<group>"; };
 		64D5388D2C78CA920055240F /* Group */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C72C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Group; sourceTree = "<group>"; };
@@ -140,11 +169,13 @@
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
+				6446B6212C7F61FD00868B3E /* VoltaserveApp-Info.plist */,
 				64562B682C69EC2A00E10D97 /* .gitignore */,
 				64562B692C69EC2A00E10D97 /* .swift-version */,
 				64562B6A2C69EC2A00E10D97 /* .swiftformat */,
 				64562B6B2C69EC2A00E10D97 /* .swiftlint.yml */,
 				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
+				6446B61E2C7F617300868B3E /* Fonts */,
 				649066E72C5E35AE00BA3CCD /* Preview Content */,
 				649066E02C5E35AD00BA3CCD /* Sources */,
 				649066DF2C5E35AD00BA3CCD /* Products */,
@@ -164,7 +195,7 @@
 			children = (
 				6444CDEE2C7CF7E000FB37E6 /* Infra */,
 				6444CDED2C7CF7D300FB37E6 /* Helpers */,
-				64ADECE62C78CAED00AD945F /* Shared */,
+				64ADECE62C78CAED00AD945F /* Common */,
 				64D538872C78CA920055240F /* Account */,
 				64D5388A2C78CA920055240F /* File */,
 				64D5388D2C78CA920055240F /* Group */,
@@ -172,6 +203,9 @@
 				64D538932C78CA920055240F /* Organization */,
 				64D538A72C78CA920055240F /* Viewer */,
 				64D538AA2C78CA920055240F /* Workspace */,
+				647151662C7F59F1001AF90B /* SignIn */,
+				647151672C7F5A01001AF90B /* SignUp */,
+				6471516B2C7F5A49001AF90B /* ForgotPassword */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
 			);
@@ -202,7 +236,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				64ADECE62C78CAED00AD945F /* Shared */,
+				6446B61E2C7F617300868B3E /* Fonts */,
+				64ADECE62C78CAED00AD945F /* Common */,
 				64D538902C78CA920055240F /* Invitation */,
 			);
 			name = VoltaserveApp;
@@ -411,6 +446,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "VoltaserveApp-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -444,6 +480,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "VoltaserveApp-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

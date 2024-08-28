@@ -18,6 +18,7 @@ struct VoltaserveApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .font(.custom(VOMetrics.bodyFontFamily, size: VOMetrics.bodyFontSize))
                 .environmentObject(AccountStore())
                 .environmentObject(Viewer3DStore(config: config, token: token))
                 .environmentObject(ViewerPDFStore(config: config, token: token))
