@@ -14,8 +14,11 @@ class ViewerPDFBasicStore: ObservableObject {
         randomizer.value
     }
 
-    init(config: Config, token: VOToken.Value) {
-        data = VOFile(baseURL: config.apiURL, accessToken: token.accessToken)
+    init() {
+        data = VOFile(
+            baseURL: GlobalConstants.config.apiURL,
+            accessToken: GlobalConstants.token.accessToken
+        )
     }
 
     func loadPDF() {

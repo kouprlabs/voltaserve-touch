@@ -18,8 +18,11 @@ class ViewerMosaicStore: ObservableObject {
         info?.metadata.zoomLevels
     }
 
-    init(config: Config, token: VOToken.Value) {
-        data = VOMosaic(baseURL: config.apiURL, accessToken: token.accessToken)
+    init() {
+        data = VOMosaic(
+            baseURL: GlobalConstants.config.apiURL,
+            accessToken: GlobalConstants.token.accessToken
+        )
     }
 
     func loadMosaic() async throws {

@@ -3,10 +3,7 @@ import SceneKit
 import SwiftUI
 
 struct Viewer3D: UIViewRepresentable {
-    @ObservedObject private var state = Viewer3DStore(
-        config: GlobalConstants.config,
-        token: GlobalConstants.token
-    )
+    @ObservedObject private var state = Viewer3DStore()
     @State private var isLoading: Bool = true
 
     func makeUIView(context: Context) -> UIView {

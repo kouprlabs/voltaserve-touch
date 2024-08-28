@@ -2,10 +2,7 @@ import PDFKit
 import SwiftUI
 
 struct ViewerPDF: View {
-    @ObservedObject private var state = ViewerPDFStore(
-        config: GlobalConstants.config,
-        token: GlobalConstants.token
-    )
+    @ObservedObject private var state = ViewerPDFStore()
     @State private var showThumbnails = true
 
     var body: some View {

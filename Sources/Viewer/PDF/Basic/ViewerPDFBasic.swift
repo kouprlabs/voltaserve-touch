@@ -2,10 +2,7 @@ import PDFKit
 import SwiftUI
 
 struct ViewerPDFBasic: View {
-    @ObservedObject var store = ViewerPDFBasicStore(
-        config: GlobalConstants.config,
-        token: GlobalConstants.token
-    )
+    @ObservedObject var store = ViewerPDFBasicStore()
 
     var body: some View {
         VStack {

@@ -2,10 +2,7 @@ import SwiftUI
 import Voltaserve
 
 struct ViewerMosaic: View {
-    @ObservedObject private var state = ViewerMosaicStore(
-        config: GlobalConstants.config,
-        token: GlobalConstants.token
-    )
+    @ObservedObject private var state = ViewerMosaicStore()
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
