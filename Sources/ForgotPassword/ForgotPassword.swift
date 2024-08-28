@@ -1,8 +1,15 @@
 import SwiftUI
 
 struct ForgotPassword: View {
-    @State var isLoading = false
-    @State var email: String = ""
+    var onCompleted: (() -> Void)?
+    var onSignIn: (() -> Void)?
+    @State private var isLoading = false
+    @State private var email: String = ""
+
+    init(_ onCompleted: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
+        self.onCompleted = onCompleted
+        self.onSignIn = onSignIn
+    }
 
     var body: some View {
         VStack(spacing: VOMetrics.spacing) {
@@ -15,11 +22,14 @@ struct ForgotPassword: View {
                 .multilineTextAlignment(.center)
             TextField("Email", text: $email)
                 .voTextField(width: VOMetrics.formWidth)
+                .autocapitalization(.none)
+                .autocorrectionDisabled()
                 .disabled(isLoading)
             Button {
                 isLoading = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     isLoading = false
+                    onCompleted?()
                 }
             } label: {
                 VOButtonLabel(
@@ -32,7 +42,9 @@ struct ForgotPassword: View {
             HStack {
                 Text("Password recovered?")
                     .voFormHintText()
-                Button {} label: {
+                Button {
+                    onSignIn?()
+                } label: {
                     Text("Sign In")
                         .voFormHintLabel()
                 }

@@ -20,6 +20,7 @@ struct VoltaserveApp: App {
             ContentView()
                 .font(.custom(VOMetrics.bodyFontFamily, size: VOMetrics.bodyFontSize))
                 .environmentObject(AccountStore())
+                .environmentObject(SignUpStore())
                 .environmentObject(Viewer3DStore(config: config, token: token))
                 .environmentObject(ViewerPDFStore(config: config, token: token))
                 .environmentObject(ViewerPDFBasicStore(config: config, token: token))

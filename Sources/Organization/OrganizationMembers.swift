@@ -2,7 +2,7 @@ import SwiftUI
 import Voltaserve
 
 struct OrganizationMembers: View {
-    var members: [VOUser.Entity] = [
+    private var members: [VOUser.Entity] = [
         VOUser.Entity(
             id: UUID().uuidString,
             username: "bruceawayne@koupr.com",

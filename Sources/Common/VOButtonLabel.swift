@@ -20,6 +20,7 @@ struct VOButtonLabel: View {
                     .tint(progressViewTint)
             }
         }
+        .frame(maxWidth: .infinity)
     }
 }
 

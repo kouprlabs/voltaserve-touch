@@ -1,35 +1,34 @@
+import Combine
 import SwiftUI
 import Voltaserve
 
 struct ContentView: View {
-    @State var selection: Tab = .workspaces
-
-    enum Tab {
-        case workspaces
-        case groups
-        case organizations
-    }
+    @State private var timerSubscription: Cancellable?
+    @State private var showSignIn = true
 
     var body: some View {
-        TabView(selection: $selection) {
-            WorkspaceList()
-                .tabItem {
-                    Label("Home", systemImage: "house")
+        MainView()
+            .onAppear {
+                startBackgroundTask(interval: 3) {
+                    print("Task executed")
                 }
-                .tag(Tab.workspaces)
+            }
+            .onDisappear {
+                timerSubscription?.cancel()
+            }
+            .fullScreenCover(isPresented: $showSignIn) {
+                SignIn {
+                    showSignIn = false
+                }
+            }
+    }
 
-            GroupList()
-                .tabItem {
-                    Label("Groups", systemImage: "person.2.fill")
-                }
-                .tag(Tab.groups)
-
-            OrganizationList()
-                .tabItem {
-                    Label("Organizations", systemImage: "flag")
-                }
-                .tag(Tab.organizations)
-        }
+    func startBackgroundTask(interval: TimeInterval, task: @escaping () -> Void) {
+        timerSubscription = Timer.publish(every: interval, on: .main, in: .common)
+            .autoconnect()
+            .sink { _ in
+                task()
+            }
     }
 }
 

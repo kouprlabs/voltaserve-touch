@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct OrganizationList: View {
-    var organizations = [
+    private var organizations = [
         "Organization Uno",
         "Organization Duo",
         "Organization Trio"

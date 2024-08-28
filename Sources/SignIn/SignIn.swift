@@ -1,9 +1,16 @@
 import SwiftUI
 
 struct SignIn: View {
-    @State var isLoading = false
-    @State var email: String = ""
-    @State var password: String = ""
+    var onCompleted: (() -> Void)?
+    @State private var isLoading = false
+    @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var showSignUp = false
+    @State private var showForgotPassword = false
+
+    init(_ onCompleted: (() -> Void)? = nil) {
+        self.onCompleted = onCompleted
+    }
 
     var body: some View {
         VStack(spacing: VOMetrics.spacing) {
@@ -12,6 +19,8 @@ struct SignIn: View {
                 .voHeading(fontSize: VOMetrics.headingFontSize)
             TextField("Email", text: $email)
                 .voTextField(width: VOMetrics.formWidth)
+                .autocapitalization(.none)
+                .autocorrectionDisabled()
                 .disabled(isLoading)
             SecureField("Password", text: $password)
                 .voTextField(width: VOMetrics.formWidth)
@@ -20,6 +29,7 @@ struct SignIn: View {
                 isLoading = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     isLoading = false
+                    onCompleted?()
                 }
             } label: {
                 VOButtonLabel(
@@ -33,7 +43,9 @@ struct SignIn: View {
                 HStack {
                     Text("Don't have an account yet?")
                         .voFormHintText()
-                    Button {} label: {
+                    Button {
+                        showSignUp = true
+                    } label: {
                         Text("Sign Up")
                             .voFormHintLabel()
                     }
@@ -42,12 +54,28 @@ struct SignIn: View {
                 HStack {
                     Text("Cannot sign in?")
                         .voFormHintText()
-                    Button {} label: {
+                    Button {
+                        showForgotPassword = true
+                    } label: {
                         Text("Reset Password")
                             .voFormHintLabel()
                     }
                     .disabled(isLoading)
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $showSignUp) {
+            SignUp {
+                showSignUp = false
+            } onSignIn: {
+                showSignUp = false
+            }
+        }
+        .fullScreenCover(isPresented: $showForgotPassword) {
+            ForgotPassword {
+                showForgotPassword = false
+            } onSignIn: {
+                showForgotPassword = false
             }
         }
         .padding()

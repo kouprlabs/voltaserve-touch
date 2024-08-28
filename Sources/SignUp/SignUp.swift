@@ -1,12 +1,19 @@
 import SwiftUI
 
 struct SignUp: View {
-    @EnvironmentObject var store: SignUpStore
-    @State var fullName: String = ""
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var confirmPassword: String = ""
-    @State var isLoading = false
+    var onCompleted: (() -> Void)?
+    var onSignIn: (() -> Void)?
+    @EnvironmentObject private var store: SignUpStore
+    @State private var fullName: String = ""
+    @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var confirmPassword: String = ""
+    @State private var isLoading = false
+
+    init(_ onCompleted: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
+        self.onCompleted = onCompleted
+        self.onSignIn = onSignIn
+    }
 
     var body: some View {
         if let passwordRequirements = store.passwordRequirements {
@@ -16,9 +23,13 @@ struct SignUp: View {
                     .voHeading(fontSize: VOMetrics.headingFontSize)
                 TextField("Full name", text: $fullName)
                     .voTextField(width: VOMetrics.formWidth)
+                    .autocapitalization(.none)
+                    .autocorrectionDisabled()
                     .disabled(isLoading)
                 TextField("Email", text: $email)
                     .voTextField(width: VOMetrics.formWidth)
+                    .autocapitalization(.none)
+                    .autocorrectionDisabled()
                     .disabled(isLoading)
                 SecureField("Password", text: $password)
                     .voTextField(width: VOMetrics.formWidth)
@@ -38,6 +49,7 @@ struct SignUp: View {
                     isLoading = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                         isLoading = false
+                        onCompleted?()
                     }
                 } label: {
                     VOButtonLabel(
@@ -50,7 +62,9 @@ struct SignUp: View {
                 HStack {
                     Text("Already a member?")
                         .voFormHintText()
-                    Button {} label: {
+                    Button {
+                        onSignIn?()
+                    } label: {
                         Text("Sign In")
                             .voFormHintLabel()
                     }

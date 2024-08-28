@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GroupList: View {
-    var groups = [
+    private var groups = [
         "Group One",
         "Group Two",
         "Group Three"

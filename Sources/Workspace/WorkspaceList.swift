@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct WorkspaceList: View {
-    @State var showingAccount = false
-    @State var selection: String?
-    var workspaces = [
+    @State private var showingAccount = false
+    @State private var selection: String?
+    private var workspaces = [
         "Workspace Alpha",
         "Workspace Teta",
         "Workspace Omega"

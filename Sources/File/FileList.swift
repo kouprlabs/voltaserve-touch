@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct FileList: View {
-    var files = [
+    private var files = [
         "File 1",
         "File 2",
         "File 3",
