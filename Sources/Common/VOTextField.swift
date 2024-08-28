@@ -1,18 +1,10 @@
 import SwiftUI
 
-struct VOTextField: View {
-    var label: String
-    var text: Binding<String>
+struct VOTextField: ViewModifier {
     var width: CGFloat
 
-    init(_ label: String, text: Binding<String>, width: CGFloat) {
-        self.label = label
-        self.text = text
-        self.width = width
-    }
-
-    var body: some View {
-        TextField(label, text: text)
+    func body(content: Content) -> some View {
+        content
             .frame(width: width)
             .padding()
             .frame(height: 40)
@@ -23,10 +15,13 @@ struct VOTextField: View {
     }
 }
 
+extension View {
+    func voTextField(width: CGFloat) -> some View {
+        modifier(VOTextField(width: width))
+    }
+}
+
 #Preview {
-    VOTextField(
-        "Email",
-        text: .constant(""),
-        width: VOMetrics.formWidth
-    )
+    TextField("Email", text: .constant(""))
+        .voTextField(width: VOMetrics.formWidth)
 }

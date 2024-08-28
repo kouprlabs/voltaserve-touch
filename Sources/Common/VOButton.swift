@@ -1,30 +1,28 @@
 import SwiftUI
 
-struct VOButton: View {
-    var label: String
+struct VOButton: ViewModifier {
     var width: CGFloat
-    var action: () -> Void
+    var isDisabled: Bool
 
-    init(_ label: String, width: CGFloat, action: @escaping () -> Void) {
-        self.label = label
-        self.width = width
-        self.action = action
-    }
-
-    var body: some View {
-        Button(label, action: action)
+    func body(content: Content) -> some View {
+        content
             .foregroundColor(.white)
             .frame(width: width, height: 40)
             .padding(.horizontal)
             .background(VOColors.blue500)
             .cornerRadius(20)
+            .opacity(isDisabled ? 0.5 : 1)
+            .disabled(isDisabled)
+    }
+}
+
+extension View {
+    func voButton(width: CGFloat, isDisabled: Bool = false) -> some View {
+        modifier(VOButton(width: width, isDisabled: isDisabled))
     }
 }
 
 #Preview {
-    VOButton(
-        "Sign In",
-        width: VOMetrics.formWidth,
-        action: {}
-    )
+    Button("Sign In", action: {})
+        .voButton(width: VOMetrics.formWidth)
 }

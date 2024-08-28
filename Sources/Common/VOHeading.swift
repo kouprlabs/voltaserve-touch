@@ -1,21 +1,22 @@
 import SwiftUI
 
-struct VOHeading: View {
-    var text: String
+struct VOHeading: ViewModifier {
     var fontSize: CGFloat
 
-    init(_ text: String, fontSize: CGFloat) {
-        self.text = text
-        self.fontSize = fontSize
-    }
-
-    var body: some View {
-        Text(text)
+    func body(content: Content) -> some View {
+        content
             .font(.custom("Unbounded", size: fontSize))
             .fontWeight(.medium)
     }
 }
 
+extension View {
+    func voHeading(fontSize: CGFloat) -> some View {
+        modifier(VOHeading(fontSize: fontSize))
+    }
+}
+
 #Preview {
-    VOHeading("Hello, World!", fontSize: VOMetrics.headingFontSize)
+    Text("Hello, World!")
+        .voHeading(fontSize: VOMetrics.headingFontSize)
 }
