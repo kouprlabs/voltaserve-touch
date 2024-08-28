@@ -40,7 +40,11 @@ struct SignUp: View {
                         isLoading = false
                     }
                 } label: {
-                    VOButtonLabel("Sign Up", isLoading: isLoading)
+                    VOButtonLabel(
+                        "Sign Up",
+                        isLoading: isLoading,
+                        progressViewTint: .white
+                    )
                 }
                 .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
                 HStack {

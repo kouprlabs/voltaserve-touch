@@ -22,7 +22,11 @@ struct ForgotPassword: View {
                     isLoading = false
                 }
             } label: {
-                VOButtonLabel("Send Recovery Instructions", isLoading: isLoading)
+                VOButtonLabel(
+                    "Send Recovery Instructions",
+                    isLoading: isLoading,
+                    progressViewTint: .white
+                )
             }
             .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
             HStack {

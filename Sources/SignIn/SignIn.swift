@@ -22,7 +22,11 @@ struct SignIn: View {
                     isLoading = false
                 }
             } label: {
-                VOButtonLabel("Sign In", isLoading: isLoading)
+                VOButtonLabel(
+                    "Sign In",
+                    isLoading: isLoading,
+                    progressViewTint: .white
+                )
             }
             .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
             VStack {

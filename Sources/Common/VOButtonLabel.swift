@@ -3,10 +3,12 @@ import SwiftUI
 struct VOButtonLabel: View {
     var text: String
     var isLoading: Bool
+    var progressViewTint: Color
 
-    init(_ text: String, isLoading: Bool) {
+    init(_ text: String, isLoading: Bool, progressViewTint: Color = .primary) {
         self.text = text
         self.isLoading = isLoading
+        self.progressViewTint = progressViewTint
     }
 
     var body: some View {
@@ -15,6 +17,7 @@ struct VOButtonLabel: View {
             if isLoading {
                 ProgressView()
                     .progressViewStyle(.circular)
+                    .tint(progressViewTint)
             }
         }
     }
