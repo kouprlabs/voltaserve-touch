@@ -15,7 +15,7 @@ struct VOUserRow: View {
                 Text(user.fullName)
                 Text(user.email)
                     .font(.footnote)
-                    .foregroundStyle(Color.secondary)
+                    .foregroundStyle(.secondary)
             }
         }
     }

@@ -10,7 +10,7 @@ struct ContentView: View {
         MainView()
             .onAppear {
                 startBackgroundTask(interval: 3) {
-                    print("Task executed")
+                    print("Token background task...")
                 }
             }
             .onDisappear {

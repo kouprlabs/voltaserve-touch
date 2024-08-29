@@ -1,12 +1,16 @@
 import SwiftUI
+import Voltaserve
 
 struct SignIn: View {
     var onCompleted: (() -> Void)?
+    @EnvironmentObject private var authStore: AuthStore
     @State private var isLoading = false
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var errorMessage: String = ""
     @State private var showSignUp = false
     @State private var showForgotPassword = false
+    @State private var showError = false
 
     init(_ onCompleted: (() -> Void)? = nil) {
         self.onCompleted = onCompleted
@@ -26,11 +30,7 @@ struct SignIn: View {
                 .voTextField(width: VOMetrics.formWidth)
                 .disabled(isLoading)
             Button {
-                isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    isLoading = false
-                    onCompleted?()
-                }
+                signIn()
             } label: {
                 VOButtonLabel(
                     "Sign In",
@@ -78,7 +78,31 @@ struct SignIn: View {
                 showForgotPassword = false
             }
         }
+        .alert("Sign In Error", isPresented: $showError) {
+            Button("OK") {}
+        } message: {
+            Text(errorMessage)
+        }
         .padding()
+    }
+
+    func signIn() {
+        Task {
+            isLoading = true
+            defer {
+                isLoading = false
+            }
+            do {
+                let token = try await authStore.signIn(username: email, password: password)
+                Task { @MainActor in
+                    authStore.token = token
+                }
+                onCompleted?()
+            } catch let error as VOErrorResponse {
+                errorMessage = error.userMessage
+                showError = true
+            }
+        }
     }
 }
 
