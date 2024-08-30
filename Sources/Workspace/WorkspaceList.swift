@@ -40,9 +40,8 @@ struct WorkspaceList: View {
             }
         }
         .onChange(of: authStore.token) { _, newToken in
-            if let token = newToken {
-                workspaceStore.token = token
-                fetchList()
+            if let newToken {
+                workspaceStore.token = newToken
             }
         }
     }

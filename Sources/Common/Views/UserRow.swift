@@ -2,7 +2,7 @@ import SwiftUI
 import Voltaserve
 
 struct VOUserRow: View {
-    var user: VOUser.Entity
+    private let user: VOUser.Entity
 
     init(_ user: VOUser.Entity) {
         self.user = user

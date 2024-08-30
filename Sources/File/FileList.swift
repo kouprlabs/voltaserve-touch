@@ -8,7 +8,7 @@ struct FileList: View {
     @EnvironmentObject private var viewer3DStore: Viewer3DStore
     @EnvironmentObject private var viewerPDFStore: ViewerPDFStore
     @State private var showError = false
-    @State private var errorMessage = ""
+    @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
     private var id: String
 
@@ -42,7 +42,9 @@ struct FileList: View {
                 .alert("File List Error", isPresented: $showError) {
                     Button("OK") {}
                 } message: {
-                    Text(errorMessage)
+                    if let errorMessage {
+                        Text(errorMessage)
+                    }
                 }
 
             } else {
@@ -51,14 +53,12 @@ struct FileList: View {
             }
         }
         .onAppear {
-            fetchList()
-        }
-        .onAppear {
             if let token = authStore.token {
                 fileStore.token = token
                 viewerMosaicStore.token = token
                 viewer3DStore.token = token
                 viewerPDFStore.token = token
+                fetchList()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
