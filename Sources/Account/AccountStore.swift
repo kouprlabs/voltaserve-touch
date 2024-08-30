@@ -6,7 +6,7 @@ class AccountStore: ObservableObject {
 
     init() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.user = VOUser.Entity(
+            self.user = .init(
                 id: UUID().uuidString,
                 username: "anass@koupr.com",
                 email: "anass@koupr.com",

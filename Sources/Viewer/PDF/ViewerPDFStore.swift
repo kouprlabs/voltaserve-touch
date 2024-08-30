@@ -1,9 +1,9 @@
-import Combine
-import Foundation
+import PDFKit
+import SwiftUI
 import Voltaserve
 
-class WorkspaceStore: ObservableObject {
-    @Published var list: VOWorkspace.List?
+class ViewerPDFStore: ObservableObject {
+    private var client: VOFile?
 
     var token: VOToken.Value? {
         didSet {
@@ -16,9 +16,7 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    private var client: VOWorkspace?
-
-    func fetchList() async throws -> VOWorkspace.List? {
-        try await client?.fetchList(.init())
+    func url(_ id: String) -> URL? {
+        client?.urlForPreview(id, fileExtension: "pdf")
     }
 }

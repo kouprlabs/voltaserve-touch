@@ -1,23 +1,18 @@
 import SwiftUI
+import Voltaserve
 
 struct ViewerSelector: View {
-    var file: String
+    private var file: VOFile.Entity
 
-    init(file: String) {
+    init(_ file: VOFile.Entity) {
         self.file = file
     }
 
     var body: some View {
-        if file == "File 1" {
-            ViewerPDFBasic()
-        } else if file == "File 2" {
-            ViewerPDF()
-        } else if file == "File 3" {
-            Viewer3D()
-        } else if file == "File 4" {
-            ViewerMosaic()
-        } else {
-            ViewerPDFBasic()
+        VStack {
+            ViewerPDF(file)
+            Viewer3D(file)
+            ViewerMosaic(file)
         }
     }
 }

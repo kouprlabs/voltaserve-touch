@@ -17,6 +17,9 @@
 		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
 		649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 649067042C60979900BA3CCD /* GLTFKit2 */; };
 		649AED232C7FBE0F00DAAA0B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649AED222C7FBE0F00DAAA0B /* MainView.swift */; };
+		64D0D9152C8103DF00B96180 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0D9132C8103DF00B96180 /* Config.swift */; };
+		64D0D97B2C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */; };
+		64D0D97C2C8120E800B96180 /* Unbounded-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */; };
 		64FD0A632C6F59790091E4CB /* Voltaserve in Frameworks */ = {isa = PBXBuildFile; productRef = 64FD0A622C6F59790091E4CB /* Voltaserve */; };
 /* End PBXBuildFile section */
 
@@ -32,24 +35,12 @@
 		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		649AED222C7FBE0F00DAAA0B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		64D0D9132C8103DF00B96180 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBM Plex Sans Var-Roman.ttf"; sourceTree = "<group>"; };
+		64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Unbounded-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6444CDEF2C7CF7E400FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Config.swift,
-				GlobalConstants.swift,
-			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
-		};
-		6444CDF02C7CF7E700FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Randomizer.swift,
-			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
-		};
 		6446B6192C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -117,12 +108,8 @@
 				3D/Viewer3DStore.swift,
 				Mosaic/ViewerMosaic.swift,
 				Mosaic/ViewerMosaicStore.swift,
-				PDF/Basic/ViewerPDFBasic.swift,
-				PDF/Basic/ViewerPDFBasicStore.swift,
-				PDF/Segmented/ViewerPDF.swift,
-				PDF/Segmented/ViewerPDFPage.swift,
-				PDF/Segmented/ViewerPDFStore.swift,
-				PDF/Segmented/ViewerPDFThumbnail.swift,
+				PDF/ViewerPDF.swift,
+				PDF/ViewerPDFStore.swift,
 				ViewerSelector.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
@@ -139,9 +126,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6444CDED2C7CF7D300FB37E6 /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6444CDF02C7CF7E700FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
-		6444CDEE2C7CF7E000FB37E6 /* Infra */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6444CDEF2C7CF7E400FB37E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Infra; sourceTree = "<group>"; };
-		6446B61E2C7F617300868B3E /* Fonts */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Fonts; sourceTree = "<group>"; };
 		647151662C7F59F1001AF90B /* SignIn */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B6192C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SignIn; sourceTree = "<group>"; };
 		647151672C7F5A01001AF90B /* SignUp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B61A2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SignUp; sourceTree = "<group>"; };
 		6471516B2C7F5A49001AF90B /* ForgotPassword */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B61B2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ForgotPassword; sourceTree = "<group>"; };
@@ -177,7 +161,7 @@
 				64562B6A2C69EC2A00E10D97 /* .swiftformat */,
 				64562B6B2C69EC2A00E10D97 /* .swiftlint.yml */,
 				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
-				6446B61E2C7F617300868B3E /* Fonts */,
+				64D0D97A2C8120E800B96180 /* Fonts */,
 				649066E72C5E35AE00BA3CCD /* Preview Content */,
 				649066E02C5E35AD00BA3CCD /* Sources */,
 				649066DF2C5E35AD00BA3CCD /* Products */,
@@ -195,8 +179,6 @@
 		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				6444CDEE2C7CF7E000FB37E6 /* Infra */,
-				6444CDED2C7CF7D300FB37E6 /* Helpers */,
 				64ADECE62C78CAED00AD945F /* Common */,
 				64D538872C78CA920055240F /* Account */,
 				64D5388A2C78CA920055240F /* File */,
@@ -208,6 +190,7 @@
 				647151662C7F59F1001AF90B /* SignIn */,
 				647151672C7F5A01001AF90B /* SignUp */,
 				6471516B2C7F5A49001AF90B /* ForgotPassword */,
+				64D0D9132C8103DF00B96180 /* Config.swift */,
 				649AED222C7FBE0F00DAAA0B /* MainView.swift */,
 				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
 				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
@@ -221,6 +204,15 @@
 				649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		64D0D97A2C8120E800B96180 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */,
+				64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -239,7 +231,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6446B61E2C7F617300868B3E /* Fonts */,
 				64ADECE62C78CAED00AD945F /* Common */,
 				64D538902C78CA920055240F /* Invitation */,
 			);
@@ -297,6 +288,8 @@
 				64562B6C2C69EC2A00E10D97 /* .swiftformat in Resources */,
 				64562B6D2C69EC2A00E10D97 /* .gitignore in Resources */,
 				64562B6E2C69EC2A00E10D97 /* .swiftlint.yml in Resources */,
+				64D0D97B2C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf in Resources */,
+				64D0D97C2C8120E800B96180 /* Unbounded-VariableFont_wght.ttf in Resources */,
 				64562B6F2C69EC2A00E10D97 /* .swift-version in Resources */,
 				649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */,
 				649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */,
@@ -313,6 +306,7 @@
 				649AED232C7FBE0F00DAAA0B /* MainView.swift in Sources */,
 				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
 				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
+				64D0D9152C8103DF00B96180 /* Config.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

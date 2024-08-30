@@ -1,10 +1,34 @@
 import GLTFKit2
 import SceneKit
 import SwiftUI
+import Voltaserve
 
-struct Viewer3D: UIViewRepresentable {
-    @ObservedObject private var state = Viewer3DStore()
-    @State private var isLoading: Bool = true
+struct Viewer3D: View {
+    @EnvironmentObject private var store: Viewer3DStore
+    private var file: VOFile.Entity
+
+    init(_ file: VOFile.Entity) {
+        self.file = file
+    }
+
+    var body: some View {
+        if file.type == .file,
+           let snapshot = file.snapshot,
+           let download = snapshot.preview,
+           let fileExtension = download.fileExtension, fileExtension.isGLB() {
+            Viewer3DRenderer(file)
+        }
+    }
+}
+
+struct Viewer3DRenderer: UIViewRepresentable {
+    @EnvironmentObject private var store: Viewer3DStore
+    @State private var isLoading = true
+    private var file: VOFile.Entity
+
+    init(_ file: VOFile.Entity) {
+        self.file = file
+    }
 
     func makeUIView(context: Context) -> UIView {
         let containerView = UIView(frame: .zero)
@@ -34,7 +58,7 @@ struct Viewer3D: UIViewRepresentable {
         ])
 
         context.coordinator.spinner = spinner
-        context.coordinator.loadAsset()
+        context.coordinator.loadAsset(file.id)
 
         return containerView
     }
@@ -44,11 +68,11 @@ struct Viewer3D: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(sceneView: SCNView(), document: state, isLoading: $isLoading)
+        Coordinator(sceneView: SCNView(), store: store, isLoading: $isLoading)
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var document: Viewer3DStore
+        var store: Viewer3DStore
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
@@ -56,9 +80,9 @@ struct Viewer3D: UIViewRepresentable {
         var spinner: UIActivityIndicatorView?
         @Binding var isLoading: Bool
 
-        init(sceneView: SCNView, document: Viewer3DStore, isLoading: Binding<Bool>) {
+        init(sceneView: SCNView, store: Viewer3DStore, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
-            self.document = document
+            self.store = store
             _isLoading = isLoading
 
             let camera = SCNCamera()
@@ -75,14 +99,12 @@ struct Viewer3D: UIViewRepresentable {
             sceneView.isPlaying = false
         }
 
-        func loadAsset() {
-            document.loadAsset { [self] asset, error in
+        func loadAsset(_ id: String) {
+            store.loadAsset(id) { [self] asset, _ in
                 if let asset {
                     self.asset = asset
                     setupScene()
                     isLoading = false
-                } else if let error {
-                    print(error.localizedDescription)
                 }
             }
         }

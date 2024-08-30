@@ -1,25 +1,32 @@
 import PDFKit
 import SwiftUI
+import Voltaserve
 
-struct ViewerPDFBasic: View {
-    @ObservedObject var store = ViewerPDFBasicStore()
+struct ViewerPDF: View {
+    @EnvironmentObject private var store: ViewerPDFStore
+    private var file: VOFile.Entity
+
+    init(_ file: VOFile.Entity) {
+        self.file = file
+    }
 
     var body: some View {
-        VStack {
-            if store.isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-            } else {
-                ViewerPDFBasicRenderer(store: store)
-            }
-        }.onAppear {
-            store.loadPDF()
+        if file.type == .file,
+           let snapshot = file.snapshot,
+           let download = snapshot.preview,
+           let fileExtension = download.fileExtension, fileExtension.isPDF() {
+            ViewerPDFRenderer(file)
         }
     }
 }
 
-struct ViewerPDFBasicRenderer: UIViewRepresentable {
-    var store: ViewerPDFBasicStore
+struct ViewerPDFRenderer: UIViewRepresentable {
+    @EnvironmentObject private var store: ViewerPDFStore
+    private var file: VOFile.Entity
+
+    init(_ file: VOFile.Entity) {
+        self.file = file
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -43,8 +50,9 @@ struct ViewerPDFBasicRenderer: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         guard let pdfView = context.coordinator.pdfView else { return }
 
-        if let pdfDocument = store.pdfDocument {
-            pdfView.document = pdfDocument
+        let url = store.url(file.id)
+        if let url {
+            pdfView.document = PDFDocument(url: url)
         }
 
         updateLayout(containerView: uiView, context: context)
@@ -71,9 +79,9 @@ struct ViewerPDFBasicRenderer: UIViewRepresentable {
 
     class Coordinator: NSObject {
         var pdfView: PDFView?
-        var parent: ViewerPDFBasicRenderer
+        var parent: ViewerPDFRenderer
 
-        init(_ parent: ViewerPDFBasicRenderer) {
+        init(_ parent: ViewerPDFRenderer) {
             self.parent = parent
         }
     }

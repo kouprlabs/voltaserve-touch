@@ -7,27 +7,22 @@ class ViewerMosaicStore: ObservableObject {
     @Published private(set) var grid: [[UIImage?]] = []
 
     private var busy: [[Bool]] = []
-    private var data: VOMosaic
-    private var randomizer = Randomizer(Constants.fileIds)
+    private var client: VOMosaic?
 
-    private var fileId: String {
-        randomizer.value
+    var token: VOToken.Value? {
+        didSet {
+            if let token {
+                client = .init(
+                    baseURL: Config.production.apiURL,
+                    accessToken: token.accessToken
+                )
+            }
+        }
     }
 
-    var zoomLevels: [VOMosaic.ZoomLevel]? {
-        info?.metadata.zoomLevels
-    }
-
-    init() {
-        data = VOMosaic(
-            baseURL: GlobalConstants.config.apiURL,
-            accessToken: GlobalConstants.token.accessToken
-        )
-    }
-
-    func loadMosaic() async throws {
-        do {
-            let info = try await data.fetchInfo(fileId)
+    func loadMosaic(_ id: String) async throws {
+        let info = try await client?.fetchInfo(id)
+        if let info {
             Task { @MainActor in
                 self.info = info
                 if let zoomLevel = self.info?.metadata.zoomLevels.first {
@@ -35,12 +30,10 @@ class ViewerMosaicStore: ObservableObject {
                     self.allocateGridForZoomLevel(zoomLevel)
                 }
             }
-        } catch {
-            print(error.localizedDescription)
         }
     }
 
-    func allocateGridForZoomLevel(_ zoomLevel: VOMosaic.ZoomLevel) {
+    private func allocateGridForZoomLevel(_ zoomLevel: VOMosaic.ZoomLevel) {
         grid = Array(repeating: Array(repeating: nil, count: zoomLevel.cols), count: zoomLevel.rows)
         busy = Array(
             repeating: Array(repeating: false, count: zoomLevel.cols),
@@ -53,24 +46,22 @@ class ViewerMosaicStore: ObservableObject {
         allocateGridForZoomLevel(zoomLevel)
     }
 
-    func loadImageForCell(row: Int, col: Int) {
+    func loadImageForCell(_ id: String, row: Int, col: Int) {
         guard busy[row][col] == false else { return }
         busy[row][col] = true
         if let zoomLevel, let info {
             Task {
-                do {
-                    let data = try await data.fetchData(
-                        fileId,
-                        zoomLevel: zoomLevel,
-                        forCellAtRow: row, col: col,
-                        fileExtension: String(info.metadata.fileExtension.dropFirst())
-                    )
+                let data = try await client?.fetchData(
+                    id,
+                    zoomLevel: zoomLevel,
+                    forCellAtRow: row, col: col,
+                    fileExtension: String(info.metadata.fileExtension.dropFirst())
+                )
+                if let data {
                     self.busy[row][col] = false
                     Task { @MainActor in
                         self.grid[row][col] = UIImage(data: data)
                     }
-                } catch {
-                    print(error.localizedDescription)
                 }
             }
         }
@@ -135,15 +126,5 @@ class ViewerMosaicStore: ObservableObject {
             width: size.width,
             height: size.height
         )
-    }
-
-    func shuffleFileId() {
-        randomizer.shuffle()
-    }
-
-    private enum Constants {
-        static let fileIds: [String] = [
-            "O4vlbKm7YDBak" // In_the_Conservatory
-        ]
     }
 }

@@ -11,6 +11,10 @@ struct VoltaserveApp: App {
                 .environmentObject(SignUpStore())
                 .environmentObject(AuthStore())
                 .environmentObject(WorkspaceStore())
+                .environmentObject(FileStore())
+                .environmentObject(Viewer3DStore())
+                .environmentObject(ViewerPDFStore())
+                .environmentObject(ViewerMosaicStore())
         }
     }
 }

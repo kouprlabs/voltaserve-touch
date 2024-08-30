@@ -9,9 +9,7 @@ struct ContentView: View {
     var body: some View {
         MainView()
             .onAppear {
-                startBackgroundTask(interval: 3) {
-                    print("Token background task...")
-                }
+                startBackgroundTask(interval: 3) {}
             }
             .onDisappear {
                 timerSubscription?.cancel()
