@@ -34,4 +34,6 @@ struct MainView: View {
 
 #Preview {
     MainView()
+        .environmentObject(AuthStore())
+        .environmentObject(WorkspaceStore())
 }

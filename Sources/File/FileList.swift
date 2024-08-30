@@ -9,6 +9,7 @@ struct FileList: View {
     @EnvironmentObject private var viewerPDFStore: ViewerPDFStore
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var tappedItem: VOFile.Entity?
     private var id: String
 
     init(_ id: String) {
@@ -16,32 +17,44 @@ struct FileList: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack {
             if let list = fileStore.list {
                 List(list.data, id: \.id) { file in
-                    NavigationLink {
-                        if file.type == .file {
-                            ViewerSelector(file)
-                                .navigationTitle(file.name)
-                        } else if file.type == .folder {
-                            FileList(file.id)
+                    if file.type == .file {
+                        Button {
+                            tappedItem = file
+                        } label: {
+                            Text(file.name)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
                         }
-                    } label: {
-                        Text(file.name)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
+                    } else if file.type == .folder {
+                        NavigationLink {
+                            FileList(file.id)
+                        } label: {
+                            Text(file.name)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                        }
                     }
                 }
                 .listStyle(.inset)
+                .navigationDestination(item: $tappedItem) { file in
+                    ViewerSelector(file)
+                }
+                .alert("File List Error", isPresented: $showError) {
+                    Button("OK") {}
+                } message: {
+                    Text(errorMessage)
+                }
+
             } else {
                 ProgressView()
                     .progressViewStyle(.circular)
             }
         }
-        .alert("File List Error", isPresented: $showError) {
-            Button("OK") {}
-        } message: {
-            Text(errorMessage)
+        .onAppear {
+            fetchList()
         }
         .onAppear {
             if let token = authStore.token {
@@ -49,7 +62,6 @@ struct FileList: View {
                 viewerMosaicStore.token = token
                 viewer3DStore.token = token
                 viewerPDFStore.token = token
-                fetchList()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
@@ -58,7 +70,6 @@ struct FileList: View {
                 viewerMosaicStore.token = token
                 viewer3DStore.token = token
                 viewerPDFStore.token = token
-                fetchList()
             }
         }
     }
@@ -81,10 +92,13 @@ struct FileList: View {
 }
 
 #Preview {
-    FileList("x1novkR9M4YOe")
-        .environmentObject(AuthStore())
-        .environmentObject(FileStore())
-        .environmentObject(Viewer3DStore())
-        .environmentObject(ViewerPDFStore())
-        .environmentObject(ViewerMosaicStore())
+    NavigationStack {
+        FileList("x1novkR9M4YOe")
+            .navigationTitle("My Workspace")
+    }
+    .environmentObject(AuthStore())
+    .environmentObject(FileStore())
+    .environmentObject(Viewer3DStore())
+    .environmentObject(ViewerPDFStore())
+    .environmentObject(ViewerMosaicStore())
 }

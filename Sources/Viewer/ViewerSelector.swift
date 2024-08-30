@@ -14,5 +14,16 @@ struct ViewerSelector: View {
             Viewer3D(file)
             ViewerMosaic(file)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack {
+                    Text(file.name)
+                        .font(.headline)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            }
+        }
     }
 }

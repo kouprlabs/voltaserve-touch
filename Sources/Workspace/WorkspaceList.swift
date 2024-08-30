@@ -61,4 +61,5 @@ struct WorkspaceList: View {
     WorkspaceList()
         .environmentObject(AuthStore())
         .environmentObject(WorkspaceStore())
+        .environmentObject(AccountStore())
 }

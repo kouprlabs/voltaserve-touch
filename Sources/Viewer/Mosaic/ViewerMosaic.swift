@@ -40,12 +40,18 @@ struct ViewerMosaic: View {
                                         Image(uiImage: image)
                                             .resizable()
                                             .frame(width: size.width, height: size.height)
-                                            .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
+                                            .position(
+                                                x: position.x + dragOffset.width,
+                                                y: position.y + dragOffset.height
+                                            )
                                     } else {
                                         Rectangle()
                                             .fill(Color.black)
                                             .frame(width: size.width, height: size.height)
-                                            .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
+                                            .position(
+                                                x: position.x + dragOffset.width,
+                                                y: position.y + dragOffset.height
+                                            )
                                             .onAppear {
                                                 store.loadImageForCell(file.id, row: row, col: col)
                                             }
@@ -73,8 +79,9 @@ struct ViewerMosaic: View {
                             store.unloadImagesOutsideRect(visibleRect, extraTilesToLoad: Constants.extraTilesToLoad)
                         }
                 )
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         Menu {
                             if let zoomLevels = store.info?.metadata.zoomLevels {
                                 ForEach(zoomLevels, id: \.index) { zoomLevel in
