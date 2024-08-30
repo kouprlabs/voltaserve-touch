@@ -24,31 +24,14 @@ struct FileList: View {
                         Button {
                             tappedItem = file
                         } label: {
-                            HStack(spacing: VOMetrics.spacing) {
-                                Image("icon-file")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40)
-                                Text(file.name)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
-                            }
-                            .padding(VOMetrics.spacingSm)
+                            FileRow(file)
                         }
                     } else if file.type == .folder {
                         NavigationLink {
                             FileList(file.id)
+                                .navigationTitle(file.name)
                         } label: {
-                            HStack(spacing: VOMetrics.spacing) {
-                                Image("icon-folder")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40)
-                                Text(file.name)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
-                            }
-                            .padding(VOMetrics.spacingSm)
+                            FolderRow(file)
                         }
                     }
                 }

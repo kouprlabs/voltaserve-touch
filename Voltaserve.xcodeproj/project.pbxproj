@@ -77,7 +77,9 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				FileList.swift,
+				FileRow.swift,
 				FileStore.swift,
+				FolderRow.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
 		};

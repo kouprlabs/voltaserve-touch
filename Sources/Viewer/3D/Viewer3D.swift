@@ -5,7 +5,7 @@ import Voltaserve
 
 struct Viewer3D: View {
     @EnvironmentObject private var store: Viewer3DStore
-    private var file: VOFile.Entity
+    private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
         self.file = file
@@ -24,7 +24,7 @@ struct Viewer3D: View {
 struct Viewer3DRenderer: UIViewRepresentable {
     @EnvironmentObject private var store: Viewer3DStore
     @State private var isLoading = true
-    private var file: VOFile.Entity
+    private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
         self.file = file

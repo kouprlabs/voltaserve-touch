@@ -7,7 +7,7 @@ struct ViewerMosaic: View {
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
     @State private var selectedZoomLevel: VOMosaic.ZoomLevel?
-    private var file: VOFile.Entity
+    private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
         self.file = file

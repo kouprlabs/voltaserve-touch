@@ -4,7 +4,7 @@ import Voltaserve
 
 struct ViewerPDF: View {
     @EnvironmentObject private var store: ViewerPDFStore
-    private var file: VOFile.Entity
+    private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
         self.file = file
@@ -22,7 +22,7 @@ struct ViewerPDF: View {
 
 struct ViewerPDFRenderer: UIViewRepresentable {
     @EnvironmentObject private var store: ViewerPDFStore
-    private var file: VOFile.Entity
+    private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
         self.file = file
