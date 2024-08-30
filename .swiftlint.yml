@@ -3,3 +3,4 @@ disabled_rules:
     - function_parameter_count
     - nesting
     - type_body_length
+    - cyclomatic_complexity
