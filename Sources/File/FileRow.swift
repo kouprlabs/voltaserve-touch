@@ -70,7 +70,7 @@ struct FileRow: View {
         }
 
         if colorScheme == .dark {
-            image += "-dark"
+            image = "dark-" + image
         }
 
         return image
