@@ -22,6 +22,9 @@ struct FileRow: View {
                 Text(file.createTime.relativeDate())
                     .foregroundStyle(.secondary)
             }
+            Spacer()
+            FileBadge(file)
+                .padding(.trailing, VOMetrics.spacingMd)
         }
         .padding(VOMetrics.spacingSm)
     }

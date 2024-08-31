@@ -21,7 +21,6 @@ struct Account: View {
                         .progressViewStyle(.circular)
                 } else if let user = accountStore.user {
                     VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
-                        .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
                     Form {
                         Section(header: Text("Basics")) {
                             TextField("Full name", text: $fullName)
