@@ -23,17 +23,12 @@ struct WorkspaceList: View {
                 }
                 .navigationTitle("Home")
                 .toolbar {
-                    Button {
-                        showAccount.toggle()
-                    } label: {
-                        if let user = accountStore.user, let picture = user.picture {
-                            VOAvatar(name: user.fullName, size: 30, base64Image: picture)
-                                .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
-                        } else {
-                            Label("Account", systemImage: "person.crop.circle")
-                        }
+                    if UIDevice.current.userInterfaceIdiom == .phone {
+                        accountButton
+                            .padding(.trailing, VOMetrics.spacingXs)
+                    } else {
+                        accountButton
                     }
-                    .padding(.trailing, VOMetrics.spacingXs)
                 }
                 .sheet(isPresented: $showAccount) {
                     Account()
@@ -62,6 +57,19 @@ struct WorkspaceList: View {
             if let newToken {
                 workspaceStore.token = newToken
                 accountStore.token = newToken
+            }
+        }
+    }
+
+    var accountButton: some View {
+        Button {
+            showAccount.toggle()
+        } label: {
+            if let user = accountStore.user, let picture = user.picture {
+                VOAvatar(name: user.fullName, size: 30, base64Image: picture)
+                    .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
+            } else {
+                Label("Account", systemImage: "person.crop.circle")
             }
         }
     }

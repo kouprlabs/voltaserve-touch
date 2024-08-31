@@ -12,7 +12,12 @@ struct ViewerSelector: View {
         VStack {
             ViewerPDF(file)
             Viewer3D(file)
-            ViewerMosaic(file)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                ViewerMosaic(file)
+                    .edgesIgnoringSafeArea(.bottom)
+            } else {
+                ViewerMosaic(file)
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
