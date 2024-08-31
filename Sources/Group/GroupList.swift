@@ -12,7 +12,7 @@ struct GroupList: View {
             if let list = groupStore.list {
                 List(list.data, id: \.id) { group in
                     NavigationLink {
-                        GroupMembers()
+                        GroupMembers(group.id)
                             .navigationTitle(group.name)
                     } label: {
                         GroupRow(group)
@@ -57,6 +57,12 @@ struct GroupList: View {
                 Task { @MainActor in
                     showError = true
                     errorMessage = error.userMessage
+                }
+            } catch {
+                print(error.localizedDescription)
+                Task { @MainActor in
+                    showError = true
+                    errorMessage = VOMessages.unexpectedError
                 }
             }
         }

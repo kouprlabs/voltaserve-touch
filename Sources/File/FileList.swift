@@ -83,6 +83,12 @@ struct FileList: View {
                     errorMessage = error.userMessage
                     showError = true
                 }
+            } catch {
+                print(error.localizedDescription)
+                Task { @MainActor in
+                    showError = true
+                    errorMessage = VOMessages.unexpectedError
+                }
             }
         }
     }

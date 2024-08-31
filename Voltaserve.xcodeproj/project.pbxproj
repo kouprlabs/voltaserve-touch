@@ -29,7 +29,7 @@
 		64562B692C69EC2A00E10D97 /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		64562B6A2C69EC2A00E10D97 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
 		64562B6B2C69EC2A00E10D97 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		649066DE2C5E35AD00BA3CCD /* VoltaserveApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoltaserveApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		649066DE2C5E35AD00BA3CCD /* VoltaservePro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoltaservePro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
 		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -47,7 +47,7 @@
 				AuthStore.swift,
 				SignIn.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		6446B61A2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -55,7 +55,7 @@
 				SignUp.swift,
 				SignUpStore.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		6446B61B2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -63,7 +63,7 @@
 				ForgotPassword.swift,
 				ForgotPasswordStore.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -71,7 +71,7 @@
 				Account.swift,
 				AccountStore.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		64D538C62C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -81,7 +81,7 @@
 				FileStore.swift,
 				FolderRow.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		64D538C72C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -91,7 +91,7 @@
 				GroupRow.swift,
 				GroupStore.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		64D538C82C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -101,7 +101,7 @@
 				OrganizationRow.swift,
 				OrganizationStore.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		64D538C92C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -114,7 +114,7 @@
 				PDF/ViewerPDFStore.swift,
 				ViewerSelector.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 		64D538CA2C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -123,7 +123,7 @@
 				WorkspaceRow.swift,
 				WorkspaceStore.swift,
 			);
-			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;
+			target = 649066DD2C5E35AD00BA3CCD /* VoltaservePro */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -173,7 +173,7 @@
 		649066DF2C5E35AD00BA3CCD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				649066DE2C5E35AD00BA3CCD /* VoltaserveApp.app */,
+				649066DE2C5E35AD00BA3CCD /* VoltaservePro.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -220,9 +220,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		649066DD2C5E35AD00BA3CCD /* VoltaserveApp */ = {
+		649066DD2C5E35AD00BA3CCD /* VoltaservePro */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "VoltaserveApp" */;
+			buildConfigurationList = 649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "VoltaservePro" */;
 			buildPhases = (
 				649066DA2C5E35AD00BA3CCD /* Sources */,
 				649066DB2C5E35AD00BA3CCD /* Frameworks */,
@@ -236,13 +236,13 @@
 				64ADECE62C78CAED00AD945F /* Common */,
 				64D538902C78CA920055240F /* Invitation */,
 			);
-			name = VoltaserveApp;
+			name = VoltaservePro;
 			packageProductDependencies = (
 				649067042C60979900BA3CCD /* GLTFKit2 */,
 				64FD0A622C6F59790091E4CB /* Voltaserve */,
 			);
 			productName = Voltaserve;
-			productReference = 649066DE2C5E35AD00BA3CCD /* VoltaserveApp.app */;
+			productReference = 649066DE2C5E35AD00BA3CCD /* VoltaservePro.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -277,7 +277,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				649066DD2C5E35AD00BA3CCD /* VoltaserveApp */,
+				649066DD2C5E35AD00BA3CCD /* VoltaservePro */,
 			);
 		};
 /* End PBXProject section */
@@ -447,7 +447,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "VoltaserveApp-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
+				INFOPLIST_KEY_CFBundleDisplayName = "Voltaserve Pro";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -481,7 +481,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "VoltaserveApp-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
+				INFOPLIST_KEY_CFBundleDisplayName = "Voltaserve Pro";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -514,7 +514,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "VoltaserveApp" */ = {
+		649066EC2C5E35AE00BA3CCD /* Build configuration list for PBXNativeTarget "VoltaservePro" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				649066ED2C5E35AE00BA3CCD /* Debug */,

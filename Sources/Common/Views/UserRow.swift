@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import Voltaserve
 
 struct VOUserRow: View {
@@ -10,7 +11,7 @@ struct VOUserRow: View {
 
     var body: some View {
         HStack(spacing: 15) {
-            VOAvatar(name: user.fullName, size: 45)
+            VOAvatar(name: user.fullName, size: 45, base64Image: user.picture)
             VStack(alignment: .leading) {
                 Text(user.fullName)
                 Text(user.email)

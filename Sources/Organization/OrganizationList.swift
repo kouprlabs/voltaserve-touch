@@ -12,7 +12,7 @@ struct OrganizationList: View {
             if let list = organizationStore.list {
                 List(list.data, id: \.id) { organization in
                     NavigationLink {
-                        OrganizationMembers()
+                        OrganizationMembers(organization.id)
                             .navigationTitle(organization.name)
                     } label: {
                         OrganizationRow(organization)
@@ -57,11 +57,11 @@ struct OrganizationList: View {
                     errorMessage = error.userMessage
                 }
             } catch {
+                print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = error.localizedDescription
+                    errorMessage = VOMessages.unexpectedError
                 }
-                print(error.localizedDescription)
             }
         }
     }
