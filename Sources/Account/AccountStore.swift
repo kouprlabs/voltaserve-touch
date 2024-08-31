@@ -3,6 +3,7 @@ import Voltaserve
 
 class AccountStore: ObservableObject {
     @Published var user: VOAuthUser.Entity?
+    @Published var accountStorageUsage: VOStorage.Usage?
 
     var token: VOToken.Value? {
         didSet {
@@ -12,15 +13,24 @@ class AccountStore: ObservableObject {
                     baseURL: Config.production.idpURL,
                     accessToken: token.accessToken
                 )
+                storageClient = .init(
+                    baseURL: Config.production.apiURL,
+                    accessToken: token.accessToken
+                )
             }
         }
     }
 
     private var client: VOAccount?
     private var authUserClient: VOAuthUser?
+    private var storageClient: VOStorage?
 
     func fetchUser() async throws -> VOAuthUser.Entity? {
         try await authUserClient?.fetch()
+    }
+
+    func fetchAccountStorageUsage() async throws -> VOStorage.Usage? {
+        try await storageClient?.fetchAccountUsage()
     }
 
     func update(email: String, fullName: String) async throws {
