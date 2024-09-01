@@ -7,17 +7,12 @@ struct Account: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var showDeleteAlert = false
     @State private var showError = false
-    @State private var isLoading = false
     @State private var errorMessage: String?
-    @State private var fullName = ""
-    @State private var email = ""
-    @State private var password = "xxxxxx"
 
     var body: some View {
         NavigationView {
             VStack {
-                if isLoading ||
-                    accountStore.user == nil ||
+                if accountStore.user == nil ||
                     accountStore.accountStorageUsage == nil {
                     ProgressView()
                         .progressViewStyle(.circular)
@@ -33,11 +28,31 @@ struct Account: View {
                             }
                         }
                         Section(header: Text("Basics")) {
-                            TextField("Full name", text: $fullName)
+                            NavigationLink(destination: Text("Change Full Name")) {
+                                HStack {
+                                    Text("Full name")
+                                    Spacer()
+                                    Text(user.fullName)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
                         }
                         Section(header: Text("Credentials")) {
-                            TextField("Email", text: $email)
-                            SecureField("Password", text: $password)
+                            NavigationLink(destination: Text("Change Email")) {
+                                HStack {
+                                    Text("Email")
+                                    Spacer()
+                                    Text(user.email)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            NavigationLink(destination: Text("Change Password")) {
+                                HStack {
+                                    Text("Password")
+                                    Spacer()
+                                    Text(String(repeating: "•", count: 10))
+                                }
+                            }
                         }
                         Section(header: Text("Advanced")) {
                             Button("Delete Account", role: .destructive) {
@@ -54,40 +69,20 @@ struct Account: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        Task { @MainActor in
-                            if let user = accountStore.user,
-                               fullName != user.fullName || email != user.email {
-                                isLoading = true
-                                try await accountStore.update(email: email, fullName: fullName)
-                                isLoading = false
-                            }
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                    .disabled(isLoading)
-                }
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
             }
         }
-        .alert("Account Error", isPresented: $showError) {
-            Button("Cancel") {}
+        .alert(VOMessages.errorTitle, isPresented: $showError) {
+            Button("OK") {}
         } message: {
             if let errorMessage {
                 Text(errorMessage)
             }
         }
         .alert("Delete Account", isPresented: $showDeleteAlert) {
-            Button("OK", role: .destructive) {
-                isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    isLoading = false
-                    presentationMode.wrappedValue.dismiss()
-                }
-            }
+            Button("Delete Permanently", role: .destructive) {}
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Are you sure want to delete your account?")
@@ -99,21 +94,9 @@ struct Account: View {
                 fetchAccountStorageUsage()
             }
         }
-        .onAppear {
-            if let user = accountStore.user {
-                fullName = user.fullName
-                email = user.email
-            }
-        }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 accountStore.token = newToken
-            }
-        }
-        .onChange(of: accountStore.user) { _, newUser in
-            if let newUser {
-                fullName = newUser.fullName
-                email = newUser.email
             }
         }
     }
