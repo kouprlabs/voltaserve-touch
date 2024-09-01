@@ -15,7 +15,7 @@ struct WorkspaceList: View {
             if let list = workspaceStore.list {
                 List(list.data, id: \.id) { workspace in
                     NavigationLink {
-                        FileList(workspace.rootID)
+                        FileList(workspace.rootID, workspace: workspace)
                             .navigationTitle(workspace.name)
                     } label: {
                         WorkspaceRow(workspace)

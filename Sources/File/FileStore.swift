@@ -4,6 +4,7 @@ import Voltaserve
 
 class FileStore: ObservableObject {
     @Published var list: VOFile.List?
+    @Published var current: VOFile.Entity?
 
     var token: VOToken.Value? {
         didSet {
@@ -17,6 +18,10 @@ class FileStore: ObservableObject {
     }
 
     private var client: VOFile?
+
+    func fetch(_ id: String) async throws -> VOFile.Entity? {
+        try await client?.fetch(id)
+    }
 
     func fetchList(_ id: String) async throws -> VOFile.List? {
         try await client?.fetchList(id, options: .init(page: 1, size: 100))
