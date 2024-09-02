@@ -90,6 +90,7 @@
 				GroupList.swift,
 				GroupMembers.swift,
 				GroupRow.swift,
+				GroupSettings.swift,
 				GroupStore.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;

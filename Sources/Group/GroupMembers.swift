@@ -4,12 +4,14 @@ import Voltaserve
 struct GroupMembers: View {
     @EnvironmentObject var authStore: AuthStore
     @EnvironmentObject var groupStore: GroupStore
+    @State private var showAddMember = false
+    @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
-    private var id: String
+    private var group: VOGroup.Entity
 
-    init(_ id: String) {
-        self.id = id
+    init(_ group: VOGroup.Entity) {
+        self.group = group
     }
 
     var body: some View {
@@ -18,18 +20,41 @@ struct GroupMembers: View {
                 List(members.data, id: \.id) { member in
                     VOUserRow(member)
                 }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showSettings = true
+                        } label: {
+                            Label("Settings", systemImage: "gear")
+                        }
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            showAddMember = true
+                        } label: {
+                            Label("Add Member", systemImage: "plus")
+                        }
+                    }
+                }
+                .sheet(isPresented: $showSettings) {
+                    GroupSettings()
+                }
+                .sheet(isPresented: $showAddMember) {
+                    Text("Add Member")
+                }
+                .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                    Button(VOTextConstants.errorAlertButtonLabel) {}
+                } message: {
+                    if let errorMessage {
+                        Text(errorMessage)
+                    }
+                }
             } else {
                 ProgressView()
             }
         }
-        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-            Button(VOTextConstants.errorAlertButtonLabel) {}
-        } message: {
-            if let errorMessage {
-                Text(errorMessage)
-            }
-        }
         .onAppear {
+            groupStore.current = group
             if let token = authStore.token {
                 groupStore.token = token
                 fetchMembers()
@@ -45,7 +70,7 @@ struct GroupMembers: View {
     func fetchMembers() {
         Task {
             do {
-                let members = try await groupStore.fetchMembers(id)
+                let members = try await groupStore.fetchMembers(group.id)
                 Task { @MainActor in
                     groupStore.members = members
                 }
@@ -67,8 +92,8 @@ struct GroupMembers: View {
 
 #Preview {
     NavigationStack {
-        GroupMembers("QvlPbDzXrlJM1")
-            .navigationTitle("My Group")
+        GroupMembers(VOGroup.Entity.devInstance)
+            .navigationTitle(VOGroup.Entity.devInstance.name)
             .environmentObject(AuthStore(VOToken.Value.devInstance))
             .environmentObject(GroupStore())
     }

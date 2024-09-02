@@ -4,6 +4,7 @@ import Voltaserve
 struct OrganizationMembers: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var organizationStore: OrganizationStore
+    @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
@@ -28,13 +29,18 @@ struct OrganizationMembers: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {} label: {
+                        Button {
+                            showAddMember = true
+                        } label: {
                             Label("Add Members", systemImage: "plus")
                         }
                     }
                 }
                 .sheet(isPresented: $showSettings) {
                     OrganizationSettings()
+                }
+                .sheet(isPresented: $showAddMember) {
+                    Text("Add Member")
                 }
                 .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
                     Button(VOTextConstants.errorAlertButtonLabel) {}

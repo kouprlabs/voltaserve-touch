@@ -12,7 +12,7 @@ struct GroupList: View {
             if let list = groupStore.list {
                 List(list.data, id: \.id) { group in
                     NavigationLink {
-                        GroupMembers(group.id)
+                        GroupMembers(group)
                             .navigationTitle(group.name)
                     } label: {
                         GroupRow(group)

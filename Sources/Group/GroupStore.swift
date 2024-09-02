@@ -5,6 +5,7 @@ import Voltaserve
 class GroupStore: ObservableObject {
     @Published var list: VOGroup.List?
     @Published var members: VOUser.List?
+    @Published var current: VOGroup.Entity?
 
     var token: VOToken.Value? {
         didSet {
@@ -24,6 +25,12 @@ class GroupStore: ObservableObject {
     private var client: VOGroup?
     private var userClient: VOUser?
 
+    init() {}
+
+    init(_ current: VOGroup.Entity) {
+        self.current = current
+    }
+
     func fetchList() async throws -> VOGroup.List? {
         try await client?.fetchList(.init())
     }
@@ -31,4 +38,14 @@ class GroupStore: ObservableObject {
     func fetchMembers(_ id: String) async throws -> VOUser.List? {
         try await userClient?.fetchList(.init(groupID: id))
     }
+}
+
+extension VOGroup.Entity {
+    static let devInstance = VOGroup.Entity(
+        id: "QvlPbDzXrlJM1",
+        name: "My Group",
+        organization: VOOrganization.Entity.devInstance,
+        permission: .owner,
+        createTime: Date().ISO8601Format()
+    )
 }
