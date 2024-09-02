@@ -43,7 +43,7 @@ struct FileList: View {
                 .navigationDestination(item: $tappedItem) { file in
                     ViewerSelector(file)
                 }
-                .alert(VOMessages.errorTitle, isPresented: $showError) {
+                .alert(VOTextConstants.errorTitle, isPresented: $showError) {
                     Button("OK") {}
                 } message: {
                     if let errorMessage {
@@ -68,18 +68,16 @@ struct FileList: View {
             }
         }
         .onAppear {
+            workspaceStore.current = workspace
             if let token = authStore.token {
                 assignTokenToStores(token)
-
-                workspaceStore.current = workspace
-
-                fetchFile()
-                fetchList()
+                fetchData()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 assignTokenToStores(newToken)
+                fetchData()
             }
         }
     }
@@ -89,6 +87,11 @@ struct FileList: View {
         viewerMosaicStore.token = token
         viewer3DStore.token = token
         viewerPDFStore.token = token
+    }
+
+    func fetchData() {
+        fetchFile()
+        fetchList()
     }
 
     func fetchFile() {
@@ -107,7 +110,7 @@ struct FileList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -129,7 +132,7 @@ struct FileList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -139,25 +142,12 @@ struct FileList: View {
 #Preview {
     NavigationStack {
         FileList(
-            "x1novkR9M4YOe",
-            workspace: .init(
-                id: UUID().uuidString,
-                name: "My Workspace",
-                permission: .owner,
-                storageCapacity: 100_000_000_000,
-                rootID: UUID().uuidString,
-                organization: .init(
-                    id: UUID().uuidString,
-                    name: "My Organization",
-                    permission: .owner,
-                    createTime: Date().ISO8601Format()
-                ),
-                createTime: Date().ISO8601Format()
-            )
+            VOWorkspace.Entity.devInstance.rootID,
+            workspace: VOWorkspace.Entity.devInstance
         )
-        .navigationTitle("My Workspace")
+        .navigationTitle(VOWorkspace.Entity.devInstance.name)
     }
-    .environmentObject(AuthStore())
+    .environmentObject(AuthStore(VOToken.Value.devInstance))
     .environmentObject(FileStore())
     .environmentObject(WorkspaceStore())
     .environmentObject(Viewer3DStore())

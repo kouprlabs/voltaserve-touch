@@ -6,22 +6,31 @@ struct WorkspaceSettings: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showDeleteAlert = false
+    @State private var showError = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationView {
             if let workspace = workspaceStore.current {
                 VStack {
+                    VOAvatar(name: workspace.name, size: 100)
                     Form {
                         Section(header: Text("Storage")) {
                             VStack(alignment: .leading) {
-                                Text("3.43 GB of 4 GB used")
-                                ProgressView(value: 0.5)
+                                if let storageUsage = workspaceStore.storageUsage {
+                                    // swiftlint:disable:next line_length
+                                    Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                                    ProgressView(value: Double(storageUsage.percentage) / 100.0)
+                                } else {
+                                    Text("Calculating…")
+                                    ProgressView()
+                                }
                             }
                             NavigationLink(destination: Text("Change Storage Capacity")) {
                                 HStack {
                                     Text("Capacity")
                                     Spacer()
-                                    Text("4 GB")
+                                    Text("\(workspace.storageCapacity.prettyBytes())")
                                         .foregroundStyle(.secondary)
                                 }
                             }
@@ -60,9 +69,53 @@ struct WorkspaceSettings: View {
                 } message: {
                     Text("Are you sure you would like to delete this workspace?")
                 }
+                .alert(VOTextConstants.errorTitle, isPresented: $showError) {
+                    Button("OK") {}
+                } message: {
+                    if let errorMessage {
+                        Text(errorMessage)
+                    }
+                }
+                .onAppear {
+                    if let token = authStore.token {
+                        assignTokenToStores(token)
+                        fetchStorageUsage(workspace.id)
+                    }
+                }
+                .onChange(of: authStore.token) { _, newToken in
+                    if let newToken {
+                        assignTokenToStores(newToken)
+                        fetchStorageUsage(workspace.id)
+                    }
+                }
             } else {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
+            }
+        }
+    }
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        workspaceStore.token = token
+    }
+
+    func fetchStorageUsage(_ id: String) {
+        Task {
+            do {
+                let usage = try await workspaceStore.fetchStorageUsage(id)
+                Task { @MainActor in
+                    workspaceStore.storageUsage = usage
+                }
+            } catch let error as VOErrorResponse {
+                Task { @MainActor in
+                    showError = true
+                    errorMessage = error.userMessage
+                }
+            } catch {
+                Task { @MainActor in
+                    showError = true
+                    errorMessage = VOTextConstants.unexpectedError
+                }
             }
         }
     }
@@ -70,6 +123,8 @@ struct WorkspaceSettings: View {
 
 #Preview {
     WorkspaceSettings()
-        .environmentObject(AuthStore())
-        .environmentObject(WorkspaceStore())
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
+        .environmentObject(WorkspaceStore(
+            current: VOWorkspace.Entity.devInstance
+        ))
 }

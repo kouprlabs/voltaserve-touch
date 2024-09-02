@@ -38,7 +38,7 @@ struct WorkspaceList: View {
                     .progressViewStyle(.circular)
             }
         }
-        .alert("Workspace List Error", isPresented: $showError) {
+        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
             Button("Cancel") {}
         } message: {
             if let errorMessage {
@@ -47,16 +47,14 @@ struct WorkspaceList: View {
         }
         .onAppear {
             if let token = authStore.token {
-                workspaceStore.token = token
-                accountStore.token = token
-                fetchList()
-                fetchUser()
+                assignTokenToStores(token)
+                fetchData()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                workspaceStore.token = newToken
-                accountStore.token = newToken
+                assignTokenToStores(newToken)
+                fetchData()
             }
         }
     }
@@ -74,6 +72,16 @@ struct WorkspaceList: View {
         }
     }
 
+    func assignTokenToStores(_ token: VOToken.Value) {
+        workspaceStore.token = token
+        accountStore.token = token
+    }
+
+    func fetchData() {
+        fetchList()
+        fetchUser()
+    }
+
     func fetchList() {
         Task {
             do {
@@ -88,7 +96,7 @@ struct WorkspaceList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -110,7 +118,7 @@ struct WorkspaceList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -119,7 +127,7 @@ struct WorkspaceList: View {
 
 #Preview {
     WorkspaceList()
-        .environmentObject(AuthStore())
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
         .environmentObject(WorkspaceStore())
         .environmentObject(AccountStore())
 }

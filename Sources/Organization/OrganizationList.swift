@@ -24,7 +24,7 @@ struct OrganizationList: View {
                     .progressViewStyle(CircularProgressViewStyle())
             }
         }
-        .alert("Organization List Error", isPresented: $showError) {
+        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
             Button("Cancel") {}
         } message: {
             if let errorMessage {
@@ -60,7 +60,7 @@ struct OrganizationList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -69,6 +69,6 @@ struct OrganizationList: View {
 
 #Preview {
     OrganizationList()
-        .environmentObject(AuthStore())
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
         .environmentObject(OrganizationStore())
 }

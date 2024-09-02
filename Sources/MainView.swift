@@ -1,4 +1,5 @@
 import SwiftUI
+import Voltaserve
 
 struct MainView: View {
     @State private var selection: Tab = .workspaces
@@ -34,6 +35,6 @@ struct MainView: View {
 
 #Preview {
     MainView()
-        .environmentObject(AuthStore())
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
         .environmentObject(WorkspaceStore())
 }

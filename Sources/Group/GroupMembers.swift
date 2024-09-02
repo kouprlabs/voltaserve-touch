@@ -59,7 +59,7 @@ struct GroupMembers: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -70,7 +70,7 @@ struct GroupMembers: View {
     NavigationStack {
         GroupMembers("QvlPbDzXrlJM1")
             .navigationTitle("My Group")
-            .environmentObject(AuthStore())
+            .environmentObject(AuthStore(VOToken.Value.devInstance))
             .environmentObject(GroupStore())
     }
 }

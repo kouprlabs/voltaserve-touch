@@ -59,7 +59,7 @@ struct OrganizationMembers: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -70,7 +70,7 @@ struct OrganizationMembers: View {
     NavigationStack {
         OrganizationMembers("aKQxy35RBP3p3")
             .navigationTitle("My Organization")
-            .environmentObject(AuthStore())
+            .environmentObject(AuthStore(VOToken.Value.devInstance))
             .environmentObject(OrganizationStore())
     }
 }

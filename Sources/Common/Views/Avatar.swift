@@ -21,7 +21,6 @@ struct VOAvatar: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: size, height: size)
                     .clipShape(Circle())
-                    .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
             } else {
                 ZStack {
                     Circle()
@@ -34,6 +33,7 @@ struct VOAvatar: View {
             }
         }
         .frame(width: size, height: size)
+        .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
     }
 
     private func randomColor(from string: String) -> Color {

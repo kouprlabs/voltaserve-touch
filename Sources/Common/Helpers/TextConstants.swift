@@ -1,6 +1,6 @@
 import Foundation
 
-enum VOMessages {
+enum VOTextConstants {
     static let errorTitle = "Error"
     static let unexpectedError = "Unexpected error occurred."
 }

@@ -78,7 +78,7 @@ struct SignIn: View {
                 showForgotPassword = false
             }
         }
-        .alert("Sign In Error", isPresented: $showError) {
+        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
             Button("OK") {}
         } message: {
             Text(errorMessage)
@@ -100,8 +100,14 @@ struct SignIn: View {
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
-                    errorMessage = error.userMessage
                     showError = true
+                    errorMessage = error.userMessage
+                }
+            } catch {
+                print(error.localizedDescription)
+                Task { @MainActor in
+                    showError = true
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }

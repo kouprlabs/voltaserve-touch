@@ -74,7 +74,7 @@ struct Account: View {
                 }
             }
         }
-        .alert(VOMessages.errorTitle, isPresented: $showError) {
+        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
             Button("OK") {}
         } message: {
             if let errorMessage {
@@ -89,16 +89,25 @@ struct Account: View {
         }
         .onAppear {
             if let token = authStore.token {
-                accountStore.token = token
-                fetchUser()
-                fetchAccountStorageUsage()
+                assignTokenToStores(token)
+                fetchData()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                accountStore.token = newToken
+                assignTokenToStores(newToken)
+                fetchData()
             }
         }
+    }
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        accountStore.token = token
+    }
+
+    func fetchData() {
+        fetchUser()
+        fetchAccountStorageUsage()
     }
 
     func fetchUser() {
@@ -117,7 +126,7 @@ struct Account: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -139,7 +148,7 @@ struct Account: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOMessages.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedError
                 }
             }
         }
@@ -148,6 +157,6 @@ struct Account: View {
 
 #Preview {
     Account()
-        .environmentObject(AuthStore())
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
         .environmentObject(AccountStore())
 }
