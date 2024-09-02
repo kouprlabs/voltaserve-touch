@@ -16,15 +16,19 @@ struct Account: View {
                     accountStore.accountStorageUsage == nil {
                     ProgressView()
                         .progressViewStyle(.circular)
-                } else if let user = accountStore.user,
-                          let storageUsage = accountStore.accountStorageUsage {
+                } else if let user = accountStore.user {
                     VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
                     Form {
                         Section(header: Text("Storage Usage")) {
                             VStack(alignment: .leading) {
-                                // swiftlint:disable:next line_length
-                                Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
-                                ProgressView(value: Double(storageUsage.percentage) / 100.0)
+                                if let storageUsage = accountStore.accountStorageUsage {
+                                    // swiftlint:disable:next line_length
+                                    Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                                    ProgressView(value: Double(storageUsage.percentage) / 100.0)
+                                } else {
+                                    Text("Calculating…")
+                                    ProgressView()
+                                }
                             }
                         }
                         Section(header: Text("Basics")) {
