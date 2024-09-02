@@ -47,12 +47,7 @@ extension VOWorkspace.Entity {
         permission: .owner,
         storageCapacity: 5_000_000_000,
         rootID: "x1novkR9M4YOe",
-        organization: .init(
-            id: "aKQxy35RBP3p3",
-            name: "My Organization",
-            permission: .owner,
-            createTime: Date().ISO8601Format()
-        ),
+        organization: VOOrganization.Entity.devInstance,
         createTime: Date().ISO8601Format()
     )
 }

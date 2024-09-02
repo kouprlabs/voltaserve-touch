@@ -73,7 +73,6 @@ struct SignUp: View {
             }
         } else {
             ProgressView()
-                .progressViewStyle(.circular)
         }
     }
 }

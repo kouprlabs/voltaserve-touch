@@ -1,6 +1,7 @@
 import Foundation
 
 enum VOTextConstants {
-    static let errorTitle = "Error"
-    static let unexpectedError = "Unexpected error occurred."
+    static let errorAlertTitle = "Error"
+    static let errorAlertButtonLabel = "OK"
+    static let unexpectedErrorOccurred = "Unexpected error occurred."
 }

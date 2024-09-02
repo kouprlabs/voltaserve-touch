@@ -12,7 +12,7 @@ struct OrganizationList: View {
             if let list = organizationStore.list {
                 List(list.data, id: \.id) { organization in
                     NavigationLink {
-                        OrganizationMembers(organization.id)
+                        OrganizationMembers(organization)
                             .navigationTitle(organization.name)
                     } label: {
                         OrganizationRow(organization)
@@ -21,11 +21,10 @@ struct OrganizationList: View {
                 .navigationTitle("Organizations")
             } else {
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
             }
         }
-        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
-            Button("Cancel") {}
+        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+            Button(VOTextConstants.errorAlertButtonLabel) {}
         } message: {
             if let errorMessage {
                 Text(errorMessage)
@@ -60,7 +59,7 @@ struct OrganizationList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }

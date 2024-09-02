@@ -5,7 +5,7 @@ struct Account: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var accountStore: AccountStore
     @Environment(\.presentationMode) private var presentationMode
-    @State private var showDeleteAlert = false
+    @State private var showDelete = false
     @State private var showError = false
     @State private var errorMessage: String?
 
@@ -15,7 +15,6 @@ struct Account: View {
                 if accountStore.user == nil ||
                     accountStore.accountStorageUsage == nil {
                     ProgressView()
-                        .progressViewStyle(.circular)
                 } else if let user = accountStore.user {
                     VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
                     Form {
@@ -60,7 +59,7 @@ struct Account: View {
                         }
                         Section(header: Text("Advanced")) {
                             Button("Delete Account", role: .destructive) {
-                                showDeleteAlert = true
+                                showDelete = true
                             }
                         }
                     }
@@ -78,14 +77,14 @@ struct Account: View {
                 }
             }
         }
-        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
-            Button("OK") {}
+        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+            Button(VOTextConstants.errorAlertButtonLabel) {}
         } message: {
             if let errorMessage {
                 Text(errorMessage)
             }
         }
-        .alert("Delete Account", isPresented: $showDeleteAlert) {
+        .alert("Delete Account", isPresented: $showDelete) {
             Button("Delete Permanently", role: .destructive) {}
             Button("Cancel", role: .cancel) {}
         } message: {
@@ -130,7 +129,7 @@ struct Account: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }
@@ -152,7 +151,7 @@ struct Account: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }

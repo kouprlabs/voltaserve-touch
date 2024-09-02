@@ -16,7 +16,6 @@ struct VOButtonLabel: View {
             Text(text)
             if isLoading {
                 ProgressView()
-                    .progressViewStyle(.circular)
                     .tint(progressViewTint)
             }
         }

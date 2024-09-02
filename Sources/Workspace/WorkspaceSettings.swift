@@ -5,7 +5,7 @@ struct WorkspaceSettings: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.presentationMode) private var presentationMode
-    @State private var showDeleteAlert = false
+    @State private var showDelete = false
     @State private var showError = false
     @State private var errorMessage: String?
 
@@ -47,7 +47,7 @@ struct WorkspaceSettings: View {
                         }
                         Section(header: Text("Advanced")) {
                             Button("Delete Workspace", role: .destructive) {
-                                showDeleteAlert = true
+                                showDelete = true
                             }
                         }
                     }
@@ -63,14 +63,14 @@ struct WorkspaceSettings: View {
                         }
                     }
                 }
-                .alert("Delete Workspace", isPresented: $showDeleteAlert) {
+                .alert("Delete Workspace", isPresented: $showDelete) {
                     Button("Delete Permanently", role: .destructive) {}
                     Button("Cancel", role: .cancel) {}
                 } message: {
                     Text("Are you sure you would like to delete this workspace?")
                 }
-                .alert(VOTextConstants.errorTitle, isPresented: $showError) {
-                    Button("OK") {}
+                .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                    Button(VOTextConstants.errorAlertButtonLabel) {}
                 } message: {
                     if let errorMessage {
                         Text(errorMessage)
@@ -90,7 +90,6 @@ struct WorkspaceSettings: View {
                 }
             } else {
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
             }
         }
     }
@@ -114,7 +113,7 @@ struct WorkspaceSettings: View {
             } catch {
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }

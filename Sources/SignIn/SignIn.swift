@@ -78,8 +78,8 @@ struct SignIn: View {
                 showForgotPassword = false
             }
         }
-        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
-            Button("OK") {}
+        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+            Button(VOTextConstants.errorAlertButtonLabel) {}
         } message: {
             Text(errorMessage)
         }
@@ -107,7 +107,7 @@ struct SignIn: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }

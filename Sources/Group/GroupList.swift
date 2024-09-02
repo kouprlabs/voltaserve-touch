@@ -21,11 +21,10 @@ struct GroupList: View {
                 .navigationTitle("Groups")
             } else {
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
             }
         }
-        .alert("Group List Error", isPresented: $showError) {
-            Button("Cancel") {}
+        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+            Button(VOTextConstants.errorAlertButtonLabel) {}
         } message: {
             if let errorMessage {
                 Text(errorMessage)
@@ -62,7 +61,7 @@ struct GroupList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }

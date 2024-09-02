@@ -8,7 +8,7 @@ struct FileList: View {
     @EnvironmentObject private var viewerMosaicStore: ViewerMosaicStore
     @EnvironmentObject private var viewer3DStore: Viewer3DStore
     @EnvironmentObject private var viewerPDFStore: ViewerPDFStore
-    @State private var showWorkspaceSettings = false
+    @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
@@ -43,28 +43,27 @@ struct FileList: View {
                 .navigationDestination(item: $tappedItem) { file in
                     ViewerSelector(file)
                 }
-                .alert(VOTextConstants.errorTitle, isPresented: $showError) {
-                    Button("OK") {}
+                .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                    Button(VOTextConstants.errorAlertButtonLabel) {}
                 } message: {
                     if let errorMessage {
                         Text(errorMessage)
                     }
                 }
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         Button {
-                            showWorkspaceSettings = true
+                            showSettings = true
                         } label: {
                             Label("Settings", systemImage: "gear")
                         }
                     }
                 }
-                .sheet(isPresented: $showWorkspaceSettings) {
+                .sheet(isPresented: $showSettings) {
                     WorkspaceSettings()
                 }
             } else {
                 ProgressView()
-                    .progressViewStyle(.circular)
             }
         }
         .onAppear {
@@ -110,7 +109,7 @@ struct FileList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }
@@ -132,7 +131,7 @@ struct FileList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }

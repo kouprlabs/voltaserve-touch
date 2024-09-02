@@ -35,11 +35,10 @@ struct WorkspaceList: View {
                 }
             } else {
                 ProgressView()
-                    .progressViewStyle(.circular)
             }
         }
-        .alert(VOTextConstants.errorTitle, isPresented: $showError) {
-            Button("Cancel") {}
+        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+            Button(VOTextConstants.errorAlertButtonLabel) {}
         } message: {
             if let errorMessage {
                 Text(errorMessage)
@@ -96,7 +95,7 @@ struct WorkspaceList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }
@@ -118,7 +117,7 @@ struct WorkspaceList: View {
                 print(error.localizedDescription)
                 Task { @MainActor in
                     showError = true
-                    errorMessage = VOTextConstants.unexpectedError
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
                 }
             }
         }
