@@ -18,7 +18,7 @@ struct Account: View {
                 } else if let user = accountStore.user {
                     VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
                     Form {
-                        Section(header: Text("Storage Usage")) {
+                        Section(header: VOSectionHeader("Storage Usage")) {
                             VStack(alignment: .leading) {
                                 if let storageUsage = accountStore.accountStorageUsage {
                                     // swiftlint:disable:next line_length
@@ -30,7 +30,7 @@ struct Account: View {
                                 }
                             }
                         }
-                        Section(header: Text("Basics")) {
+                        Section(header: VOSectionHeader("Basics")) {
                             NavigationLink(destination: Text("Change Full Name")) {
                                 HStack {
                                     Text("Full name")
@@ -40,7 +40,7 @@ struct Account: View {
                                 }
                             }
                         }
-                        Section(header: Text("Credentials")) {
+                        Section(header: VOSectionHeader("Credentials")) {
                             NavigationLink(destination: Text("Change Email")) {
                                 HStack {
                                     Text("Email")
@@ -57,7 +57,7 @@ struct Account: View {
                                 }
                             }
                         }
-                        Section(header: Text("Advanced")) {
+                        Section(header: VOSectionHeader("Advanced")) {
                             Button("Delete Account", role: .destructive) {
                                 showDelete = true
                             }

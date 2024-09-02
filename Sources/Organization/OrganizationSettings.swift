@@ -15,7 +15,7 @@ struct OrganizationSettings: View {
                 VStack {
                     VOAvatar(name: organization.name, size: 100)
                     Form {
-                        Section(header: Text("Basics")) {
+                        Section(header: VOSectionHeader("Basics")) {
                             NavigationLink(destination: Text("Change Name")) {
                                 HStack {
                                     Text("Name")
@@ -25,7 +25,7 @@ struct OrganizationSettings: View {
                                 }
                             }
                         }
-                        Section(header: Text("Advanced")) {
+                        Section(header: VOSectionHeader("Advanced")) {
                             Button("Delete Organization", role: .destructive) {
                                 showDelete = true
                             }

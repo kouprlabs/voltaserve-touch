@@ -15,7 +15,7 @@ struct WorkspaceSettings: View {
                 VStack {
                     VOAvatar(name: workspace.name, size: 100)
                     Form {
-                        Section(header: Text("Storage")) {
+                        Section(header: VOSectionHeader("Basics")) {
                             VStack(alignment: .leading) {
                                 if let storageUsage = workspaceStore.storageUsage {
                                     // swiftlint:disable:next line_length
@@ -35,7 +35,7 @@ struct WorkspaceSettings: View {
                                 }
                             }
                         }
-                        Section(header: Text("Basics")) {
+                        Section(header: VOSectionHeader("Basics")) {
                             NavigationLink(destination: Text("Change Name")) {
                                 HStack {
                                     Text("Name")
@@ -45,7 +45,7 @@ struct WorkspaceSettings: View {
                                 }
                             }
                         }
-                        Section(header: Text("Advanced")) {
+                        Section(header: VOSectionHeader("Advanced")) {
                             Button("Delete Workspace", role: .destructive) {
                                 showDelete = true
                             }

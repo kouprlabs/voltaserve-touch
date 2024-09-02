@@ -15,7 +15,7 @@ struct GroupSettings: View {
                 VStack {
                     VOAvatar(name: group.name, size: 100)
                     Form {
-                        Section(header: Text("Basics")) {
+                        Section(header: VOSectionHeader("Basics")) {
                             NavigationLink(destination: Text("Change Name")) {
                                 HStack {
                                     Text("Name")
@@ -25,7 +25,7 @@ struct GroupSettings: View {
                                 }
                             }
                         }
-                        Section(header: Text("Advanced")) {
+                        Section(header: VOSectionHeader("Advanced")) {
                             Button("Delete Group", role: .destructive) {
                                 showDelete = true
                             }
