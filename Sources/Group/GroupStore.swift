@@ -5,7 +5,6 @@ import Voltaserve
 class GroupStore: ObservableObject {
     @Published var list: VOGroup.List?
     @Published var entities: [VOGroup.Entity]?
-    @Published var members: VOUser.List?
     @Published var current: VOGroup.Entity?
 
     var token: VOToken.Value? {
@@ -15,16 +14,11 @@ class GroupStore: ObservableObject {
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
-                userClient = .init(
-                    baseURL: Config.production.apiURL,
-                    accessToken: token.accessToken
-                )
             }
         }
     }
 
     private var client: VOGroup?
-    private var userClient: VOUser?
 
     init() {}
 
@@ -34,10 +28,6 @@ class GroupStore: ObservableObject {
 
     func fetchList(page: Int = 1) async throws -> VOGroup.List? {
         try await client?.fetchList(.init(page: page, size: Constants.pageSize))
-    }
-
-    func fetchMembers(_ id: String) async throws -> VOUser.List? {
-        try await userClient?.fetchList(.init(groupID: id))
     }
 
     func append(_ newEntities: [VOGroup.Entity]) {

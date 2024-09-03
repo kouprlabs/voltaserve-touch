@@ -3,6 +3,7 @@ import Voltaserve
 
 struct GroupMembers: View {
     @EnvironmentObject var authStore: AuthStore
+    @EnvironmentObject var membersStore: GroupMembersStore
     @EnvironmentObject var groupStore: GroupStore
     @State private var showAddMember = false
     @State private var showSettings = false
@@ -16,8 +17,8 @@ struct GroupMembers: View {
 
     var body: some View {
         VStack {
-            if let members = groupStore.members {
-                List(members.data, id: \.id) { member in
+            if let list = membersStore.list {
+                List(list.data, id: \.id) { member in
                     VOUserRow(member)
                 }
                 .toolbar {
@@ -56,23 +57,25 @@ struct GroupMembers: View {
         .onAppear {
             groupStore.current = group
             if let token = authStore.token {
+                membersStore.token = token
                 groupStore.token = token
-                fetchMembers()
+                fetchList()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
+                membersStore.token = newToken
                 groupStore.token = newToken
             }
         }
     }
 
-    func fetchMembers() {
+    func fetchList() {
         Task {
             do {
-                let members = try await groupStore.fetchMembers(group.id)
+                let list = try await membersStore.fetchList(group.id)
                 Task { @MainActor in
-                    groupStore.members = members
+                    membersStore.list = list
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
@@ -95,6 +98,7 @@ struct GroupMembers: View {
         GroupMembers(VOGroup.Entity.devInstance)
             .navigationTitle(VOGroup.Entity.devInstance.name)
             .environmentObject(AuthStore(VOToken.Value.devInstance))
+            .environmentObject(GroupMembersStore())
             .environmentObject(GroupStore())
     }
 }

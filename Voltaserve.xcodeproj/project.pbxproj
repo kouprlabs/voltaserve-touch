@@ -89,6 +89,7 @@
 			membershipExceptions = (
 				GroupList.swift,
 				GroupMembers.swift,
+				GroupMembersStore.swift,
 				GroupRow.swift,
 				GroupSettings.swift,
 				GroupStore.swift,
@@ -100,6 +101,7 @@
 			membershipExceptions = (
 				OrganizationList.swift,
 				OrganizationMembers.swift,
+				OrganizationMembersStore.swift,
 				OrganizationRow.swift,
 				OrganizationSettings.swift,
 				OrganizationStore.swift,

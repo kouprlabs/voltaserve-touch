@@ -3,6 +3,7 @@ import Voltaserve
 
 struct OrganizationMembers: View {
     @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var membersStore: OrganizationMembersStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @State private var showAddMember = false
     @State private var showSettings = false
@@ -16,8 +17,8 @@ struct OrganizationMembers: View {
 
     var body: some View {
         VStack {
-            if let members = organizationStore.members {
-                List(members.data, id: \.id) { member in
+            if let list = membersStore.list {
+                List(list.data, id: \.id) { member in
                     VOUserRow(member)
                 }
                 .toolbar {
@@ -56,23 +57,25 @@ struct OrganizationMembers: View {
         .onAppear {
             organizationStore.current = organization
             if let token = authStore.token {
+                membersStore.token = token
                 organizationStore.token = token
-                fetchMembers()
+                fetchList()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
+                membersStore.token = newToken
                 organizationStore.token = newToken
             }
         }
     }
 
-    func fetchMembers() {
+    func fetchList() {
         Task {
             do {
-                let members = try await organizationStore.fetchMembers(organization.id)
+                let list = try await membersStore.fetchList(organization.id)
                 Task { @MainActor in
-                    organizationStore.members = members
+                    membersStore.list = list
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
@@ -95,6 +98,7 @@ struct OrganizationMembers: View {
         OrganizationMembers(VOOrganization.Entity.devInstance)
             .navigationTitle(VOOrganization.Entity.devInstance.name)
             .environmentObject(AuthStore(VOToken.Value.devInstance))
+            .environmentObject(OrganizationMembersStore())
             .environmentObject(OrganizationStore())
     }
 }

@@ -5,7 +5,6 @@ import Voltaserve
 class OrganizationStore: ObservableObject {
     @Published var list: VOOrganization.List?
     @Published var entities: [VOOrganization.Entity]?
-    @Published var members: VOUser.List?
     @Published var current: VOOrganization.Entity?
     @Published var invitations: VOInvitation.List?
 
@@ -16,16 +15,11 @@ class OrganizationStore: ObservableObject {
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
-                userClient = .init(
-                    baseURL: Config.production.apiURL,
-                    accessToken: token.accessToken
-                )
             }
         }
     }
 
     private var client: VOOrganization?
-    private var userClient: VOUser?
     private var invitationClient: VOInvitation?
 
     init() {}
@@ -36,10 +30,6 @@ class OrganizationStore: ObservableObject {
 
     func fetchList(page: Int = 1) async throws -> VOOrganization.List? {
         try await client?.fetchList(.init(page: page, size: Constants.pageSize))
-    }
-
-    func fetchMembers(_ id: String) async throws -> VOUser.List? {
-        try await userClient?.fetchList(.init(organizationID: id))
     }
 
     func fetchInvitations(_ id: String) async throws -> VOInvitation.List? {
