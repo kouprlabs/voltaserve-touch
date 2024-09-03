@@ -25,16 +25,7 @@ class FileStore: ObservableObject {
     }
 
     func fetchList(_ id: String, page: Int = 1) async throws -> VOFile.List? {
-        try await client?.fetchList(id, options: .init(page: page, size: 20))
-    }
-
-    func clear() {
-        entities = nil
-        list = nil
-    }
-
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.id
+        try await client?.fetchList(id, options: .init(page: page, size: Constants.pageSize))
     }
 
     func append(_ newEntities: [VOFile.Entity]) {
@@ -44,12 +35,17 @@ class FileStore: ObservableObject {
         entities!.append(contentsOf: newEntities)
     }
 
+    func clear() {
+        entities = nil
+        list = nil
+    }
+
     func nextPage() -> Int {
         var page = 1
-        if let existingList = list {
-            if existingList.page < existingList.totalPages {
-                page = existingList.page + 1
-            } else if existingList.page == existingList.totalPages {
+        if let list {
+            if list.page < list.totalPages {
+                page = list.page + 1
+            } else if list.page == list.totalPages {
                 return -1
             }
         }
@@ -58,5 +54,13 @@ class FileStore: ObservableObject {
 
     func hasNextPage() -> Bool {
         nextPage() != -1
+    }
+
+    func isLast(_ id: String) -> Bool {
+        id == entities?.last?.id
+    }
+
+    private enum Constants {
+        static let pageSize = 10
     }
 }

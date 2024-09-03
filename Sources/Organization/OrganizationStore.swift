@@ -4,6 +4,7 @@ import Voltaserve
 
 class OrganizationStore: ObservableObject {
     @Published var list: VOOrganization.List?
+    @Published var entities: [VOOrganization.Entity]?
     @Published var members: VOUser.List?
     @Published var current: VOOrganization.Entity?
     @Published var invitations: VOInvitation.List?
@@ -33,8 +34,8 @@ class OrganizationStore: ObservableObject {
         self.current = current
     }
 
-    func fetchList() async throws -> VOOrganization.List? {
-        try await client?.fetchList(.init())
+    func fetchList(page: Int = 1) async throws -> VOOrganization.List? {
+        try await client?.fetchList(.init(page: page, size: Constants.pageSize))
     }
 
     func fetchMembers(_ id: String) async throws -> VOUser.List? {
@@ -43,6 +44,42 @@ class OrganizationStore: ObservableObject {
 
     func fetchInvitations(_ id: String) async throws -> VOInvitation.List? {
         try await invitationClient?.fetchOutgoing(.init(organizationID: id))
+    }
+
+    func append(_ newEntities: [VOOrganization.Entity]) {
+        if entities == nil {
+            entities = []
+        }
+        entities!.append(contentsOf: newEntities)
+    }
+
+    func clear() {
+        entities = nil
+        list = nil
+    }
+
+    func nextPage() -> Int {
+        var page = 1
+        if let list {
+            if list.page < list.totalPages {
+                page = list.page + 1
+            } else if list.page == list.totalPages {
+                return -1
+            }
+        }
+        return page
+    }
+
+    func hasNextPage() -> Bool {
+        nextPage() != -1
+    }
+
+    func isLast(_ id: String) -> Bool {
+        id == entities?.last?.id
+    }
+
+    private enum Constants {
+        static let pageSize = 10
     }
 }
 

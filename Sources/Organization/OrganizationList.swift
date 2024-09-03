@@ -7,16 +7,27 @@ struct OrganizationList: View {
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var searchText = ""
+    @State private var isLoading = false
 
     var body: some View {
         NavigationStack {
-            if let list = organizationStore.list {
-                List(list.data, id: \.id) { organization in
-                    NavigationLink {
-                        OrganizationMembers(organization)
-                            .navigationTitle(organization.name)
-                    } label: {
-                        OrganizationRow(organization)
+            if let entities = organizationStore.entities {
+                List {
+                    ForEach(entities, id: \.id) { organization in
+                        NavigationLink {
+                            OrganizationMembers(organization)
+                                .navigationTitle(organization.name)
+                        } label: {
+                            OrganizationRow(organization)
+                                .onAppear { listItemAppears(organization.id) }
+                        }
+                    }
+                    if isLoading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
                     }
                 }
                 .navigationTitle("Organizations")
@@ -35,22 +46,37 @@ struct OrganizationList: View {
         .onAppear {
             if let token = authStore.token {
                 organizationStore.token = token
+                organizationStore.clear()
                 fetchList()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 organizationStore.token = newToken
+                organizationStore.clear()
+                fetchList()
             }
+        }
+    }
+
+    func listItemAppears(_ id: String) {
+        if organizationStore.isLast(id) {
+            fetchList()
         }
     }
 
     func fetchList() {
         Task {
             do {
-                let list = try await organizationStore.fetchList()
+                isLoading = true
+                defer { isLoading = false }
+                if !organizationStore.hasNextPage() { return }
+                let list = try await organizationStore.fetchList(page: organizationStore.nextPage())
                 Task { @MainActor in
                     organizationStore.list = list
+                    if let list {
+                        organizationStore.append(list.data)
+                    }
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in

@@ -43,9 +43,7 @@ struct FileList: View {
                             } label: {
                                 FolderRow(file)
                             }
-                            .onAppear {
-                                listItemAppears(file.id)
-                            }
+                            .onAppear { listItemAppears(file.id) }
                         }
                     }
                     if isLoading {
@@ -99,6 +97,7 @@ struct FileList: View {
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 assignTokenToStores(newToken)
+                fileStore.clear()
                 fetchData()
             }
         }
@@ -147,13 +146,9 @@ struct FileList: View {
     func fetchList() {
         Task {
             isLoading = true
-            defer {
-                isLoading = false
-            }
+            defer { isLoading = false }
             do {
-                if !fileStore.hasNextPage() {
-                    return
-                }
+                if !fileStore.hasNextPage() { return }
                 let list = try await fileStore.fetchList(id, page: fileStore.nextPage())
                 Task { @MainActor in
                     fileStore.list = list

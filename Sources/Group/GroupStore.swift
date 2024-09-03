@@ -4,6 +4,7 @@ import Voltaserve
 
 class GroupStore: ObservableObject {
     @Published var list: VOGroup.List?
+    @Published var entities: [VOGroup.Entity]?
     @Published var members: VOUser.List?
     @Published var current: VOGroup.Entity?
 
@@ -31,12 +32,48 @@ class GroupStore: ObservableObject {
         self.current = current
     }
 
-    func fetchList() async throws -> VOGroup.List? {
-        try await client?.fetchList(.init())
+    func fetchList(page: Int = 1) async throws -> VOGroup.List? {
+        try await client?.fetchList(.init(page: page, size: Constants.pageSize))
     }
 
     func fetchMembers(_ id: String) async throws -> VOUser.List? {
         try await userClient?.fetchList(.init(groupID: id))
+    }
+
+    func append(_ newEntities: [VOGroup.Entity]) {
+        if entities == nil {
+            entities = []
+        }
+        entities!.append(contentsOf: newEntities)
+    }
+
+    func clear() {
+        entities = nil
+        list = nil
+    }
+
+    func nextPage() -> Int {
+        var page = 1
+        if let list {
+            if list.page < list.totalPages {
+                page = list.page + 1
+            } else if list.page == list.totalPages {
+                return -1
+            }
+        }
+        return page
+    }
+
+    func hasNextPage() -> Bool {
+        nextPage() != -1
+    }
+
+    func isLast(_ id: String) -> Bool {
+        id == entities?.last?.id
+    }
+
+    private enum Constants {
+        static let pageSize = 10
     }
 }
 

@@ -8,7 +8,7 @@ struct VOSectionHeader: View {
     }
 
     var body: some View {
-        Text(text).font(.custom(VOMetrics.bodyFontFamily, size: 14))
+        Text(text).font(.custom(VOMetrics.bodyFontFamily, size: 13))
     }
 }
 

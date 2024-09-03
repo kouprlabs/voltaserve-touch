@@ -10,19 +10,34 @@ struct WorkspaceList: View {
     @State private var showAccount = false
     @State private var selection: String?
     @State private var searchText = ""
+    @State private var isLoading = false
 
     var body: some View {
         NavigationStack {
-            if let list = workspaceStore.list {
-                List(list.data, id: \.id) { workspace in
-                    NavigationLink {
-                        FileList(workspace.rootID, workspace: workspace)
-                            .navigationTitle(workspace.name)
-                    } label: {
-                        WorkspaceRow(workspace)
+            if let entities = workspaceStore.entities {
+                List {
+                    ForEach(entities, id: \.id) { workspace in
+                        NavigationLink {
+                            FileList(workspace.rootID, workspace: workspace)
+                                .navigationTitle(workspace.name)
+                        } label: {
+                            WorkspaceRow(workspace)
+                                .onAppear { listItemAppears(workspace.id) }
+                        }
+                    }
+                    if isLoading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
                     }
                 }
                 .searchable(text: $searchText)
+                .refreshable {
+                    workspaceStore.clear()
+                    fetchList()
+                }
                 .navigationTitle("Home")
                 .toolbar {
                     if UIDevice.current.userInterfaceIdiom == .phone {
@@ -49,6 +64,7 @@ struct WorkspaceList: View {
         .onAppear {
             if let token = authStore.token {
                 assignTokenToStores(token)
+                workspaceStore.clear()
                 fetchData()
             }
         }
@@ -73,6 +89,12 @@ struct WorkspaceList: View {
         }
     }
 
+    func listItemAppears(_ id: String) {
+        if workspaceStore.isLast(id) {
+            fetchList()
+        }
+    }
+
     func assignTokenToStores(_ token: VOToken.Value) {
         workspaceStore.token = token
         accountStore.token = token
@@ -85,10 +107,16 @@ struct WorkspaceList: View {
 
     func fetchList() {
         Task {
+            isLoading = true
+            defer { isLoading = false }
             do {
-                let list = try await workspaceStore.fetchList()
+                if !workspaceStore.hasNextPage() { return }
+                let list = try await workspaceStore.fetchList(page: workspaceStore.nextPage())
                 Task { @MainActor in
                     workspaceStore.list = list
+                    if let list {
+                        workspaceStore.append(list.data)
+                    }
                 }
             } catch let error as VOErrorResponse {
                 showError = true

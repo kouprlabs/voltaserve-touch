@@ -4,6 +4,7 @@ import Voltaserve
 
 class WorkspaceStore: ObservableObject {
     @Published var list: VOWorkspace.List?
+    @Published var entities: [VOWorkspace.Entity]?
     @Published var current: VOWorkspace.Entity?
     @Published var storageUsage: VOStorage.Usage?
 
@@ -35,8 +36,44 @@ class WorkspaceStore: ObservableObject {
         try await storageClient?.fetchWorkspaceUsage(id)
     }
 
-    func fetchList() async throws -> VOWorkspace.List? {
-        try await client?.fetchList(.init())
+    func fetchList(page: Int = 1) async throws -> VOWorkspace.List? {
+        try await client?.fetchList(.init(page: page, size: Constants.pageSize))
+    }
+
+    func append(_ newEntities: [VOWorkspace.Entity]) {
+        if entities == nil {
+            entities = []
+        }
+        entities!.append(contentsOf: newEntities)
+    }
+
+    func clear() {
+        entities = nil
+        list = nil
+    }
+
+    func nextPage() -> Int {
+        var page = 1
+        if let list {
+            if list.page < list.totalPages {
+                page = list.page + 1
+            } else if list.page == list.totalPages {
+                return -1
+            }
+        }
+        return page
+    }
+
+    func hasNextPage() -> Bool {
+        nextPage() != -1
+    }
+
+    func isLast(_ id: String) -> Bool {
+        id == entities?.last?.id
+    }
+
+    private enum Constants {
+        static let pageSize = 10
     }
 }
 
