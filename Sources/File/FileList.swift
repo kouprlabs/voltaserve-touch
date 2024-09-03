@@ -14,8 +14,8 @@ struct FileList: View {
     @State private var tappedItem: VOFile.Entity?
     @State private var searchText = ""
     @State private var isLoading = false
-    private var id: String
-    private var workspace: VOWorkspace.Entity
+    private let id: String
+    private let workspace: VOWorkspace.Entity
 
     init(_ id: String, workspace: VOWorkspace.Entity) {
         self.id = id
@@ -34,7 +34,7 @@ struct FileList: View {
                                 FileRow(file)
                             }
                             .onAppear {
-                                listItemAppears(file.id)
+                                onListItemAppear(file.id)
                             }
                         } else if file.type == .folder {
                             NavigationLink {
@@ -43,7 +43,7 @@ struct FileList: View {
                             } label: {
                                 FolderRow(file)
                             }
-                            .onAppear { listItemAppears(file.id) }
+                            .onAppear { onListItemAppear(file.id) }
                         }
                     }
                     if isLoading {
@@ -89,21 +89,23 @@ struct FileList: View {
         .onAppear {
             workspaceStore.current = workspace
             if let token = authStore.token {
-                assignTokenToStores(token)
-                fileStore.clear()
-                fetchData()
+                onAppearOrChange(token)
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                assignTokenToStores(newToken)
-                fileStore.clear()
-                fetchData()
+                onAppearOrChange(newToken)
             }
         }
     }
 
-    func listItemAppears(_ id: String) {
+    func onAppearOrChange(_ token: VOToken.Value) {
+        assignTokenToStores(token)
+        fileStore.clear()
+        fetchData()
+    }
+
+    func onListItemAppear(_ id: String) {
         if fileStore.isLast(id) {
             fetchList()
         }

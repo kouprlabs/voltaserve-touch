@@ -19,7 +19,7 @@ struct OrganizationList: View {
                                 .navigationTitle(organization.name)
                         } label: {
                             OrganizationRow(organization)
-                                .onAppear { listItemAppears(organization.id) }
+                                .onAppear { onListItemAppear(organization.id) }
                         }
                     }
                     if isLoading {
@@ -45,21 +45,23 @@ struct OrganizationList: View {
         }
         .onAppear {
             if let token = authStore.token {
-                organizationStore.token = token
-                organizationStore.clear()
-                fetchList()
+                onAppearOrChange(token)
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                organizationStore.token = newToken
-                organizationStore.clear()
-                fetchList()
+                onAppearOrChange(newToken)
             }
         }
     }
 
-    func listItemAppears(_ id: String) {
+    func onAppearOrChange(_ token: VOToken.Value) {
+        organizationStore.token = token
+        organizationStore.clear()
+        fetchList()
+    }
+
+    func onListItemAppear(_ id: String) {
         if organizationStore.isLast(id) {
             fetchList()
         }

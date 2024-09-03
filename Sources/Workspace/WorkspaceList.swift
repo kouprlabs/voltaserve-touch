@@ -22,7 +22,7 @@ struct WorkspaceList: View {
                                 .navigationTitle(workspace.name)
                         } label: {
                             WorkspaceRow(workspace)
-                                .onAppear { listItemAppears(workspace.id) }
+                                .onAppear { onListItemAppear(workspace.id) }
                         }
                     }
                     if isLoading {
@@ -63,15 +63,12 @@ struct WorkspaceList: View {
         }
         .onAppear {
             if let token = authStore.token {
-                assignTokenToStores(token)
-                workspaceStore.clear()
-                fetchData()
+                onAppearOrChange(token)
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                assignTokenToStores(newToken)
-                fetchData()
+                onAppearOrChange(newToken)
             }
         }
     }
@@ -89,7 +86,13 @@ struct WorkspaceList: View {
         }
     }
 
-    func listItemAppears(_ id: String) {
+    func onAppearOrChange(_ token: VOToken.Value) {
+        assignTokenToStores(token)
+        workspaceStore.clear()
+        fetchData()
+    }
+
+    func onListItemAppear(_ id: String) {
         if workspaceStore.isLast(id) {
             fetchList()
         }

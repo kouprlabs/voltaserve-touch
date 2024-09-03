@@ -9,6 +9,7 @@ struct OrganizationMembers: View {
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var isLoading = false
     private let organization: VOOrganization.Entity
 
     init(_ organization: VOOrganization.Entity) {
@@ -17,9 +18,12 @@ struct OrganizationMembers: View {
 
     var body: some View {
         VStack {
-            if let list = membersStore.list {
-                List(list.data, id: \.id) { member in
-                    VOUserRow(member)
+            if let entities = membersStore.entities {
+                List {
+                    ForEach(entities, id: \.id) { member in
+                        VOUserRow(member)
+                            .onAppear { listItemAppears(member.id) }
+                    }
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -70,12 +74,24 @@ struct OrganizationMembers: View {
         }
     }
 
+    func listItemAppears(_ id: String) {
+        if membersStore.isLast(id) {
+            fetchList()
+        }
+    }
+
     func fetchList() {
         Task {
+            isLoading = true
+            defer { isLoading = false }
             do {
-                let list = try await membersStore.fetchList(organization.id)
+                if !membersStore.hasNextPage() { return }
+                let list = try await membersStore.fetchList(organization.id, page: membersStore.nextPage())
                 Task { @MainActor in
                     membersStore.list = list
+                    if let list {
+                        membersStore.append(list.data)
+                    }
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in

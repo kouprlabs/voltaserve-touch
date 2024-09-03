@@ -19,7 +19,7 @@ struct GroupList: View {
                                 .navigationTitle(group.name)
                         } label: {
                             GroupRow(group)
-                                .onAppear { listItemAppears(group.id) }
+                                .onAppear { onListItemAppear(group.id) }
                         }
                     }
                     if isLoading {
@@ -45,21 +45,23 @@ struct GroupList: View {
         }
         .onAppear {
             if let token = authStore.token {
-                groupStore.token = token
-                groupStore.clear()
-                fetchList()
+                onAppearOrChange(token)
             }
         }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                groupStore.token = newToken
-                groupStore.clear()
-                fetchList()
+                onAppearOrChange(newToken)
             }
         }
     }
 
-    func listItemAppears(_ id: String) {
+    func onAppearOrChange(_ token: VOToken.Value) {
+        groupStore.token = token
+        groupStore.clear()
+        fetchList()
+    }
+
+    func onListItemAppear(_ id: String) {
         if groupStore.isLast(id) {
             fetchList()
         }

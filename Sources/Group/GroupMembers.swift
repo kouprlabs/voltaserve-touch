@@ -2,14 +2,15 @@ import SwiftUI
 import Voltaserve
 
 struct GroupMembers: View {
-    @EnvironmentObject var authStore: AuthStore
-    @EnvironmentObject var membersStore: GroupMembersStore
-    @EnvironmentObject var groupStore: GroupStore
+    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var membersStore: GroupMembersStore
+    @EnvironmentObject private var groupStore: GroupStore
     @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
-    private var group: VOGroup.Entity
+    @State private var isLoading = false
+    private let group: VOGroup.Entity
 
     init(_ group: VOGroup.Entity) {
         self.group = group
@@ -17,9 +18,19 @@ struct GroupMembers: View {
 
     var body: some View {
         VStack {
-            if let list = membersStore.list {
-                List(list.data, id: \.id) { member in
-                    VOUserRow(member)
+            if let entities = membersStore.entities {
+                List {
+                    ForEach(entities, id: \.id) { member in
+                        VOUserRow(member)
+                            .onAppear { listItemAppears(member.id) }
+                    }
+                    if isLoading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                    }
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -59,6 +70,7 @@ struct GroupMembers: View {
             if let token = authStore.token {
                 membersStore.token = token
                 groupStore.token = token
+                membersStore.clear()
                 fetchList()
             }
         }
@@ -66,16 +78,30 @@ struct GroupMembers: View {
             if let newToken {
                 membersStore.token = newToken
                 groupStore.token = newToken
+                membersStore.clear()
+                fetchList()
             }
+        }
+    }
+
+    func listItemAppears(_ id: String) {
+        if membersStore.isLast(id) {
+            fetchList()
         }
     }
 
     func fetchList() {
         Task {
+            isLoading = true
+            defer { isLoading = false }
             do {
-                let list = try await membersStore.fetchList(group.id)
+                if !membersStore.hasNextPage() { return }
+                let list = try await membersStore.fetchList(group.id, page: membersStore.nextPage())
                 Task { @MainActor in
                     membersStore.list = list
+                    if let list {
+                        membersStore.append(list.data)
+                    }
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
