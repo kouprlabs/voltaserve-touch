@@ -9,6 +9,7 @@ struct WorkspaceList: View {
     @State private var errorMessage: String?
     @State private var showAccount = false
     @State private var selection: String?
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
@@ -21,6 +22,7 @@ struct WorkspaceList: View {
                         WorkspaceRow(workspace)
                     }
                 }
+                .searchable(text: $searchText)
                 .navigationTitle("Home")
                 .toolbar {
                     if UIDevice.current.userInterfaceIdiom == .phone {

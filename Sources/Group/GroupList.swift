@@ -6,6 +6,7 @@ struct GroupList: View {
     @EnvironmentObject private var groupStore: GroupStore
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
@@ -18,6 +19,7 @@ struct GroupList: View {
                         GroupRow(group)
                     }
                 }
+                .searchable(text: $searchText)
                 .navigationTitle("Groups")
             } else {
                 ProgressView()

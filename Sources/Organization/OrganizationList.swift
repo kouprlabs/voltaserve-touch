@@ -6,6 +6,7 @@ struct OrganizationList: View {
     @EnvironmentObject private var organizationStore: OrganizationStore
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
@@ -19,6 +20,7 @@ struct OrganizationList: View {
                     }
                 }
                 .navigationTitle("Organizations")
+                .searchable(text: $searchText)
             } else {
                 ProgressView()
             }

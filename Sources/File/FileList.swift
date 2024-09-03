@@ -12,6 +12,8 @@ struct FileList: View {
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
+    @State private var searchText = ""
+    @State private var isLoading = false
     private var id: String
     private var workspace: VOWorkspace.Entity
 
@@ -22,24 +24,44 @@ struct FileList: View {
 
     var body: some View {
         VStack {
-            if let list = fileStore.list {
-                List(list.data, id: \.id) { file in
-                    if file.type == .file {
-                        Button {
-                            tappedItem = file
-                        } label: {
-                            FileRow(file)
+            if let entities = fileStore.entities {
+                List {
+                    ForEach(entities, id: \.id) { file in
+                        if file.type == .file {
+                            Button {
+                                tappedItem = file
+                            } label: {
+                                FileRow(file)
+                            }
+                            .onAppear {
+                                listItemAppears(file.id)
+                            }
+                        } else if file.type == .folder {
+                            NavigationLink {
+                                FileList(file.id, workspace: workspace)
+                                    .navigationTitle(file.name)
+                            } label: {
+                                FolderRow(file)
+                            }
+                            .onAppear {
+                                listItemAppears(file.id)
+                            }
                         }
-                    } else if file.type == .folder {
-                        NavigationLink {
-                            FileList(file.id, workspace: workspace)
-                                .navigationTitle(file.name)
-                        } label: {
-                            FolderRow(file)
+                    }
+                    if isLoading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
                         }
                     }
                 }
                 .listStyle(.inset)
+                .searchable(text: $searchText)
+                .refreshable {
+                    fileStore.clear()
+                    fetchList()
+                }
                 .navigationDestination(item: $tappedItem) { file in
                     ViewerSelector(file)
                 }
@@ -70,6 +92,7 @@ struct FileList: View {
             workspaceStore.current = workspace
             if let token = authStore.token {
                 assignTokenToStores(token)
+                fileStore.clear()
                 fetchData()
             }
         }
@@ -78,6 +101,12 @@ struct FileList: View {
                 assignTokenToStores(newToken)
                 fetchData()
             }
+        }
+    }
+
+    func listItemAppears(_ id: String) {
+        if fileStore.isLast(id) {
+            fetchList()
         }
     }
 
@@ -117,10 +146,20 @@ struct FileList: View {
 
     func fetchList() {
         Task {
+            isLoading = true
+            defer {
+                isLoading = false
+            }
             do {
-                let list = try await fileStore.fetchList(id)
+                if !fileStore.hasNextPage() {
+                    return
+                }
+                let list = try await fileStore.fetchList(id, page: fileStore.nextPage())
                 Task { @MainActor in
                     fileStore.list = list
+                    if let list {
+                        fileStore.append(list.data)
+                    }
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
