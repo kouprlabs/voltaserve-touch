@@ -6,6 +6,7 @@ class GroupStore: ObservableObject {
     @Published var list: VOGroup.List?
     @Published var entities: [VOGroup.Entity]?
     @Published var current: VOGroup.Entity?
+    private var timer: Timer?
 
     var token: VOToken.Value? {
         didSet {
@@ -60,6 +61,26 @@ class GroupStore: ObservableObject {
 
     func isLast(_ id: String) -> Bool {
         id == entities?.last?.id
+    }
+
+    func startRefreshTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if let entities = self.entities {
+                Task {
+                    let list = try await self.fetchList(page: 1, size: entities.count)
+                    if let list {
+                        Task { @MainActor in
+                            self.entities = list.data
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func stopRefreshTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 
     private enum Constants {

@@ -5,7 +5,6 @@ struct WorkspaceList: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var accountStore: AccountStore
-    @State private var timer: Timer?
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var showAccount = false
@@ -65,10 +64,10 @@ struct WorkspaceList: View {
         .onAppear {
             if let token = authStore.token {
                 onAppearOrChange(token)
-                startRefreshTimer()
+                workspaceStore.startRefreshTimer()
             }
         }
-        .onDisappear { stopRefreshTimer() }
+        .onDisappear { workspaceStore.stopRefreshTimer() }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
@@ -87,26 +86,6 @@ struct WorkspaceList: View {
                 Label("Account", systemImage: "person.crop.circle")
             }
         }
-    }
-
-    func startRefreshTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = workspaceStore.entities {
-                Task {
-                    let list = try await workspaceStore.fetchList(page: 1, size: entities.count)
-                    if let list {
-                        Task { @MainActor in
-                            workspaceStore.entities = list.data
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func stopRefreshTimer() {
-        timer?.invalidate()
-        timer = nil
     }
 
     func onAppearOrChange(_ token: VOToken.Value) {

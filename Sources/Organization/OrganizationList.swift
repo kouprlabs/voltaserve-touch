@@ -4,7 +4,6 @@ import Voltaserve
 struct OrganizationList: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var organizationStore: OrganizationStore
-    @State private var timer: Timer?
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var searchText = ""
@@ -47,35 +46,15 @@ struct OrganizationList: View {
         .onAppear {
             if let token = authStore.token {
                 onAppearOrChange(token)
-                startRefreshTimer()
+                organizationStore.startRefreshTimer()
             }
         }
-        .onDisappear { stopRefreshTimer() }
+        .onDisappear { organizationStore.stopRefreshTimer() }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
         }
-    }
-
-    func startRefreshTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = organizationStore.entities {
-                Task {
-                    let list = try await organizationStore.fetchList(page: 1, size: entities.count)
-                    if let list {
-                        Task { @MainActor in
-                            organizationStore.entities = list.data
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func stopRefreshTimer() {
-        timer?.invalidate()
-        timer = nil
     }
 
     func onAppearOrChange(_ token: VOToken.Value) {

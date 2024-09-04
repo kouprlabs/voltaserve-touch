@@ -6,6 +6,7 @@ class FileStore: ObservableObject {
     @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
     @Published var current: VOFile.Entity?
+    private var timer: Timer?
 
     var token: VOToken.Value? {
         didSet {
@@ -58,6 +59,26 @@ class FileStore: ObservableObject {
 
     func isLast(_ id: String) -> Bool {
         id == entities?.last?.id
+    }
+
+    func startRefreshTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if let entities = self.entities, let current = self.current {
+                Task {
+                    let list = try await self.fetchList(current.id, page: 1, size: entities.count)
+                    if let list {
+                        Task { @MainActor in
+                            self.entities = list.data
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func stopRefreshTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 
     private enum Constants {

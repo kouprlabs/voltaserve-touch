@@ -5,6 +5,7 @@ import Voltaserve
 class GroupMembersStore: ObservableObject {
     @Published var list: VOUser.List?
     @Published var entities: [VOUser.Entity]?
+    private var timer: Timer?
 
     var token: VOToken.Value? {
         didSet {
@@ -19,8 +20,8 @@ class GroupMembersStore: ObservableObject {
 
     private var client: VOUser?
 
-    func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
-        try await client?.fetchList(.init(groupID: id, page: page, size: size))
+    func fetchList(_ groupID: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
+        try await client?.fetchList(.init(groupID: groupID, page: page, size: size))
     }
 
     func append(_ newEntities: [VOUser.Entity]) {
@@ -53,6 +54,26 @@ class GroupMembersStore: ObservableObject {
 
     func isLast(_ id: String) -> Bool {
         id == entities?.last?.id
+    }
+
+    func startRefreshTimer(_ groupID: String) {
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if let entities = self.entities {
+                Task {
+                    let list = try await self.fetchList(groupID, page: 1, size: entities.count)
+                    if let list {
+                        Task { @MainActor in
+                            self.entities = list.data
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func stopRefreshTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 
     private enum Constants {

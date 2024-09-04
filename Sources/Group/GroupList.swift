@@ -4,7 +4,6 @@ import Voltaserve
 struct GroupList: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var groupStore: GroupStore
-    @State private var timer: Timer?
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var searchText = ""
@@ -47,35 +46,15 @@ struct GroupList: View {
         .onAppear {
             if let token = authStore.token {
                 onAppearOrChange(token)
-                startRefreshTimer()
+                groupStore.startRefreshTimer()
             }
         }
-        .onDisappear { stopRefreshTimer() }
+        .onDisappear { groupStore.stopRefreshTimer() }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
         }
-    }
-
-    func startRefreshTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = groupStore.entities {
-                Task {
-                    let list = try await groupStore.fetchList(page: 1, size: entities.count)
-                    if let list {
-                        Task { @MainActor in
-                            groupStore.entities = list.data
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func stopRefreshTimer() {
-        timer?.invalidate()
-        timer = nil
     }
 
     func onAppearOrChange(_ token: VOToken.Value) {

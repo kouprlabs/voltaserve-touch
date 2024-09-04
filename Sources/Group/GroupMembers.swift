@@ -5,7 +5,6 @@ struct GroupMembers: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var membersStore: GroupMembersStore
     @EnvironmentObject private var groupStore: GroupStore
-    @State private var timer: Timer?
     @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
@@ -70,35 +69,15 @@ struct GroupMembers: View {
             groupStore.current = group
             if let token = authStore.token {
                 onAppearOrChange(token)
-                startRefreshTimer()
+                membersStore.startRefreshTimer(group.id)
             }
         }
-        .onDisappear { stopRefreshTimer() }
+        .onDisappear { membersStore.stopRefreshTimer() }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
         }
-    }
-
-    func startRefreshTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = membersStore.entities {
-                Task {
-                    let list = try await membersStore.fetchList(group.id, page: 1, size: entities.count)
-                    if let list {
-                        Task { @MainActor in
-                            membersStore.entities = list.data
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func stopRefreshTimer() {
-        timer?.invalidate()
-        timer = nil
     }
 
     func onAppearOrChange(_ token: VOToken.Value) {

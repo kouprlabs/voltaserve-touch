@@ -8,7 +8,6 @@ struct FileList: View {
     @EnvironmentObject private var viewerMosaicStore: ViewerMosaicStore
     @EnvironmentObject private var viewer3DStore: Viewer3DStore
     @EnvironmentObject private var viewerPDFStore: ViewerPDFStore
-    @State private var timer: Timer?
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
@@ -91,35 +90,15 @@ struct FileList: View {
             workspaceStore.current = workspace
             if let token = authStore.token {
                 onAppearOrChange(token)
-                startRefreshTimer()
+                fileStore.startRefreshTimer()
             }
         }
-        .onDisappear { stopRefreshTimer() }
+        .onDisappear { fileStore.stopRefreshTimer() }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
         }
-    }
-
-    func startRefreshTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = fileStore.entities {
-                Task {
-                    let list = try await fileStore.fetchList(id, page: 1, size: entities.count)
-                    if let list {
-                        Task { @MainActor in
-                            fileStore.entities = list.data
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func stopRefreshTimer() {
-        timer?.invalidate()
-        timer = nil
     }
 
     func onAppearOrChange(_ token: VOToken.Value) {
