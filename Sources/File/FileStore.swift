@@ -24,8 +24,8 @@ class FileStore: ObservableObject {
         try await client?.fetch(id)
     }
 
-    func fetchList(_ id: String, page: Int = 1) async throws -> VOFile.List? {
-        try await client?.fetchList(id, options: .init(page: page, size: Constants.pageSize))
+    func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
+        try await client?.fetchList(id, options: .init(page: page, size: size))
     }
 
     func append(_ newEntities: [VOFile.Entity]) {

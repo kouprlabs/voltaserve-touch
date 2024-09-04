@@ -28,8 +28,8 @@ class OrganizationStore: ObservableObject {
         self.current = current
     }
 
-    func fetchList(page: Int = 1) async throws -> VOOrganization.List? {
-        try await client?.fetchList(.init(page: page, size: Constants.pageSize))
+    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
+        try await client?.fetchList(.init(page: page, size: size))
     }
 
     func fetchInvitations(_ id: String) async throws -> VOInvitation.List? {

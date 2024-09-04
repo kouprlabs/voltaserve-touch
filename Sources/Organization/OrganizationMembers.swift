@@ -5,6 +5,7 @@ struct OrganizationMembers: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var membersStore: OrganizationMembersStore
     @EnvironmentObject private var organizationStore: OrganizationStore
+    @State private var timer: Timer?
     @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
@@ -22,7 +23,7 @@ struct OrganizationMembers: View {
                 List {
                     ForEach(entities, id: \.id) { member in
                         VOUserRow(member)
-                            .onAppear { listItemAppears(member.id) }
+                            .onAppear { onListItemAppear(member.id) }
                     }
                 }
                 .toolbar {
@@ -61,20 +62,42 @@ struct OrganizationMembers: View {
         .onAppear {
             organizationStore.current = organization
             if let token = authStore.token {
-                membersStore.token = token
-                organizationStore.token = token
-                fetchList()
+                onAppearOrChange(token)
+                startRefreshTimer()
             }
         }
+        .onDisappear { stopRefreshTimer() }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                membersStore.token = newToken
-                organizationStore.token = newToken
+                onAppearOrChange(newToken)
             }
         }
     }
 
-    func listItemAppears(_ id: String) {
+    func startRefreshTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if let entities = membersStore.entities {
+                Task {
+                    let list = try await membersStore.fetchList(organization.id, page: 1, size: entities.count)
+                    if let list {
+                        Task { @MainActor in
+                            membersStore.entities = list.data
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func stopRefreshTimer() {}
+
+    func onAppearOrChange(_ token: VOToken.Value) {
+        membersStore.token = token
+        organizationStore.token = token
+        fetchList()
+    }
+
+    func onListItemAppear(_ id: String) {
         if membersStore.isLast(id) {
             fetchList()
         }

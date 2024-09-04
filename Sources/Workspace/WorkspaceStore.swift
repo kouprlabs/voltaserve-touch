@@ -36,8 +36,8 @@ class WorkspaceStore: ObservableObject {
         try await storageClient?.fetchWorkspaceUsage(id)
     }
 
-    func fetchList(page: Int = 1) async throws -> VOWorkspace.List? {
-        try await client?.fetchList(.init(page: page, size: Constants.pageSize))
+    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
+        try await client?.fetchList(.init(page: page, size: size))
     }
 
     func append(_ newEntities: [VOWorkspace.Entity]) {

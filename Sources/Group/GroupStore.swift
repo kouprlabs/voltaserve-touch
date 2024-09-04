@@ -26,8 +26,8 @@ class GroupStore: ObservableObject {
         self.current = current
     }
 
-    func fetchList(page: Int = 1) async throws -> VOGroup.List? {
-        try await client?.fetchList(.init(page: page, size: Constants.pageSize))
+    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
+        try await client?.fetchList(.init(page: page, size: size))
     }
 
     func append(_ newEntities: [VOGroup.Entity]) {

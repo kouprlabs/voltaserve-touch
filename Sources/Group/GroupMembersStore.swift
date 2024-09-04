@@ -19,8 +19,8 @@ class GroupMembersStore: ObservableObject {
 
     private var client: VOUser?
 
-    func fetchList(_ id: String, page: Int = 1) async throws -> VOUser.List? {
-        try await client?.fetchList(.init(groupID: id, page: page, size: Constants.pageSize))
+    func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
+        try await client?.fetchList(.init(groupID: id, page: page, size: size))
     }
 
     func append(_ newEntities: [VOUser.Entity]) {

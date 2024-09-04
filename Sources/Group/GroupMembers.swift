@@ -5,6 +5,7 @@ struct GroupMembers: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var membersStore: GroupMembersStore
     @EnvironmentObject private var groupStore: GroupStore
+    @State private var timer: Timer?
     @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
@@ -22,7 +23,7 @@ struct GroupMembers: View {
                 List {
                     ForEach(entities, id: \.id) { member in
                         VOUserRow(member)
-                            .onAppear { listItemAppears(member.id) }
+                            .onAppear { onListItemAppear(member.id) }
                     }
                     if isLoading {
                         HStack {
@@ -68,23 +69,46 @@ struct GroupMembers: View {
         .onAppear {
             groupStore.current = group
             if let token = authStore.token {
-                membersStore.token = token
-                groupStore.token = token
-                membersStore.clear()
-                fetchList()
+                onAppearOrChange(token)
+                startRefreshTimer()
             }
         }
+        .onDisappear { stopRefreshTimer() }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
-                membersStore.token = newToken
-                groupStore.token = newToken
-                membersStore.clear()
-                fetchList()
+                onAppearOrChange(newToken)
             }
         }
     }
 
-    func listItemAppears(_ id: String) {
+    func startRefreshTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if let entities = membersStore.entities {
+                Task {
+                    let list = try await membersStore.fetchList(group.id, page: 1, size: entities.count)
+                    if let list {
+                        Task { @MainActor in
+                            membersStore.entities = list.data
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func stopRefreshTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    func onAppearOrChange(_ token: VOToken.Value) {
+        membersStore.token = token
+        groupStore.token = token
+        membersStore.clear()
+        fetchList()
+    }
+
+    func onListItemAppear(_ id: String) {
         if membersStore.isLast(id) {
             fetchList()
         }
