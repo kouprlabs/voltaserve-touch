@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import Voltaserve
 
@@ -9,6 +10,9 @@ struct OrganizationMembers: View {
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var searchText = ""
+    @State private var searchPublisher = PassthroughSubject<String, Never>()
+    @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
     private let organization: VOOrganization.Entity
 
@@ -25,6 +29,8 @@ struct OrganizationMembers: View {
                             .onAppear { onListItemAppear(member.id) }
                     }
                 }
+                .searchable(text: $searchText)
+                .onChange(of: searchText) { searchPublisher.send($1) }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -59,16 +65,30 @@ struct OrganizationMembers: View {
             }
         }
         .onAppear {
+            searchPublisher
+                .debounce(for: .seconds(1), scheduler: RunLoop.main)
+                .removeDuplicates()
+                .sink { membersStore.query = $0 }
+                .store(in: &cancellables)
             organizationStore.current = organization
             if let token = authStore.token {
                 onAppearOrChange(token)
             }
         }
-        .onDisappear { membersStore.stopRefreshTimer() }
+        .onDisappear {
+            membersStore.stopRefreshTimer()
+            cancellables.forEach { $0.cancel() }
+            cancellables.removeAll()
+        }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
+        }
+        .onChange(of: membersStore.query) {
+            membersStore.entities = nil
+            membersStore.list = nil
+            fetchList()
         }
     }
 

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import Voltaserve
 
@@ -13,6 +14,8 @@ struct FileList: View {
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
     @State private var searchText = ""
+    @State private var searchPublisher = PassthroughSubject<String, Never>()
+    @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
     private let id: String
     private let workspace: VOWorkspace.Entity
@@ -60,13 +63,12 @@ struct FileList: View {
                 .listStyle(.inset)
                 .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
                 .searchable(text: $searchText)
+                .onChange(of: searchText) { searchPublisher.send($1) }
                 .refreshable {
                     fileStore.clear()
                     fetchList()
                 }
-                .navigationDestination(item: $tappedItem) { file in
-                    ViewerSelector(file)
-                }
+                .navigationDestination(item: $tappedItem) { ViewerSelector($0) }
                 .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
                     Button(VOTextConstants.errorAlertButtonLabel) {}
                 } message: {
@@ -91,16 +93,30 @@ struct FileList: View {
             }
         }
         .onAppear {
+            searchPublisher
+                .debounce(for: .seconds(1), scheduler: RunLoop.main)
+                .removeDuplicates()
+                .sink { fileStore.query = .init(text: $0) }
+                .store(in: &cancellables)
             workspaceStore.current = workspace
             if let token = authStore.token {
                 onAppearOrChange(token)
             }
         }
-        .onDisappear { fileStore.stopRefreshTimer() }
+        .onDisappear {
+            fileStore.stopRefreshTimer()
+            cancellables.forEach { $0.cancel() }
+            cancellables.removeAll()
+        }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
+        }
+        .onChange(of: fileStore.query) {
+            fileStore.entities = nil
+            fileStore.list = nil
+            fetchList()
         }
     }
 

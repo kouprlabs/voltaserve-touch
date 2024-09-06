@@ -6,6 +6,7 @@ class FileStore: ObservableObject {
     @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
     @Published var current: VOFile.Entity?
+    @Published var query: VOFile.Query?
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -26,7 +27,7 @@ class FileStore: ObservableObject {
     }
 
     func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await client?.fetchList(id, options: .init(page: page, size: size))
+        try await client?.fetchList(id, options: .init(query: query, page: page, size: size))
     }
 
     func append(_ newEntities: [VOFile.Entity]) {
@@ -63,7 +64,7 @@ class FileStore: ObservableObject {
 
     func startRefreshTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = self.entities, let current = self.current {
+            if let entities = self.entities, let current = self.current, !entities.isEmpty {
                 Task {
                     let list = try await self.fetchList(current.id, page: 1, size: entities.count)
                     if let list {

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import Voltaserve
 
@@ -7,6 +8,8 @@ struct OrganizationList: View {
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var searchText = ""
+    @State private var searchPublisher = PassthroughSubject<String, Never>()
+    @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
 
     var body: some View {
@@ -32,6 +35,7 @@ struct OrganizationList: View {
                 }
                 .navigationTitle("Organizations")
                 .searchable(text: $searchText)
+                .onChange(of: searchText) { searchPublisher.send($1) }
             } else {
                 ProgressView()
             }
@@ -44,15 +48,29 @@ struct OrganizationList: View {
             }
         }
         .onAppear {
+            searchPublisher
+                .debounce(for: .seconds(1), scheduler: RunLoop.main)
+                .removeDuplicates()
+                .sink { organizationStore.query = $0 }
+                .store(in: &cancellables)
             if let token = authStore.token {
                 onAppearOrChange(token)
             }
         }
-        .onDisappear { organizationStore.stopRefreshTimer() }
+        .onDisappear {
+            organizationStore.stopRefreshTimer()
+            cancellables.forEach { $0.cancel() }
+            cancellables.removeAll()
+        }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
+        }
+        .onChange(of: organizationStore.query) {
+            organizationStore.entities = nil
+            organizationStore.list = nil
+            fetchList()
         }
     }
 

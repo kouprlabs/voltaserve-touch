@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import Voltaserve
 
@@ -10,6 +11,8 @@ struct WorkspaceList: View {
     @State private var showAccount = false
     @State private var selection: String?
     @State private var searchText = ""
+    @State private var searchPublisher = PassthroughSubject<String, Never>()
+    @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
 
     var body: some View {
@@ -34,6 +37,7 @@ struct WorkspaceList: View {
                     }
                 }
                 .searchable(text: $searchText)
+                .onChange(of: searchText) { searchPublisher.send($1) }
                 .refreshable {
                     workspaceStore.clear()
                     fetchList()
@@ -62,15 +66,29 @@ struct WorkspaceList: View {
             }
         }
         .onAppear {
+            searchPublisher
+                .debounce(for: .seconds(1), scheduler: RunLoop.main)
+                .removeDuplicates()
+                .sink { workspaceStore.query = $0 }
+                .store(in: &cancellables)
             if let token = authStore.token {
                 onAppearOrChange(token)
             }
         }
-        .onDisappear { workspaceStore.stopRefreshTimer() }
+        .onDisappear {
+            workspaceStore.stopRefreshTimer()
+            cancellables.forEach { $0.cancel() }
+            cancellables.removeAll()
+        }
         .onChange(of: authStore.token) { _, newToken in
             if let newToken {
                 onAppearOrChange(newToken)
             }
+        }
+        .onChange(of: workspaceStore.query) {
+            workspaceStore.entities = nil
+            workspaceStore.list = nil
+            fetchList()
         }
     }
 

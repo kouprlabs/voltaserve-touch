@@ -6,6 +6,7 @@ class GroupStore: ObservableObject {
     @Published var list: VOGroup.List?
     @Published var entities: [VOGroup.Entity]?
     @Published var current: VOGroup.Entity?
+    @Published var query: String?
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -32,7 +33,7 @@ class GroupStore: ObservableObject {
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
-        try await client?.fetchList(.init(page: page, size: size))
+        try await client?.fetchList(.init(query: query, page: page, size: size))
     }
 
     func append(_ newEntities: [VOGroup.Entity]) {
@@ -70,7 +71,7 @@ class GroupStore: ObservableObject {
     func startRefreshTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = self.entities {
+            if let entities = self.entities, !entities.isEmpty {
                 Task {
                     let list = try await self.fetchList(page: 1, size: entities.count)
                     if let list {

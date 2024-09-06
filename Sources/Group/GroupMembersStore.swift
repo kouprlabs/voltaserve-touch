@@ -5,6 +5,7 @@ import Voltaserve
 class GroupMembersStore: ObservableObject {
     @Published var list: VOUser.List?
     @Published var entities: [VOUser.Entity]?
+    @Published var query: String?
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -21,7 +22,7 @@ class GroupMembersStore: ObservableObject {
     private var client: VOUser?
 
     func fetchList(_ groupID: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
-        try await client?.fetchList(.init(groupID: groupID, page: page, size: size))
+        try await client?.fetchList(.init(query: query, groupID: groupID, page: page, size: size))
     }
 
     func append(_ newEntities: [VOUser.Entity]) {
@@ -59,7 +60,7 @@ class GroupMembersStore: ObservableObject {
     func startRefreshTimer(_ groupID: String) {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = self.entities {
+            if let entities = self.entities, !entities.isEmpty {
                 Task {
                     let list = try await self.fetchList(groupID, page: 1, size: entities.count)
                     if let list {
