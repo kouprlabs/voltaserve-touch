@@ -46,7 +46,6 @@ struct GroupList: View {
         .onAppear {
             if let token = authStore.token {
                 onAppearOrChange(token)
-                groupStore.startRefreshTimer()
             }
         }
         .onDisappear { groupStore.stopRefreshTimer() }
@@ -61,6 +60,7 @@ struct GroupList: View {
         groupStore.token = token
         groupStore.clear()
         fetchList()
+        groupStore.startRefreshTimer()
     }
 
     func onListItemAppear(_ id: String) {

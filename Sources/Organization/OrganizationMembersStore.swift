@@ -20,7 +20,11 @@ class OrganizationMembersStore: ObservableObject {
 
     private var client: VOUser?
 
-    func fetchList(_ organizationID: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
+    func fetchList(
+        _ organizationID: String,
+        page: Int = 1,
+        size: Int = Constants.pageSize
+    ) async throws -> VOUser.List? {
         try await client?.fetchList(.init(organizationID: organizationID, page: page, size: size))
     }
 
@@ -57,6 +61,7 @@ class OrganizationMembersStore: ObservableObject {
     }
 
     func startRefreshTimer(_ organizationID: String) {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities {
                 Task {

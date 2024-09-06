@@ -33,12 +33,16 @@ class WorkspaceStore: ObservableObject {
         self.current = current
     }
 
-    func fetchStorageUsage(_ id: String) async throws -> VOStorage.Usage? {
-        try await storageClient?.fetchWorkspaceUsage(id)
+    func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
+        try await client?.fetch(id)
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
         try await client?.fetchList(.init(page: page, size: size))
+    }
+
+    func fetchStorageUsage(_ id: String) async throws -> VOStorage.Usage? {
+        try await storageClient?.fetchWorkspaceUsage(id)
     }
 
     func append(_ newEntities: [VOWorkspace.Entity]) {
@@ -74,6 +78,7 @@ class WorkspaceStore: ObservableObject {
     }
 
     func startRefreshTimer() {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities {
                 Task {
@@ -81,6 +86,16 @@ class WorkspaceStore: ObservableObject {
                     if let list {
                         Task { @MainActor in
                             self.entities = list.data
+                        }
+                    }
+                }
+            }
+            if let current = self.current {
+                Task {
+                    let workspace = try await self.fetch(current.id)
+                    if let workspace {
+                        Task { @MainActor in
+                            self.current = workspace
                         }
                     }
                 }

@@ -6,7 +6,7 @@ class OrganizationStore: ObservableObject {
     @Published var list: VOOrganization.List?
     @Published var entities: [VOOrganization.Entity]?
     @Published var current: VOOrganization.Entity?
-    @Published var invitations: VOInvitation.List?
+
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -21,7 +21,6 @@ class OrganizationStore: ObservableObject {
     }
 
     private var client: VOOrganization?
-    private var invitationClient: VOInvitation?
 
     init() {}
 
@@ -29,12 +28,12 @@ class OrganizationStore: ObservableObject {
         self.current = current
     }
 
-    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
-        try await client?.fetchList(.init(page: page, size: size))
+    func fetch(_ id: String) async throws -> VOOrganization.Entity? {
+        try await client?.fetch(id)
     }
 
-    func fetchInvitations(_ id: String) async throws -> VOInvitation.List? {
-        try await invitationClient?.fetchOutgoing(.init(organizationID: id))
+    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
+        try await client?.fetchList(.init(page: page, size: size))
     }
 
     func append(_ newEntities: [VOOrganization.Entity]) {
@@ -70,6 +69,7 @@ class OrganizationStore: ObservableObject {
     }
 
     func startRefreshTimer() {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities {
                 Task {
@@ -77,6 +77,16 @@ class OrganizationStore: ObservableObject {
                     if let list {
                         Task { @MainActor in
                             self.entities = list.data
+                        }
+                    }
+                }
+            }
+            if let current = self.current {
+                Task {
+                    let organization = try await self.fetch(current.id)
+                    if let organization {
+                        Task { @MainActor in
+                            self.current = organization
                         }
                     }
                 }

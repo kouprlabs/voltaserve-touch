@@ -73,6 +73,16 @@ class FileStore: ObservableObject {
                     }
                 }
             }
+            if let current = self.current {
+                Task {
+                    let file = try await self.fetch(current.id)
+                    if let file {
+                        Task { @MainActor in
+                            self.current = file
+                        }
+                    }
+                }
+            }
         }
     }
 

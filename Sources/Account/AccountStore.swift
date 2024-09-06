@@ -3,7 +3,8 @@ import Voltaserve
 
 class AccountStore: ObservableObject {
     @Published var user: VOAuthUser.Entity?
-    @Published var accountStorageUsage: VOStorage.Usage?
+    @Published var storageUsage: VOStorage.Usage?
+    private var timer: Timer?
 
     var token: VOToken.Value? {
         didSet {
@@ -48,5 +49,35 @@ class AccountStore: ObservableObject {
                 continutation.resume()
             }
         }
+    }
+
+    func startRefreshTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if self.user != nil {
+                Task {
+                    let user = try await self.fetchUser()
+                    if let user {
+                        Task { @MainActor in
+                            self.user = user
+                        }
+                    }
+                }
+            }
+            if self.storageUsage != nil {
+                Task {
+                    let storageUsage = try await self.fetchAccountStorageUsage()
+                    if let storageUsage {
+                        Task { @MainActor in
+                            self.storageUsage = storageUsage
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func stopRefreshTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 }

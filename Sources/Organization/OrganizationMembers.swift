@@ -62,7 +62,6 @@ struct OrganizationMembers: View {
             organizationStore.current = organization
             if let token = authStore.token {
                 onAppearOrChange(token)
-                membersStore.startRefreshTimer(organization.id)
             }
         }
         .onDisappear { membersStore.stopRefreshTimer() }
@@ -77,6 +76,7 @@ struct OrganizationMembers: View {
         membersStore.token = token
         organizationStore.token = token
         fetchList()
+        membersStore.startRefreshTimer(organization.id)
     }
 
     func onListItemAppear(_ id: String) {

@@ -27,6 +27,10 @@ class GroupStore: ObservableObject {
         self.current = current
     }
 
+    func fetch(_ id: String) async throws -> VOGroup.Entity? {
+        try await client?.fetch(id)
+    }
+
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
         try await client?.fetchList(.init(page: page, size: size))
     }
@@ -64,6 +68,7 @@ class GroupStore: ObservableObject {
     }
 
     func startRefreshTimer() {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities {
                 Task {
@@ -71,6 +76,16 @@ class GroupStore: ObservableObject {
                     if let list {
                         Task { @MainActor in
                             self.entities = list.data
+                        }
+                    }
+                }
+            }
+            if let current = self.current {
+                Task {
+                    let group = try await self.fetch(current.id)
+                    if let group {
+                        Task { @MainActor in
+                            self.current = group
                         }
                     }
                 }

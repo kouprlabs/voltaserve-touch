@@ -16,15 +16,19 @@ struct FileList: View {
     @State private var isLoading = false
     private let id: String
     private let workspace: VOWorkspace.Entity
+    private let navigationTitle: String
 
-    init(_ id: String, workspace: VOWorkspace.Entity) {
+    init(_ id: String, workspace: VOWorkspace.Entity, navigationTitle: String) {
         self.id = id
         self.workspace = workspace
+        self.navigationTitle = navigationTitle
     }
 
     var body: some View {
         VStack {
-            if let entities = fileStore.entities {
+            if let entities = fileStore.entities,
+               let current = fileStore.current,
+               let workspace = workspaceStore.current {
                 List {
                     ForEach(entities, id: \.id) { file in
                         if file.type == .file {
@@ -38,8 +42,7 @@ struct FileList: View {
                             }
                         } else if file.type == .folder {
                             NavigationLink {
-                                FileList(file.id, workspace: workspace)
-                                    .navigationTitle(file.name)
+                                FileList(file.id, workspace: workspace, navigationTitle: file.name)
                             } label: {
                                 FolderRow(file)
                             }
@@ -55,6 +58,7 @@ struct FileList: View {
                     }
                 }
                 .listStyle(.inset)
+                .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
                 .searchable(text: $searchText)
                 .refreshable {
                     fileStore.clear()
@@ -90,7 +94,6 @@ struct FileList: View {
             workspaceStore.current = workspace
             if let token = authStore.token {
                 onAppearOrChange(token)
-                fileStore.startRefreshTimer()
             }
         }
         .onDisappear { fileStore.stopRefreshTimer() }
@@ -101,10 +104,23 @@ struct FileList: View {
         }
     }
 
+    func getNavigationTitle(current: VOFile.Entity, workspace: VOWorkspace.Entity) -> String {
+        if current.id == id {
+            if current.parentID == nil {
+                workspace.name
+            } else {
+                current.name
+            }
+        } else {
+            navigationTitle
+        }
+    }
+
     func onAppearOrChange(_ token: VOToken.Value) {
         assignTokenToStores(token)
         fileStore.clear()
         fetchData()
+        fileStore.startRefreshTimer()
     }
 
     func onListItemAppear(_ id: String) {
@@ -180,7 +196,8 @@ struct FileList: View {
     NavigationStack {
         FileList(
             VOWorkspace.Entity.devInstance.rootID,
-            workspace: VOWorkspace.Entity.devInstance
+            workspace: VOWorkspace.Entity.devInstance,
+            navigationTitle: VOWorkspace.Entity.devInstance.name
         )
         .navigationTitle(VOWorkspace.Entity.devInstance.name)
     }

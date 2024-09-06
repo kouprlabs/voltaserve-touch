@@ -57,6 +57,7 @@ class GroupMembersStore: ObservableObject {
     }
 
     func startRefreshTimer(_ groupID: String) {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities {
                 Task {

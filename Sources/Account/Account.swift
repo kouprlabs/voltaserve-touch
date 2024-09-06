@@ -13,14 +13,14 @@ struct Account: View {
         NavigationView {
             VStack {
                 if accountStore.user == nil ||
-                    accountStore.accountStorageUsage == nil {
+                    accountStore.storageUsage == nil {
                     ProgressView()
                 } else if let user = accountStore.user {
                     VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
                     Form {
                         Section(header: VOSectionHeader("Storage Usage")) {
                             VStack(alignment: .leading) {
-                                if let storageUsage = accountStore.accountStorageUsage {
+                                if let storageUsage = accountStore.storageUsage {
                                     // swiftlint:disable:next line_length
                                     Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
                                     ProgressView(value: Double(storageUsage.percentage) / 100.0)
@@ -140,7 +140,7 @@ struct Account: View {
             do {
                 let usage = try await accountStore.fetchAccountStorageUsage()
                 Task { @MainActor in
-                    accountStore.accountStorageUsage = usage
+                    accountStore.storageUsage = usage
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in

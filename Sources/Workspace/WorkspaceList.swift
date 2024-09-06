@@ -18,7 +18,7 @@ struct WorkspaceList: View {
                 List {
                     ForEach(entities, id: \.id) { workspace in
                         NavigationLink {
-                            FileList(workspace.rootID, workspace: workspace)
+                            FileList(workspace.rootID, workspace: workspace, navigationTitle: workspace.name)
                                 .navigationTitle(workspace.name)
                         } label: {
                             WorkspaceRow(workspace)
@@ -64,7 +64,6 @@ struct WorkspaceList: View {
         .onAppear {
             if let token = authStore.token {
                 onAppearOrChange(token)
-                workspaceStore.startRefreshTimer()
             }
         }
         .onDisappear { workspaceStore.stopRefreshTimer() }
@@ -92,6 +91,7 @@ struct WorkspaceList: View {
         assignTokenToStores(token)
         workspaceStore.clear()
         fetchData()
+        workspaceStore.startRefreshTimer()
     }
 
     func onListItemAppear(_ id: String) {
