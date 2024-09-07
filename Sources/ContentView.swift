@@ -11,7 +11,7 @@ struct ContentView: View {
     @EnvironmentObject private var groupStore: GroupStore
     @EnvironmentObject private var organizationMembersStore: OrganizationMembersStore
     @EnvironmentObject private var groupMembersStore: GroupMembersStore
-    @State private var timerSubscription: Cancellable?
+    @State private var timer: Timer?
     @State private var showSignIn = false
 
     var body: some View {
@@ -27,24 +27,20 @@ struct ContentView: View {
                 } else {
                     showSignIn = true
                 }
-                startBackgroundTask(interval: Constants.backgroundTaskInterval) {
-                    performBackgroundTask()
-                }
+                startTokenTimer()
             }
-            .onDisappear { stopBackgroundTask() }
+            .onDisappear { stopTokenTimer() }
             .fullScreenCover(isPresented: $showSignIn) {
                 SignIn {
                     startStoreTimers()
-                    startBackgroundTask(interval: Constants.backgroundTaskInterval) {
-                        performBackgroundTask()
-                    }
+                    startTokenTimer()
                     showSignIn = false
                 }
             }
             .onChange(of: authStore.token) { oldToken, newToken in
                 if oldToken != nil, newToken == nil {
                     stopStoreTimers()
-                    stopBackgroundTask()
+                    stopTokenTimer()
                     showSignIn = true
                 }
             }
@@ -74,36 +70,26 @@ struct ContentView: View {
         groupMembersStore.stopTimer()
     }
 
-    func performBackgroundTask() {
-        guard authStore.token != nil else { return }
-        if let token = authStore.token, token.isExpired {
-            Task {
-                if let newToken = try await authStore.refreshTokenIfNecessary() {
-                    Task { @MainActor in
-                        authStore.token = newToken
-                        KeychainManager.standard.saveToken(newToken, forKey: KeychainManager.Constants.tokenKey)
+    func startTokenTimer() {
+        guard timer == nil else { return }
+        timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+            guard authStore.token != nil else { return }
+            if let token = authStore.token, token.isExpired {
+                Task {
+                    if let newToken = try await authStore.refreshTokenIfNecessary() {
+                        Task { @MainActor in
+                            authStore.token = newToken
+                            KeychainManager.standard.saveToken(newToken, forKey: KeychainManager.Constants.tokenKey)
+                        }
                     }
                 }
             }
         }
     }
 
-    func startBackgroundTask(interval: TimeInterval, task: @escaping () -> Void) {
-        guard timerSubscription == nil else { return }
-        timerSubscription = Timer.publish(every: interval, on: .main, in: .common)
-            .autoconnect()
-            .sink { _ in
-                task()
-            }
-    }
-
-    func stopBackgroundTask() {
-        timerSubscription?.cancel()
-        timerSubscription = nil
-    }
-
-    enum Constants {
-        static let backgroundTaskInterval: TimeInterval = 5
+    func stopTokenTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 }
 
