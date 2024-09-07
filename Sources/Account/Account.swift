@@ -56,6 +56,10 @@ struct Account: View {
                                     Text(String(repeating: "•", count: 10))
                                 }
                             }
+                            Button("Sign Out", role: .destructive) {
+                                authStore.token = nil
+                                KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
+                            }
                         }
                         Section(header: VOSectionHeader("Advanced")) {
                             Button("Delete Account", role: .destructive) {

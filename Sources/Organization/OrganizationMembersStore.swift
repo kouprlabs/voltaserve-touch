@@ -61,7 +61,7 @@ class OrganizationMembersStore: ObservableObject {
         id == entities?.last?.id
     }
 
-    func startRefreshTimer(_ organizationID: String) {
+    func startTimer(_ organizationID: String) {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities, !entities.isEmpty {
@@ -77,7 +77,7 @@ class OrganizationMembersStore: ObservableObject {
         }
     }
 
-    func stopRefreshTimer() {
+    func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

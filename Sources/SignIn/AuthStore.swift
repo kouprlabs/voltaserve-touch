@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Voltaserve
 
 class AuthStore: ObservableObject {
@@ -18,6 +19,19 @@ class AuthStore: ObservableObject {
             password: password
         ))
     }
+
+    func refreshTokenIfNecessary() async throws -> VOToken.Value? {
+        guard token != nil else { return nil }
+        if let token, token.isExpired {
+            if let newToken = try? await client.exchange(.init(
+                grantType: .refreshToken,
+                refreshToken: token.refreshToken
+            )) {
+                return newToken
+            }
+        }
+        return nil
+    }
 }
 
 extension VOToken.Value {
@@ -28,4 +42,8 @@ extension VOToken.Value {
         tokenType: "Bearer",
         refreshToken: "2c9188e51642424e8caaf4704f1beadf"
     )
+
+    var isExpired: Bool {
+        Int(Date().timeIntervalSince1970) >= expiresIn
+    }
 }

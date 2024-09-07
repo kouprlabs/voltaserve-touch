@@ -58,7 +58,7 @@ struct OrganizationList: View {
             }
         }
         .onDisappear {
-            organizationStore.stopRefreshTimer()
+            organizationStore.stopTimer()
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
@@ -78,7 +78,7 @@ struct OrganizationList: View {
         organizationStore.token = token
         organizationStore.clear()
         fetchList()
-        organizationStore.startRefreshTimer()
+        organizationStore.startTimer()
     }
 
     func onListItemAppear(_ id: String) {

@@ -83,7 +83,7 @@ struct GroupMembers: View {
             }
         }
         .onDisappear {
-            membersStore.stopRefreshTimer()
+            membersStore.stopTimer()
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
@@ -104,7 +104,7 @@ struct GroupMembers: View {
         groupStore.token = token
         membersStore.clear()
         fetchList()
-        membersStore.startRefreshTimer(group.id)
+        membersStore.startTimer(group.id)
     }
 
     func onListItemAppear(_ id: String) {

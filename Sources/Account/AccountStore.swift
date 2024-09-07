@@ -51,7 +51,8 @@ class AccountStore: ObservableObject {
         }
     }
 
-    func startRefreshTimer() {
+    func startTimer() {
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.user != nil {
                 Task {
@@ -76,7 +77,7 @@ class AccountStore: ObservableObject {
         }
     }
 
-    func stopRefreshTimer() {
+    func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

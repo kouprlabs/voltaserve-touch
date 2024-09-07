@@ -78,7 +78,7 @@ class WorkspaceStore: ObservableObject {
         id == entities?.last?.id
     }
 
-    func startRefreshTimer() {
+    func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities, !entities.isEmpty {
@@ -104,7 +104,7 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    func stopRefreshTimer() {
+    func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

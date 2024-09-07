@@ -76,7 +76,7 @@ struct WorkspaceList: View {
             }
         }
         .onDisappear {
-            workspaceStore.stopRefreshTimer()
+            workspaceStore.stopTimer()
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
@@ -109,7 +109,7 @@ struct WorkspaceList: View {
         assignTokenToStores(token)
         workspaceStore.clear()
         fetchData()
-        workspaceStore.startRefreshTimer()
+        workspaceStore.startTimer()
     }
 
     func onListItemAppear(_ id: String) {

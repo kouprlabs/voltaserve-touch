@@ -57,7 +57,7 @@ class GroupMembersStore: ObservableObject {
         id == entities?.last?.id
     }
 
-    func startRefreshTimer(_ groupID: String) {
+    func startTimer(_ groupID: String) {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities, !entities.isEmpty {
@@ -73,7 +73,7 @@ class GroupMembersStore: ObservableObject {
         }
     }
 
-    func stopRefreshTimer() {
+    func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

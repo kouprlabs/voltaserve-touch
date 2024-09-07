@@ -58,7 +58,7 @@ struct GroupList: View {
             }
         }
         .onDisappear {
-            groupStore.stopRefreshTimer()
+            groupStore.stopTimer()
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
@@ -78,7 +78,7 @@ struct GroupList: View {
         groupStore.token = token
         groupStore.clear()
         fetchList()
-        groupStore.startRefreshTimer()
+        groupStore.startTimer()
     }
 
     func onListItemAppear(_ id: String) {

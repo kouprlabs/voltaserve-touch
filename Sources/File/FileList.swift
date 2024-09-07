@@ -104,7 +104,7 @@ struct FileList: View {
             }
         }
         .onDisappear {
-            fileStore.stopRefreshTimer()
+            fileStore.stopTimer()
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
@@ -136,7 +136,7 @@ struct FileList: View {
         assignTokenToStores(token)
         fileStore.clear()
         fetchData()
-        fileStore.startRefreshTimer()
+        fileStore.startTimer()
     }
 
     func onListItemAppear(_ id: String) {

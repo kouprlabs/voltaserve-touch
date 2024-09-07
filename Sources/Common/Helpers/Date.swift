@@ -38,3 +38,16 @@ func formattedDate(_ date: Date, format: String) -> String {
     formatter.dateFormat = format
     return formatter.string(from: date)
 }
+
+extension Int {
+    func unixTimestampToISO8601() -> String {
+        ISO8601DateFormatter().string(from: Date(timeIntervalSince1970: TimeInterval(self)))
+    }
+
+    func unixTimestampToDurationString() -> String {
+        let hours = self / 3600
+        let minutes = (self % 3600) / 60
+        let seconds = (self % 3600) % 60
+        return "\(hours)h \(minutes)m \(seconds)s"
+    }
+}

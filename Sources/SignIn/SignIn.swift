@@ -96,6 +96,7 @@ struct SignIn: View {
                 let token = try await authStore.signIn(username: email, password: password)
                 Task { @MainActor in
                     authStore.token = token
+                    KeychainManager.standard.saveToken(token, forKey: KeychainManager.Constants.tokenKey)
                     onCompleted?()
                 }
             } catch let error as VOErrorResponse {
