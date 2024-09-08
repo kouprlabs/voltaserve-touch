@@ -9,6 +9,7 @@ struct FileList: View {
     @EnvironmentObject private var viewerMosaicStore: ViewerMosaicStore
     @EnvironmentObject private var viewer3DStore: Viewer3DStore
     @EnvironmentObject private var viewerPDFStore: ViewerPDFStore
+    @Environment(\.presentationMode) private var presentationMode
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
@@ -86,7 +87,9 @@ struct FileList: View {
                     }
                 }
                 .sheet(isPresented: $showSettings) {
-                    WorkspaceSettings()
+                    WorkspaceSettings {
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
             } else {
                 ProgressView()

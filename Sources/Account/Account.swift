@@ -17,6 +17,7 @@ struct Account: View {
                     ProgressView()
                 } else if let user = accountStore.user {
                     VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
+                        .padding()
                     Form {
                         Section(header: VOSectionHeader("Storage Usage")) {
                             VStack(alignment: .leading) {
@@ -69,6 +70,7 @@ struct Account: View {
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("Account")

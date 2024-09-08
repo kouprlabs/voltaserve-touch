@@ -124,6 +124,8 @@
 		64D538CA2C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				WorkspaceEditName.swift,
+				WorkspaceEditStorageCapacity.swift,
 				WorkspaceList.swift,
 				WorkspaceRow.swift,
 				WorkspaceSettings.swift,

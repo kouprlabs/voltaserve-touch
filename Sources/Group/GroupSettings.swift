@@ -14,6 +14,7 @@ struct GroupSettings: View {
             if let group = groupStore.current {
                 VStack {
                     VOAvatar(name: group.name, size: 100)
+                        .padding()
                     Form {
                         Section(header: VOSectionHeader("Basics")) {
                             NavigationLink(destination: Text("Change Name")) {
@@ -45,6 +46,7 @@ struct GroupSettings: View {
                         Text(errorMessage)
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("Settings")
