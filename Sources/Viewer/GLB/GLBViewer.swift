@@ -16,12 +16,13 @@ struct GLBViewer: View {
            let snapshot = file.snapshot,
            let download = snapshot.preview,
            let fileExtension = download.fileExtension, fileExtension.isGLB() {
-            Viewer3DRenderer(file)
+            GLBRenderer(file)
+                .edgesIgnoringSafeArea(.horizontal)
         }
     }
 }
 
-struct Viewer3DRenderer: UIViewRepresentable {
+struct GLBRenderer: UIViewRepresentable {
     @EnvironmentObject private var glbStore: GLBStore
     @State private var isLoading = true
     private let file: VOFile.Entity

@@ -17,6 +17,7 @@ struct VideoPlayer: View {
            let fileExtension = download.fileExtension, fileExtension.isVideo(),
            let url = videoStore.url(file.id, fileExtension: String(fileExtension.dropFirst())) {
             VideoWebView(url: url)
+                .edgesIgnoringSafeArea(.horizontal)
         }
     }
 }

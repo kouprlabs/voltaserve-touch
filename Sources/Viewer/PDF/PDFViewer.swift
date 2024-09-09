@@ -17,6 +17,7 @@ struct PDFViewer: View {
            let fileExtension = download.fileExtension, fileExtension.isPDF(),
            let url = pdfStore.url(file.id) {
             PDFWebView(url: url)
+                .edgesIgnoringSafeArea(.horizontal)
         }
     }
 }

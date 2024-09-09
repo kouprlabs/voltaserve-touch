@@ -20,6 +20,7 @@ struct ViewerSelector: View {
                     .edgesIgnoringSafeArea(.bottom)
             } else {
                 MosaicViewer(file)
+                    .edgesIgnoringSafeArea(.horizontal)
             }
         }
         .navigationBarTitleDisplayMode(.inline)

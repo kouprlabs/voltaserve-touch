@@ -17,6 +17,7 @@ struct AudioPlayer: View {
            let fileExtension = download.fileExtension, fileExtension.isAudio(),
            let url = audioStore.url(file.id, fileExtension: String(fileExtension.dropFirst())) {
             AudioWebView(url: url)
+                .edgesIgnoringSafeArea(.horizontal)
         }
     }
 }
