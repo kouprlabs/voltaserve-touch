@@ -8,6 +8,12 @@ struct GroupSettings: View {
     @State private var showDelete = false
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var isDeleting = false
+    private var shouldDismiss: (() -> Void)?
+
+    init(_ shouldDismiss: (() -> Void)? = nil) {
+        self.shouldDismiss = shouldDismiss
+    }
 
     var body: some View {
         NavigationView {
@@ -17,7 +23,7 @@ struct GroupSettings: View {
                         .padding()
                     Form {
                         Section(header: VOSectionHeader("Basics")) {
-                            NavigationLink(destination: Text("Change Name")) {
+                            NavigationLink(destination: GroupEditName()) {
                                 HStack {
                                     Text("Name")
                                     Spacer()
@@ -25,16 +31,34 @@ struct GroupSettings: View {
                                         .foregroundStyle(.secondary)
                                 }
                             }
+                            .disabled(isDeleting)
                         }
                         Section(header: VOSectionHeader("Advanced")) {
-                            Button("Delete Group", role: .destructive) {
+                            Button(role: .destructive) {
                                 showDelete = true
+                            } label: {
+                                HStack {
+                                    Text("Delete Group")
+                                    if isDeleting {
+                                        Spacer()
+                                        ProgressView()
+                                    }
+                                }
                             }
+                            .disabled(isDeleting)
                         }
                     }
                 }
                 .alert("Delete Group", isPresented: $showDelete) {
-                    Button("Delete Permanently", role: .destructive) {}
+                    Button("Delete Permanently", role: .destructive) {
+                        isDeleting = true
+                        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+                            Task { @MainActor in
+                                isDeleting = false
+                                shouldDismiss?()
+                            }
+                        }
+                    }
                     Button("Cancel", role: .cancel) {}
                 } message: {
                     Text("Are you sure you would like to delete this group?")

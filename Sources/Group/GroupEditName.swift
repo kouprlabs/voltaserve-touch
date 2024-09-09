@@ -1,14 +1,14 @@
 import SwiftUI
 import Voltaserve
 
-struct OrganizationEditName: View {
-    @EnvironmentObject private var organizationStore: OrganizationStore
+struct GroupEditName: View {
+    @EnvironmentObject private var groupStore: GroupStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var value = ""
     @State private var isSaving = false
 
     var body: some View {
-        if let current = organizationStore.current {
+        if let current = groupStore.current {
             Form {
                 Section(header: VOSectionHeader("Name")) {
                     TextField("Name", text: $value)
@@ -18,8 +18,10 @@ struct OrganizationEditName: View {
                     Button {
                         isSaving = true
                         Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-                            isSaving = false
-                            presentationMode.wrappedValue.dismiss()
+                            Task { @MainActor in
+                                isSaving = false
+                                presentationMode.wrappedValue.dismiss()
+                            }
                         }
                     } label: {
                         HStack {
@@ -33,17 +35,10 @@ struct OrganizationEditName: View {
                     .disabled(isSaving)
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Change Name")
-                        .font(.headline)
-                }
-            }
             .onAppear {
                 value = current.name
             }
-            .onChange(of: organizationStore.current) { _, newCurrent in
+            .onChange(of: groupStore.current) { _, newCurrent in
                 if let newCurrent {
                     value = newCurrent.name
                 }
@@ -56,7 +51,7 @@ struct OrganizationEditName: View {
 
 #Preview {
     NavigationStack {
-        OrganizationEditName()
-            .environmentObject(OrganizationStore(VOOrganization.Entity.devInstance))
+        GroupEditName()
+            .environmentObject(GroupStore(VOGroup.Entity.devInstance))
     }
 }

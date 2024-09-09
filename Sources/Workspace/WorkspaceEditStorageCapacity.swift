@@ -57,7 +57,7 @@ struct WorkspaceEditStorageCapacity: View {
                         }
                     } label: {
                         HStack {
-                            Text("Resize Workspace")
+                            Text("Save")
                             if isSaving {
                                 Spacer()
                                 ProgressView()

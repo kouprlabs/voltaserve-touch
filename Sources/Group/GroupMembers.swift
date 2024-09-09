@@ -6,6 +6,7 @@ struct GroupMembers: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var membersStore: GroupMembersStore
     @EnvironmentObject private var groupStore: GroupStore
+    @Environment(\.presentationMode) private var presentationMode
     @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
@@ -59,7 +60,9 @@ struct GroupMembers: View {
                     }
                 }
                 .sheet(isPresented: $showSettings) {
-                    GroupSettings()
+                    GroupSettings {
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
                 .sheet(isPresented: $showAddMember) {
                     Text("Add Member")
