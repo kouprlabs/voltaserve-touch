@@ -2,7 +2,7 @@ import GLTFKit2
 import SwiftUI
 import VoltaserveCore
 
-class Viewer3DStore: ObservableObject {
+class GLBStore: ObservableObject {
     private var client: VOFile?
 
     var token: VOToken.Value? {

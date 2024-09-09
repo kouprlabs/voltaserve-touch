@@ -116,14 +116,14 @@
 		64D538C92C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				3D/Viewer3D.swift,
-				3D/Viewer3DStore.swift,
-				Image/ViewerImage.swift,
-				Image/ViewerImageStore.swift,
-				Mosaic/ViewerMosaic.swift,
-				Mosaic/ViewerMosaicStore.swift,
-				PDF/ViewerPDF.swift,
-				PDF/ViewerPDFStore.swift,
+				GLB/GLBStore.swift,
+				GLB/GLBViewer.swift,
+				Image/ImageStore.swift,
+				Image/ImageViewer.swift,
+				Mosaic/MosaicStore.swift,
+				Mosaic/MosaicViewer.swift,
+				PDF/PDFStore.swift,
+				PDF/PDFViewer.swift,
 				ViewerSelector.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;

@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 import WebKit
 
-struct ViewerPDF: View {
-    @EnvironmentObject private var store: ViewerPDFStore
+struct PDFViewer: View {
+    @EnvironmentObject private var store: PDFStore
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {

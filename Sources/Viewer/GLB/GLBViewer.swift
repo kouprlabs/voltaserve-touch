@@ -3,8 +3,8 @@ import SceneKit
 import SwiftUI
 import VoltaserveCore
 
-struct Viewer3D: View {
-    @EnvironmentObject private var store: Viewer3DStore
+struct GLBViewer: View {
+    @EnvironmentObject private var store: GLBStore
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
@@ -22,7 +22,7 @@ struct Viewer3D: View {
 }
 
 struct Viewer3DRenderer: UIViewRepresentable {
-    @EnvironmentObject private var store: Viewer3DStore
+    @EnvironmentObject private var store: GLBStore
     @State private var isLoading = true
     private let file: VOFile.Entity
 
@@ -72,7 +72,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var store: Viewer3DStore
+        var store: GLBStore
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
@@ -80,7 +80,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
         var spinner: UIActivityIndicatorView?
         @Binding var isLoading: Bool
 
-        init(sceneView: SCNView, store: Viewer3DStore, isLoading: Binding<Bool>) {
+        init(sceneView: SCNView, store: GLBStore, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
             self.store = store
             _isLoading = isLoading

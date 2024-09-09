@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 import WebKit
 
-struct ViewerImage: View {
-    @EnvironmentObject private var store: ViewerImageStore
+struct ImageViewer: View {
+    @EnvironmentObject private var store: ImageStore
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {

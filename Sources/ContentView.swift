@@ -11,6 +11,10 @@ struct ContentView: View {
     @EnvironmentObject private var groupStore: GroupStore
     @EnvironmentObject private var organizationMembersStore: OrganizationMembersStore
     @EnvironmentObject private var groupMembersStore: GroupMembersStore
+    @EnvironmentObject private var mosaicStore: MosaicStore
+    @EnvironmentObject private var glbStore: GLBStore
+    @EnvironmentObject private var pdfStore: PDFStore
+    @EnvironmentObject private var imageStore: ImageStore
     @State private var timer: Timer?
     @State private var showSignIn = false
 

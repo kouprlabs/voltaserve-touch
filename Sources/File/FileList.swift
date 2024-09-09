@@ -6,10 +6,10 @@ struct FileList: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var fileStore: FileStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @EnvironmentObject private var viewerMosaicStore: ViewerMosaicStore
-    @EnvironmentObject private var viewer3DStore: Viewer3DStore
-    @EnvironmentObject private var viewerPDFStore: ViewerPDFStore
-    @EnvironmentObject private var viewerImageStore: ViewerImageStore
+    @EnvironmentObject private var mosaicStore: MosaicStore
+    @EnvironmentObject private var glbStore: GLBStore
+    @EnvironmentObject private var pdfStore: PDFStore
+    @EnvironmentObject private var imageStore: ImageStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showSettings = false
     @State private var showError = false
@@ -151,10 +151,10 @@ struct FileList: View {
 
     func assignTokenToStores(_ token: VOToken.Value) {
         fileStore.token = token
-        viewerMosaicStore.token = token
-        viewer3DStore.token = token
-        viewerPDFStore.token = token
-        viewerImageStore.token = token
+        mosaicStore.token = token
+        glbStore.token = token
+        pdfStore.token = token
+        imageStore.token = token
     }
 
     func fetchData() {
@@ -225,8 +225,8 @@ struct FileList: View {
     .environmentObject(AuthStore(VOToken.Value.devInstance))
     .environmentObject(FileStore())
     .environmentObject(WorkspaceStore())
-    .environmentObject(Viewer3DStore())
-    .environmentObject(ViewerPDFStore())
-    .environmentObject(ViewerImageStore())
-    .environmentObject(ViewerMosaicStore())
+    .environmentObject(GLBStore())
+    .environmentObject(PDFStore())
+    .environmentObject(ImageStore())
+    .environmentObject(MosaicStore())
 }

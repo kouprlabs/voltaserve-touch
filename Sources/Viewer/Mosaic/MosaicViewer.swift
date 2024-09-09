@@ -1,8 +1,8 @@
 import SwiftUI
 import VoltaserveCore
 
-struct ViewerMosaic: View {
-    @EnvironmentObject private var store: ViewerMosaicStore
+struct MosaicViewer: View {
+    @EnvironmentObject private var store: MosaicStore
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false

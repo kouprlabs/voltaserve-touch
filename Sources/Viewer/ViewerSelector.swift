@@ -10,14 +10,14 @@ struct ViewerSelector: View {
 
     var body: some View {
         VStack {
-            ViewerPDF(file)
-            ViewerImage(file)
-            Viewer3D(file)
+            PDFViewer(file)
+            ImageViewer(file)
+            GLBViewer(file)
             if UIDevice.current.userInterfaceIdiom == .pad {
-                ViewerMosaic(file)
+                MosaicViewer(file)
                     .edgesIgnoringSafeArea(.bottom)
             } else {
-                ViewerMosaic(file)
+                MosaicViewer(file)
             }
         }
         .navigationBarTitleDisplayMode(.inline)

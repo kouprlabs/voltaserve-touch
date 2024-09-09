@@ -2,7 +2,7 @@ import PDFKit
 import SwiftUI
 import VoltaserveCore
 
-class ViewerImageStore: ObservableObject {
+class ImageStore: ObservableObject {
     private var client: VOFile?
 
     var token: VOToken.Value? {
