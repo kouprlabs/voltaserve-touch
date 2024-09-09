@@ -9,6 +9,7 @@ struct FileList: View {
     @EnvironmentObject private var viewerMosaicStore: ViewerMosaicStore
     @EnvironmentObject private var viewer3DStore: Viewer3DStore
     @EnvironmentObject private var viewerPDFStore: ViewerPDFStore
+    @EnvironmentObject private var viewerImageStore: ViewerImageStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showSettings = false
     @State private var showError = false
@@ -153,6 +154,7 @@ struct FileList: View {
         viewerMosaicStore.token = token
         viewer3DStore.token = token
         viewerPDFStore.token = token
+        viewerImageStore.token = token
     }
 
     func fetchData() {
@@ -225,5 +227,6 @@ struct FileList: View {
     .environmentObject(WorkspaceStore())
     .environmentObject(Viewer3DStore())
     .environmentObject(ViewerPDFStore())
+    .environmentObject(ViewerImageStore())
     .environmentObject(ViewerMosaicStore())
 }

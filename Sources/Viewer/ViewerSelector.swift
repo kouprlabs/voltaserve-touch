@@ -11,6 +11,7 @@ struct ViewerSelector: View {
     var body: some View {
         VStack {
             ViewerPDF(file)
+            ViewerImage(file)
             Viewer3D(file)
             if UIDevice.current.userInterfaceIdiom == .pad {
                 ViewerMosaic(file)

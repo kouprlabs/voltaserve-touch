@@ -18,6 +18,7 @@ struct VoltaserveApp: App {
                 .environmentObject(OrganizationMembersStore())
                 .environmentObject(Viewer3DStore())
                 .environmentObject(ViewerPDFStore())
+                .environmentObject(ViewerImageStore())
                 .environmentObject(ViewerMosaicStore())
         }
     }

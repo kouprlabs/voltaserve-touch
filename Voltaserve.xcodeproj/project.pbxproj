@@ -118,6 +118,8 @@
 			membershipExceptions = (
 				3D/Viewer3D.swift,
 				3D/Viewer3DStore.swift,
+				Image/ViewerImage.swift,
+				Image/ViewerImageStore.swift,
 				Mosaic/ViewerMosaic.swift,
 				Mosaic/ViewerMosaicStore.swift,
 				PDF/ViewerPDF.swift,
