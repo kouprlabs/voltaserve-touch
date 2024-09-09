@@ -6,6 +6,7 @@ struct OrganizationMembers: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var membersStore: OrganizationMembersStore
     @EnvironmentObject private var organizationStore: OrganizationStore
+    @Environment(\.presentationMode) private var presentationMode
     @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
@@ -30,6 +31,10 @@ struct OrganizationMembers: View {
                     }
                 }
                 .searchable(text: $searchText)
+                .refreshable {
+                    membersStore.clear()
+                    fetchList()
+                }
                 .onChange(of: searchText) { searchPublisher.send($1) }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -48,7 +53,9 @@ struct OrganizationMembers: View {
                     }
                 }
                 .sheet(isPresented: $showSettings) {
-                    OrganizationSettings()
+                    OrganizationSettings {
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
                 .sheet(isPresented: $showAddMember) {
                     Text("Add Member")

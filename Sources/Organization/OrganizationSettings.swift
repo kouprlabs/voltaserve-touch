@@ -8,15 +8,22 @@ struct OrganizationSettings: View {
     @State private var showDelete = false
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var isDeleting = false
+    private var shouldDismiss: (() -> Void)?
+
+    init(_ shouldDismiss: (() -> Void)? = nil) {
+        self.shouldDismiss = shouldDismiss
+    }
 
     var body: some View {
         NavigationView {
             if let organization = organizationStore.current {
                 VStack {
                     VOAvatar(name: organization.name, size: 100)
+                        .padding()
                     Form {
                         Section(header: VOSectionHeader("Basics")) {
-                            NavigationLink(destination: Text("Change Name")) {
+                            NavigationLink(destination: OrganizationEditName()) {
                                 HStack {
                                     Text("Name")
                                     Spacer()
@@ -24,15 +31,30 @@ struct OrganizationSettings: View {
                                         .foregroundStyle(.secondary)
                                 }
                             }
+                            .disabled(isDeleting)
                         }
                         Section(header: VOSectionHeader("Advanced")) {
-                            Button("Delete Organization", role: .destructive) {
+                            Button(role: .destructive) {
                                 showDelete = true
+                            } label: {
+                                HStack {
+                                    Text("Delete Organization")
+                                    if isDeleting {
+                                        Spacer()
+                                        ProgressView()
+                                    }
+                                }
                             }
+                            .disabled(isDeleting)
                         }
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("Settings")
+                            .font(.headline)
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") {
                             presentationMode.wrappedValue.dismiss()
@@ -40,7 +62,16 @@ struct OrganizationSettings: View {
                     }
                 }
                 .alert("Delete Organization", isPresented: $showDelete) {
-                    Button("Delete Permanently", role: .destructive) {}
+                    Button("Delete Permanently", role: .destructive) {
+                        isDeleting = true
+                        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+                            Task { @MainActor in
+                                isDeleting = false
+                                presentationMode.wrappedValue.dismiss()
+                                shouldDismiss?()
+                            }
+                        }
+                    }
                     Button("Cancel", role: .cancel) {}
                 } message: {
                     Text("Are you sure you would like to delete this organization?")

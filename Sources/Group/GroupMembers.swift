@@ -37,6 +37,10 @@ struct GroupMembers: View {
                     }
                 }
                 .searchable(text: $searchText)
+                .refreshable {
+                    membersStore.clear()
+                    fetchList()
+                }
                 .onChange(of: searchText) { searchPublisher.send($1) }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {

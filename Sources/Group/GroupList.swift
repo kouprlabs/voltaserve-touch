@@ -35,6 +35,10 @@ struct GroupList: View {
                 }
                 .navigationTitle("Groups")
                 .searchable(text: $searchText)
+                .refreshable {
+                    groupStore.clear()
+                    fetchList()
+                }
                 .onChange(of: searchText) { searchPublisher.send($1) }
             } else {
                 ProgressView()

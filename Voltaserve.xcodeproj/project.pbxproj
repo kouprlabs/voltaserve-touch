@@ -99,6 +99,7 @@
 		64D538C82C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				OrganizationEditName.swift,
 				OrganizationList.swift,
 				OrganizationMembers.swift,
 				OrganizationMembersStore.swift,

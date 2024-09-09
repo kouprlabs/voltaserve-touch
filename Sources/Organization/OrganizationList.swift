@@ -35,6 +35,10 @@ struct OrganizationList: View {
                 }
                 .navigationTitle("Organizations")
                 .searchable(text: $searchText)
+                .refreshable {
+                    organizationStore.clear()
+                    fetchList()
+                }
                 .onChange(of: searchText) { searchPublisher.send($1) }
             } else {
                 ProgressView()
