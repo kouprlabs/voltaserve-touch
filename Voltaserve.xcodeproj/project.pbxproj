@@ -68,8 +68,9 @@
 		64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Account.swift,
+				AccountEditEmail.swift,
 				AccountEditFullName.swift,
+				AccountSettings.swift,
 				AccountStore.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* VoltaserveApp */;

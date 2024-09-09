@@ -92,6 +92,6 @@ extension VOAuthUser.Entity {
         id: UUID().uuidString,
         username: "anass@koupr.com",
         email: "anass@koupr.com",
-        fullName: "Anass Bouassaba"
+        fullName: "Anass"
     )
 }

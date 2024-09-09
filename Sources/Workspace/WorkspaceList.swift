@@ -52,7 +52,7 @@ struct WorkspaceList: View {
                     }
                 }
                 .sheet(isPresented: $showAccount) {
-                    Account()
+                    AccountSettings()
                 }
             } else {
                 ProgressView()

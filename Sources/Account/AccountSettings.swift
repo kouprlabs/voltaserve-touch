@@ -1,7 +1,7 @@
 import SwiftUI
 import Voltaserve
 
-struct Account: View {
+struct AccountSettings: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var accountStore: AccountStore
     @Environment(\.presentationMode) private var presentationMode
@@ -44,7 +44,7 @@ struct Account: View {
                             .disabled(isDeleting)
                         }
                         Section(header: VOSectionHeader("Credentials")) {
-                            NavigationLink(destination: Text("Change Email")) {
+                            NavigationLink(destination: AccountEditEmail()) {
                                 HStack {
                                     Text("Email")
                                     Spacer()
@@ -190,7 +190,7 @@ struct Account: View {
 }
 
 #Preview {
-    Account()
+    AccountSettings()
         .environmentObject(AuthStore(VOToken.Value.devInstance))
         .environmentObject(AccountStore())
 }
