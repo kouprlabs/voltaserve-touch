@@ -70,6 +70,7 @@
 			membershipExceptions = (
 				AccountEditEmail.swift,
 				AccountEditFullName.swift,
+				AccountEditPassword.swift,
 				AccountSettings.swift,
 				AccountStore.swift,
 			);

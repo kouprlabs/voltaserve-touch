@@ -53,7 +53,7 @@ struct AccountSettings: View {
                                 }
                             }
                             .disabled(isDeleting)
-                            NavigationLink(destination: Text("Change Password")) {
+                            NavigationLink(destination: AccountEditPassword()) {
                                 HStack {
                                     Text("Password")
                                     Spacer()
