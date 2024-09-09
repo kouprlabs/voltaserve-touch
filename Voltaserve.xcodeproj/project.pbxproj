@@ -116,6 +116,8 @@
 		64D538C92C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Audio/AudioPlayer.swift,
+				Audio/AudioStore.swift,
 				GLB/GLBStore.swift,
 				GLB/GLBViewer.swift,
 				Image/ImageStore.swift,
@@ -124,6 +126,8 @@
 				Mosaic/MosaicViewer.swift,
 				PDF/PDFStore.swift,
 				PDF/PDFViewer.swift,
+				Video/VideoPlayer.swift,
+				Video/VideoStore.swift,
 				ViewerSelector.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;

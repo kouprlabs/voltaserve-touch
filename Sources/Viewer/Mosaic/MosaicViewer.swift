@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct MosaicViewer: View {
-    @EnvironmentObject private var store: MosaicStore
+    @EnvironmentObject private var mosaicStore: MosaicStore
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
@@ -24,19 +24,19 @@ struct MosaicViewer: View {
                     size: geometry.size
                 )
                 ZStack {
-                    if let zoomLevel = store.zoomLevel, !store.grid.isEmpty {
+                    if let zoomLevel = mosaicStore.zoomLevel, !mosaicStore.grid.isEmpty {
                         ForEach(0 ..< zoomLevel.rows, id: \.self) { row in
                             ForEach(0 ..< zoomLevel.cols, id: \.self) { col in
-                                let size = store.sizeForCell(row: row, col: col)
-                                let position = store.positionForCell(row: row, col: col)
-                                let frame = store.frameForCellAt(position: position, size: size)
+                                let size = mosaicStore.sizeForCell(row: row, col: col)
+                                let position = mosaicStore.positionForCell(row: row, col: col)
+                                let frame = mosaicStore.frameForCellAt(position: position, size: size)
 
                                 // Check if the cell is within the visible bounds or the surrounding buffer
                                 if visibleRect.insetBy(
                                     dx: -CGFloat(Constants.extraTilesToLoad) * size.width,
                                     dy: -CGFloat(Constants.extraTilesToLoad) * size.height
                                 ).intersects(frame) {
-                                    if let image = store.grid[row][col] {
+                                    if let image = mosaicStore.grid[row][col] {
                                         Image(uiImage: image)
                                             .resizable()
                                             .frame(width: size.width, height: size.height)
@@ -53,7 +53,7 @@ struct MosaicViewer: View {
                                                 y: position.y + dragOffset.height
                                             )
                                             .onAppear {
-                                                store.loadImageForCell(file.id, row: row, col: col)
+                                                mosaicStore.loadImageForCell(file.id, row: row, col: col)
                                             }
                                     }
                                 }
@@ -76,18 +76,21 @@ struct MosaicViewer: View {
                         }
                         .onEnded { _ in
                             lastDragOffset = dragOffset
-                            store.unloadImagesOutsideRect(visibleRect, extraTilesToLoad: Constants.extraTilesToLoad)
+                            mosaicStore.unloadImagesOutsideRect(
+                                visibleRect,
+                                extraTilesToLoad: Constants.extraTilesToLoad
+                            )
                         }
                 )
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            if let zoomLevels = store.info?.metadata.zoomLevels {
+                            if let zoomLevels = mosaicStore.info?.metadata.zoomLevels {
                                 ForEach(zoomLevels, id: \.index) { zoomLevel in
                                     Button(action: {
                                         resetMosaicPosition()
-                                        store.selectZoomLevel(zoomLevel)
+                                        mosaicStore.selectZoomLevel(zoomLevel)
                                     }, label: {
                                         Text("\(Int(zoomLevel.scaleDownPercentage))%")
                                     })
@@ -100,7 +103,7 @@ struct MosaicViewer: View {
                 }
                 .onAppear {
                     Task {
-                        try await store.loadMosaic(file.id)
+                        try await mosaicStore.loadMosaic(file.id)
                     }
                 }
             }

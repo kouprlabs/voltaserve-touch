@@ -12,6 +12,8 @@ struct ViewerSelector: View {
         VStack {
             PDFViewer(file)
             ImageViewer(file)
+            VideoPlayer(file)
+            AudioPlayer(file)
             GLBViewer(file)
             if UIDevice.current.userInterfaceIdiom == .pad {
                 MosaicViewer(file)

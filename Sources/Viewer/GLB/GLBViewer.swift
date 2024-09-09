@@ -4,7 +4,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct GLBViewer: View {
-    @EnvironmentObject private var store: GLBStore
+    @EnvironmentObject private var glbStore: GLBStore
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
@@ -22,7 +22,7 @@ struct GLBViewer: View {
 }
 
 struct Viewer3DRenderer: UIViewRepresentable {
-    @EnvironmentObject private var store: GLBStore
+    @EnvironmentObject private var glbStore: GLBStore
     @State private var isLoading = true
     private let file: VOFile.Entity
 
@@ -68,11 +68,11 @@ struct Viewer3DRenderer: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(sceneView: SCNView(), store: store, isLoading: $isLoading)
+        Coordinator(sceneView: SCNView(), store: glbStore, isLoading: $isLoading)
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var store: GLBStore
+        var glbStore: GLBStore
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
@@ -82,7 +82,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
 
         init(sceneView: SCNView, store: GLBStore, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
-            self.store = store
+            glbStore = store
             _isLoading = isLoading
 
             let camera = SCNCamera()
@@ -100,7 +100,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
         }
 
         func loadAsset(_ id: String) {
-            store.loadAsset(id) { [self] asset, _ in
+            glbStore.loadAsset(id) { [self] asset, _ in
                 if let asset {
                     self.asset = asset
                     setupScene()

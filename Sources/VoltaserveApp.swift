@@ -16,9 +16,11 @@ struct VoltaserveApp: App {
                 .environmentObject(GroupMembersStore())
                 .environmentObject(OrganizationStore())
                 .environmentObject(OrganizationMembersStore())
-                .environmentObject(GLBStore())
                 .environmentObject(PDFStore())
                 .environmentObject(ImageStore())
+                .environmentObject(VideoStore())
+                .environmentObject(AudioStore())
+                .environmentObject(GLBStore())
                 .environmentObject(MosaicStore())
         }
     }

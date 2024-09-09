@@ -3,7 +3,7 @@ import VoltaserveCore
 import WebKit
 
 struct ImageViewer: View {
-    @EnvironmentObject private var store: ImageStore
+    @EnvironmentObject private var imageStore: ImageStore
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
@@ -15,8 +15,9 @@ struct ImageViewer: View {
            let snapshot = file.snapshot, snapshot.mosaic == nil,
            let download = snapshot.preview,
            let fileExtension = download.fileExtension, fileExtension.isImage(),
-           let url = store.url(file.id, fileExtension: String(fileExtension.dropFirst())) {
+           let url = imageStore.url(file.id, fileExtension: String(fileExtension.dropFirst())) {
             ImageWebView(url: url)
+                .edgesIgnoringSafeArea(.horizontal)
         }
     }
 }
@@ -52,12 +53,11 @@ struct ImageWebView: UIViewRepresentable {
                     <img src="\(url.absoluteString)" alt="Image">
                 </body>
             </html>
-            """, baseURL: nil
+            """,
+            baseURL: nil
         )
         return webView
     }
 
-    func updateUIView(_: WKWebView, context _: Context) {
-        // No additional updates needed
-    }
+    func updateUIView(_: WKWebView, context _: Context) {}
 }
