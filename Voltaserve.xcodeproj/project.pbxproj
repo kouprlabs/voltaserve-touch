@@ -24,7 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6446B6212C7F61FD00868B3E /* VoltaserveApp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "VoltaserveApp-Info.plist"; sourceTree = "<group>"; };
+		6446B6212C7F61FD00868B3E /* Voltaserve-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Voltaserve-Info.plist"; sourceTree = "<group>"; };
 		64562B682C69EC2A00E10D97 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		64562B692C69EC2A00E10D97 /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		64562B6A2C69EC2A00E10D97 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
@@ -170,7 +170,7 @@
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
-				6446B6212C7F61FD00868B3E /* VoltaserveApp-Info.plist */,
+				6446B6212C7F61FD00868B3E /* Voltaserve-Info.plist */,
 				64562B682C69EC2A00E10D97 /* .gitignore */,
 				64562B692C69EC2A00E10D97 /* .swift-version */,
 				64562B6A2C69EC2A00E10D97 /* .swiftformat */,
@@ -459,7 +459,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "VoltaserveApp-Info.plist";
+				INFOPLIST_FILE = "Voltaserve-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -493,7 +493,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "VoltaserveApp-Info.plist";
+				INFOPLIST_FILE = "Voltaserve-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
