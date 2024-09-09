@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct AccountEditPassword: View {
     @EnvironmentObject private var accountStore: AccountStore

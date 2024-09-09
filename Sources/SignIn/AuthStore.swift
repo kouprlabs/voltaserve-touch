@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 class AuthStore: ObservableObject {
     @Published var token: VOToken.Value?

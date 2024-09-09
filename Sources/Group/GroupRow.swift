@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct GroupRow: View {
     private let group: VOGroup.Entity

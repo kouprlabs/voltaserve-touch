@@ -1,5 +1,5 @@
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 class AccountStore: ObservableObject {
     @Published var user: VOAuthUser.Entity?

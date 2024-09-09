@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct WorkspaceEditStorageCapacity: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore

@@ -1,5 +1,5 @@
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 extension KeychainManager {
     func saveToken(_ token: VOToken.Value, forKey key: String) {

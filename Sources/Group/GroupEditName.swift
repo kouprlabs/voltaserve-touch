@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct GroupEditName: View {
     @EnvironmentObject private var groupStore: GroupStore

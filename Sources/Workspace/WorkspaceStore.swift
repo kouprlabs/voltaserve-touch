@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 class WorkspaceStore: ObservableObject {
     @Published var list: VOWorkspace.List?

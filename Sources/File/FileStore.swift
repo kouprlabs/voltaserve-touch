@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 class FileStore: ObservableObject {
     @Published var list: VOFile.List?

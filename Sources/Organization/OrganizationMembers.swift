@@ -1,6 +1,6 @@
 import Combine
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct OrganizationMembers: View {
     @EnvironmentObject private var authStore: AuthStore

@@ -1,6 +1,6 @@
 import PDFKit
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct ViewerPDF: View {
     @EnvironmentObject private var store: ViewerPDFStore

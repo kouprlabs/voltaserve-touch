@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct MainView: View {
     @State private var selection: Tab = .workspaces

@@ -1,6 +1,6 @@
 import PDFKit
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 class ViewerPDFStore: ObservableObject {
     private var client: VOFile?

@@ -1,7 +1,7 @@
 import GLTFKit2
 import SceneKit
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct Viewer3D: View {
     @EnvironmentObject private var store: Viewer3DStore

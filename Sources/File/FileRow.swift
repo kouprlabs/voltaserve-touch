@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct FileRow: View {
     @Environment(\.colorScheme) var colorScheme

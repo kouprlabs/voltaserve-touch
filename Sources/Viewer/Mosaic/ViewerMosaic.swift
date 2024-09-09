@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct ViewerMosaic: View {
     @EnvironmentObject private var store: ViewerMosaicStore

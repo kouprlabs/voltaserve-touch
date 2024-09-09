@@ -1,6 +1,6 @@
 import GLTFKit2
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 class Viewer3DStore: ObservableObject {
     private var client: VOFile?

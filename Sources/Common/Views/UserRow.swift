@@ -1,6 +1,6 @@
 import SwiftUI
 import UIKit
-import Voltaserve
+import VoltaserveCore
 
 struct VOUserRow: View {
     private let user: VOUser.Entity

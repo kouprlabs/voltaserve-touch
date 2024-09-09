@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 class ViewerMosaicStore: ObservableObject {
     @Published private(set) var info: VOMosaic.Info?

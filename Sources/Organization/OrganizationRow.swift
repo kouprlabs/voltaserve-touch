@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct OrganizationRow: View {
     private let organization: VOOrganization.Entity

@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct ViewerSelector: View {
     private let file: VOFile.Entity

@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct SignIn: View {
     var onCompleted: (() -> Void)?

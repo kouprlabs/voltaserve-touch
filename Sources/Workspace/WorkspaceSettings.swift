@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct WorkspaceSettings: View {
     @EnvironmentObject private var authStore: AuthStore

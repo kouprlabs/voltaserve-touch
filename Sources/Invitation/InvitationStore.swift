@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 class InvitationStore: ObservableObject {
     @Published var list: VOInvitation.List?

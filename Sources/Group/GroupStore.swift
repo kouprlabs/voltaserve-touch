@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import Voltaserve
+import VoltaserveCore
 
 class GroupStore: ObservableObject {
     @Published var list: VOGroup.List?

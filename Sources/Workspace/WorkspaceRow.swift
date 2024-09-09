@@ -1,5 +1,5 @@
 import SwiftUI
-import Voltaserve
+import VoltaserveCore
 
 struct WorkspaceRow: View {
     var workspace: VOWorkspace.Entity
