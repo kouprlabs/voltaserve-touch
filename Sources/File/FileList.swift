@@ -72,7 +72,7 @@ struct FileList: View {
                     fileStore.clear()
                     fetchList()
                 }
-                .navigationDestination(item: $tappedItem) { ViewerSelector($0) }
+                .navigationDestination(item: $tappedItem) { FileViewer($0) }
                 .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
                     Button(VOTextConstants.errorAlertButtonLabel) {}
                 } message: {

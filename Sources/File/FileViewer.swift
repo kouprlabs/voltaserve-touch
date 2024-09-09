@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct ViewerSelector: View {
+struct FileViewer: View {
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
