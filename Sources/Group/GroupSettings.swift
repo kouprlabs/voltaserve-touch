@@ -80,6 +80,7 @@ struct GroupSettings: View {
                         Button("Done") {
                             presentationMode.wrappedValue.dismiss()
                         }
+                        .disabled(isDeleting)
                     }
                 }
             } else {

@@ -59,6 +59,7 @@ struct OrganizationSettings: View {
                         Button("Done") {
                             presentationMode.wrappedValue.dismiss()
                         }
+                        .disabled(isDeleting)
                     }
                 }
                 .alert("Delete Organization", isPresented: $showDelete) {

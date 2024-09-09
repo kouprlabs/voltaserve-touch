@@ -18,8 +18,8 @@ struct OrganizationEditName: View {
                     Button {
                         isSaving = true
                         Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-                            isSaving = false
                             presentationMode.wrappedValue.dismiss()
+                            isSaving = false
                         }
                     } label: {
                         HStack {

@@ -80,6 +80,7 @@ struct WorkspaceSettings: View {
                         Button("Done") {
                             presentationMode.wrappedValue.dismiss()
                         }
+                        .disabled(isDeleting)
                     }
                 }
                 .alert("Delete Workspace", isPresented: $showDelete) {

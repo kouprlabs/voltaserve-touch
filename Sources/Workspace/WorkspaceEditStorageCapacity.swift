@@ -51,8 +51,8 @@ struct WorkspaceEditStorageCapacity: View {
                         isSaving = true
                         Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
                             Task { @MainActor in
-                                isSaving = false
                                 presentationMode.wrappedValue.dismiss()
+                                isSaving = false
                             }
                         }
                     } label: {

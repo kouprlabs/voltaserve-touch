@@ -1,14 +1,14 @@
 import SwiftUI
 import Voltaserve
 
-struct GroupEditName: View {
-    @EnvironmentObject private var groupStore: GroupStore
+struct AccountEditFullName: View {
+    @EnvironmentObject private var accountStore: AccountStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var value = ""
     @State private var isSaving = false
 
     var body: some View {
-        if let current = groupStore.current {
+        if let user = accountStore.user {
             Form {
                 Section(header: VOSectionHeader("Name")) {
                     TextField("Name", text: $value)
@@ -17,7 +17,7 @@ struct GroupEditName: View {
                 Section {
                     Button {
                         isSaving = true
-                        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+                        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
                             Task { @MainActor in
                                 presentationMode.wrappedValue.dismiss()
                                 isSaving = false
@@ -35,12 +35,19 @@ struct GroupEditName: View {
                     .disabled(isSaving)
                 }
             }
-            .onAppear {
-                value = current.name
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Change Full Name")
+                        .font(.headline)
+                }
             }
-            .onChange(of: groupStore.current) { _, newCurrent in
-                if let newCurrent {
-                    value = newCurrent.name
+            .onAppear {
+                value = user.fullName
+            }
+            .onChange(of: accountStore.user) { _, newUser in
+                if let newUser {
+                    value = newUser.fullName
                 }
             }
         } else {
@@ -51,7 +58,7 @@ struct GroupEditName: View {
 
 #Preview {
     NavigationStack {
-        GroupEditName()
-            .environmentObject(GroupStore(VOGroup.Entity.devInstance))
+        AccountEditFullName()
+            .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
     }
 }

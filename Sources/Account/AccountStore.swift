@@ -26,6 +26,10 @@ class AccountStore: ObservableObject {
     private var authUserClient: VOAuthUser?
     private var storageClient: VOStorage?
 
+    init(_ user: VOAuthUser.Entity? = nil) {
+        self.user = user
+    }
+
     func fetchUser() async throws -> VOAuthUser.Entity? {
         try await authUserClient?.fetch()
     }
@@ -81,4 +85,13 @@ class AccountStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+}
+
+extension VOAuthUser.Entity {
+    static let devInstance = VOAuthUser.Entity(
+        id: UUID().uuidString,
+        username: "anass@koupr.com",
+        email: "anass@koupr.com",
+        fullName: "Anass Bouassaba"
+    )
 }

@@ -8,6 +8,7 @@ struct Account: View {
     @State private var showDelete = false
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var isDeleting = false
 
     var body: some View {
         NavigationView {
@@ -32,7 +33,7 @@ struct Account: View {
                             }
                         }
                         Section(header: VOSectionHeader("Basics")) {
-                            NavigationLink(destination: Text("Change Full Name")) {
+                            NavigationLink(destination: AccountEditFullName()) {
                                 HStack {
                                     Text("Full name")
                                     Spacer()
@@ -40,6 +41,7 @@ struct Account: View {
                                         .foregroundStyle(.secondary)
                                 }
                             }
+                            .disabled(isDeleting)
                         }
                         Section(header: VOSectionHeader("Credentials")) {
                             NavigationLink(destination: Text("Change Email")) {
@@ -50,6 +52,7 @@ struct Account: View {
                                         .foregroundStyle(.secondary)
                                 }
                             }
+                            .disabled(isDeleting)
                             NavigationLink(destination: Text("Change Password")) {
                                 HStack {
                                     Text("Password")
@@ -57,15 +60,26 @@ struct Account: View {
                                     Text(String(repeating: "•", count: 10))
                                 }
                             }
+                            .disabled(isDeleting)
                             Button("Sign Out", role: .destructive) {
                                 authStore.token = nil
                                 KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
                             }
+                            .disabled(isDeleting)
                         }
                         Section(header: VOSectionHeader("Advanced")) {
-                            Button("Delete Account", role: .destructive) {
+                            Button(role: .destructive) {
                                 showDelete = true
+                            } label: {
+                                HStack {
+                                    Text("Delete Account")
+                                    if isDeleting {
+                                        Spacer()
+                                        ProgressView()
+                                    }
+                                }
                             }
+                            .disabled(isDeleting)
                         }
                     }
                 }
@@ -80,6 +94,7 @@ struct Account: View {
                     Button("Done") {
                         presentationMode.wrappedValue.dismiss()
                     }
+                    .disabled(isDeleting)
                 }
             }
         }
@@ -91,7 +106,17 @@ struct Account: View {
             }
         }
         .alert("Delete Account", isPresented: $showDelete) {
-            Button("Delete Permanently", role: .destructive) {}
+            Button("Delete Permanently", role: .destructive) {
+                isDeleting = true
+                Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+                    Task { @MainActor in
+                        presentationMode.wrappedValue.dismiss()
+                        authStore.token = nil
+                        KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
+                        isDeleting = false
+                    }
+                }
+            }
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Are you sure want to delete your account?")
