@@ -144,6 +144,14 @@
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;
 		};
+		647FF2FB2C9050ED0035C7A4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BrowserList.swift,
+				BrowserStore.swift,
+			);
+			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;
+		};
 		64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -159,6 +167,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				FileBadge.swift,
+				FileContextMenu.swift,
 				FileList.swift,
 				FileRow.swift,
 				FileStore.swift,
@@ -221,6 +230,7 @@
 		647151662C7F59F1001AF90B /* SignIn */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B6192C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SignIn; sourceTree = "<group>"; };
 		647151672C7F5A01001AF90B /* SignUp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B61A2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SignUp; sourceTree = "<group>"; };
 		6471516B2C7F5A49001AF90B /* ForgotPassword */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6446B61B2C7F5C2C00868B3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ForgotPassword; sourceTree = "<group>"; };
+		647FF2FA2C9050D00035C7A4 /* Browser */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (647FF2FB2C9050ED0035C7A4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Browser; sourceTree = "<group>"; };
 		64D538872C78CA920055240F /* Account */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C52C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Account; sourceTree = "<group>"; };
 		64D5388A2C78CA920055240F /* File */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C62C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = File; sourceTree = "<group>"; };
 		64D5388D2C78CA920055240F /* Group */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64D538C72C78CA920055240F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Group; sourceTree = "<group>"; };
@@ -269,6 +279,7 @@
 		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				647FF2FA2C9050D00035C7A4 /* Browser */,
 				644C38B42C8F3744008E8F0F /* Helpers */,
 				644C38B72C8F3744008E8F0F /* Infrastructure */,
 				644C38BD2C8F3744008E8F0F /* Modifiers */,

@@ -13,6 +13,7 @@ struct FileList: View {
     @EnvironmentObject private var glbStore: GLBStore
     @EnvironmentObject private var mosaicStore: MosaicStore
     @Environment(\.presentationMode) private var presentationMode
+    @State private var showMove = false
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
@@ -36,62 +37,82 @@ struct FileList: View {
             if let entities = fileStore.entities,
                let current = fileStore.current,
                let workspace = workspaceStore.current {
-                List {
-                    ForEach(entities, id: \.id) { file in
-                        if file.type == .file {
+                if entities.count == 0 {
+                    Text("There are no items.")
+                        .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
+                } else {
+                    List {
+                        ForEach(entities, id: \.id) { file in
+                            if file.type == .file {
+                                Button {
+                                    tappedItem = file
+                                } label: {
+                                    FileRow(file)
+                                        .fileContextMenu(
+                                            file,
+                                            onMove: { showMove = true }
+                                        )
+                                }
+                                .onAppear {
+                                    onListItemAppear(file.id)
+                                }
+                            } else if file.type == .folder {
+                                NavigationLink {
+                                    FileList(file.id, workspace: workspace, navigationTitle: file.name)
+                                } label: {
+                                    FolderRow(file)
+                                        .fileContextMenu(
+                                            file,
+                                            onMove: { showMove = true }
+                                        )
+                                }
+                                .onAppear { onListItemAppear(file.id) }
+                            }
+                        }
+                        if isLoading {
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                Spacer()
+                            }
+                        }
+                    }
+                    .listStyle(.inset)
+                    .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) { searchPublisher.send($1) }
+                    .refreshable {
+                        fileStore.clear()
+                        fetchList()
+                    }
+                    .navigationDestination(item: $tappedItem) { FileViewer($0) }
+                    .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                        Button(VOTextConstants.errorAlertButtonLabel) {}
+                    } message: {
+                        if let errorMessage {
+                            Text(errorMessage)
+                        }
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
                             Button {
-                                tappedItem = file
+                                showSettings = true
                             } label: {
-                                FileRow(file)
+                                Label("Settings", systemImage: "gear")
                             }
-                            .onAppear {
-                                onListItemAppear(file.id)
-                            }
-                        } else if file.type == .folder {
-                            NavigationLink {
-                                FileList(file.id, workspace: workspace, navigationTitle: file.name)
-                            } label: {
-                                FolderRow(file)
-                            }
-                            .onAppear { onListItemAppear(file.id) }
                         }
                     }
-                    if isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
+                    .sheet(isPresented: $showSettings) {
+                        WorkspaceSettings {
+                            presentationMode.wrappedValue.dismiss()
                         }
                     }
-                }
-                .listStyle(.inset)
-                .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
-                .searchable(text: $searchText)
-                .onChange(of: searchText) { searchPublisher.send($1) }
-                .refreshable {
-                    fileStore.clear()
-                    fetchList()
-                }
-                .navigationDestination(item: $tappedItem) { FileViewer($0) }
-                .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                    Button(VOTextConstants.errorAlertButtonLabel) {}
-                } message: {
-                    if let errorMessage {
-                        Text(errorMessage)
-                    }
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            showSettings = true
-                        } label: {
-                            Label("Settings", systemImage: "gear")
+                    .sheet(isPresented: $showMove) {
+                        NavigationStack {
+                            BrowserList(current.id, workspace: workspace, navigationTitle: workspace.name) {
+                                showMove = false
+                            }
                         }
-                    }
-                }
-                .sheet(isPresented: $showSettings) {
-                    WorkspaceSettings {
-                        presentationMode.wrappedValue.dismiss()
                     }
                 }
             } else {
@@ -229,9 +250,10 @@ struct FileList: View {
     .environmentObject(AuthStore(VOToken.Value.devInstance))
     .environmentObject(FileStore())
     .environmentObject(WorkspaceStore())
-    .environmentObject(GLBStore())
     .environmentObject(PDFStore())
     .environmentObject(ImageStore())
     .environmentObject(VideoStore())
+    .environmentObject(AudioStore())
+    .environmentObject(GLBStore())
     .environmentObject(MosaicStore())
 }
