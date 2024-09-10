@@ -256,4 +256,5 @@ struct FileList: View {
     .environmentObject(AudioStore())
     .environmentObject(GLBStore())
     .environmentObject(MosaicStore())
+    .environmentObject(BrowserStore())
 }
