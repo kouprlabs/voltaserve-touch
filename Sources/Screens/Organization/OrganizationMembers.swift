@@ -116,14 +116,14 @@ struct OrganizationMembers: View {
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
-                    showError = true
                     errorMessage = error.message
+                    showError = true
                 }
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }

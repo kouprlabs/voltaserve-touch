@@ -106,30 +106,30 @@ struct WorkspaceList: View {
         }
     }
 
-    func onAppearOrChange(_ token: VOToken.Value) {
+    private func onAppearOrChange(_ token: VOToken.Value) {
         assignTokenToStores(token)
         workspaceStore.clear()
         fetchData()
         workspaceStore.startTimer()
     }
 
-    func onListItemAppear(_ id: String) {
+    private func onListItemAppear(_ id: String) {
         if workspaceStore.isLast(id) {
             fetchList()
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         workspaceStore.token = token
         accountStore.token = token
     }
 
-    func fetchData() {
+    private func fetchData() {
         fetchList()
         fetchUser()
     }
 
-    func fetchList() {
+    private func fetchList() {
         Task {
             isLoading = true
             defer { isLoading = false }
@@ -148,14 +148,14 @@ struct WorkspaceList: View {
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }
     }
 
-    func fetchUser() {
+    private func fetchUser() {
         Task {
             do {
                 let user = try await accountStore.fetchUser()
@@ -164,14 +164,14 @@ struct WorkspaceList: View {
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
-                    showError = true
                     errorMessage = error.userMessage
+                    showError = true
                 }
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }

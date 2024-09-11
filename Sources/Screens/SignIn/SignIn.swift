@@ -101,14 +101,14 @@ struct SignIn: View {
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
-                    showError = true
                     errorMessage = error.userMessage
+                    showError = true
                 }
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }

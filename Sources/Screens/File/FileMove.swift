@@ -2,10 +2,10 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileMove: View {
-    var workspace: VOWorkspace.Entity
-    var selection: Set<String>
-    @Binding var isProcessing: Bool
-    @Binding var isVisible: Bool
+    private(set) var workspace: VOWorkspace.Entity
+    private(set) var selection: Set<String>
+    @State private var isProcessing = false
+    @Binding private(set) var isVisible: Bool
 
     var body: some View {
         NavigationStack {

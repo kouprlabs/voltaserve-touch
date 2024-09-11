@@ -53,7 +53,7 @@ struct FileViewer: View {
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         pdfStore.token = token
         imageStore.token = token
         videoStore.token = token

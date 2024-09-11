@@ -11,7 +11,8 @@ struct FileList: View {
     @State private var selection = Set<String>()
     @State private var showMove = false
     @State private var showCopy = false
-    @State private var showSettings = false
+    @State private var showRename = false
+    @State private var showDelete = false
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
@@ -19,7 +20,6 @@ struct FileList: View {
     @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
-    @State private var isMoving = false
     private let id: String
 
     init(_ id: String) {
@@ -43,6 +43,8 @@ struct FileList: View {
                                         .fileContextMenu(
                                             file,
                                             selection: $selection,
+                                            onDelete: { showDelete = true },
+                                            onRename: { showRename = true },
                                             onMove: { showMove = true },
                                             onCopy: { showCopy = true }
                                         )
@@ -57,6 +59,8 @@ struct FileList: View {
                                         .fileContextMenu(
                                             file,
                                             selection: $selection,
+                                            onDelete: { showDelete = true },
+                                            onRename: { showRename = true },
                                             onMove: { showMove = true },
                                             onCopy: { showCopy = true }
                                         )
@@ -87,18 +91,29 @@ struct FileList: View {
                             Text(errorMessage)
                         }
                     }
-                    .sheet(isPresented: $showSettings) {
-                        WorkspaceSettings {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
                     .sheet(isPresented: $showMove) {
                         FileMove(
                             workspace: workspace,
                             selection: selection,
-                            isProcessing: $isMoving,
                             isVisible: $showMove
                         )
+                    }
+                    .sheet(isPresented: $showCopy) {
+                        FileCopy(
+                            workspace: workspace,
+                            selection: selection,
+                            isVisible: $showCopy
+                        )
+                    }
+                    .sheet(isPresented: $showRename) {
+                        if !selection.isEmpty {
+                            FileRename(selection.first!) { showRename = false }
+                        }
+                    }
+                    .sheet(isPresented: $showDelete) {
+                        if !selection.isEmpty {
+                            FileDelete(selection) { showDelete = false }
+                        }
                     }
                 }
             } else {
@@ -113,6 +128,8 @@ struct FileList: View {
                 ToolbarItem(placement: .bottomBar) {
                     FileMenu(
                         selection,
+                        onDelete: { showDelete = true },
+                        onRename: { showRename = true },
                         onMove: { showMove = true },
                         onCopy: { showCopy = true }
                     )
@@ -146,29 +163,29 @@ struct FileList: View {
         }
     }
 
-    func onAppearOrChange(_ token: VOToken.Value) {
+    private func onAppearOrChange(_ token: VOToken.Value) {
         assignTokenToStores(token)
         fileStore.clear()
         fetchData()
         fileStore.startTimer()
     }
 
-    func onListItemAppear(_ id: String) {
+    private func onListItemAppear(_ id: String) {
         if fileStore.isLast(id) {
             fetchList()
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         fileStore.token = token
     }
 
-    func fetchData() {
+    private func fetchData() {
         fetchFile()
         fetchList()
     }
 
-    func fetchFile() {
+    private func fetchFile() {
         Task {
             do {
                 let file = try await fileStore.fetch(id)
@@ -183,14 +200,14 @@ struct FileList: View {
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }
     }
 
-    func fetchList() {
+    private func fetchList() {
         Task {
             isLoading = true
             defer { isLoading = false }
@@ -211,8 +228,8 @@ struct FileList: View {
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }

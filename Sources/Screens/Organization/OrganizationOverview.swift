@@ -51,7 +51,7 @@ struct OrganizationOverview: View {
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         organizationStore.token = token
     }
 }

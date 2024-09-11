@@ -51,7 +51,7 @@ struct WorkspaceOverview: View {
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         workspaceStore.token = token
     }
 }

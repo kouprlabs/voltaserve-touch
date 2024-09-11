@@ -135,16 +135,16 @@ struct AccountSettings: View {
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         accountStore.token = token
     }
 
-    func fetchData() {
+    private func fetchData() {
         fetchUser()
         fetchAccountStorageUsage()
     }
 
-    func fetchUser() {
+    private func fetchUser() {
         Task {
             do {
                 let user = try await accountStore.fetchUser()
@@ -153,20 +153,20 @@ struct AccountSettings: View {
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
-                    showError = true
                     errorMessage = error.userMessage
+                    showError = true
                 }
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }
     }
 
-    func fetchAccountStorageUsage() {
+    private func fetchAccountStorageUsage() {
         Task {
             do {
                 let usage = try await accountStore.fetchAccountStorageUsage()
@@ -175,14 +175,14 @@ struct AccountSettings: View {
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in
-                    showError = true
                     errorMessage = error.userMessage
+                    showError = true
                 }
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }

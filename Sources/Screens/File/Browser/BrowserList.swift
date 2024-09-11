@@ -125,29 +125,29 @@ struct BrowserList: View {
         }
     }
 
-    func onAppearOrChange(_ token: VOToken.Value) {
+    private func onAppearOrChange(_ token: VOToken.Value) {
         assignTokenToStores(token)
         browserStore.clear()
         fetchData()
         browserStore.startTimer()
     }
 
-    func onListItemAppear(_ id: String) {
+    private func onListItemAppear(_ id: String) {
         if browserStore.isLast(id) {
             fetchList()
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         browserStore.token = token
     }
 
-    func fetchData() {
+    private func fetchData() {
         fetchFile()
         fetchList()
     }
 
-    func fetchFile() {
+    private func fetchFile() {
         Task {
             do {
                 let file = try await browserStore.fetch(id)
@@ -162,14 +162,14 @@ struct BrowserList: View {
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }
     }
 
-    func fetchList() {
+    private func fetchList() {
         Task {
             isLoading = true
             defer { isLoading = false }
@@ -190,8 +190,8 @@ struct BrowserList: View {
             } catch {
                 print(error.localizedDescription)
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }

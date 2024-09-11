@@ -51,7 +51,7 @@ struct GroupOverview: View {
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         groupStore.token = token
     }
 }

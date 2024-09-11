@@ -102,11 +102,11 @@ struct WorkspaceSettings: View {
         }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         workspaceStore.token = token
     }
 
-    func fetchStorageUsage(_ id: String) {
+    private func fetchStorageUsage(_ id: String) {
         Task {
             do {
                 let usage = try await workspaceStore.fetchStorageUsage(id)
@@ -120,8 +120,8 @@ struct WorkspaceSettings: View {
                 }
             } catch {
                 Task { @MainActor in
-                    showError = true
                     errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
                 }
             }
         }
