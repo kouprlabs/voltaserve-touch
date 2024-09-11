@@ -46,8 +46,6 @@ struct AccountEditPassword: View {
 }
 
 #Preview {
-    NavigationStack {
-        AccountEditPassword()
-            .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
-    }
+    AccountEditPassword()
+        .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
 }

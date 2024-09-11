@@ -89,8 +89,6 @@ struct WorkspaceEditStorageCapacity: View {
 }
 
 #Preview {
-    NavigationStack {
-        WorkspaceEditStorageCapacity()
-            .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
-    }
+    WorkspaceEditStorageCapacity()
+        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
 }

@@ -57,8 +57,6 @@ struct AccountEditEmail: View {
 }
 
 #Preview {
-    NavigationStack {
-        AccountEditEmail()
-            .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
-    }
+    AccountEditEmail()
+        .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
 }

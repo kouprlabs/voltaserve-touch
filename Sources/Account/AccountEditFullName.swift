@@ -57,8 +57,6 @@ struct AccountEditFullName: View {
 }
 
 #Preview {
-    NavigationStack {
-        AccountEditFullName()
-            .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
-    }
+    AccountEditFullName()
+        .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
 }

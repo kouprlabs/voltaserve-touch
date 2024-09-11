@@ -50,8 +50,6 @@ struct GroupEditName: View {
 }
 
 #Preview {
-    NavigationStack {
-        GroupEditName()
-            .environmentObject(GroupStore(VOGroup.Entity.devInstance))
-    }
+    GroupEditName()
+        .environmentObject(GroupStore(VOGroup.Entity.devInstance))
 }

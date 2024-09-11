@@ -55,8 +55,6 @@ struct OrganizationEditName: View {
 }
 
 #Preview {
-    NavigationStack {
-        OrganizationEditName()
-            .environmentObject(OrganizationStore(VOOrganization.Entity.devInstance))
-    }
+    OrganizationEditName()
+        .environmentObject(OrganizationStore(VOOrganization.Entity.devInstance))
 }

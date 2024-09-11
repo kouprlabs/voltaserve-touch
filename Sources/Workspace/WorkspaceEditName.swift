@@ -57,8 +57,6 @@ struct WorkspaceEditName: View {
 }
 
 #Preview {
-    NavigationStack {
-        WorkspaceEditName()
-            .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
-    }
+    WorkspaceEditName()
+        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
 }

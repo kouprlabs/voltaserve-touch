@@ -173,10 +173,8 @@ struct BrowserList: View {
 }
 
 #Preview {
-    NavigationStack {
-        BrowserList(VOWorkspace.Entity.devInstance.rootID)
-            .environmentObject(AuthStore(VOToken.Value.devInstance))
-            .environmentObject(BrowserStore())
-            .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
-    }
+    BrowserList(VOWorkspace.Entity.devInstance.rootID)
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
+        .environmentObject(BrowserStore())
+        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
 }
