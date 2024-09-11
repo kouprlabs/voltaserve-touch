@@ -168,7 +168,10 @@
 			membershipExceptions = (
 				FileBadge.swift,
 				FileContextMenu.swift,
+				FileCopy.swift,
 				FileList.swift,
+				FileMenu.swift,
+				FileMove.swift,
 				FileRow.swift,
 				FileStore.swift,
 				FileViewer.swift,

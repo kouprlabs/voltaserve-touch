@@ -24,6 +24,7 @@ struct ContentView: View {
                 if let token = KeychainManager.standard.getToken(KeychainManager.Constants.tokenKey) {
                     if token.isExpired {
                         authStore.token = nil
+                        KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
                         showSignIn = true
                     } else {
                         authStore.token = token

@@ -93,6 +93,100 @@ class FileStore: ObservableObject {
         timer = nil
     }
 
+    func isOwnerInSelection(_ selection: Set<String>) -> Bool {
+        guard let entities else { return false }
+        return entities
+            .filter { selection.contains($0.id) }
+            .allSatisfy { $0.permission.ge(.owner) }
+    }
+
+    func isEditorInSelection(_ selection: Set<String>) -> Bool {
+        guard let entities else { return false }
+        return entities
+            .filter { selection.contains($0.id) }
+            .allSatisfy { $0.permission.ge(.editor) }
+    }
+
+    func isInsightsAuthorized(_ file: VOFile.Entity) -> Bool {
+        guard let snapshot = file.snapshot else { return false }
+        guard let fileExtension = snapshot.original.fileExtension else { return false }
+        return file.type == .file &&
+            !(file.snapshot?.task?.isPending ?? false) &&
+            (fileExtension.isPDF() ||
+                fileExtension.isMicrosoftOffice() ||
+                fileExtension.isOpenOffice() ||
+                fileExtension.isImage()) &&
+            ((file.permission.ge(.viewer) && snapshot.entities != nil) ||
+                file.permission.ge(.editor))
+    }
+
+    func isMosaicAuthorized(_ file: VOFile.Entity) -> Bool {
+        guard let snapshot = file.snapshot else { return false }
+        guard let fileExtension = snapshot.original.fileExtension else { return false }
+        return file.type == .file &&
+            !(snapshot.task?.isPending ?? false) &&
+            fileExtension.isImage()
+    }
+
+    func isSharingAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.permission.ge(.owner)
+    }
+
+    func isSharingAuthorized(_ selection: Set<String>) -> Bool {
+        !selection.isEmpty && isOwnerInSelection(selection)
+    }
+
+    func isDeleteAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.permission.ge(.owner)
+    }
+
+    func isDeleteAuthorized(_ selection: Set<String>) -> Bool {
+        !selection.isEmpty && isOwnerInSelection(selection)
+    }
+
+    func isMoveAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.permission.ge(.editor)
+    }
+
+    func isMoveAuthorized(_ selection: Set<String>) -> Bool {
+        !selection.isEmpty && isEditorInSelection(selection)
+    }
+
+    func isCopyAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.permission.ge(.editor)
+    }
+
+    func isCopyAuthorized(_ selection: Set<String>) -> Bool {
+        !selection.isEmpty && isEditorInSelection(selection)
+    }
+
+    func isSnapshotsAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.type == .file && file.permission.ge(.owner)
+    }
+
+    func isUploadAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.type == .file && file.permission.ge(.editor)
+    }
+
+    func isDownloadAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.type == .file && file.permission.ge(.viewer)
+    }
+
+    func isRenameAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.type == .file && file.permission.ge(.editor)
+    }
+
+    func isToolsAuthorized(_ file: VOFile.Entity) -> Bool {
+        isInsightsAuthorized(file) || isMosaicAuthorized(file)
+    }
+
+    func isManagementAuthorized(_ file: VOFile.Entity) -> Bool {
+        isSharingAuthorized(file) ||
+            isSnapshotsAuthorized(file) ||
+            isUploadAuthorized(file) ||
+            isDownloadAuthorized(file)
+    }
+
     private enum Constants {
         static let pageSize = 10
     }

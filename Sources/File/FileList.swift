@@ -10,6 +10,7 @@ struct FileList: View {
     @Environment(\.editMode) private var editMode
     @State private var selection = Set<String>()
     @State private var showMove = false
+    @State private var showCopy = false
     @State private var showSettings = false
     @State private var showError = false
     @State private var errorMessage: String?
@@ -18,6 +19,7 @@ struct FileList: View {
     @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
+    @State private var isMoving = false
     private let id: String
 
     init(_ id: String) {
@@ -40,12 +42,12 @@ struct FileList: View {
                                     FileRow(file)
                                         .fileContextMenu(
                                             file,
-                                            onMove: { showMove = true }
+                                            selection: $selection,
+                                            onMove: { showMove = true },
+                                            onCopy: { showCopy = true }
                                         )
                                 }
-                                .onAppear {
-                                    onListItemAppear(file.id)
-                                }
+                                .onAppear { onListItemAppear(file.id) }
                             } else if file.type == .folder {
                                 NavigationLink {
                                     FileList(file.id)
@@ -54,7 +56,9 @@ struct FileList: View {
                                     FolderRow(file)
                                         .fileContextMenu(
                                             file,
-                                            onMove: { showMove = true }
+                                            selection: $selection,
+                                            onMove: { showMove = true },
+                                            onCopy: { showCopy = true }
                                         )
                                 }
                                 .onAppear { onListItemAppear(file.id) }
@@ -89,11 +93,12 @@ struct FileList: View {
                         }
                     }
                     .sheet(isPresented: $showMove) {
-                        NavigationStack {
-                            BrowserList(workspace.rootID) { showMove = false }
-                                .navigationBarTitleDisplayMode(.inline)
-                                .navigationTitle(workspace.name)
-                        }
+                        FileMove(
+                            workspace: workspace,
+                            selection: selection,
+                            isProcessing: $isMoving,
+                            isVisible: $showMove
+                        )
                     }
                 }
             } else {
@@ -106,21 +111,11 @@ struct FileList: View {
             }
             if editMode?.wrappedValue.isEditing == true, selection.count > 0 {
                 ToolbarItem(placement: .bottomBar) {
-                    Menu {
-                        Button(role: .destructive) {} label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                        Button {
-                            showMove = true
-                        } label: {
-                            Label("Move", systemImage: "arrow.turn.up.right")
-                        }
-                        Button {} label: {
-                            Label("Copy", systemImage: "document.on.document")
-                        }
-                    } label: {
-                        Label("Context Menu", systemImage: "line.3.horizontal")
-                    }
+                    FileMenu(
+                        selection,
+                        onMove: { showMove = true },
+                        onCopy: { showCopy = true }
+                    )
                 }
             }
         }
@@ -148,9 +143,6 @@ struct FileList: View {
             fileStore.entities = nil
             fileStore.list = nil
             fetchList()
-        }
-        .onChange(of: selection) { _, newSelection in
-            print(newSelection)
         }
     }
 
