@@ -15,11 +15,6 @@ struct OrganizationMembers: View {
     @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
-    private let organization: VOOrganization.Entity
-
-    init(_ organization: VOOrganization.Entity) {
-        self.organization = organization
-    }
 
     var body: some View {
         VStack {
@@ -37,13 +32,6 @@ struct OrganizationMembers: View {
                 }
                 .onChange(of: searchText) { searchPublisher.send($1) }
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            showSettings = true
-                        } label: {
-                            Label("Settings", systemImage: "gear")
-                        }
-                    }
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
                             showAddMember = true
@@ -77,7 +65,6 @@ struct OrganizationMembers: View {
                 .removeDuplicates()
                 .sink { membersStore.query = $0 }
                 .store(in: &cancellables)
-            organizationStore.current = organization
             if let token = authStore.token {
                 onAppearOrChange(token)
             }
@@ -100,6 +87,7 @@ struct OrganizationMembers: View {
     }
 
     func onAppearOrChange(_ token: VOToken.Value) {
+        guard let organization = organizationStore.current else { return }
         membersStore.token = token
         organizationStore.token = token
         fetchList()
@@ -113,6 +101,7 @@ struct OrganizationMembers: View {
     }
 
     func fetchList() {
+        guard let organization = organizationStore.current else { return }
         Task {
             isLoading = true
             defer { isLoading = false }
@@ -142,11 +131,8 @@ struct OrganizationMembers: View {
 }
 
 #Preview {
-    NavigationStack {
-        OrganizationMembers(VOOrganization.Entity.devInstance)
-            .navigationTitle(VOOrganization.Entity.devInstance.name)
-            .environmentObject(AuthStore(VOToken.Value.devInstance))
-            .environmentObject(OrganizationMembersStore())
-            .environmentObject(OrganizationStore())
-    }
+    OrganizationMembers()
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
+        .environmentObject(OrganizationMembersStore())
+        .environmentObject(OrganizationStore())
 }

@@ -16,109 +16,89 @@ struct WorkspaceSettings: View {
     }
 
     var body: some View {
-        NavigationView {
-            if let workspace = workspaceStore.current {
-                VStack {
-                    VOAvatar(name: workspace.name, size: 100)
-                        .padding()
-                    Form {
-                        Section(header: VOSectionHeader("Storage Capacity")) {
-                            VStack(alignment: .leading) {
-                                if let storageUsage = workspaceStore.storageUsage {
-                                    // swiftlint:disable:next line_length
-                                    Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
-                                    ProgressView(value: Double(storageUsage.percentage) / 100.0)
-                                } else {
-                                    Text("Calculating…")
-                                    ProgressView()
-                                }
-                            }
-                            NavigationLink(destination: WorkspaceEditStorageCapacity()) {
-                                HStack {
-                                    Text("Capacity")
-                                    Spacer()
-                                    Text("\(workspace.storageCapacity.prettyBytes())")
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .disabled(isDeleting)
-                        }
-                        Section(header: VOSectionHeader("Basics")) {
-                            NavigationLink(destination: WorkspaceEditName()) {
-                                HStack {
-                                    Text("Name")
-                                    Spacer()
-                                    Text(workspace.name)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .disabled(isDeleting)
-                        }
-                        Section(header: VOSectionHeader("Advanced")) {
-                            Button(role: .destructive) {
-                                showDelete = true
-                            } label: {
-                                HStack {
-                                    Text("Delete Workspace")
-                                    if isDeleting {
-                                        Spacer()
-                                        ProgressView()
-                                    }
-                                }
-                            }
-                            .disabled(isDeleting)
+        if let current = workspaceStore.current {
+            Form {
+                Section(header: VOSectionHeader("Storage Capacity")) {
+                    VStack(alignment: .leading) {
+                        if let storageUsage = workspaceStore.storageUsage {
+                            Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                            ProgressView(value: Double(storageUsage.percentage) / 100.0)
+                        } else {
+                            Text("Calculating…")
+                            ProgressView()
                         }
                     }
+                    NavigationLink(destination: WorkspaceEditStorageCapacity()) {
+                        HStack {
+                            Text("Capacity")
+                            Spacer()
+                            Text("\(current.storageCapacity.prettyBytes())")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .disabled(isDeleting)
                 }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("Settings")
-                            .font(.headline)
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            presentationMode.wrappedValue.dismiss()
+                Section(header: VOSectionHeader("Basics")) {
+                    NavigationLink(destination: WorkspaceEditName()) {
+                        HStack {
+                            Text("Name")
+                            Spacer()
+                            Text(current.name)
+                                .foregroundStyle(.secondary)
                         }
-                        .disabled(isDeleting)
                     }
+                    .disabled(isDeleting)
                 }
-                .alert("Delete Workspace", isPresented: $showDelete) {
-                    Button("Delete Permanently", role: .destructive) {
-                        isDeleting = true
-                        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                            Task { @MainActor in
-                                presentationMode.wrappedValue.dismiss()
-                                shouldDismiss?()
+                Section(header: VOSectionHeader("Advanced")) {
+                    Button(role: .destructive) {
+                        showDelete = true
+                    } label: {
+                        HStack {
+                            Text("Delete Workspace")
+                            if isDeleting {
+                                Spacer()
+                                ProgressView()
                             }
                         }
                     }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("Are you sure you would like to delete this workspace?")
+                    .disabled(isDeleting)
                 }
-                .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                    Button(VOTextConstants.errorAlertButtonLabel) {}
-                } message: {
-                    if let errorMessage {
-                        Text(errorMessage)
-                    }
-                }
-                .onAppear {
-                    if let token = authStore.token {
-                        assignTokenToStores(token)
-                        fetchStorageUsage(workspace.id)
-                    }
-                }
-                .onChange(of: authStore.token) { _, newToken in
-                    if let newToken {
-                        assignTokenToStores(newToken)
-                        fetchStorageUsage(workspace.id)
-                    }
-                }
-            } else {
-                ProgressView()
             }
+            .alert("Delete Workspace", isPresented: $showDelete) {
+                Button("Delete Permanently", role: .destructive) {
+                    isDeleting = true
+                    Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+                        Task { @MainActor in
+                            presentationMode.wrappedValue.dismiss()
+                            shouldDismiss?()
+                        }
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Are you sure you would like to delete this workspace?")
+            }
+            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                Button(VOTextConstants.errorAlertButtonLabel) {}
+            } message: {
+                if let errorMessage {
+                    Text(errorMessage)
+                }
+            }
+            .onAppear {
+                if let token = authStore.token {
+                    assignTokenToStores(token)
+                    fetchStorageUsage(current.id)
+                }
+            }
+            .onChange(of: authStore.token) { _, newToken in
+                if let newToken {
+                    assignTokenToStores(newToken)
+                    fetchStorageUsage(current.id)
+                }
+            }
+        } else {
+            ProgressView()
         }
     }
 
@@ -151,7 +131,5 @@ struct WorkspaceSettings: View {
 #Preview {
     WorkspaceSettings()
         .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(WorkspaceStore(
-            current: VOWorkspace.Entity.devInstance
-        ))
+        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
 }

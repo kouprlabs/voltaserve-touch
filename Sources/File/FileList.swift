@@ -6,13 +6,9 @@ struct FileList: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var fileStore: FileStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @EnvironmentObject private var pdfStore: PDFStore
-    @EnvironmentObject private var imageStore: ImageStore
-    @EnvironmentObject private var videoStore: VideoStore
-    @EnvironmentObject private var audioStore: AudioStore
-    @EnvironmentObject private var glbStore: GLBStore
-    @EnvironmentObject private var mosaicStore: MosaicStore
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.editMode) private var editMode
+    @State private var selection = Set<String>()
     @State private var showMove = false
     @State private var showSettings = false
     @State private var showError = false
@@ -23,25 +19,19 @@ struct FileList: View {
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
     private let id: String
-    private let workspace: VOWorkspace.Entity
-    private let navigationTitle: String
 
-    init(_ id: String, workspace: VOWorkspace.Entity, navigationTitle: String) {
+    init(_ id: String) {
         self.id = id
-        self.workspace = workspace
-        self.navigationTitle = navigationTitle
     }
 
     var body: some View {
         VStack {
             if let entities = fileStore.entities,
-               let current = fileStore.current,
                let workspace = workspaceStore.current {
                 if entities.count == 0 {
                     Text("There are no items.")
-                        .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
                 } else {
-                    List {
+                    List(selection: $selection) {
                         ForEach(entities, id: \.id) { file in
                             if file.type == .file {
                                 Button {
@@ -58,7 +48,8 @@ struct FileList: View {
                                 }
                             } else if file.type == .folder {
                                 NavigationLink {
-                                    FileList(file.id, workspace: workspace, navigationTitle: file.name)
+                                    FileList(file.id)
+                                        .navigationTitle(file.name)
                                 } label: {
                                     FolderRow(file)
                                         .fileContextMenu(
@@ -78,7 +69,6 @@ struct FileList: View {
                         }
                     }
                     .listStyle(.inset)
-                    .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
                     .searchable(text: $searchText)
                     .onChange(of: searchText) { searchPublisher.send($1) }
                     .refreshable {
@@ -93,15 +83,6 @@ struct FileList: View {
                             Text(errorMessage)
                         }
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                showSettings = true
-                            } label: {
-                                Label("Settings", systemImage: "gear")
-                            }
-                        }
-                    }
                     .sheet(isPresented: $showSettings) {
                         WorkspaceSettings {
                             presentationMode.wrappedValue.dismiss()
@@ -109,14 +90,38 @@ struct FileList: View {
                     }
                     .sheet(isPresented: $showMove) {
                         NavigationStack {
-                            BrowserList(current.id, workspace: workspace, navigationTitle: workspace.name) {
-                                showMove = false
-                            }
+                            BrowserList(workspace.rootID) { showMove = false }
+                                .navigationBarTitleDisplayMode(.inline)
+                                .navigationTitle(workspace.name)
                         }
                     }
                 }
             } else {
                 ProgressView()
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                EditButton()
+            }
+            if editMode?.wrappedValue.isEditing == true, selection.count > 0 {
+                ToolbarItem(placement: .bottomBar) {
+                    Menu {
+                        Button(role: .destructive) {} label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                        Button {
+                            showMove = true
+                        } label: {
+                            Label("Move", systemImage: "arrow.turn.up.right")
+                        }
+                        Button {} label: {
+                            Label("Copy", systemImage: "document.on.document")
+                        }
+                    } label: {
+                        Label("Context Menu", systemImage: "line.3.horizontal")
+                    }
+                }
             }
         }
         .onAppear {
@@ -125,7 +130,6 @@ struct FileList: View {
                 .removeDuplicates()
                 .sink { fileStore.query = .init(text: $0) }
                 .store(in: &cancellables)
-            workspaceStore.current = workspace
             if let token = authStore.token {
                 onAppearOrChange(token)
             }
@@ -145,17 +149,8 @@ struct FileList: View {
             fileStore.list = nil
             fetchList()
         }
-    }
-
-    func getNavigationTitle(current: VOFile.Entity, workspace: VOWorkspace.Entity) -> String {
-        if current.id == id {
-            if current.parentID == nil {
-                workspace.name
-            } else {
-                current.name
-            }
-        } else {
-            navigationTitle
+        .onChange(of: selection) { _, newSelection in
+            print(newSelection)
         }
     }
 
@@ -174,12 +169,6 @@ struct FileList: View {
 
     func assignTokenToStores(_ token: VOToken.Value) {
         fileStore.token = token
-        pdfStore.token = token
-        imageStore.token = token
-        videoStore.token = token
-        audioStore.token = token
-        glbStore.token = token
-        mosaicStore.token = token
     }
 
     func fetchData() {
@@ -239,22 +228,8 @@ struct FileList: View {
 }
 
 #Preview {
-    NavigationStack {
-        FileList(
-            VOWorkspace.Entity.devInstance.rootID,
-            workspace: VOWorkspace.Entity.devInstance,
-            navigationTitle: VOWorkspace.Entity.devInstance.name
-        )
-        .navigationTitle(VOWorkspace.Entity.devInstance.name)
-    }
-    .environmentObject(AuthStore(VOToken.Value.devInstance))
-    .environmentObject(FileStore())
-    .environmentObject(WorkspaceStore())
-    .environmentObject(PDFStore())
-    .environmentObject(ImageStore())
-    .environmentObject(VideoStore())
-    .environmentObject(AudioStore())
-    .environmentObject(GLBStore())
-    .environmentObject(MosaicStore())
-    .environmentObject(BrowserStore())
+    FileList(VOWorkspace.Entity.devInstance.rootID)
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
+        .environmentObject(FileStore())
+        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
 }

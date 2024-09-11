@@ -5,6 +5,7 @@ import VoltaserveCore
 struct BrowserList: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var browserStore: BrowserStore
+    @EnvironmentObject private var workspaceStore: WorkspaceStore
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
@@ -13,26 +14,16 @@ struct BrowserList: View {
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
     private let id: String
-    private let workspace: VOWorkspace.Entity
-    private let navigationTitle: String
     private let onDismiss: (() -> Void)?
 
-    init(
-        _ id: String,
-        workspace: VOWorkspace.Entity,
-        navigationTitle: String,
-        onDismiss: (() -> Void)? = nil
-    ) {
+    init(_ id: String, onDismiss: (() -> Void)? = nil) {
         self.id = id
-        self.workspace = workspace
-        self.navigationTitle = navigationTitle
         self.onDismiss = onDismiss
     }
 
     var body: some View {
         VStack {
-            if let entities = browserStore.entities,
-               let current = browserStore.current {
+            if let entities = browserStore.entities {
                 VStack {
                     if entities.count == 0 {
                         Text("There are no items.")
@@ -40,12 +31,8 @@ struct BrowserList: View {
                         List {
                             ForEach(entities, id: \.id) { file in
                                 NavigationLink {
-                                    BrowserList(
-                                        file.id,
-                                        workspace: workspace,
-                                        navigationTitle: file.name,
-                                        onDismiss: onDismiss
-                                    )
+                                    BrowserList(file.id, onDismiss: onDismiss)
+                                        .navigationTitle(file.name)
                                 } label: {
                                     FolderRow(file)
                                 }
@@ -76,7 +63,6 @@ struct BrowserList: View {
                         }
                     }
                 }
-                .navigationTitle(getNavigationTitle(current: current, workspace: workspace))
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") { onDismiss?() }
@@ -110,18 +96,6 @@ struct BrowserList: View {
             browserStore.entities = nil
             browserStore.list = nil
             fetchList()
-        }
-    }
-
-    func getNavigationTitle(current: VOFile.Entity, workspace: VOWorkspace.Entity) -> String {
-        if current.id == id {
-            if current.parentID == nil {
-                workspace.name
-            } else {
-                current.name
-            }
-        } else {
-            navigationTitle
         }
     }
 
@@ -200,13 +174,9 @@ struct BrowserList: View {
 
 #Preview {
     NavigationStack {
-        BrowserList(
-            VOWorkspace.Entity.devInstance.rootID,
-            workspace: VOWorkspace.Entity.devInstance,
-            navigationTitle: VOWorkspace.Entity.devInstance.name
-        )
-        .navigationTitle(VOWorkspace.Entity.devInstance.name)
+        BrowserList(VOWorkspace.Entity.devInstance.rootID)
+            .environmentObject(AuthStore(VOToken.Value.devInstance))
+            .environmentObject(BrowserStore())
+            .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
     }
-    .environmentObject(AuthStore(VOToken.Value.devInstance))
-    .environmentObject(BrowserStore())
 }

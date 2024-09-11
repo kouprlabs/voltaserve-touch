@@ -15,11 +15,6 @@ struct GroupMembers: View {
     @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
-    private let group: VOGroup.Entity
-
-    init(_ group: VOGroup.Entity) {
-        self.group = group
-    }
 
     var body: some View {
         VStack {
@@ -44,13 +39,6 @@ struct GroupMembers: View {
                 }
                 .onChange(of: searchText) { searchPublisher.send($1) }
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            showSettings = true
-                        } label: {
-                            Label("Settings", systemImage: "gear")
-                        }
-                    }
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
                             showAddMember = true
@@ -84,7 +72,6 @@ struct GroupMembers: View {
                 .removeDuplicates()
                 .sink { membersStore.query = $0 }
                 .store(in: &cancellables)
-            groupStore.current = group
             if let token = authStore.token {
                 onAppearOrChange(token)
             }
@@ -107,6 +94,7 @@ struct GroupMembers: View {
     }
 
     func onAppearOrChange(_ token: VOToken.Value) {
+        guard let group = groupStore.current else { return }
         membersStore.token = token
         groupStore.token = token
         membersStore.clear()
@@ -121,6 +109,7 @@ struct GroupMembers: View {
     }
 
     func fetchList() {
+        guard let group = groupStore.current else { return }
         Task {
             isLoading = true
             defer { isLoading = false }
@@ -150,11 +139,8 @@ struct GroupMembers: View {
 }
 
 #Preview {
-    NavigationStack {
-        GroupMembers(VOGroup.Entity.devInstance)
-            .navigationTitle(VOGroup.Entity.devInstance.name)
-            .environmentObject(AuthStore(VOToken.Value.devInstance))
-            .environmentObject(GroupMembersStore())
-            .environmentObject(GroupStore())
-    }
+    GroupMembers()
+        .environmentObject(AuthStore(VOToken.Value.devInstance))
+        .environmentObject(GroupMembersStore())
+        .environmentObject(GroupStore())
 }

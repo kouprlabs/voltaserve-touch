@@ -21,7 +21,8 @@ struct WorkspaceList: View {
                 List {
                     ForEach(entities, id: \.id) { workspace in
                         NavigationLink {
-                            FileList(workspace.rootID, workspace: workspace, navigationTitle: workspace.name)
+                            WorkspaceOverview(workspace)
+                                .navigationBarTitleDisplayMode(.inline)
                                 .navigationTitle(workspace.name)
                         } label: {
                             WorkspaceRow(workspace)

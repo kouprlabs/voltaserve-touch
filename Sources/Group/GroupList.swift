@@ -18,7 +18,8 @@ struct GroupList: View {
                 List {
                     ForEach(entities, id: \.id) { group in
                         NavigationLink {
-                            GroupMembers(group)
+                            GroupOverview(group)
+                                .navigationBarTitleDisplayMode(.inline)
                                 .navigationTitle(group.name)
                         } label: {
                             GroupRow(group)

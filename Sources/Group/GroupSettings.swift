@@ -16,76 +16,58 @@ struct GroupSettings: View {
     }
 
     var body: some View {
-        NavigationView {
-            if let group = groupStore.current {
-                VStack {
-                    VOAvatar(name: group.name, size: 100)
-                        .padding()
-                    Form {
-                        Section(header: VOSectionHeader("Basics")) {
-                            NavigationLink(destination: GroupEditName()) {
-                                HStack {
-                                    Text("Name")
-                                    Spacer()
-                                    Text(group.name)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .disabled(isDeleting)
-                        }
-                        Section(header: VOSectionHeader("Advanced")) {
-                            Button(role: .destructive) {
-                                showDelete = true
-                            } label: {
-                                HStack {
-                                    Text("Delete Group")
-                                    if isDeleting {
-                                        Spacer()
-                                        ProgressView()
-                                    }
-                                }
-                            }
-                            .disabled(isDeleting)
+        if let group = groupStore.current {
+            Form {
+                Section(header: VOSectionHeader("Basics")) {
+                    NavigationLink(destination: GroupEditName()) {
+                        HStack {
+                            Text("Name")
+                            Spacer()
+                            Text(group.name)
+                                .foregroundStyle(.secondary)
                         }
                     }
+                    .disabled(isDeleting)
                 }
-                .alert("Delete Group", isPresented: $showDelete) {
-                    Button("Delete Permanently", role: .destructive) {
-                        isDeleting = true
-                        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-                            Task { @MainActor in
-                                isDeleting = false
-                                shouldDismiss?()
+                Section(header: VOSectionHeader("Advanced")) {
+                    Button(role: .destructive) {
+                        showDelete = true
+                    } label: {
+                        HStack {
+                            Text("Delete Group")
+                            if isDeleting {
+                                Spacer()
+                                ProgressView()
                             }
                         }
                     }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("Are you sure you would like to delete this group?")
+                    .disabled(isDeleting)
                 }
-                .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                    Button(VOTextConstants.errorAlertButtonLabel) {}
-                } message: {
-                    if let errorMessage {
-                        Text(errorMessage)
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("Settings")
-                            .font(.headline)
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                        .disabled(isDeleting)
-                    }
-                }
-            } else {
-                ProgressView()
             }
+            .alert("Delete Group", isPresented: $showDelete) {
+                Button("Delete Permanently", role: .destructive) {
+                    isDeleting = true
+                    Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+                        Task { @MainActor in
+                            isDeleting = false
+                            presentationMode.wrappedValue.dismiss()
+                            shouldDismiss?()
+                        }
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Are you sure you would like to delete this group?")
+            }
+            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                Button(VOTextConstants.errorAlertButtonLabel) {}
+            } message: {
+                if let errorMessage {
+                    Text(errorMessage)
+                }
+            }
+        } else {
+            ProgressView()
         }
     }
 }

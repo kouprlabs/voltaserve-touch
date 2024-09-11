@@ -18,7 +18,8 @@ struct OrganizationList: View {
                 List {
                     ForEach(entities, id: \.id) { organization in
                         NavigationLink {
-                            OrganizationMembers(organization)
+                            OrganizationOverview(organization)
+                                .navigationBarTitleDisplayMode(.inline)
                                 .navigationTitle(organization.name)
                         } label: {
                             OrganizationRow(organization)

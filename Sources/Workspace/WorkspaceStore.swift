@@ -30,7 +30,7 @@ class WorkspaceStore: ObservableObject {
 
     init() {}
 
-    init(current: VOWorkspace.Entity) {
+    init(_ current: VOWorkspace.Entity) {
         self.current = current
     }
 
