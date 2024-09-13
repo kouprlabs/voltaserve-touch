@@ -27,139 +27,142 @@ struct FileList: View {
     }
 
     var body: some View {
-        VStack {
-            if let entities = fileStore.entities,
-               let workspace = workspaceStore.current {
-                if entities.count == 0 {
-                    Text("There are no items.")
+        if let workspace = workspaceStore.current {
+            VStack {
+                if let entities = fileStore.entities {
+                    if entities.count == 0 {
+                        Text("There are no items.")
+                    } else {
+                        List(selection: $selection) {
+                            ForEach(entities, id: \.id) { file in
+                                if file.type == .file {
+                                    Button {
+                                        tappedItem = file
+                                    } label: {
+                                        FileRow(file)
+                                            .fileContextMenu(
+                                                file,
+                                                selection: $selection,
+                                                onDelete: { showDelete = true },
+                                                onRename: { showRename = true },
+                                                onMove: { showMove = true },
+                                                onCopy: { showCopy = true }
+                                            )
+                                    }
+                                    .onAppear { onListItemAppear(file.id) }
+                                } else if file.type == .folder {
+                                    NavigationLink {
+                                        FileList(file.id)
+                                            .navigationTitle(file.name)
+                                    } label: {
+                                        FolderRow(file)
+                                            .fileContextMenu(
+                                                file,
+                                                selection: $selection,
+                                                onDelete: { showDelete = true },
+                                                onRename: { showRename = true },
+                                                onMove: { showMove = true },
+                                                onCopy: { showCopy = true }
+                                            )
+                                    }
+                                    .onAppear { onListItemAppear(file.id) }
+                                }
+                            }
+                            if isLoading {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                            }
+                        }
+                        .listStyle(.inset)
+                        .searchable(text: $searchText)
+                        .onChange(of: searchText) { searchPublisher.send($1) }
+                        .refreshable {
+                            fileStore.clear()
+                            fetchList()
+                        }
+                        .navigationDestination(item: $tappedItem) { FileViewer($0) }
+                    }
                 } else {
-                    List(selection: $selection) {
-                        ForEach(entities, id: \.id) { file in
-                            if file.type == .file {
-                                Button {
-                                    tappedItem = file
-                                } label: {
-                                    FileRow(file)
-                                        .fileContextMenu(
-                                            file,
-                                            selection: $selection,
-                                            onDelete: { showDelete = true },
-                                            onRename: { showRename = true },
-                                            onMove: { showMove = true },
-                                            onCopy: { showCopy = true }
-                                        )
-                                }
-                                .onAppear { onListItemAppear(file.id) }
-                            } else if file.type == .folder {
-                                NavigationLink {
-                                    FileList(file.id)
-                                        .navigationTitle(file.name)
-                                } label: {
-                                    FolderRow(file)
-                                        .fileContextMenu(
-                                            file,
-                                            selection: $selection,
-                                            onDelete: { showDelete = true },
-                                            onRename: { showRename = true },
-                                            onMove: { showMove = true },
-                                            onCopy: { showCopy = true }
-                                        )
-                                }
-                                .onAppear { onListItemAppear(file.id) }
-                            }
-                        }
-                        if isLoading {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                Spacer()
-                            }
-                        }
-                    }
-                    .listStyle(.inset)
-                    .searchable(text: $searchText)
-                    .onChange(of: searchText) { searchPublisher.send($1) }
-                    .refreshable {
-                        fileStore.clear()
-                        fetchList()
-                    }
-                    .navigationDestination(item: $tappedItem) { FileViewer($0) }
-                    .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                        Button(VOTextConstants.errorAlertButtonLabel) {}
-                    } message: {
-                        if let errorMessage {
-                            Text(errorMessage)
-                        }
-                    }
-                    .sheet(isPresented: $showMove) {
-                        FileMove(
-                            workspace: workspace,
-                            selection: selection,
-                            isVisible: $showMove
-                        )
-                    }
-                    .sheet(isPresented: $showCopy) {
-                        FileCopy(
-                            workspace: workspace,
-                            selection: selection,
-                            isVisible: $showCopy
-                        )
-                    }
-                    .sheet(isPresented: $showRename) {
-                        if !selection.isEmpty {
-                            FileRename(selection.first!) { showRename = false }
-                        }
-                    }
-                    .sheet(isPresented: $showDelete) {
-                        if !selection.isEmpty {
-                            FileDelete(selection) { showDelete = false }
-                        }
-                    }
-                }
-            } else {
-                ProgressView()
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                EditButton()
-            }
-            if editMode?.wrappedValue.isEditing == true, selection.count > 0 {
-                ToolbarItem(placement: .bottomBar) {
-                    FileMenu(
-                        selection,
-                        onDelete: { showDelete = true },
-                        onRename: { showRename = true },
-                        onMove: { showMove = true },
-                        onCopy: { showCopy = true }
-                    )
+                    ProgressView()
                 }
             }
-        }
-        .onAppear {
-            searchPublisher
-                .debounce(for: .seconds(1), scheduler: RunLoop.main)
-                .removeDuplicates()
-                .sink { fileStore.query = .init(text: $0) }
-                .store(in: &cancellables)
-            if let token = authStore.token {
-                onAppearOrChange(token)
+            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                Button(VOTextConstants.errorAlertButtonLabel) {}
+            } message: {
+                if let errorMessage {
+                    Text(errorMessage)
+                }
             }
-        }
-        .onDisappear {
-            fileStore.stopTimer()
-            cancellables.forEach { $0.cancel() }
-            cancellables.removeAll()
-        }
-        .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                onAppearOrChange(newToken)
+            .sheet(isPresented: $showMove) {
+                FileMove(
+                    workspace: workspace,
+                    selection: selection,
+                    isVisible: $showMove
+                )
             }
-        }
-        .onChange(of: fileStore.query) {
-            fileStore.entities = nil
-            fileStore.list = nil
-            fetchList()
+            .sheet(isPresented: $showCopy) {
+                FileCopy(
+                    workspace: workspace,
+                    selection: selection,
+                    isVisible: $showCopy
+                )
+            }
+            .sheet(isPresented: $showRename) {
+                if !selection.isEmpty {
+                    FileRename(selection.first!) { showRename = false }
+                }
+            }
+            .sheet(isPresented: $showDelete) {
+                if !selection.isEmpty {
+                    FileDelete(selection) { showDelete = false }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
+                }
+                if editMode?.wrappedValue.isEditing == true, selection.count > 0 {
+                    ToolbarItem(placement: .bottomBar) {
+                        FileMenu(
+                            selection,
+                            onDelete: { showDelete = true },
+                            onRename: { showRename = true },
+                            onMove: { showMove = true },
+                            onCopy: { showCopy = true }
+                        )
+                    }
+                }
+            }
+            .onAppear {
+                searchPublisher
+                    .debounce(for: .seconds(1), scheduler: RunLoop.main)
+                    .removeDuplicates()
+                    .sink { fileStore.query = .init(text: $0) }
+                    .store(in: &cancellables)
+                if let token = authStore.token {
+                    onAppearOrChange(token)
+                }
+            }
+            .onDisappear {
+                fileStore.stopTimer()
+                cancellables.forEach { $0.cancel() }
+                cancellables.removeAll()
+            }
+            .onChange(of: authStore.token) { _, newToken in
+                if let newToken {
+                    onAppearOrChange(newToken)
+                }
+            }
+            .onChange(of: fileStore.query) {
+                fileStore.entities = nil
+                fileStore.list = nil
+                fetchList()
+            }
+        } else {
+            ProgressView()
         }
     }
 
