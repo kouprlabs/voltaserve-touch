@@ -15,6 +15,7 @@ struct ContentView: View {
     @EnvironmentObject private var glbStore: GLBStore
     @EnvironmentObject private var pdfStore: PDFStore
     @EnvironmentObject private var imageStore: ImageStore
+    @EnvironmentObject private var browserStore: BrowserStore
     @State private var timer: Timer?
     @State private var showSignIn = false
 
@@ -42,13 +43,36 @@ struct ContentView: View {
                     showSignIn = false
                 }
             }
+            .onAppear {
+                if let token = authStore.token {
+                    assignTokenToStores(token)
+                }
+            }
             .onChange(of: authStore.token) { oldToken, newToken in
+                if let newToken {
+                    assignTokenToStores(newToken)
+                }
                 if oldToken != nil, newToken == nil {
                     stopStoreTimers()
                     stopTokenTimer()
                     showSignIn = true
                 }
             }
+    }
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        accountStore.token = token
+        workspaceStore.token = token
+        fileStore.token = token
+        organizationStore.token = token
+        groupStore.token = token
+        organizationMembersStore.token = token
+        groupMembersStore.token = token
+        mosaicStore.token = token
+        glbStore.token = token
+        pdfStore.token = token
+        imageStore.token = token
+        browserStore.token = token
     }
 
     func startStoreTimers() {
@@ -96,9 +120,4 @@ struct ContentView: View {
         timer?.invalidate()
         timer = nil
     }
-}
-
-#Preview {
-    ContentView()
-        .environmentObject(AuthStore())
 }

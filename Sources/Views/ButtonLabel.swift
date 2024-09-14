@@ -24,5 +24,5 @@ struct VOButtonLabel: View {
 }
 
 #Preview {
-    VOButtonLabel("Hello, World!", isLoading: true)
+    VOButtonLabel("Lorem Ipsum", isLoading: true)
 }

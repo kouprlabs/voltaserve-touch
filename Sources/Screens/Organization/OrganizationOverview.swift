@@ -40,19 +40,7 @@ struct OrganizationOverview: View {
         }
         .onAppear {
             organizationStore.current = organization
-            if let token = authStore.token {
-                assignTokenToStores(token)
-            }
         }
-        .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                assignTokenToStores(newToken)
-            }
-        }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        organizationStore.token = token
     }
 }
 

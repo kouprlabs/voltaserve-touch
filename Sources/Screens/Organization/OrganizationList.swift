@@ -58,8 +58,8 @@ struct OrganizationList: View {
                 .removeDuplicates()
                 .sink { organizationStore.query = $0 }
                 .store(in: &cancellables)
-            if let token = authStore.token {
-                onAppearOrChange(token)
+            if authStore.token != nil {
+                onAppearOrChange()
             }
         }
         .onDisappear {
@@ -68,8 +68,8 @@ struct OrganizationList: View {
             cancellables.removeAll()
         }
         .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                onAppearOrChange(newToken)
+            if newToken != nil {
+                onAppearOrChange()
             }
         }
         .onChange(of: organizationStore.query) {
@@ -79,8 +79,7 @@ struct OrganizationList: View {
         }
     }
 
-    func onAppearOrChange(_ token: VOToken.Value) {
-        organizationStore.token = token
+    func onAppearOrChange() {
         organizationStore.clear()
         fetchList()
         organizationStore.startTimer()
@@ -119,10 +118,4 @@ struct OrganizationList: View {
             }
         }
     }
-}
-
-#Preview {
-    OrganizationList()
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(OrganizationStore())
 }

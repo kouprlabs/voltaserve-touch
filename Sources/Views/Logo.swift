@@ -35,5 +35,8 @@ struct VOLogo: View {
 }
 
 #Preview {
-    VOLogo(size: .init(width: 200, height: 200))
+    VStack {
+        VOLogo(size: .init(width: 100, height: 100))
+        VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
+    }
 }

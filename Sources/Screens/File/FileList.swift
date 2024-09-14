@@ -20,6 +20,7 @@ struct FileList: View {
     @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
+    @State private var viewMode: ViewMode = .grid
     private let id: String
 
     init(_ id: String) {
@@ -33,57 +34,108 @@ struct FileList: View {
                     if entities.count == 0 {
                         Text("There are no items.")
                     } else {
-                        List(selection: $selection) {
-                            ForEach(entities, id: \.id) { file in
-                                if file.type == .file {
-                                    Button {
-                                        tappedItem = file
-                                    } label: {
-                                        FileRow(file)
-                                            .fileContextMenu(
-                                                file,
-                                                selection: $selection,
-                                                onDelete: { showDelete = true },
-                                                onRename: { showRename = true },
-                                                onMove: { showMove = true },
-                                                onCopy: { showCopy = true }
-                                            )
+                        if viewMode == .list {
+                            List(selection: $selection) {
+                                ForEach(entities, id: \.id) { file in
+                                    if file.type == .file {
+                                        Button {
+                                            tappedItem = file
+                                        } label: {
+                                            FileRow(file)
+                                                .fileContextMenu(
+                                                    file,
+                                                    selection: $selection,
+                                                    onDelete: { showDelete = true },
+                                                    onRename: { showRename = true },
+                                                    onMove: { showMove = true },
+                                                    onCopy: { showCopy = true }
+                                                )
+                                        }
+                                        .onAppear { onListItemAppear(file.id) }
+                                    } else if file.type == .folder {
+                                        NavigationLink {
+                                            FileList(file.id)
+                                                .navigationTitle(file.name)
+                                        } label: {
+                                            FileRow(file)
+                                                .fileContextMenu(
+                                                    file,
+                                                    selection: $selection,
+                                                    onDelete: { showDelete = true },
+                                                    onRename: { showRename = true },
+                                                    onMove: { showMove = true },
+                                                    onCopy: { showCopy = true }
+                                                )
+                                        }
+                                        .onAppear { onListItemAppear(file.id) }
                                     }
-                                    .onAppear { onListItemAppear(file.id) }
-                                } else if file.type == .folder {
-                                    NavigationLink {
-                                        FileList(file.id)
-                                            .navigationTitle(file.name)
-                                    } label: {
-                                        FolderRow(file)
-                                            .fileContextMenu(
-                                                file,
-                                                selection: $selection,
-                                                onDelete: { showDelete = true },
-                                                onRename: { showRename = true },
-                                                onMove: { showMove = true },
-                                                onCopy: { showCopy = true }
-                                            )
+                                }
+                                if isLoading {
+                                    HStack {
+                                        Spacer()
+                                        ProgressView()
+                                        Spacer()
                                     }
-                                    .onAppear { onListItemAppear(file.id) }
                                 }
                             }
-                            if isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
+                            .listStyle(.inset)
+                            .searchable(text: $searchText)
+                            .onChange(of: searchText) { searchPublisher.send($1) }
+                            .refreshable {
+                                fileStore.clear()
+                                fetchList()
+                            }
+                            .navigationDestination(item: $tappedItem) { FileViewer($0) }
+                        } else if viewMode == .grid {
+                            GeometryReader { geometry in
+                                let columns = Array(
+                                    repeating: GridItem(.fixed(FileCell.Constants.width), spacing: VOMetrics.spacing),
+                                    count: Int(geometry.size.width / FileCell.Constants.width)
+                                )
+                                ScrollView {
+                                    LazyVGrid(columns: columns, spacing: VOMetrics.spacing) {
+                                        ForEach(entities, id: \.id) { file in
+                                            if file.type == .file {
+                                                Button {
+                                                    tappedItem = file
+                                                } label: {
+                                                    FileCell(file)
+                                                        .fileContextMenu(
+                                                            file,
+                                                            selection: $selection,
+                                                            onDelete: { showDelete = true },
+                                                            onRename: { showRename = true },
+                                                            onMove: { showMove = true },
+                                                            onCopy: { showCopy = true }
+                                                        )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
+                                                .onAppear { onListItemAppear(file.id) }
+                                            } else if file.type == .folder {
+                                                NavigationLink {
+                                                    FileList(file.id)
+                                                        .navigationTitle(file.name)
+                                                } label: {
+                                                    FileCell(file)
+                                                        .fileContextMenu(
+                                                            file,
+                                                            selection: $selection,
+                                                            onDelete: { showDelete = true },
+                                                            onRename: { showRename = true },
+                                                            onMove: { showMove = true },
+                                                            onCopy: { showCopy = true }
+                                                        )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
+                                                .onAppear { onListItemAppear(file.id) }
+                                            }
+                                        }
+                                    }
+                                    .navigationDestination(item: $tappedItem) { FileViewer($0) }
+                                    .padding(.vertical, VOMetrics.spacing)
                                 }
                             }
                         }
-                        .listStyle(.inset)
-                        .searchable(text: $searchText)
-                        .onChange(of: searchText) { searchPublisher.send($1) }
-                        .refreshable {
-                            fileStore.clear()
-                            fetchList()
-                        }
-                        .navigationDestination(item: $tappedItem) { FileViewer($0) }
                     }
                 } else {
                     ProgressView()
@@ -121,18 +173,20 @@ struct FileList: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                }
-                if editMode?.wrappedValue.isEditing == true, selection.count > 0 {
-                    ToolbarItem(placement: .bottomBar) {
-                        FileMenu(
-                            selection,
-                            onDelete: { showDelete = true },
-                            onRename: { showRename = true },
-                            onMove: { showMove = true },
-                            onCopy: { showCopy = true }
-                        )
+                if viewMode == .list {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        EditButton()
+                    }
+                    if editMode?.wrappedValue.isEditing == true, selection.count > 0 {
+                        ToolbarItem(placement: .bottomBar) {
+                            FileMenu(
+                                selection,
+                                onDelete: { showDelete = true },
+                                onRename: { showRename = true },
+                                onMove: { showMove = true },
+                                onCopy: { showCopy = true }
+                            )
+                        }
                     }
                 }
             }
@@ -142,8 +196,8 @@ struct FileList: View {
                     .removeDuplicates()
                     .sink { fileStore.query = .init(text: $0) }
                     .store(in: &cancellables)
-                if let token = authStore.token {
-                    onAppearOrChange(token)
+                if authStore.token != nil {
+                    onAppearOrChange()
                 }
             }
             .onDisappear {
@@ -152,8 +206,8 @@ struct FileList: View {
                 cancellables.removeAll()
             }
             .onChange(of: authStore.token) { _, newToken in
-                if let newToken {
-                    onAppearOrChange(newToken)
+                if newToken != nil {
+                    onAppearOrChange()
                 }
             }
             .onChange(of: fileStore.query) {
@@ -166,8 +220,7 @@ struct FileList: View {
         }
     }
 
-    private func onAppearOrChange(_ token: VOToken.Value) {
-        assignTokenToStores(token)
+    private func onAppearOrChange() {
         fileStore.clear()
         fetchData()
         fileStore.startTimer()
@@ -177,10 +230,6 @@ struct FileList: View {
         if fileStore.isLast(id) {
             fetchList()
         }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        fileStore.token = token
     }
 
     private func fetchData() {
@@ -237,11 +286,9 @@ struct FileList: View {
             }
         }
     }
-}
 
-#Preview {
-    FileList(VOWorkspace.Entity.devInstance.rootID)
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(FileStore())
-        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
+    enum ViewMode {
+        case list
+        case grid
+    }
 }

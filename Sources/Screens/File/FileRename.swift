@@ -68,14 +68,7 @@ struct FileRename: View {
                 }
             }
             .onAppear {
-                if let token = authStore.token {
-                    onAppearOrChange(token)
-                }
-            }
-            .onChange(of: authStore.token) { _, newToken in
-                if let newToken {
-                    onAppearOrChange(newToken)
-                }
+                fetch()
             }
             .onChange(of: file) { _, newFile in
                 if let newFile {
@@ -83,15 +76,6 @@ struct FileRename: View {
                 }
             }
         }
-    }
-
-    private func onAppearOrChange(_ token: VOToken.Value) {
-        assignTokenToStores(token)
-        fetch()
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        fileStore.token = token
     }
 
     private func fetch() {

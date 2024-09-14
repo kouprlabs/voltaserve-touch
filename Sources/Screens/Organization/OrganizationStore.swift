@@ -106,7 +106,7 @@ class OrganizationStore: ObservableObject {
 
 extension VOOrganization.Entity {
     static let devInstance = VOOrganization.Entity(
-        id: "aKQxy35RBP3p3",
+        id: UUID().uuidString,
         name: "My Organization",
         permission: .owner,
         createTime: Date().ISO8601Format()

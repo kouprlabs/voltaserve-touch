@@ -116,11 +116,11 @@ class WorkspaceStore: ObservableObject {
 
 extension VOWorkspace.Entity {
     static let devInstance = VOWorkspace.Entity(
-        id: "xexj71g2865Ra",
+        id: UUID().uuidString,
         name: "My Workspace",
         permission: .owner,
         storageCapacity: 5_000_000_000,
-        rootID: "x1novkR9M4YOe",
+        rootID: UUID().uuidString,
         organization: VOOrganization.Entity.devInstance,
         createTime: Date().ISO8601Format()
     )

@@ -22,6 +22,6 @@ extension View {
 }
 
 #Preview {
-    TextField("Email", text: .constant(""))
+    TextField("Lorem ipsum", text: .constant(""))
         .voTextField(width: VOMetrics.formWidth)
 }

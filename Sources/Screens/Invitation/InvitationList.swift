@@ -5,7 +5,3 @@ struct InvitationList: View {
         Text("Invitation List")
     }
 }
-
-#Preview {
-    InvitationList()
-}

@@ -2,13 +2,6 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileViewer: View {
-    @EnvironmentObject private var authStore: AuthStore
-    @EnvironmentObject private var pdfStore: PDFStore
-    @EnvironmentObject private var imageStore: ImageStore
-    @EnvironmentObject private var videoStore: VideoStore
-    @EnvironmentObject private var audioStore: AudioStore
-    @EnvironmentObject private var glbStore: GLBStore
-    @EnvironmentObject private var mosaicStore: MosaicStore
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
@@ -41,24 +34,5 @@ struct FileViewer: View {
                 }
             }
         }
-        .onAppear {
-            if let token = authStore.token {
-                assignTokenToStores(token)
-            }
-        }
-        .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                assignTokenToStores(newToken)
-            }
-        }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        pdfStore.token = token
-        imageStore.token = token
-        videoStore.token = token
-        audioStore.token = token
-        glbStore.token = token
-        mosaicStore.token = token
     }
 }

@@ -122,21 +122,19 @@ struct AccountSettings: View {
             Text("Are you sure want to delete your account?")
         }
         .onAppear {
-            if let token = authStore.token {
-                assignTokenToStores(token)
-                fetchData()
+            if authStore.token != nil {
+                onAppearOrChange()
             }
         }
         .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                assignTokenToStores(newToken)
-                fetchData()
+            if newToken != nil {
+                onAppearOrChange()
             }
         }
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        accountStore.token = token
+    func onAppearOrChange() {
+        fetchData()
     }
 
     private func fetchData() {
@@ -187,10 +185,4 @@ struct AccountSettings: View {
             }
         }
     }
-}
-
-#Preview {
-    AccountSettings()
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(AccountStore())
 }

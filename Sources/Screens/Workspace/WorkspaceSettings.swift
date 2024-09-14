@@ -86,15 +86,13 @@ struct WorkspaceSettings: View {
                 }
             }
             .onAppear {
-                if let token = authStore.token {
-                    assignTokenToStores(token)
-                    fetchStorageUsage(current.id)
+                if authStore.token != nil {
+                    onAppearOnChange()
                 }
             }
             .onChange(of: authStore.token) { _, newToken in
-                if let newToken {
-                    assignTokenToStores(newToken)
-                    fetchStorageUsage(current.id)
+                if newToken != nil {
+                    onAppearOnChange()
                 }
             }
         } else {
@@ -102,8 +100,9 @@ struct WorkspaceSettings: View {
         }
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        workspaceStore.token = token
+    func onAppearOnChange() {
+        guard let current = workspaceStore.current else { return }
+        fetchStorageUsage(current.id)
     }
 
     private func fetchStorageUsage(_ id: String) {
@@ -126,10 +125,4 @@ struct WorkspaceSettings: View {
             }
         }
     }
-}
-
-#Preview {
-    WorkspaceSettings()
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
 }

@@ -72,8 +72,8 @@ struct WorkspaceList: View {
                 .removeDuplicates()
                 .sink { workspaceStore.query = $0 }
                 .store(in: &cancellables)
-            if let token = authStore.token {
-                onAppearOrChange(token)
+            if authStore.token != nil {
+                onAppearOrChange()
             }
         }
         .onDisappear {
@@ -82,8 +82,8 @@ struct WorkspaceList: View {
             cancellables.removeAll()
         }
         .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                onAppearOrChange(newToken)
+            if newToken != nil {
+                onAppearOrChange()
             }
         }
         .onChange(of: workspaceStore.query) {
@@ -106,8 +106,7 @@ struct WorkspaceList: View {
         }
     }
 
-    private func onAppearOrChange(_ token: VOToken.Value) {
-        assignTokenToStores(token)
+    private func onAppearOrChange() {
         workspaceStore.clear()
         fetchData()
         workspaceStore.startTimer()
@@ -117,11 +116,6 @@ struct WorkspaceList: View {
         if workspaceStore.isLast(id) {
             fetchList()
         }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        workspaceStore.token = token
-        accountStore.token = token
     }
 
     private func fetchData() {
@@ -176,11 +170,4 @@ struct WorkspaceList: View {
             }
         }
     }
-}
-
-#Preview {
-    WorkspaceList()
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(WorkspaceStore())
-        .environmentObject(AccountStore())
 }

@@ -32,9 +32,3 @@ struct MainView: View {
         }
     }
 }
-
-#Preview {
-    MainView()
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(WorkspaceStore())
-}

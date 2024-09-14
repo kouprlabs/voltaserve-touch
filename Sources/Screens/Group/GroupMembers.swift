@@ -72,8 +72,8 @@ struct GroupMembers: View {
                 .removeDuplicates()
                 .sink { membersStore.query = $0 }
                 .store(in: &cancellables)
-            if let token = authStore.token {
-                onAppearOrChange(token)
+            if authStore.token != nil {
+                onAppearOrChange()
             }
         }
         .onDisappear {
@@ -82,8 +82,8 @@ struct GroupMembers: View {
             cancellables.removeAll()
         }
         .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                onAppearOrChange(newToken)
+            if newToken != nil {
+                onAppearOrChange()
             }
         }
         .onChange(of: membersStore.query) {
@@ -93,10 +93,8 @@ struct GroupMembers: View {
         }
     }
 
-    func onAppearOrChange(_ token: VOToken.Value) {
+    func onAppearOrChange() {
         guard let group = groupStore.current else { return }
-        membersStore.token = token
-        groupStore.token = token
         membersStore.clear()
         fetchList()
         membersStore.startTimer(group.id)
@@ -136,11 +134,4 @@ struct GroupMembers: View {
             }
         }
     }
-}
-
-#Preview {
-    GroupMembers()
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(GroupMembersStore())
-        .environmentObject(GroupStore())
 }

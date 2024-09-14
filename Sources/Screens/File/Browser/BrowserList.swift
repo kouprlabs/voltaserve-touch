@@ -52,7 +52,7 @@ struct BrowserList: View {
                                     )
                                     .navigationTitle(file.name)
                                 } label: {
-                                    FolderRow(file)
+                                    FileRow(file)
                                 }
                                 .onAppear { onListItemAppear(file.id) }
                             }
@@ -104,8 +104,8 @@ struct BrowserList: View {
                 .removeDuplicates()
                 .sink { browserStore.query = .init(text: $0) }
                 .store(in: &cancellables)
-            if let token = authStore.token {
-                onAppearOrChange(token)
+            if authStore.token != nil {
+                onAppearOrChange()
             }
         }
         .onDisappear {
@@ -114,8 +114,8 @@ struct BrowserList: View {
             cancellables.removeAll()
         }
         .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                onAppearOrChange(newToken)
+            if newToken != nil {
+                onAppearOrChange()
             }
         }
         .onChange(of: browserStore.query) {
@@ -125,8 +125,7 @@ struct BrowserList: View {
         }
     }
 
-    private func onAppearOrChange(_ token: VOToken.Value) {
-        assignTokenToStores(token)
+    private func onAppearOrChange() {
         browserStore.clear()
         fetchData()
         browserStore.startTimer()
@@ -136,10 +135,6 @@ struct BrowserList: View {
         if browserStore.isLast(id) {
             fetchList()
         }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        browserStore.token = token
     }
 
     private func fetchData() {
@@ -196,11 +191,4 @@ struct BrowserList: View {
             }
         }
     }
-}
-
-#Preview {
-    BrowserList(VOWorkspace.Entity.devInstance.rootID)
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(BrowserStore())
-        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
 }

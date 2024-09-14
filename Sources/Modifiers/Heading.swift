@@ -17,6 +17,6 @@ extension View {
 }
 
 #Preview {
-    Text("Hello, World!")
+    Text("Lorem Ipsum")
         .voHeading(fontSize: VOMetrics.headingFontSize)
 }

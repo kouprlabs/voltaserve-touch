@@ -40,19 +40,7 @@ struct WorkspaceOverview: View {
         }
         .onAppear {
             workspaceStore.current = workspace
-            if let token = authStore.token {
-                assignTokenToStores(token)
-            }
         }
-        .onChange(of: authStore.token) { _, newToken in
-            if let newToken {
-                assignTokenToStores(newToken)
-            }
-        }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        workspaceStore.token = token
     }
 }
 

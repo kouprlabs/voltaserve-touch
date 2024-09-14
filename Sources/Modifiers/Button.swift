@@ -23,6 +23,6 @@ extension View {
 }
 
 #Preview {
-    Button("Sign In", action: {})
+    Button("Lorem Ipsum", action: {})
         .voButton(width: VOMetrics.formWidth)
 }
