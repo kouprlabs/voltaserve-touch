@@ -33,22 +33,6 @@ struct FileCell: View {
             }
         }
         .frame(width: Constants.width, height: Constants.height)
-        .background(randomColor(from: file.name))
-    }
-
-    private func randomColor(from string: String) -> Color {
-        var hash = 0
-        for char in string.unicodeScalars {
-            hash = Int(char.value) &+ ((hash << 5) &- hash)
-        }
-
-        var color = ""
-        for i in 0 ..< 3 {
-            let value = (hash >> (i * 8)) & 0xFF
-            color += String(format: "%02x", value)
-        }
-
-        return Color(hex: color)
     }
 
     enum Constants {

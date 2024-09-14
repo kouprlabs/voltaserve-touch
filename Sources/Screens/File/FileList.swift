@@ -20,11 +20,16 @@ struct FileList: View {
     @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
-    @State private var viewMode: ViewMode = .grid
+    @State private var viewMode: ViewMode
     private let id: String
 
     init(_ id: String) {
         self.id = id
+        if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
+            self.viewMode = ViewMode(rawValue: viewMode)!
+        } else {
+            viewMode = .list
+        }
     }
 
     var body: some View {
@@ -82,8 +87,7 @@ struct FileList: View {
                             .searchable(text: $searchText)
                             .onChange(of: searchText) { searchPublisher.send($1) }
                             .refreshable {
-                                fileStore.clear()
-                                fetchList()
+                                fetchList(replace: true)
                             }
                             .navigationDestination(item: $tappedItem) { FileViewer($0) }
                         } else if viewMode == .grid {
@@ -189,8 +193,17 @@ struct FileList: View {
                         }
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewMode = viewMode == .list ? .grid : .list
+                        UserDefaults.standard.set(viewMode.rawValue, forKey: Constants.userDefaultViewModeKey)
+                    } label: {
+                        Label("View Mode", systemImage: viewMode == .list ? "square.grid.2x2" : "list.bullet")
+                    }
+                }
             }
             .onAppear {
+                fileStore.clear()
                 searchPublisher
                     .debounce(for: .seconds(1), scheduler: RunLoop.main)
                     .removeDuplicates()
@@ -211,8 +224,7 @@ struct FileList: View {
                 }
             }
             .onChange(of: fileStore.query) {
-                fileStore.entities = nil
-                fileStore.list = nil
+                fileStore.clear()
                 fetchList()
             }
         } else {
@@ -221,8 +233,8 @@ struct FileList: View {
     }
 
     private func onAppearOrChange() {
-        fileStore.clear()
-        fetchData()
+        fetchFile()
+        fetchList(replace: true)
         fileStore.startTimer()
     }
 
@@ -230,11 +242,6 @@ struct FileList: View {
         if fileStore.isLast(id) {
             fetchList()
         }
-    }
-
-    private func fetchData() {
-        fetchFile()
-        fetchList()
     }
 
     private func fetchFile() {
@@ -259,17 +266,22 @@ struct FileList: View {
         }
     }
 
-    private func fetchList() {
+    private func fetchList(replace: Bool = false) {
         Task {
             isLoading = true
             defer { isLoading = false }
             do {
                 if !fileStore.hasNextPage() { return }
-                let list = try await fileStore.fetchList(id, page: fileStore.nextPage())
+                let nextPage = fileStore.nextPage()
+                let list = try await fileStore.fetchList(id, page: nextPage)
                 Task { @MainActor in
                     fileStore.list = list
                     if let list {
-                        fileStore.append(list.data)
+                        if replace, nextPage == 1 {
+                            fileStore.entities = list.data
+                        } else {
+                            fileStore.append(list.data)
+                        }
                     }
                 }
             } catch let error as VOErrorResponse {
@@ -287,8 +299,12 @@ struct FileList: View {
         }
     }
 
-    enum ViewMode {
+    enum ViewMode: String {
         case list
         case grid
+    }
+
+    private enum Constants {
+        static let userDefaultViewModeKey = "com.voltaserve.files.viewMode"
     }
 }
