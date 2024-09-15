@@ -28,7 +28,7 @@ struct FileList: View {
         if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
             self.viewMode = ViewMode(rawValue: viewMode)!
         } else {
-            viewMode = .list
+            viewMode = .grid
         }
     }
 

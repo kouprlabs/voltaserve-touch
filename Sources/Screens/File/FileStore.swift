@@ -30,6 +30,10 @@ class FileStore: ObservableObject {
         try await client?.fetchList(id, options: .init(query: query, page: page, size: size))
     }
 
+    func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
+        client?.urlForThumbnail(id, fileExtension: fileExtension)
+    }
+
     func append(_ newEntities: [VOFile.Entity]) {
         if entities == nil {
             entities = []
