@@ -224,8 +224,7 @@ struct FileList: View {
                 }
             }
             .onChange(of: fileStore.query) {
-                fileStore.clear()
-                fetchList()
+                fetchList(replace: true)
             }
         } else {
             ProgressView()

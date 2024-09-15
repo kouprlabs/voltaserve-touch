@@ -37,8 +37,7 @@ struct GroupList: View {
                 .navigationTitle("Groups")
                 .searchable(text: $searchText)
                 .refreshable {
-                    groupStore.clear()
-                    fetchList()
+                    fetchList(replace: true)
                 }
                 .onChange(of: searchText) { searchPublisher.send($1) }
             } else {
@@ -53,6 +52,7 @@ struct GroupList: View {
             }
         }
         .onAppear {
+            groupStore.clear()
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
@@ -80,8 +80,7 @@ struct GroupList: View {
     }
 
     func onAppearOrChange() {
-        groupStore.clear()
-        fetchList()
+        fetchList(replace: true)
         groupStore.startTimer()
     }
 
@@ -91,17 +90,22 @@ struct GroupList: View {
         }
     }
 
-    func fetchList() {
+    func fetchList(replace: Bool = false) {
         Task {
             isLoading = true
             defer { isLoading = false }
             do {
                 if !groupStore.hasNextPage() { return }
-                let list = try await groupStore.fetchList(page: groupStore.nextPage())
+                let nextPage = groupStore.nextPage()
+                let list = try await groupStore.fetchList(page: nextPage)
                 Task { @MainActor in
                     groupStore.list = list
                     if let list {
-                        groupStore.append(list.data)
+                        if replace, nextPage == 1 {
+                            groupStore.entities = list.data
+                        } else {
+                            groupStore.append(list.data)
+                        }
                     }
                 }
             } catch let error as VOErrorResponse {

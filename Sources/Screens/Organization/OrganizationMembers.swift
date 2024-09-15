@@ -27,8 +27,7 @@ struct OrganizationMembers: View {
                 }
                 .searchable(text: $searchText)
                 .refreshable {
-                    membersStore.clear()
-                    fetchList()
+                    fetchList(replace: true)
                 }
                 .onChange(of: searchText) { searchPublisher.send($1) }
                 .toolbar {
@@ -80,15 +79,13 @@ struct OrganizationMembers: View {
             }
         }
         .onChange(of: membersStore.query) {
-            membersStore.entities = nil
-            membersStore.list = nil
-            fetchList()
+            fetchList(replace: true)
         }
     }
 
     func onAppearOrChange() {
         guard let organization = organizationStore.current else { return }
-        fetchList()
+        fetchList(replace: true)
         membersStore.startTimer(organization.id)
     }
 
@@ -98,18 +95,23 @@ struct OrganizationMembers: View {
         }
     }
 
-    func fetchList() {
+    func fetchList(replace: Bool = false) {
         guard let organization = organizationStore.current else { return }
         Task {
             isLoading = true
             defer { isLoading = false }
             do {
                 if !membersStore.hasNextPage() { return }
-                let list = try await membersStore.fetchList(organization.id, page: membersStore.nextPage())
+                let nextPage = membersStore.nextPage()
+                let list = try await membersStore.fetchList(organization.id, page: nextPage)
                 Task { @MainActor in
                     membersStore.list = list
                     if let list {
-                        membersStore.append(list.data)
+                        if replace, nextPage == 1 {
+                            membersStore.entities = list.data
+                        } else {
+                            membersStore.append(list.data)
+                        }
                     }
                 }
             } catch let error as VOErrorResponse {

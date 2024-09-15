@@ -40,8 +40,7 @@ struct WorkspaceList: View {
                 .searchable(text: $searchText)
                 .onChange(of: searchText) { searchPublisher.send($1) }
                 .refreshable {
-                    workspaceStore.clear()
-                    fetchList()
+                    fetchList(replace: true)
                 }
                 .navigationTitle("Home")
                 .toolbar {
@@ -67,6 +66,7 @@ struct WorkspaceList: View {
             }
         }
         .onAppear {
+            workspaceStore.clear()
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
@@ -107,8 +107,8 @@ struct WorkspaceList: View {
     }
 
     private func onAppearOrChange() {
-        workspaceStore.clear()
-        fetchData()
+        fetchList(replace: true)
+        fetchUser()
         workspaceStore.startTimer()
     }
 
@@ -118,22 +118,22 @@ struct WorkspaceList: View {
         }
     }
 
-    private func fetchData() {
-        fetchList()
-        fetchUser()
-    }
-
-    private func fetchList() {
+    private func fetchList(replace: Bool = false) {
         Task {
             isLoading = true
             defer { isLoading = false }
             do {
                 if !workspaceStore.hasNextPage() { return }
-                let list = try await workspaceStore.fetchList(page: workspaceStore.nextPage())
+                let nextPage = workspaceStore.nextPage()
+                let list = try await workspaceStore.fetchList(page: nextPage)
                 Task { @MainActor in
                     workspaceStore.list = list
                     if let list {
-                        workspaceStore.append(list.data)
+                        if replace, nextPage == 1 {
+                            workspaceStore.entities = list.data
+                        } else {
+                            workspaceStore.append(list.data)
+                        }
                     }
                 }
             } catch let error as VOErrorResponse {

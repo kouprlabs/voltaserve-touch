@@ -68,8 +68,7 @@ struct BrowserList: View {
                         .searchable(text: $searchText)
                         .onChange(of: searchText) { searchPublisher.send($1) }
                         .refreshable {
-                            browserStore.clear()
-                            fetchList()
+                            fetchList(replace: true)
                         }
                         .navigationDestination(item: $tappedItem) { FileViewer($0) }
                         .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
@@ -99,6 +98,7 @@ struct BrowserList: View {
             }
         }
         .onAppear {
+            browserStore.clear()
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
@@ -126,8 +126,8 @@ struct BrowserList: View {
     }
 
     private func onAppearOrChange() {
-        browserStore.clear()
-        fetchData()
+        fetchFile()
+        fetchList(replace: true)
         browserStore.startTimer()
     }
 
@@ -135,11 +135,6 @@ struct BrowserList: View {
         if browserStore.isLast(id) {
             fetchList()
         }
-    }
-
-    private func fetchData() {
-        fetchFile()
-        fetchList()
     }
 
     private func fetchFile() {
@@ -164,17 +159,22 @@ struct BrowserList: View {
         }
     }
 
-    private func fetchList() {
+    private func fetchList(replace: Bool = false) {
         Task {
             isLoading = true
             defer { isLoading = false }
             do {
                 if !browserStore.hasNextPage() { return }
-                let list = try await browserStore.fetchList(id, page: browserStore.nextPage())
+                let nextPage = browserStore.nextPage()
+                let list = try await browserStore.fetchList(id, page: nextPage)
                 Task { @MainActor in
                     browserStore.list = list
                     if let list {
-                        browserStore.append(list.data)
+                        if replace, nextPage == 1 {
+                            browserStore.entities = list.data
+                        } else {
+                            browserStore.append(list.data)
+                        }
                     }
                 }
             } catch let error as VOErrorResponse {

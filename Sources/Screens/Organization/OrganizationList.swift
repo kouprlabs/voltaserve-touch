@@ -37,8 +37,7 @@ struct OrganizationList: View {
                 .navigationTitle("Organizations")
                 .searchable(text: $searchText)
                 .refreshable {
-                    organizationStore.clear()
-                    fetchList()
+                    fetchList(replace: true)
                 }
                 .onChange(of: searchText) { searchPublisher.send($1) }
             } else {
@@ -53,6 +52,7 @@ struct OrganizationList: View {
             }
         }
         .onAppear {
+            organizationStore.clear()
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
@@ -80,8 +80,7 @@ struct OrganizationList: View {
     }
 
     func onAppearOrChange() {
-        organizationStore.clear()
-        fetchList()
+        fetchList(replace: true)
         organizationStore.startTimer()
     }
 
@@ -91,17 +90,22 @@ struct OrganizationList: View {
         }
     }
 
-    func fetchList() {
+    func fetchList(replace: Bool = false) {
         Task {
             do {
                 isLoading = true
                 defer { isLoading = false }
                 if !organizationStore.hasNextPage() { return }
-                let list = try await organizationStore.fetchList(page: organizationStore.nextPage())
+                let nextPage = organizationStore.nextPage()
+                let list = try await organizationStore.fetchList(page: nextPage)
                 Task { @MainActor in
                     organizationStore.list = list
                     if let list {
-                        organizationStore.append(list.data)
+                        if replace, nextPage == 1 {
+                            organizationStore.entities = list.data
+                        } else {
+                            organizationStore.append(list.data)
+                        }
                     }
                 }
             } catch let error as VOErrorResponse {

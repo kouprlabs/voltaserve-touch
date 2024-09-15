@@ -34,8 +34,7 @@ struct GroupMembers: View {
                 }
                 .searchable(text: $searchText)
                 .refreshable {
-                    membersStore.clear()
-                    fetchList()
+                    fetchList(replace: true)
                 }
                 .onChange(of: searchText) { searchPublisher.send($1) }
                 .toolbar {
@@ -67,6 +66,7 @@ struct GroupMembers: View {
             }
         }
         .onAppear {
+            membersStore.clear()
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
@@ -87,16 +87,13 @@ struct GroupMembers: View {
             }
         }
         .onChange(of: membersStore.query) {
-            membersStore.entities = nil
-            membersStore.list = nil
-            fetchList()
+            fetchList(replace: true)
         }
     }
 
     func onAppearOrChange() {
         guard let group = groupStore.current else { return }
-        membersStore.clear()
-        fetchList()
+        fetchList(replace: true)
         membersStore.startTimer(group.id)
     }
 
@@ -106,18 +103,23 @@ struct GroupMembers: View {
         }
     }
 
-    func fetchList() {
+    func fetchList(replace: Bool = false) {
         guard let group = groupStore.current else { return }
         Task {
             isLoading = true
             defer { isLoading = false }
             do {
                 if !membersStore.hasNextPage() { return }
-                let list = try await membersStore.fetchList(group.id, page: membersStore.nextPage())
+                let nextPage = membersStore.nextPage()
+                let list = try await membersStore.fetchList(group.id, page: nextPage)
                 Task { @MainActor in
                     membersStore.list = list
                     if let list {
-                        membersStore.append(list.data)
+                        if replace, nextPage == 1 {
+                            membersStore.entities = list.data
+                        } else {
+                            membersStore.append(list.data)
+                        }
                     }
                 }
             } catch let error as VOErrorResponse {
