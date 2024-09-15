@@ -93,8 +93,8 @@ struct FileList: View {
                         } else if viewMode == .grid {
                             GeometryReader { geometry in
                                 let columns = Array(
-                                    repeating: GridItem(.fixed(FileCell.Constants.width), spacing: VOMetrics.spacing),
-                                    count: Int(geometry.size.width / FileCell.Constants.width)
+                                    repeating: GridItem(.fixed(FileMetrics.cellSize.width), spacing: VOMetrics.spacing),
+                                    count: Int(geometry.size.width / FileMetrics.cellSize.width)
                                 )
                                 ScrollView {
                                     LazyVGrid(columns: columns, spacing: VOMetrics.spacing) {

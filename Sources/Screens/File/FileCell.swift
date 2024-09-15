@@ -17,46 +17,12 @@ struct FileCell: View {
                    let thumbnail = snapshot.thumbnail,
                    let fileExtension = thumbnail.fileExtension,
                    let url = fileStore.urlForThumbnail(file.id, fileExtension: String(fileExtension.dropFirst())) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                        case let .success(image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .cornerRadius(VOMetrics.borderRadiusSm)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
-                                        .stroke(Color(red: 226 / 255, green: 232 / 255, blue: 240 / 255), lineWidth: 1)
-                                }
-                                .frame(maxWidth: 160, maxHeight: 160)
-                        case .failure:
-                            Image(file.iconForFile(colorScheme: colorScheme))
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 80, height: 80)
-                        @unknown default:
-                            Image(file.iconForFile(colorScheme: colorScheme))
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 80, height: 80)
-                        }
-                    }
+                    FileThumbnail(url: url) { fileIcon }
                 } else {
-                    Image(file.iconForFile(colorScheme: colorScheme))
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 80, height: 80)
+                    fileIcon
                 }
             } else if file.type == .folder {
-                VStack {
-                    Image("icon-folder")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 80, height: 80)
-                }
-                .frame(maxWidth: 160, maxHeight: 160)
+                folderIcon
             }
             VStack {
                 Text(file.name)
@@ -68,11 +34,74 @@ struct FileCell: View {
                 Spacer()
             }
         }
-        .frame(width: Constants.width, height: Constants.height)
+        .frame(width: FileMetrics.cellSize.width, height: FileMetrics.cellSize.height)
     }
 
-    enum Constants {
-        static let width = CGFloat(160)
-        static let height = CGFloat(260)
+    private var fileIcon: some View {
+        VStack {
+            Image(file.iconForFile(colorScheme: colorScheme))
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
+        }
+        .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
     }
+
+    private var folderIcon: some View {
+        VStack {
+            Image("icon-folder")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
+        }
+        .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
+    }
+}
+
+struct FileThumbnail<FallbackContent: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
+    var url: URL
+    var fallback: () -> FallbackContent
+
+    init(url: URL, @ViewBuilder fallback: @escaping () -> FallbackContent) {
+        self.url = url
+        self.fallback = fallback
+    }
+
+    var body: some View {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+            case let .success(image):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .cornerRadius(VOMetrics.borderRadiusSm)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
+                            .stroke(borderColor(), lineWidth: 1)
+                    }
+                    .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
+            case .failure:
+                fallback()
+            @unknown default:
+                fallback()
+            }
+        }
+    }
+
+    private func borderColor() -> Color {
+        if colorScheme == .dark {
+            Color(.sRGB, red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.16)
+        } else {
+            Color(red: 226 / 255, green: 232 / 255, blue: 240 / 255)
+        }
+    }
+}
+
+enum FileMetrics {
+    static let iconSize = CGSize(width: 80, height: 80)
+    static let frameSize = CGSize(width: 160, height: 160)
+    static let cellSize = CGSize(width: 160, height: 260)
 }
