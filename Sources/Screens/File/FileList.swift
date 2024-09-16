@@ -313,7 +313,6 @@ struct FileContextMenuWithActions: ViewModifier {
                     if let snapshot = file.snapshot,
                        let fileExtension = snapshot.original.fileExtension,
                        let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst())) {
-                        print(url.absoluteString)
                         UIApplication.shared.open(url)
                     }
                 }
