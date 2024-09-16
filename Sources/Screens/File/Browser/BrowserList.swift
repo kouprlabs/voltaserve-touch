@@ -13,29 +13,19 @@ struct BrowserList: View {
     @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
-    @Binding private var isConfirming: Bool
     private let id: String
-    private let onConfirm: (() -> Void)?
     private let onDismiss: (() -> Void)?
-    private let confirmationMessage: String?
+    private let confirmLabelText: String
 
-    init(
-        _ id: String,
-        onConfirm: (() -> Void)? = nil,
-        onDismiss: (() -> Void)? = nil,
-        isConfirming: Binding<Bool> = .constant(false),
-        confirmationMessage: String? = nil
-    ) {
+    init(_ id: String, confirmLabelText: String = "Done", _ onDismiss: (() -> Void)? = nil) {
         self.id = id
-        self.onConfirm = onConfirm
+        self.confirmLabelText = confirmLabelText
         self.onDismiss = onDismiss
-        _isConfirming = isConfirming
-        self.confirmationMessage = confirmationMessage
     }
 
     var body: some View {
         VStack {
-            if let entities = browserStore.entities, !isConfirming {
+            if let entities = browserStore.entities {
                 VStack {
                     if entities.count == 0 {
                         Text("There are no items.")
@@ -43,18 +33,10 @@ struct BrowserList: View {
                         List {
                             ForEach(entities, id: \.id) { file in
                                 NavigationLink {
-                                    BrowserList(
-                                        file.id,
-                                        onConfirm: onConfirm,
-                                        onDismiss: onDismiss,
-                                        isConfirming: $isConfirming,
-                                        confirmationMessage: confirmationMessage
-                                    )
-                                    .navigationTitle(file.name)
-                                } label: {
-                                    FileRow(file)
-                                }
-                                .onAppear { onListItemAppear(file.id) }
+                                    BrowserList(file.id, confirmLabelText: confirmLabelText) { onDismiss?() }
+                                        .navigationTitle(file.name)
+                                } label: { FileRow(file) }
+                                    .onAppear { onListItemAppear(file.id) }
                             }
                             if isLoading {
                                 HStack {
@@ -82,19 +64,14 @@ struct BrowserList: View {
                 }
             } else {
                 ProgressView()
-                if let confirmationMessage, isConfirming {
-                    Text(confirmationMessage)
-                }
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { onConfirm?() }
-                    .disabled(isConfirming)
+                Button(confirmLabelText) { onDismiss?() }
             }
             ToolbarItem(placement: .topBarLeading) {
                 Button("Cancel", role: .cancel) { onDismiss?() }
-                    .disabled(isConfirming)
             }
         }
         .onAppear {

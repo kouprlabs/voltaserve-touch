@@ -8,12 +8,16 @@ struct FileDownload: View {
     private let onCompletion: (([URL]) -> Void)?
     private let onDismiss: (() -> Void)?
     @State private var localURLs: [URL] = []
-    @State private var isDownloading = true
+    @State private var isProcessing = true
     @State private var showError = false
     @State private var errorType: ErrorType?
     @State private var errorMessage: String?
 
-    init(_ files: [VOFile.Entity], _ onCompletion: (([URL]) -> Void)? = nil, onDismiss: (() -> Void)? = nil) {
+    init(
+        _ files: [VOFile.Entity],
+        _ onCompletion: (([URL]) -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
+    ) {
         self.files = files
         self.onCompletion = onCompletion
         self.onDismiss = onDismiss
@@ -21,7 +25,7 @@ struct FileDownload: View {
 
     var body: some View {
         VStack {
-            if isDownloading, !showError {
+            if isProcessing, !showError {
                 ProgressView()
                     .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
                 if files.count == 1 {
@@ -38,7 +42,7 @@ struct FileDownload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onDismiss?() } label: { VOButtonLabel("Dismiss") }
+                Button { onDismiss?() } label: { VOButtonLabel("Done") }
                     .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
                     .padding(.horizontal)
             } else if showError, errorType == .some {
@@ -50,10 +54,10 @@ struct FileDownload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button {} label: { VOButtonLabel("Continue") }
+                Button { onCompletion?(localURLs) } label: { VOButtonLabel("Continue") }
                     .voButton()
                     .padding(.horizontal)
-                Button { onDismiss?() } label: { VOButtonLabel("Cancel") }
+                Button { onDismiss?() } label: { VOButtonLabel("Done") }
                     .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
                     .padding(.horizontal)
             }
@@ -94,37 +98,32 @@ struct FileDownload: View {
         dispatchGroup.notify(queue: .main) {
             if localURLs.count == files.count {
                 onSuccess()
-            } else if localURLs.count < files.count {
-                onSomeFailed()
-            } else if localURLs.isEmpty {
-                onAllFailed()
+            } else {
+                onError(count: files.count - localURLs.count)
             }
         }
     }
 
     func onSuccess() {
-        isDownloading = false
+        isProcessing = false
         showError = false
         errorType = .unknown
         onCompletion?(localURLs)
     }
 
-    func onAllFailed() {
-        isDownloading = false
+    func onError(count: Int) {
+        isProcessing = false
         showError = true
-        errorType = .all
         if files.count == 1 {
-            errorMessage = "Download failed."
-        } else {
-            errorMessage = "All downloads failed."
+            errorType = .all
+            errorMessage = "Failed to download item."
+        } else if count == files.count {
+            errorType = .all
+            errorMessage = "Failed to download items."
+        } else if count < files.count {
+            errorType = .some
+            errorMessage = "Failed to download \(count) item(s)."
         }
-    }
-
-    func onSomeFailed() {
-        isDownloading = false
-        showError = true
-        errorType = .some
-        errorMessage = "Some downloads failed."
     }
 
     enum ErrorType {

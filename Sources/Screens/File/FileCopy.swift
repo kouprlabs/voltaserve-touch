@@ -2,32 +2,103 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileCopy: View {
-    private(set) var workspace: VOWorkspace.Entity
-    private(set) var selection: Set<String>
-    @State private var isProcessing = false
-    @Binding private(set) var isVisible: Bool
+    @EnvironmentObject private var fileStore: FileStore
+    @Environment(\.colorScheme) private var colorScheme
+    private let files: [VOFile.Entity]
+    private let onDismiss: (() -> Void)?
+    @State private var isProcessing = true
+    @State private var showError = false
+    @State private var errorType: ErrorType?
+    @State private var errorMessage: String?
+
+    init(_ files: [VOFile.Entity], onDismiss: (() -> Void)? = nil) {
+        self.files = files
+        self.onDismiss = onDismiss
+    }
 
     var body: some View {
-        NavigationStack {
-            BrowserList(
-                workspace.rootID,
-                onConfirm: {
-                    isProcessing = true
-                    Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                        Task { @MainActor in
-                            isVisible = false
-                            isProcessing = false
-                        }
-                    }
-                },
-                onDismiss: { isVisible = false },
-                isConfirming: $isProcessing,
-                confirmationMessage: selection.count == 1 ?
-                    "Copying item." :
-                    "Copying \(selection.count) items."
-            )
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(workspace.name)
+        VStack {
+            if isProcessing, !showError {
+                ProgressView()
+                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
+                if files.count == 1 {
+                    Text("Copying item.")
+                } else {
+                    Text("Copying \(files.count) items.")
+                }
+            } else if showError, errorType == .all {
+                Image(systemName: "xmark.circle")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
+                    .foregroundStyle(VOColors.red500)
+                if let errorMessage {
+                    Text(errorMessage)
+                }
+                Button { onDismiss?() } label: { VOButtonLabel("Done") }
+                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                    .padding(.horizontal)
+            } else if showError, errorType == .some {
+                Image(systemName: "exclamationmark.circle")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
+                    .foregroundStyle(VOColors.yellow300)
+                if let errorMessage {
+                    Text(errorMessage)
+                }
+                Button { onDismiss?() } label: { VOButtonLabel("Done") }
+                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                    .padding(.horizontal)
+            }
         }
+        .onAppear { performMove() }
+        .presentationDetents([.fraction(0.25)])
+    }
+
+    func performMove() {
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+            if files.count == 1 {
+                onSuccess()
+            } else if files.count == 2 {
+                onError(count: 2)
+            } else if files.count == 3 {
+                onError(count: 1)
+            } else {
+                onSuccess()
+            }
+        }
+    }
+
+    func onSuccess() {
+        isProcessing = false
+        showError = false
+        errorType = .unknown
+        onDismiss?()
+    }
+
+    func onError(count: Int) {
+        isProcessing = false
+        showError = true
+        if files.count == 1 {
+            errorType = .all
+            errorMessage = "Failed to copy item."
+        } else if count == files.count {
+            errorType = .all
+            errorMessage = "Failed to copy items."
+        } else if count < files.count {
+            errorType = .some
+            errorMessage = "Failed to copy \(count) item(s)."
+        }
+    }
+
+    enum ErrorType {
+        case all
+        case some
+        case unknown
+    }
+
+    private enum Constants {
+        static let errorIconSize: CGFloat = 30
     }
 }

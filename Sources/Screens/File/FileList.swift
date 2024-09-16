@@ -10,11 +10,13 @@ struct FileList: View {
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.editMode) private var editMode
     @State var selection = Set<String>()
-    @State var showMove = false
-    @State var showCopy = false
     @State var showRename = false
     @State var showDelete = false
     @State var showDownload = false
+    @State var showBrowserForMove = false
+    @State var showBrowserForCopy = false
+    @State private var showMove = false
+    @State private var showCopy = false
     @State private var showDocumentPicker = false
     @State private var showError = false
     @State private var errorMessage: String?
@@ -60,19 +62,31 @@ struct FileList: View {
                     Text(errorMessage)
                 }
             }
+            .sheet(isPresented: $showBrowserForMove) {
+                NavigationStack {
+                    BrowserList(workspace.rootID, confirmLabelText: "Move Here") {
+                        showMove = true
+                        showBrowserForMove = false
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle(workspace.name)
+                }
+            }
             .sheet(isPresented: $showMove) {
-                FileMove(
-                    workspace: workspace,
-                    selection: selection,
-                    isVisible: $showMove
-                )
+                FileMove(selectionToFiles()) { showMove = false }
+            }
+            .sheet(isPresented: $showBrowserForCopy) {
+                NavigationStack {
+                    BrowserList(workspace.rootID, confirmLabelText: "Copy Here") {
+                        showCopy = true
+                        showBrowserForCopy = false
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle(workspace.name)
+                }
             }
             .sheet(isPresented: $showCopy) {
-                FileCopy(
-                    workspace: workspace,
-                    selection: selection,
-                    isVisible: $showCopy
-                )
+                FileCopy(selectionToFiles()) { showCopy = false }
             }
             .sheet(isPresented: $showRename) {
                 if !selection.isEmpty {
@@ -113,8 +127,8 @@ struct FileList: View {
                                 onDownload: { showDownload = true },
                                 onDelete: { showDelete = true },
                                 onRename: { showRename = true },
-                                onMove: { showMove = true },
-                                onCopy: { showCopy = true }
+                                onMove: { showBrowserForMove = true },
+                                onCopy: { showBrowserForCopy = true }
                             )
                         }
                     }
@@ -246,6 +260,7 @@ struct FileList: View {
                 }
             }
         }
+        showDocumentPicker = false
     }
 
     private func selectionToFiles() -> [VOFile.Entity] {
@@ -354,8 +369,8 @@ struct FileContextMenuWithActions: ViewModifier {
                 onDownload: { list.showDownload = true },
                 onDelete: { list.showDelete = true },
                 onRename: { list.showRename = true },
-                onMove: { list.showMove = true },
-                onCopy: { list.showCopy = true },
+                onMove: { list.showBrowserForMove = true },
+                onCopy: { list.showBrowserForCopy = true },
                 onOpen: {
                     if let snapshot = file.snapshot,
                        let fileExtension = snapshot.original.fileExtension,
