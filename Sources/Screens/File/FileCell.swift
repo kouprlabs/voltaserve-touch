@@ -17,7 +17,7 @@ struct FileCell: View {
                    let thumbnail = snapshot.thumbnail,
                    let fileExtension = thumbnail.fileExtension,
                    let url = fileStore.urlForThumbnail(file.id, fileExtension: String(fileExtension.dropFirst())) {
-                    FileThumbnail(url: url) { fileIcon }
+                    FileThumbnail(url: url, file: file) { fileIcon }
                 } else {
                     fileIcon
                 }
@@ -42,6 +42,7 @@ struct FileCell: View {
             Image(file.iconForFile(colorScheme: colorScheme))
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .fileCellBadge(file)
                 .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
         }
         .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
@@ -52,6 +53,7 @@ struct FileCell: View {
             Image("icon-folder")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .fileCellBadge(file)
                 .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
         }
         .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
@@ -60,12 +62,14 @@ struct FileCell: View {
 
 struct FileThumbnail<FallbackContent: View>: View {
     @Environment(\.colorScheme) private var colorScheme
-    var url: URL
-    var fallback: () -> FallbackContent
+    private let url: URL
+    private let fallback: () -> FallbackContent
+    private let file: VOFile.Entity
 
-    init(url: URL, @ViewBuilder fallback: @escaping () -> FallbackContent) {
+    init(url: URL, file: VOFile.Entity, @ViewBuilder fallback: @escaping () -> FallbackContent) {
         self.url = url
         self.fallback = fallback
+        self.file = file
     }
 
     var body: some View {
@@ -82,6 +86,7 @@ struct FileThumbnail<FallbackContent: View>: View {
                         RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
                             .stroke(borderColor(), lineWidth: 1)
                     }
+                    .fileCellBadge(file)
                     .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
             case .failure:
                 fallback()
@@ -100,8 +105,27 @@ struct FileThumbnail<FallbackContent: View>: View {
     }
 }
 
+struct FileCellBadge: ViewModifier {
+    var file: VOFile.Entity
+
+    func body(content: Content) -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            content
+            FileBadge(file)
+                .offset(x: FileMetrics.badgeOffset.width, y: FileMetrics.badgeOffset.height)
+        }
+    }
+}
+
+extension View {
+    func fileCellBadge(_ file: VOFile.Entity) -> some View {
+        modifier(FileCellBadge(file: file))
+    }
+}
+
 enum FileMetrics {
     static let iconSize = CGSize(width: 80, height: 80)
     static let frameSize = CGSize(width: 160, height: 160)
     static let cellSize = CGSize(width: 160, height: 260)
+    static let badgeOffset = CGSize(width: 5, height: 5)
 }
