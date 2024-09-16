@@ -41,6 +41,14 @@ struct FileMenu: View {
                 Button { onSharing?() } label: {
                     Label("Sharing", systemImage: "person.2")
                 }
+            }
+            if fileStore.isDownloadAuthorized(selection) {
+                Button { onDownload?() } label: {
+                    Label("Download", systemImage: "square.and.arrow.down")
+                }
+            }
+            if fileStore.isSharingAuthorized(selection) ||
+                fileStore.isDownloadAuthorized(selection) {
                 Divider()
             }
             if fileStore.isDeleteAuthorized(selection) {

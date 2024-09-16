@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import UIKit
 import VoltaserveCore
 
 struct FileList: View {
@@ -13,6 +14,8 @@ struct FileList: View {
     @State var showCopy = false
     @State var showRename = false
     @State var showDelete = false
+    @State var showDownload = false
+    @State private var showDocumentPicker = false
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
@@ -21,6 +24,7 @@ struct FileList: View {
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
     @State private var viewMode: ViewMode
+    @State private var documentPickerURLs: [URL]?
     private let id: String
 
     init(_ id: String) {
@@ -80,6 +84,23 @@ struct FileList: View {
                     FileDelete(selection) { showDelete = false }
                 }
             }
+            .sheet(isPresented: $showDownload) {
+                let files = selectionToFiles()
+                if !files.isEmpty {
+                    FileDownload(files) { localURLs in
+                        showDownload = false
+                        documentPickerURLs = localURLs
+                        showDocumentPicker = true
+                    } onDismiss: {
+                        showDownload = false
+                    }
+                }
+            }
+            .sheet(isPresented: $showDocumentPicker, onDismiss: handleDismissDocumentPicker) {
+                if let documentPickerURLs {
+                    DocumentPicker(sourceURLs: documentPickerURLs, onDismiss: handleDismissDocumentPicker)
+                }
+            }
             .toolbar {
                 if viewMode == .list {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -89,6 +110,7 @@ struct FileList: View {
                         ToolbarItem(placement: .bottomBar) {
                             FileMenu(
                                 selection,
+                                onDownload: { showDownload = true },
                                 onDelete: { showDelete = true },
                                 onRename: { showRename = true },
                                 onMove: { showMove = true },
@@ -213,6 +235,30 @@ struct FileList: View {
         }
     }
 
+    private func handleDismissDocumentPicker() {
+        if let documentPickerURLs {
+            let fileManager = FileManager.default
+            for url in documentPickerURLs where fileManager.fileExists(atPath: url.path) {
+                do {
+                    try fileManager.removeItem(at: url)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    private func selectionToFiles() -> [VOFile.Entity] {
+        var files: [VOFile.Entity] = []
+        for id in selection {
+            let file = fileStore.entities?.first(where: { $0.id == id })
+            if let file {
+                files.append(file)
+            }
+        }
+        return files
+    }
+
     private func onAppearOrChange() {
         fetchFile()
         fetchList(replace: true)
@@ -305,6 +351,7 @@ struct FileContextMenuWithActions: ViewModifier {
             .fileContextMenu(
                 file,
                 selection: list.$selection,
+                onDownload: { list.showDownload = true },
                 onDelete: { list.showDelete = true },
                 onRename: { list.showRename = true },
                 onMove: { list.showMove = true },
@@ -323,5 +370,41 @@ struct FileContextMenuWithActions: ViewModifier {
 extension View {
     func fileContextMenuWithActions(_ file: VOFile.Entity, list: FileList) -> some View {
         modifier(FileContextMenuWithActions(file, list: list))
+    }
+}
+
+struct DocumentPicker: UIViewControllerRepresentable {
+    let sourceURLs: [URL]
+    let onDismiss: (() -> Void)?
+
+    init(sourceURLs: [URL], onDismiss: (() -> Void)? = nil) {
+        self.sourceURLs = sourceURLs
+        self.onDismiss = onDismiss
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(sourceURLs: sourceURLs, onDismiss: onDismiss)
+    }
+
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let documentPicker = UIDocumentPickerViewController(forExporting: sourceURLs)
+        documentPicker.delegate = context.coordinator
+        return documentPicker
+    }
+
+    func updateUIViewController(_: UIDocumentPickerViewController, context _: Context) {}
+
+    class Coordinator: NSObject, UIDocumentPickerDelegate {
+        let sourceURLs: [URL]
+        let onDismiss: (() -> Void)?
+
+        init(sourceURLs: [URL], onDismiss: (() -> Void)?) {
+            self.sourceURLs = sourceURLs
+            self.onDismiss = onDismiss
+        }
+
+        func documentPickerWasCancelled(_: UIDocumentPickerViewController) {
+            onDismiss?()
+        }
     }
 }

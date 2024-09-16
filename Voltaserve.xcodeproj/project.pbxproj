@@ -87,6 +87,7 @@
 				File/FileContextMenu.swift,
 				File/FileCopy.swift,
 				File/FileDelete.swift,
+				File/FileDownload.swift,
 				"File/FileEntity+Icon.swift",
 				File/FileList.swift,
 				File/FileMenu.swift,
@@ -148,6 +149,7 @@
 		644C38B72C8F3744008E8F0F /* Infrastructure */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (644C38DA2C8F3744008E8F0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Infrastructure; sourceTree = "<group>"; };
 		644C38BD2C8F3744008E8F0F /* Modifiers */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (644C38DB2C8F3744008E8F0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Modifiers; sourceTree = "<group>"; };
 		644C38C42C8F3744008E8F0F /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (644C38DC2C8F3744008E8F0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
+		64DA01D12C98766E0063A4CB /* Design */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Design; sourceTree = "<group>"; };
 		64E4C9B52C92495000395C9D /* Screens */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64E4CA1B2C92496100395C9D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Screens; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -192,6 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				64E4C9B52C92495000395C9D /* Screens */,
+				64DA01D12C98766E0063A4CB /* Design */,
 				644C38B42C8F3744008E8F0F /* Helpers */,
 				644C38B72C8F3744008E8F0F /* Infrastructure */,
 				644C38BD2C8F3744008E8F0F /* Modifiers */,
@@ -238,6 +241,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				644C38B42C8F3744008E8F0F /* Helpers */,
+				64DA01D12C98766E0063A4CB /* Design */,
 			);
 			name = Voltaserve;
 			packageProductDependencies = (

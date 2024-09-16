@@ -119,6 +119,20 @@ class FileStore: ObservableObject {
             .allSatisfy { $0.permission.ge(.editor) }
     }
 
+    func isViewerInSelection(_ selection: Set<String>) -> Bool {
+        guard let entities else { return false }
+        return entities
+            .filter { selection.contains($0.id) }
+            .allSatisfy { $0.permission.ge(.viewer) }
+    }
+
+    func isFilesInSelection(_ selection: Set<String>) -> Bool {
+        guard let entities else { return false }
+        return entities
+            .filter { selection.contains($0.id) }
+            .allSatisfy { $0.type == .file }
+    }
+
     func isInsightsAuthorized(_ file: VOFile.Entity) -> Bool {
         guard let snapshot = file.snapshot else { return false }
         guard let fileExtension = snapshot.original.fileExtension else { return false }
@@ -182,6 +196,10 @@ class FileStore: ObservableObject {
 
     func isDownloadAuthorized(_ file: VOFile.Entity) -> Bool {
         file.type == .file && file.permission.ge(.viewer)
+    }
+
+    func isDownloadAuthorized(_ selection: Set<String>) -> Bool {
+        !selection.isEmpty && isViewerInSelection(selection) && isFilesInSelection(selection)
     }
 
     func isRenameAuthorized(_ file: VOFile.Entity) -> Bool {

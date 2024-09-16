@@ -28,7 +28,7 @@ struct VOAvatar: View {
                         .frame(width: size, height: size)
                     Text(initials(name))
                         .font(.system(size: min(geometry.size.width, geometry.size.height) * 0.3))
-                        .foregroundStyle(colorForBackground(randomColor(from: name)))
+                        .foregroundStyle(randomColor(from: name).colorForBackground())
                 }
             }
         }
@@ -59,18 +59,6 @@ struct VOAvatar: View {
             return "\(firstName.first!)".uppercased()
         }
         return ""
-    }
-
-    func colorForBackground(_ color: Color) -> Color {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-
-        UIColor(color).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-
-        let luminance = 0.299 * red + 0.587 * green + 0.114 * blue
-        return luminance > 0.5 ? Color.black : Color.white
     }
 }
 

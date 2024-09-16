@@ -6,3 +6,4 @@ disabled_rules:
     - type_body_length
     - cyclomatic_complexity
     - non_optional_string_data_conversion
+    - file_length

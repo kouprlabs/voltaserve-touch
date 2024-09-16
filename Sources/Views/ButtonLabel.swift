@@ -5,7 +5,7 @@ struct VOButtonLabel: View {
     var isLoading: Bool
     var progressViewTint: Color
 
-    init(_ text: String, isLoading: Bool, progressViewTint: Color = .primary) {
+    init(_ text: String, isLoading: Bool = false, progressViewTint: Color = .primary) {
         self.text = text
         self.isLoading = isLoading
         self.progressViewTint = progressViewTint
