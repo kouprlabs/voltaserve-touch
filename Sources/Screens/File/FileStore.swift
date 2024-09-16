@@ -34,6 +34,14 @@ class FileStore: ObservableObject {
         client?.urlForThumbnail(id, fileExtension: fileExtension)
     }
 
+    func urlForPreview(_ id: String, fileExtension: String) -> URL? {
+        client?.urlForPreview(id, fileExtension: fileExtension)
+    }
+
+    func urlForOriginal(_ id: String, fileExtension: String) -> URL? {
+        client?.urlForOriginal(id, fileExtension: fileExtension)
+    }
+
     func append(_ newEntities: [VOFile.Entity]) {
         if entities == nil {
             entities = []
@@ -189,6 +197,10 @@ class FileStore: ObservableObject {
             isSnapshotsAuthorized(file) ||
             isUploadAuthorized(file) ||
             isDownloadAuthorized(file)
+    }
+
+    func isOpenAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.type == .file && file.permission.ge(.viewer)
     }
 
     private enum Constants {

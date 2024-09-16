@@ -15,6 +15,7 @@ struct FileContextMenu: ViewModifier {
     var onRename: (() -> Void)?
     var onMove: (() -> Void)?
     var onCopy: (() -> Void)?
+    var onOpen: (() -> Void)?
 
     init(
         _ file: VOFile.Entity,
@@ -28,7 +29,8 @@ struct FileContextMenu: ViewModifier {
         onDelete: (() -> Void)? = nil,
         onRename: (() -> Void)? = nil,
         onMove: (() -> Void)? = nil,
-        onCopy: (() -> Void)? = nil
+        onCopy: (() -> Void)? = nil,
+        onOpen: (() -> Void)? = nil
     ) {
         self.file = file
         _selection = selection
@@ -42,11 +44,21 @@ struct FileContextMenu: ViewModifier {
         self.onRename = onRename
         self.onMove = onMove
         self.onCopy = onCopy
+        self.onOpen = onOpen
     }
 
     func body(content: Content) -> some View {
         content
             .contextMenu {
+                if fileStore.isOpenAuthorized(file) {
+                    Button {
+                        updateSelection()
+                        onOpen?()
+                    } label: {
+                        Label("Open", systemImage: "arrow.up.forward")
+                    }
+                    Divider()
+                }
                 if fileStore.isToolsAuthorized(file) {
                     if fileStore.isInsightsAuthorized(file) {
                         Button {
@@ -157,7 +169,8 @@ extension View {
         onDelete: (() -> Void)? = nil,
         onRename: (() -> Void)? = nil,
         onMove: (() -> Void)? = nil,
-        onCopy: (() -> Void)? = nil
+        onCopy: (() -> Void)? = nil,
+        onOpen: (() -> Void)? = nil
     ) -> some View {
         modifier(FileContextMenu(
             file,
@@ -171,7 +184,8 @@ extension View {
             onDelete: onDelete,
             onRename: onRename,
             onMove: onMove,
-            onCopy: onCopy
+            onCopy: onCopy,
+            onOpen: onOpen
         ))
     }
 }

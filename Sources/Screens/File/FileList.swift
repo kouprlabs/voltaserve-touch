@@ -8,11 +8,11 @@ struct FileList: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.editMode) private var editMode
-    @State private var selection = Set<String>()
-    @State private var showMove = false
-    @State private var showCopy = false
-    @State private var showRename = false
-    @State private var showDelete = false
+    @State var selection = Set<String>()
+    @State var showMove = false
+    @State var showCopy = false
+    @State var showRename = false
+    @State var showDelete = false
     @State private var showError = false
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
@@ -144,14 +144,7 @@ struct FileList: View {
                         tappedItem = file
                     } label: {
                         FileRow(file)
-                            .fileContextMenu(
-                                file,
-                                selection: $selection,
-                                onDelete: { showDelete = true },
-                                onRename: { showRename = true },
-                                onMove: { showMove = true },
-                                onCopy: { showCopy = true }
-                            )
+                            .fileContextMenuWithActions(file, list: self)
                     }
                     .onAppear { onListItemAppear(file.id) }
                 } else if file.type == .folder {
@@ -160,14 +153,7 @@ struct FileList: View {
                             .navigationTitle(file.name)
                     } label: {
                         FileRow(file)
-                            .fileContextMenu(
-                                file,
-                                selection: $selection,
-                                onDelete: { showDelete = true },
-                                onRename: { showRename = true },
-                                onMove: { showMove = true },
-                                onCopy: { showCopy = true }
-                            )
+                            .fileContextMenuWithActions(file, list: self)
                     }
                     .onAppear { onListItemAppear(file.id) }
                 }
@@ -204,14 +190,7 @@ struct FileList: View {
                                 tappedItem = file
                             } label: {
                                 FileCell(file)
-                                    .fileContextMenu(
-                                        file,
-                                        selection: $selection,
-                                        onDelete: { showDelete = true },
-                                        onRename: { showRename = true },
-                                        onMove: { showMove = true },
-                                        onCopy: { showCopy = true }
-                                    )
+                                    .fileContextMenuWithActions(file, list: self)
                             }
                             .buttonStyle(PlainButtonStyle())
                             .onAppear { onListItemAppear(file.id) }
@@ -221,14 +200,7 @@ struct FileList: View {
                                     .navigationTitle(file.name)
                             } label: {
                                 FileCell(file)
-                                    .fileContextMenu(
-                                        file,
-                                        selection: $selection,
-                                        onDelete: { showDelete = true },
-                                        onRename: { showRename = true },
-                                        onMove: { showMove = true },
-                                        onCopy: { showCopy = true }
-                                    )
+                                    .fileContextMenuWithActions(file, list: self)
                             }
                             .buttonStyle(PlainButtonStyle())
                             .onAppear { onListItemAppear(file.id) }
@@ -315,5 +287,42 @@ struct FileList: View {
 
     private enum Constants {
         static let userDefaultViewModeKey = "com.voltaserve.files.viewMode"
+    }
+}
+
+struct FileContextMenuWithActions: ViewModifier {
+    @EnvironmentObject private var fileStore: FileStore
+    var file: VOFile.Entity
+    var list: FileList
+
+    init(_ file: VOFile.Entity, list: FileList) {
+        self.file = file
+        self.list = list
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .fileContextMenu(
+                file,
+                selection: list.$selection,
+                onDelete: { list.showDelete = true },
+                onRename: { list.showRename = true },
+                onMove: { list.showMove = true },
+                onCopy: { list.showCopy = true },
+                onOpen: {
+                    if let snapshot = file.snapshot,
+                       let fileExtension = snapshot.original.fileExtension,
+                       let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst())) {
+                        print(url.absoluteString)
+                        UIApplication.shared.open(url)
+                    }
+                }
+            )
+    }
+}
+
+extension View {
+    func fileContextMenuWithActions(_ file: VOFile.Entity, list: FileList) -> some View {
+        modifier(FileContextMenuWithActions(file, list: list))
     }
 }
