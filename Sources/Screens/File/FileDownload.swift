@@ -119,7 +119,7 @@ struct FileDownload: View {
             errorMessage = "Failed to download item."
         } else if count == files.count {
             errorType = .all
-            errorMessage = "Failed to download items."
+            errorMessage = "Failed to download \(count) item(s)."
         } else if count < files.count {
             errorType = .some
             errorMessage = "Failed to download \(count) item(s)."

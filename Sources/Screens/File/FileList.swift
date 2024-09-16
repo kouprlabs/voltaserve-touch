@@ -9,22 +9,24 @@ struct FileList: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.editMode) private var editMode
+    @State var tappedItem: VOFile.Entity?
+    @State var searchText = ""
+    @State var searchPublisher = PassthroughSubject<String, Never>()
+    @State var isLoading = false
     @State var selection = Set<String>()
     @State var showRename = false
     @State var showDelete = false
     @State var showDownload = false
     @State var showBrowserForMove = false
     @State var showBrowserForCopy = false
+    @State var showUploadDocumentPicker = false
+    @State private var showUpload = false
     @State private var showMove = false
     @State private var showCopy = false
-    @State private var showDocumentPicker = false
+    @State private var showDownloadDocumentPicker = false
     @State private var showError = false
     @State private var errorMessage: String?
-    @State private var tappedItem: VOFile.Entity?
-    @State private var searchText = ""
-    @State private var searchPublisher = PassthroughSubject<String, Never>()
     @State private var cancellables = Set<AnyCancellable>()
-    @State private var isLoading = false
     @State private var viewMode: ViewMode
     @State private var documentPickerURLs: [URL]?
     private let id: String
@@ -73,7 +75,10 @@ struct FileList: View {
                 }
             }
             .sheet(isPresented: $showMove) {
-                FileMove(selectionToFiles()) { showMove = false }
+                let files = selectionToFiles()
+                if !files.isEmpty {
+                    FileMove(files) { showMove = false }
+                }
             }
             .sheet(isPresented: $showBrowserForCopy) {
                 NavigationStack {
@@ -86,7 +91,10 @@ struct FileList: View {
                 }
             }
             .sheet(isPresented: $showCopy) {
-                FileCopy(selectionToFiles()) { showCopy = false }
+                let files = selectionToFiles()
+                if !files.isEmpty {
+                    FileCopy(files) { showCopy = false }
+                }
             }
             .sheet(isPresented: $showRename) {
                 if !selection.isEmpty {
@@ -104,15 +112,30 @@ struct FileList: View {
                     FileDownload(files) { localURLs in
                         showDownload = false
                         documentPickerURLs = localURLs
-                        showDocumentPicker = true
+                        showDownloadDocumentPicker = true
                     } onDismiss: {
                         showDownload = false
                     }
                 }
             }
-            .sheet(isPresented: $showDocumentPicker, onDismiss: handleDismissDocumentPicker) {
+            .sheet(isPresented: $showDownloadDocumentPicker, onDismiss: handleDismissDownloadPicker) {
                 if let documentPickerURLs {
-                    DocumentPicker(sourceURLs: documentPickerURLs, onDismiss: handleDismissDocumentPicker)
+                    FileDownloadPicker(
+                        sourceURLs: documentPickerURLs,
+                        onDismiss: handleDismissDownloadPicker
+                    )
+                }
+            }
+            .sheet(isPresented: $showUploadDocumentPicker) {
+                FileUploadPicker { urls in
+                    documentPickerURLs = urls
+                    showUploadDocumentPicker = false
+                    showUpload = true
+                }
+            }
+            .sheet(isPresented: $showUpload) {
+                if let documentPickerURLs {
+                    FileUpload(documentPickerURLs) { showUpload = false }
                 }
             }
             .toolbar {
@@ -124,6 +147,7 @@ struct FileList: View {
                         ToolbarItem(placement: .bottomBar) {
                             FileMenu(
                                 selection,
+                                onUpload: { showUploadDocumentPicker = true },
                                 onDownload: { showDownload = true },
                                 onDelete: { showDelete = true },
                                 onRename: { showRename = true },
@@ -139,6 +163,20 @@ struct FileList: View {
                         UserDefaults.standard.set(viewMode.rawValue, forKey: Constants.userDefaultViewModeKey)
                     } label: {
                         Label("View Mode", systemImage: viewMode == .list ? "square.grid.2x2" : "list.bullet")
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        Button {
+                            showUploadDocumentPicker = true
+                        } label: {
+                            Label("Upload files", systemImage: "icloud.and.arrow.up")
+                        }
+                        Button {} label: {
+                            Label("New folder", systemImage: "folder.badge.plus")
+                        }
+                    } label: {
+                        Label("Upload", systemImage: "plus")
                     }
                 }
             }
@@ -171,85 +209,7 @@ struct FileList: View {
         }
     }
 
-    @ViewBuilder
-    private func listView(_ entities: [VOFile.Entity]) -> some View {
-        List(selection: $selection) {
-            ForEach(entities, id: \.id) { file in
-                if file.type == .file {
-                    Button {
-                        tappedItem = file
-                    } label: {
-                        FileRow(file)
-                            .fileContextMenuWithActions(file, list: self)
-                    }
-                    .onAppear { onListItemAppear(file.id) }
-                } else if file.type == .folder {
-                    NavigationLink {
-                        FileList(file.id)
-                            .navigationTitle(file.name)
-                    } label: {
-                        FileRow(file)
-                            .fileContextMenuWithActions(file, list: self)
-                    }
-                    .onAppear { onListItemAppear(file.id) }
-                }
-            }
-            if isLoading {
-                HStack {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
-                }
-            }
-        }
-        .listStyle(.inset)
-        .searchable(text: $searchText)
-        .onChange(of: searchText) { searchPublisher.send($1) }
-        .refreshable {
-            fetchList(replace: true)
-        }
-        .navigationDestination(item: $tappedItem) { FileViewer($0) }
-    }
-
-    @ViewBuilder
-    private func gridView(_ entities: [VOFile.Entity]) -> some View {
-        GeometryReader { geometry in
-            let columns = Array(
-                repeating: GridItem(.fixed(FileMetrics.cellSize.width), spacing: VOMetrics.spacing),
-                count: Int(geometry.size.width / FileMetrics.cellSize.width)
-            )
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: VOMetrics.spacing) {
-                    ForEach(entities, id: \.id) { file in
-                        if file.type == .file {
-                            Button {
-                                tappedItem = file
-                            } label: {
-                                FileCell(file)
-                                    .fileContextMenuWithActions(file, list: self)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            .onAppear { onListItemAppear(file.id) }
-                        } else if file.type == .folder {
-                            NavigationLink {
-                                FileList(file.id)
-                                    .navigationTitle(file.name)
-                            } label: {
-                                FileCell(file)
-                                    .fileContextMenuWithActions(file, list: self)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            .onAppear { onListItemAppear(file.id) }
-                        }
-                    }
-                }
-                .navigationDestination(item: $tappedItem) { FileViewer($0) }
-                .padding(.vertical, VOMetrics.spacing)
-            }
-        }
-    }
-
-    private func handleDismissDocumentPicker() {
+    private func handleDismissDownloadPicker() {
         if let documentPickerURLs {
             let fileManager = FileManager.default
             for url in documentPickerURLs where fileManager.fileExists(atPath: url.path) {
@@ -260,7 +220,7 @@ struct FileList: View {
                 }
             }
         }
-        showDocumentPicker = false
+        showDownloadDocumentPicker = false
     }
 
     private func selectionToFiles() -> [VOFile.Entity] {
@@ -280,7 +240,7 @@ struct FileList: View {
         fileStore.startTimer()
     }
 
-    private func onListItemAppear(_ id: String) {
+    func onListItemAppear(_ id: String) {
         if fileStore.isLast(id) {
             fetchList()
         }
@@ -308,7 +268,7 @@ struct FileList: View {
         }
     }
 
-    private func fetchList(replace: Bool = false) {
+    func fetchList(replace: Bool = false) {
         Task {
             isLoading = true
             defer { isLoading = false }
@@ -348,78 +308,5 @@ struct FileList: View {
 
     private enum Constants {
         static let userDefaultViewModeKey = "com.voltaserve.files.viewMode"
-    }
-}
-
-struct FileContextMenuWithActions: ViewModifier {
-    @EnvironmentObject private var fileStore: FileStore
-    var file: VOFile.Entity
-    var list: FileList
-
-    init(_ file: VOFile.Entity, list: FileList) {
-        self.file = file
-        self.list = list
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .fileContextMenu(
-                file,
-                selection: list.$selection,
-                onDownload: { list.showDownload = true },
-                onDelete: { list.showDelete = true },
-                onRename: { list.showRename = true },
-                onMove: { list.showBrowserForMove = true },
-                onCopy: { list.showBrowserForCopy = true },
-                onOpen: {
-                    if let snapshot = file.snapshot,
-                       let fileExtension = snapshot.original.fileExtension,
-                       let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst())) {
-                        UIApplication.shared.open(url)
-                    }
-                }
-            )
-    }
-}
-
-extension View {
-    func fileContextMenuWithActions(_ file: VOFile.Entity, list: FileList) -> some View {
-        modifier(FileContextMenuWithActions(file, list: list))
-    }
-}
-
-struct DocumentPicker: UIViewControllerRepresentable {
-    let sourceURLs: [URL]
-    let onDismiss: (() -> Void)?
-
-    init(sourceURLs: [URL], onDismiss: (() -> Void)? = nil) {
-        self.sourceURLs = sourceURLs
-        self.onDismiss = onDismiss
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(sourceURLs: sourceURLs, onDismiss: onDismiss)
-    }
-
-    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let documentPicker = UIDocumentPickerViewController(forExporting: sourceURLs)
-        documentPicker.delegate = context.coordinator
-        return documentPicker
-    }
-
-    func updateUIViewController(_: UIDocumentPickerViewController, context _: Context) {}
-
-    class Coordinator: NSObject, UIDocumentPickerDelegate {
-        let sourceURLs: [URL]
-        let onDismiss: (() -> Void)?
-
-        init(sourceURLs: [URL], onDismiss: (() -> Void)?) {
-            self.sourceURLs = sourceURLs
-            self.onDismiss = onDismiss
-        }
-
-        func documentPickerWasCancelled(_: UIDocumentPickerViewController) {
-            onDismiss?()
-        }
     }
 }

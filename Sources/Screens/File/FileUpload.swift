@@ -1,18 +1,18 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileCopy: View {
+struct FileUpload: View {
     @EnvironmentObject private var fileStore: FileStore
     @Environment(\.colorScheme) private var colorScheme
-    private let files: [VOFile.Entity]
+    private let urls: [URL]
     private let onDismiss: (() -> Void)?
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorType: ErrorType?
     @State private var errorMessage: String?
 
-    init(_ files: [VOFile.Entity], onDismiss: (() -> Void)? = nil) {
-        self.files = files
+    init(_ urls: [URL], onDismiss: (() -> Void)? = nil) {
+        self.urls = urls
         self.onDismiss = onDismiss
     }
 
@@ -21,10 +21,10 @@ struct FileCopy: View {
             if isProcessing, !showError {
                 ProgressView()
                     .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
-                if files.count == 1 {
-                    Text("Copying item.")
+                if urls.count == 1 {
+                    Text("Uploading item.")
                 } else {
-                    Text("Copying \(files.count) items.")
+                    Text("Uploading \(urls.count) items.")
                 }
             } else if showError, errorType == .all {
                 Image(systemName: "xmark.circle")
@@ -52,17 +52,17 @@ struct FileCopy: View {
                     .padding(.horizontal)
             }
         }
-        .onAppear { performCopy() }
+        .onAppear { performUpload() }
         .presentationDetents([.fraction(0.25)])
     }
 
-    func performCopy() {
+    func performUpload() {
         Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-            if files.count == 1 {
+            if urls.count == 1 {
                 onSuccess()
-            } else if files.count == 2 {
+            } else if urls.count == 2 {
                 onError(count: 2)
-            } else if files.count == 3 {
+            } else if urls.count == 3 {
                 onError(count: 1)
             } else {
                 onSuccess()
@@ -80,15 +80,15 @@ struct FileCopy: View {
     func onError(count: Int) {
         isProcessing = false
         showError = true
-        if files.count == 1 {
+        if urls.count == 1 {
             errorType = .all
-            errorMessage = "Failed to copy item."
-        } else if count == files.count {
+            errorMessage = "Failed to upload item."
+        } else if count == urls.count {
             errorType = .all
-            errorMessage = "Failed to copy \(count) item(s)."
-        } else if count < files.count {
+            errorMessage = "Failed to upload \(count) item(s)."
+        } else if count < urls.count {
             errorType = .some
-            errorMessage = "Failed to copy \(count) item(s)."
+            errorMessage = "Failed to upload \(count) item(s)."
         }
     }
 

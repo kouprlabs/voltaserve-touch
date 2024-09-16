@@ -85,7 +85,7 @@ struct FileMove: View {
             errorMessage = "Failed to move item."
         } else if count == files.count {
             errorType = .all
-            errorMessage = "Failed to move items."
+            errorMessage = "Failed to move \(count) item(s)."
         } else if count < files.count {
             errorType = .some
             errorMessage = "Failed to move \(count) item(s)."
