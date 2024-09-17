@@ -4,6 +4,7 @@ import VoltaserveCore
 struct WorkspaceOverview: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @EnvironmentObject private var fileStore: FileStore
     @Environment(\.presentationMode) private var presentationMode
     private var workspace: VOWorkspace.Entity
 

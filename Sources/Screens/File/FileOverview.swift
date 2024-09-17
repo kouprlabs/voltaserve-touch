@@ -16,15 +16,21 @@ struct FileOverview: View {
     var body: some View {
         VStack {
             if let entities = fileStore.entities {
-                if entities.count == 0 {
-                    Text("There are no items.")
-                } else {
-                    if fileStore.viewMode == .list {
-                        FileList()
-                    } else if fileStore.viewMode == .grid {
-                        FileGrid()
+                Group {
+                    if entities.count == 0 {
+                        Text("There are no items.")
+
+                    } else {
+                        if fileStore.viewMode == .list {
+                            FileList()
+                        } else if fileStore.viewMode == .grid {
+                            FileGrid()
+                        }
                     }
                 }
+                .searchable(text: $fileStore.searchText)
+                .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
+                .refreshable { fileStore.fetchList(replace: true) }
             } else {
                 ProgressView()
             }
@@ -41,14 +47,12 @@ struct FileOverview: View {
         .onAppear {
             fileStore.id = id
             fileStore.clear()
-            fileStore.createSearchPublisher()
             if authStore.token != nil {
                 onAppearOrChange()
             }
         }
         .onDisappear {
             fileStore.stopTimer()
-            fileStore.destroySearchPublisher()
         }
         .onChange(of: authStore.token) { _, newToken in
             if newToken != nil {
@@ -56,6 +60,7 @@ struct FileOverview: View {
             }
         }
         .onChange(of: fileStore.query) {
+            fileStore.clear()
             fileStore.fetchList(replace: true)
         }
     }

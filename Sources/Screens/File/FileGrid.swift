@@ -38,9 +38,6 @@ struct FileGrid: View {
                         }
                     }
                     .navigationDestination(item: $tappedItem) { FileViewer($0) }
-                    .searchable(text: $fileStore.searchText)
-                    .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
-                    .refreshable { fileStore.fetchList(replace: true) }
                     .padding(.vertical, VOMetrics.spacing)
                 }
             }

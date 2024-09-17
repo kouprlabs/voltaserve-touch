@@ -37,9 +37,6 @@ struct FileList: View {
                 }
             }
             .listStyle(.inset)
-            .searchable(text: $fileStore.searchText)
-            .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
-            .refreshable { fileStore.fetchList(replace: true) }
             .navigationDestination(item: $tappedItem) { FileViewer($0) }
         }
     }

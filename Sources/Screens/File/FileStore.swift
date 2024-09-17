@@ -25,7 +25,7 @@ class FileStore: ObservableObject {
     @Published var showError = false
     @Published var errorMessage: String?
     private(set) var searchPublisher = PassthroughSubject<String, Never>()
-    private var cancellables = Set<AnyCancellable>()
+    private var searchCancellable: AnyCancellable?
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -47,19 +47,12 @@ class FileStore: ObservableObject {
         } else {
             viewMode = .grid
         }
-    }
-
-    func createSearchPublisher() {
-        searchPublisher
+        searchCancellable = searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
-            .sink { self.query = .init(text: $0) }
-            .store(in: &cancellables)
-    }
-
-    func destroySearchPublisher() {
-        cancellables.forEach { $0.cancel() }
-        cancellables.removeAll()
+            .sink {
+                self.query = .init(text: $0)
+            }
     }
 
     func fetch(_ id: String) async throws -> VOFile.Entity? {
@@ -181,6 +174,7 @@ class FileStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if self.isLoading { return }
             if let entities = self.entities, let file = self.file, !entities.isEmpty {
                 Task {
                     let list = try await self.fetchList(file.id, page: 1, size: entities.count)

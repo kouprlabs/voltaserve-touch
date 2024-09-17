@@ -22,7 +22,9 @@ struct FileSheets: ViewModifier {
                 .sheet(isPresented: $fileStore.showMove) {
                     let files = selectionToFiles()
                     if !files.isEmpty {
-                        FileMove(files) { fileStore.showMove = false }
+                        FileMove(files) {
+                            fileStore.showMove = false
+                        }
                     }
                 }
                 .sheet(isPresented: $fileStore.showBrowserForCopy) {
@@ -38,17 +40,23 @@ struct FileSheets: ViewModifier {
                 .sheet(isPresented: $fileStore.showCopy) {
                     let files = selectionToFiles()
                     if !files.isEmpty {
-                        FileCopy(files) { fileStore.showCopy = false }
+                        FileCopy(files) {
+                            fileStore.showCopy = false
+                        }
                     }
                 }
                 .sheet(isPresented: $fileStore.showRename) {
                     if !fileStore.selection.isEmpty {
-                        FileRename(fileStore.selection.first!) { fileStore.showRename = false }
+                        FileRename(fileStore.selection.first!) {
+                            fileStore.showRename = false
+                        }
                     }
                 }
                 .sheet(isPresented: $fileStore.showDelete) {
                     if !fileStore.selection.isEmpty {
-                        FileDelete(fileStore.selection) { fileStore.showDelete = false }
+                        FileDelete(fileStore.selection) {
+                            fileStore.showDelete = false
+                        }
                     }
                 }
                 .sheet(isPresented: $fileStore.showDownload) {
@@ -80,7 +88,9 @@ struct FileSheets: ViewModifier {
                 }
                 .sheet(isPresented: $fileStore.showUpload) {
                     if let documentPickerURLs {
-                        FileUpload(documentPickerURLs) { fileStore.showUpload = false }
+                        FileUpload(documentPickerURLs) {
+                            fileStore.showUpload = false
+                        }
                     }
                 }
         }
