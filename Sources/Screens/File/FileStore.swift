@@ -96,6 +96,7 @@ class FileStore: ObservableObject {
     func fetchList(replace: Bool = false) {
         guard let id else { return }
         Task {
+            if isLoading { return }
             Task { @MainActor in
                 isLoading = true
             }
