@@ -14,10 +14,10 @@ extension FileList {
                     ForEach(entities, id: \.id) { file in
                         if file.type == .file {
                             Button {
-                                tappedItem = file
+                                fileStore.tappedItem = file
                             } label: {
                                 FileCell(file)
-                                    .fileActions(file, list: self)
+                                    .fileActions(file)
                             }
                             .buttonStyle(PlainButtonStyle())
                             .onAppear { onListItemAppear(file.id) }
@@ -27,15 +27,22 @@ extension FileList {
                                     .navigationTitle(file.name)
                             } label: {
                                 FileCell(file)
-                                    .fileActions(file, list: self)
+                                    .fileActions(file)
                             }
                             .buttonStyle(PlainButtonStyle())
                             .onAppear { onListItemAppear(file.id) }
                         }
                     }
                 }
-                .navigationDestination(item: $tappedItem) { FileViewer($0) }
+                .navigationDestination(item: $fileStore.tappedItem) { FileViewer($0) }
                 .padding(.vertical, VOMetrics.spacing)
+            }
+        }
+        if fileStore.isLoading {
+            HStack {
+                Spacer()
+                ProgressView()
+                Spacer()
             }
         }
     }

@@ -5,8 +5,28 @@ import VoltaserveCore
 class FileStore: ObservableObject {
     @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
-    @Published var current: VOFile.Entity?
+    @Published var id: String?
+    @Published var file: VOFile.Entity?
     @Published var query: VOFile.Query?
+    @Published var selection = Set<String>()
+    @Published var showRename = false
+    @Published var showDelete = false
+    @Published var showDownload = false
+    @Published var showBrowserForMove = false
+    @Published var showBrowserForCopy = false
+    @Published var showUploadDocumentPicker = false
+    @Published var showUpload = false
+    @Published var showMove = false
+    @Published var showCopy = false
+    @Published var showDownloadDocumentPicker = false
+    @Published var viewMode: ViewMode
+    @Published var tappedItem: VOFile.Entity?
+    @Published var searchText = ""
+    @Published var isLoading = false
+    @Published var showError = false
+    @Published var errorMessage: String?
+    private(set) var searchPublisher = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -22,12 +42,96 @@ class FileStore: ObservableObject {
 
     private var client: VOFile?
 
+    init() {
+        if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
+            self.viewMode = ViewMode(rawValue: viewMode)!
+        } else {
+            viewMode = .grid
+        }
+    }
+
+    func createSearchPublisher() {
+        searchPublisher
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { self.query = .init(text: $0) }
+            .store(in: &cancellables)
+    }
+
+    func destroySearchPublisher() {
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
+    }
+
     func fetch(_ id: String) async throws -> VOFile.Entity? {
         try await client?.fetch(id)
     }
 
+    func fetch() {
+        guard let id else { return }
+        Task {
+            do {
+                let file = try await fetch(id)
+                Task { @MainActor in
+                    self.file = file
+                }
+            } catch let error as VOErrorResponse {
+                Task { @MainActor in
+                    errorMessage = error.userMessage
+                    showError = true
+                }
+            } catch {
+                print(error.localizedDescription)
+                Task { @MainActor in
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
+                }
+            }
+        }
+    }
+
     func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
         try await client?.fetchList(id, options: .init(query: query, page: page, size: size))
+    }
+
+    func fetchList(replace: Bool = false) {
+        guard let id else { return }
+        Task {
+            Task { @MainActor in
+                isLoading = true
+            }
+            defer {
+                Task { @MainActor in
+                    isLoading = false
+                }
+            }
+            do {
+                if !hasNextPage() { return }
+                let nextPage = nextPage()
+                let list = try await fetchList(id, page: nextPage)
+                Task { @MainActor in
+                    self.list = list
+                    if let list {
+                        if replace, nextPage == 1 {
+                            entities = list.data
+                        } else {
+                            append(list.data)
+                        }
+                    }
+                }
+            } catch let error as VOErrorResponse {
+                Task { @MainActor in
+                    errorMessage = error.userMessage
+                    showError = true
+                }
+            } catch {
+                print(error.localizedDescription)
+                Task { @MainActor in
+                    errorMessage = VOTextConstants.unexpectedErrorOccurred
+                    showError = true
+                }
+            }
+        }
     }
 
     func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
@@ -77,9 +181,9 @@ class FileStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = self.entities, let current = self.current, !entities.isEmpty {
+            if let entities = self.entities, let file = self.file, !entities.isEmpty {
                 Task {
-                    let list = try await self.fetchList(current.id, page: 1, size: entities.count)
+                    let list = try await self.fetchList(file.id, page: 1, size: entities.count)
                     if let list {
                         Task { @MainActor in
                             self.entities = list.data
@@ -87,12 +191,12 @@ class FileStore: ObservableObject {
                     }
                 }
             }
-            if let current = self.current {
+            if let file = self.file {
                 Task {
-                    let file = try await self.fetch(current.id)
+                    let file = try await self.fetch(file.id)
                     if let file {
                         Task { @MainActor in
-                            self.current = file
+                            self.file = file
                         }
                     }
                 }
@@ -221,7 +325,18 @@ class FileStore: ObservableObject {
         file.type == .file && file.permission.ge(.viewer)
     }
 
+    func toggleViewMode() {
+        viewMode = viewMode == .list ? .grid : .list
+        UserDefaults.standard.set(viewMode.rawValue, forKey: Constants.userDefaultViewModeKey)
+    }
+
+    enum ViewMode: String {
+        case list
+        case grid
+    }
+
     private enum Constants {
         static let pageSize = 10
+        static let userDefaultViewModeKey = "com.voltaserve.files.viewMode"
     }
 }

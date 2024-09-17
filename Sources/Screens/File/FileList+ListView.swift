@@ -4,14 +4,14 @@ import VoltaserveCore
 extension FileList {
     @ViewBuilder
     func listView(_ entities: [VOFile.Entity]) -> some View {
-        List(selection: $selection) {
+        List(selection: $fileStore.selection) {
             ForEach(entities, id: \.id) { file in
                 if file.type == .file {
                     Button {
-                        tappedItem = file
+                        fileStore.tappedItem = file
                     } label: {
                         FileRow(file)
-                            .fileActions(file, list: self)
+                            .fileActions(file)
                     }
                     .onAppear { onListItemAppear(file.id) }
                 } else if file.type == .folder {
@@ -20,12 +20,12 @@ extension FileList {
                             .navigationTitle(file.name)
                     } label: {
                         FileRow(file)
-                            .fileActions(file, list: self)
+                            .fileActions(file)
                     }
                     .onAppear { onListItemAppear(file.id) }
                 }
             }
-            if isLoading {
+            if fileStore.isLoading {
                 HStack {
                     Spacer()
                     ProgressView()
@@ -34,11 +34,9 @@ extension FileList {
             }
         }
         .listStyle(.inset)
-        .searchable(text: $searchText)
-        .onChange(of: searchText) { searchPublisher.send($1) }
-        .refreshable {
-            fetchList(replace: true)
-        }
-        .navigationDestination(item: $tappedItem) { FileViewer($0) }
+        .searchable(text: $fileStore.searchText)
+        .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
+        .refreshable { fileStore.fetchList(replace: true) }
+        .navigationDestination(item: $fileStore.tappedItem) { FileViewer($0) }
     }
 }
