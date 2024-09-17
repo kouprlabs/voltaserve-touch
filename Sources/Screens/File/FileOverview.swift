@@ -19,7 +19,6 @@ struct FileOverview: View {
                 Group {
                     if entities.count == 0 {
                         Text("There are no items.")
-
                     } else {
                         if fileStore.viewMode == .list {
                             FileList()
