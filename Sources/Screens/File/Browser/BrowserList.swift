@@ -138,8 +138,15 @@ struct BrowserList: View {
 
     private func fetchList(replace: Bool = false) {
         Task {
-            isLoading = true
-            defer { isLoading = false }
+            if isLoading { return }
+            Task { @MainActor in
+                isLoading = true
+            }
+            defer {
+                Task { @MainActor in
+                    isLoading = false
+                }
+            }
             do {
                 if !browserStore.hasNextPage() { return }
                 let nextPage = browserStore.nextPage()

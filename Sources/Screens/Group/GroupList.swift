@@ -92,8 +92,15 @@ struct GroupList: View {
 
     func fetchList(replace: Bool = false) {
         Task {
-            isLoading = true
-            defer { isLoading = false }
+            if isLoading { return }
+            Task { @MainActor in
+                isLoading = true
+            }
+            defer {
+                Task { @MainActor in
+                    isLoading = false
+                }
+            }
             do {
                 if !groupStore.hasNextPage() { return }
                 let nextPage = groupStore.nextPage()

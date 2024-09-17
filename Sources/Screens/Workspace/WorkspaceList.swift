@@ -120,8 +120,15 @@ struct WorkspaceList: View {
 
     private func fetchList(replace: Bool = false) {
         Task {
-            isLoading = true
-            defer { isLoading = false }
+            if isLoading { return }
+            Task { @MainActor in
+                isLoading = true
+            }
+            defer {
+                Task { @MainActor in
+                    isLoading = false
+                }
+            }
             do {
                 if !workspaceStore.hasNextPage() { return }
                 let nextPage = workspaceStore.nextPage()

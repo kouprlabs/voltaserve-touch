@@ -93,8 +93,15 @@ struct OrganizationList: View {
     func fetchList(replace: Bool = false) {
         Task {
             do {
-                isLoading = true
-                defer { isLoading = false }
+                if isLoading { return }
+                Task { @MainActor in
+                    isLoading = true
+                }
+                defer {
+                    Task { @MainActor in
+                        isLoading = false
+                    }
+                }
                 if !organizationStore.hasNextPage() { return }
                 let nextPage = organizationStore.nextPage()
                 let list = try await organizationStore.fetchList(page: nextPage)

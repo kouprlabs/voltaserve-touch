@@ -106,8 +106,15 @@ struct GroupMembers: View {
     func fetchList(replace: Bool = false) {
         guard let group = groupStore.current else { return }
         Task {
-            isLoading = true
-            defer { isLoading = false }
+            if isLoading { return }
+            Task { @MainActor in
+                isLoading = true
+            }
+            defer {
+                Task { @MainActor in
+                    isLoading = false
+                }
+            }
             do {
                 if !membersStore.hasNextPage() { return }
                 let nextPage = membersStore.nextPage()

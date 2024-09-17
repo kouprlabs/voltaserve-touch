@@ -98,8 +98,15 @@ struct OrganizationMembers: View {
     func fetchList(replace: Bool = false) {
         guard let organization = organizationStore.current else { return }
         Task {
-            isLoading = true
-            defer { isLoading = false }
+            if isLoading { return }
+            Task { @MainActor in
+                isLoading = true
+            }
+            defer {
+                Task { @MainActor in
+                    isLoading = false
+                }
+            }
             do {
                 if !membersStore.hasNextPage() { return }
                 let nextPage = membersStore.nextPage()
