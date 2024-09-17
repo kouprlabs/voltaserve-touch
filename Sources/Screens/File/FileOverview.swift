@@ -4,7 +4,7 @@ import UIKit
 import VoltaserveCore
 
 struct FileOverview: View {
-    @EnvironmentObject private var fileStore: FileStore
+    @StateObject private var fileStore = FileStore()
     @EnvironmentObject private var authStore: AuthStore
 
     private let id: String
@@ -45,9 +45,10 @@ struct FileOverview: View {
         .fileToolbar()
         .onAppear {
             fileStore.id = id
-            fileStore.clear()
+            fileStore.startTimer()
             if authStore.token != nil {
                 onAppearOrChange()
+                fileStore.token = authStore.token
             }
         }
         .onDisappear {
@@ -56,12 +57,14 @@ struct FileOverview: View {
         .onChange(of: authStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
+                fileStore.token = newToken
             }
         }
         .onChange(of: fileStore.query) {
             fileStore.clear()
             fileStore.fetchList(replace: true)
         }
+        .environmentObject(fileStore)
     }
 
     private func onAppearOrChange() {

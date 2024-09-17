@@ -6,7 +6,6 @@ struct ContentView: View {
     @EnvironmentObject private var authStore: AuthStore
     @EnvironmentObject private var accountStore: AccountStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @EnvironmentObject private var fileStore: FileStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @EnvironmentObject private var groupStore: GroupStore
     @EnvironmentObject private var organizationMembersStore: OrganizationMembersStore
@@ -64,7 +63,6 @@ struct ContentView: View {
     func assignTokenToStores(_ token: VOToken.Value) {
         accountStore.token = token
         workspaceStore.token = token
-        fileStore.token = token
         organizationStore.token = token
         groupStore.token = token
         organizationMembersStore.token = token
@@ -80,7 +78,6 @@ struct ContentView: View {
     func startStoreTimers() {
         accountStore.startTimer()
         workspaceStore.startTimer()
-        fileStore.startTimer()
         organizationStore.startTimer()
         groupStore.startTimer()
         if let current = organizationStore.current {
@@ -94,7 +91,6 @@ struct ContentView: View {
     func stopStoreTimers() {
         accountStore.stopTimer()
         workspaceStore.stopTimer()
-        fileStore.stopTimer()
         organizationStore.stopTimer()
         groupStore.stopTimer()
         organizationMembersStore.stopTimer()
