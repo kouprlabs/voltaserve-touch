@@ -51,7 +51,7 @@ struct FileToolbar: ViewModifier {
 }
 
 extension View {
-    func fileToolbar(_: FileList) -> some View {
+    func fileToolbar() -> some View {
         modifier(FileToolbar())
     }
 }

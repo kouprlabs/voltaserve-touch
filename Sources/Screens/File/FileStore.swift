@@ -20,7 +20,6 @@ class FileStore: ObservableObject {
     @Published var showCopy = false
     @Published var showDownloadDocumentPicker = false
     @Published var viewMode: ViewMode
-    @Published var tappedItem: VOFile.Entity?
     @Published var searchText = ""
     @Published var isLoading = false
     @Published var showError = false

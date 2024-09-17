@@ -19,7 +19,7 @@ struct WorkspaceOverview: View {
                         .padding()
                     Form {
                         NavigationLink {
-                            FileList(current.rootID)
+                            FileOverview(current.rootID)
                                 .navigationTitle(current.name)
                         } label: {
                             Label("Files", systemImage: "folder")
