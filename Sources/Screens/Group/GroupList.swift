@@ -51,7 +51,9 @@ struct GroupList: View {
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
-                .sink { groupStore.query = $0 }
+                .sink {
+                    groupStore.query = $0
+                }
                 .store(in: &cancellables)
             if tokenStore.token != nil {
                 onAppearOrChange()

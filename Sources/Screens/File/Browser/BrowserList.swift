@@ -34,8 +34,10 @@ struct BrowserList: View {
                         List {
                             ForEach(entities, id: \.id) { file in
                                 NavigationLink {
-                                    BrowserList(file.id, confirmLabelText: confirmLabelText) { onCompletion?() }
-                                        .navigationTitle(file.name)
+                                    BrowserList(file.id, confirmLabelText: confirmLabelText) {
+                                        onCompletion?()
+                                    }
+                                    .navigationTitle(file.name)
                                 } label: { FileRow(file) }
                                     .onAppear { onListItemAppear(file.id) }
                             }
@@ -74,7 +76,9 @@ struct BrowserList: View {
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
-                .sink { browserStore.query = .init(text: $0) }
+                .sink {
+                    browserStore.query = .init(text: $0)
+                }
                 .store(in: &cancellables)
             if tokenStore.token != nil {
                 onAppearOrChange()

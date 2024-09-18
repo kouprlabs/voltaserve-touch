@@ -65,7 +65,9 @@ struct WorkspaceList: View {
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
-                .sink { workspaceStore.query = $0 }
+                .sink {
+                    workspaceStore.query = $0
+                }
                 .store(in: &cancellables)
             if tokenStore.token != nil {
                 onAppearOrChange()

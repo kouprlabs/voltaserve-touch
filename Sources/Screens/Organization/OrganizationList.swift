@@ -51,7 +51,9 @@ struct OrganizationList: View {
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
-                .sink { organizationStore.query = $0 }
+                .sink {
+                    organizationStore.query = $0
+                }
                 .store(in: &cancellables)
             if tokenStore.token != nil {
                 onAppearOrChange()
