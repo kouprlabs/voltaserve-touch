@@ -6,16 +6,16 @@ struct ServerRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let server: ServerStore.Entity
     private let action: (() -> Void)?
-    private let onDelete: (() -> Void)?
+    private let onDeletion: (() -> Void)?
 
     init(
         _ server: ServerStore.Entity,
         action: (() -> Void)? = nil,
-        onDelete: (() -> Void)? = nil
+        onDeletion: (() -> Void)? = nil
     ) {
         self.server = server
         self.action = action
-        self.onDelete = onDelete
+        self.onDeletion = onDeletion
     }
 
     var body: some View {
@@ -25,7 +25,7 @@ struct ServerRow: View {
             HStack(spacing: VOMetrics.spacingSm) {
                 if editMode?.wrappedValue == .active && !server.isCloud {
                     Button {
-                        onDelete?()
+                        onDeletion?()
                     } label: {
                         Image(systemName: "minus.circle.fill")
                             .scaleEffect(1.2)
@@ -60,7 +60,7 @@ struct ServerRow: View {
         .swipeActions {
             if !server.isCloud {
                 Button(role: .destructive) {
-                    onDelete?()
+                    onDeletion?()
                 } label: {
                     Label("Delete", systemImage: "trash")
                 }

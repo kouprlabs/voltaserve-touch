@@ -78,19 +78,19 @@ struct OrganizationMembers: View {
         }
     }
 
-    func onAppearOrChange() {
+    private func onAppearOrChange() {
         guard let organization = organizationStore.current else { return }
         fetchList(replace: true)
         membersStore.startTimer(organization.id)
     }
 
-    func onListItemAppear(_ id: String) {
+    private func onListItemAppear(_ id: String) {
         if membersStore.isLast(id) {
             fetchList()
         }
     }
 
-    func fetchList(replace: Bool = false) {
+    private func fetchList(replace: Bool = false) {
         guard let organization = organizationStore.current else { return }
 
         if isLoading { return }
@@ -113,7 +113,7 @@ struct OrganizationMembers: View {
                 }
             }
         } failure: { message in
-            errorTitle = "Error: Fetching Organization Members"
+            errorTitle = "Error: Fetching Members"
             errorMessage = message
             showError = true
         } anyways: {

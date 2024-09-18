@@ -119,7 +119,7 @@ struct AccountSettings: View {
         }
     }
 
-    func onAppearOrChange() {
+    private func onAppearOrChange() {
         fetchData()
     }
 
@@ -148,7 +148,7 @@ struct AccountSettings: View {
         } success: {
             accountStore.storageUsage = usage
         } failure: { message in
-            errorTitle = "Error: Fetching Account Storage Usage"
+            errorTitle = "Error: Fetching Storage Usage"
             errorMessage = message
             showError = true
         }
@@ -171,7 +171,7 @@ struct AccountSettings: View {
 
     private func performSignOut() {
         tokenStore.token = nil
-        accountStore.deleteTokenFromKeychain()
+        tokenStore.deleteFromKeychain()
         presentationMode.wrappedValue.dismiss()
     }
 }

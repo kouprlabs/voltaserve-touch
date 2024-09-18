@@ -38,9 +38,10 @@ class AccountStore: ObservableObject {
         try await storageClient?.fetchAccountUsage()
     }
 
-    func updateEmail(_ email: String) async throws {
+    func updateEmail(_: String) async throws {
         try await Fake.serverCall { continuation in
-            if email.lowercasedAndTrimmed().starts(with: "error") {
+            if let identityUser = self.identityUser,
+               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
                 continuation.resume(throwing: Fake.serverError)
             } else {
                 continuation.resume()
@@ -48,9 +49,10 @@ class AccountStore: ObservableObject {
         }
     }
 
-    func updateFullName(_ fullName: String) async throws {
+    func updateFullName(_: String) async throws {
         try await Fake.serverCall { continuation in
-            if fullName.lowercasedAndTrimmed().starts(with: "error") {
+            if let identityUser = self.identityUser,
+               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
                 continuation.resume(throwing: Fake.serverError)
             } else {
                 continuation.resume()
@@ -58,9 +60,10 @@ class AccountStore: ObservableObject {
         }
     }
 
-    func updatePassword(current _: String, new: String) async throws {
+    func updatePassword(current _: String, new _: String) async throws {
         try await Fake.serverCall { continuation in
-            if new.lowercasedAndTrimmed().starts(with: "error") {
+            if let identityUser = self.identityUser,
+               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
                 continuation.resume(throwing: Fake.serverError)
             } else {
                 continuation.resume()
@@ -77,10 +80,6 @@ class AccountStore: ObservableObject {
                 continuation.resume()
             }
         }
-    }
-
-    func deleteTokenFromKeychain() {
-        KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
     }
 
     func startTimer() {

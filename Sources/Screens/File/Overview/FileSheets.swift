@@ -75,7 +75,7 @@ struct FileSheets: ViewModifier {
                     if let documentPickerURLs {
                         FileDownloadPicker(
                             sourceURLs: documentPickerURLs,
-                            onDismiss: handleDismissDownloadPicker
+                            onCompletion: handleDismissDownloadPicker
                         )
                     }
                 }

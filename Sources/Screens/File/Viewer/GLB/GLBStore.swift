@@ -3,12 +3,12 @@ import SwiftUI
 import VoltaserveCore
 
 class GLBStore: ObservableObject {
-    private var client: VOFile?
+    private var fileClient: VOFile?
 
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                fileClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -17,7 +17,7 @@ class GLBStore: ObservableObject {
     }
 
     func loadAsset(_ id: String, completion: @escaping (GLTFAsset?, Error?) -> Void) {
-        let url = client?.urlForPreview(id, fileExtension: "glb")
+        let url = fileClient?.urlForPreview(id, fileExtension: "glb")
         if let url {
             GLTFAsset.load(
                 with: url,

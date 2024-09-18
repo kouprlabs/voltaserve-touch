@@ -12,7 +12,7 @@ class OrganizationStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                organizationClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -20,7 +20,7 @@ class OrganizationStore: ObservableObject {
         }
     }
 
-    private var client: VOOrganization?
+    private var organizationClient: VOOrganization?
 
     init() {}
 
@@ -29,11 +29,33 @@ class OrganizationStore: ObservableObject {
     }
 
     func fetch(_ id: String) async throws -> VOOrganization.Entity? {
-        try await client?.fetch(id)
+        try await organizationClient?.fetch(id)
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
-        try await client?.fetchList(.init(query: query, page: page, size: size))
+        try await organizationClient?.fetchList(.init(query: query, page: page, size: size))
+    }
+
+    func patchName(_: String, name _: String) async throws {
+        try await Fake.serverCall { continuation in
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
+    func delete(_: String) async throws {
+        try await Fake.serverCall { continuation in
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
     }
 
     func append(_ newEntities: [VOOrganization.Entity]) {

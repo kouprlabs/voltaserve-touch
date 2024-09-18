@@ -11,7 +11,7 @@ class OrganizationMembersStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                userClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -19,14 +19,14 @@ class OrganizationMembersStore: ObservableObject {
         }
     }
 
-    private var client: VOUser?
+    private var userClient: VOUser?
 
     func fetchList(
         _ organizationID: String,
         page: Int = 1,
         size: Int = Constants.pageSize
     ) async throws -> VOUser.List? {
-        try await client?.fetchList(.init(query: query, organizationID: organizationID, page: page, size: size))
+        try await userClient?.fetchList(.init(query: query, organizationID: organizationID, page: page, size: size))
     }
 
     func append(_ newEntities: [VOUser.Entity]) {

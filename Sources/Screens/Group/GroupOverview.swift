@@ -28,7 +28,7 @@ struct GroupOverview: View {
                             GroupSettings {
                                 presentationMode.wrappedValue.dismiss()
                             }
-                            .navigationTitle("Group Settings")
+                            .navigationTitle("Settings")
                         } label: {
                             Label("Settings", systemImage: "gear")
                         }

@@ -4,16 +4,16 @@ import VoltaserveCore
 struct FileUpload: View {
     @EnvironmentObject private var fileStore: FileStore
     @Environment(\.colorScheme) private var colorScheme
-    private let urls: [URL]
-    private let onDismiss: (() -> Void)?
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorType: ErrorType?
     @State private var errorMessage: String?
+    private let urls: [URL]
+    private let onCompletion: (() -> Void)?
 
-    init(_ urls: [URL], onDismiss: (() -> Void)? = nil) {
+    init(_ urls: [URL], onCompletion: (() -> Void)? = nil) {
         self.urls = urls
-        self.onDismiss = onDismiss
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -35,7 +35,7 @@ struct FileUpload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onDismiss?() } label: { VOButtonLabel("Done") }
+                Button { onCompletion?() } label: { VOButtonLabel("Done") }
                     .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
                     .padding(.horizontal)
             } else if showError, errorType == .some {
@@ -47,7 +47,7 @@ struct FileUpload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onDismiss?() } label: { VOButtonLabel("Done") }
+                Button { onCompletion?() } label: { VOButtonLabel("Done") }
                     .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
                     .padding(.horizontal)
             }
@@ -74,7 +74,7 @@ struct FileUpload: View {
         isProcessing = false
         showError = false
         errorType = .unknown
-        onDismiss?()
+        onCompletion?()
     }
 
     private func onError(count: Int) {

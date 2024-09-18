@@ -4,9 +4,12 @@ import VoltaserveCore
 struct WorkspaceEditStorageCapacity: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.presentationMode) private var presentationMode
-    @State private var capacity: Int?
+    @State private var value: Int?
     @State private var unit: StorageUnit?
     @State private var isSaving = false
+    @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
 
     var body: some View {
         if let current = workspaceStore.current {
@@ -16,18 +19,18 @@ struct WorkspaceEditStorageCapacity: View {
                         "Storage Capacity",
                         value: Binding<Int>(
                             get: {
-                                if let capacity {
-                                    return capacity.convertFromByte(unit: capacity.storageUnit)
+                                if let value {
+                                    return value.convertFromByte(unit: value.storageUnit)
                                 }
-                                return capacity ?? 0
+                                return value ?? 0
                             },
                             set: {
-                                capacity = Int($0).normalizeToByte(unit: unit ?? .b)
+                                value = Int($0).normalizeToByte(unit: unit ?? .b)
                             }
                         ),
                         formatter: NumberFormatter()
                     ).disabled(isSaving)
-                        .onChange(of: capacity) { _, newCapacity in
+                        .onChange(of: value) { _, newCapacity in
                             if let newCapacity {
                                 unit = newCapacity.storageUnit
                             }
@@ -40,9 +43,9 @@ struct WorkspaceEditStorageCapacity: View {
                     }
                     .disabled(isSaving)
                     .onChange(of: unit) { _, newUnit in
-                        if let newUnit, let capacity {
-                            let visibleCapacity = capacity.convertFromByte(unit: capacity.storageUnit)
-                            self.capacity = visibleCapacity.normalizeToByte(unit: newUnit)
+                        if let newUnit, let value {
+                            let visibleCapacity = value.convertFromByte(unit: value.storageUnit)
+                            self.value = visibleCapacity.normalizeToByte(unit: newUnit)
                         }
                     }
                 }
@@ -51,14 +54,14 @@ struct WorkspaceEditStorageCapacity: View {
                         performSave()
                     } label: {
                         HStack {
-                            Text("Save")
+                            Text("Save Storage Capacity")
                             if isSaving {
                                 Spacer()
                                 ProgressView()
                             }
                         }
                     }
-                    .disabled(isSaving)
+                    .disabled(isSaving || !isValid())
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -68,12 +71,13 @@ struct WorkspaceEditStorageCapacity: View {
                         .font(.headline)
                 }
             }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
-                capacity = current.storageCapacity
+                value = current.storageCapacity
             }
             .onChange(of: workspaceStore.current) { _, newCurrent in
                 if let newCurrent {
-                    capacity = newCurrent.storageCapacity
+                    value = newCurrent.storageCapacity
                 }
             }
         } else {
@@ -82,12 +86,28 @@ struct WorkspaceEditStorageCapacity: View {
     }
 
     private func performSave() {
+        guard let current = workspaceStore.current else { return }
+        guard let value else { return }
+
         isSaving = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-            Task { @MainActor in
-                presentationMode.wrappedValue.dismiss()
-                isSaving = false
-            }
+
+        VOErrorResponse.withErrorHandling {
+            try await workspaceStore.patchStorageCapacity(current.id, storageCapacity: value)
+        } success: {
+            presentationMode.wrappedValue.dismiss()
+        } failure: { message in
+            errorTitle = "Error: Saving Storage Capacity"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isSaving = false
         }
+    }
+
+    private func isValid() -> Bool {
+        if let value, let current = workspaceStore.current {
+            return value > 0 && current.storageCapacity != value
+        }
+        return false
     }
 }

@@ -12,7 +12,7 @@ class GroupStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                groupClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -20,7 +20,7 @@ class GroupStore: ObservableObject {
         }
     }
 
-    private var client: VOGroup?
+    private var groupClient: VOGroup?
 
     init() {}
 
@@ -29,16 +29,28 @@ class GroupStore: ObservableObject {
     }
 
     func fetch(_ id: String) async throws -> VOGroup.Entity? {
-        try await client?.fetch(id)
+        try await groupClient?.fetch(id)
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
-        try await client?.fetchList(.init(query: query, page: page, size: size))
+        try await groupClient?.fetchList(.init(query: query, page: page, size: size))
     }
 
-    func patchName(_: String, options: VOGroup.PatchNameOptions) async throws {
+    func patchName(_: String, options _: VOGroup.PatchNameOptions) async throws {
         try await Fake.serverCall { continuation in
-            if options.name.lowercasedAndTrimmed() == "error" {
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
+    func delete(_: String) async throws {
+        try await Fake.serverCall { continuation in
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
                 continuation.resume(throwing: Fake.serverError)
             } else {
                 continuation.resume()

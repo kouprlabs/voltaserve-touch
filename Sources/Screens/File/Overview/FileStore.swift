@@ -32,7 +32,7 @@ class FileStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                fileClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -40,7 +40,7 @@ class FileStore: ObservableObject {
         }
     }
 
-    private var client: VOFile?
+    private var fileClient: VOFile?
 
     init() {
         if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
@@ -57,7 +57,7 @@ class FileStore: ObservableObject {
     }
 
     func fetch(_ id: String) async throws -> VOFile.Entity? {
-        try await client?.fetch(id)
+        try await fileClient?.fetch(id)
     }
 
     func fetch() {
@@ -75,7 +75,7 @@ class FileStore: ObservableObject {
     }
 
     func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await client?.fetchList(id, options: .init(query: query, page: page, size: size))
+        try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size))
     }
 
     func fetchList(replace: Bool = false) {
@@ -110,15 +110,15 @@ class FileStore: ObservableObject {
     }
 
     func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
-        client?.urlForThumbnail(id, fileExtension: fileExtension)
+        fileClient?.urlForThumbnail(id, fileExtension: fileExtension)
     }
 
     func urlForPreview(_ id: String, fileExtension: String) -> URL? {
-        client?.urlForPreview(id, fileExtension: fileExtension)
+        fileClient?.urlForPreview(id, fileExtension: fileExtension)
     }
 
     func urlForOriginal(_ id: String, fileExtension: String) -> URL? {
-        client?.urlForOriginal(id, fileExtension: fileExtension)
+        fileClient?.urlForOriginal(id, fileExtension: fileExtension)
     }
 
     func append(_ newEntities: [VOFile.Entity]) {

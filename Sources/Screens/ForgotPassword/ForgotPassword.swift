@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct ForgotPassword: View {
-    var onCompleted: (() -> Void)?
-    var onSignIn: (() -> Void)?
     @State private var isLoading = false
     @State private var email: String = ""
+    private let onCompletion: (() -> Void)?
+    private let onSignIn: (() -> Void)?
 
-    init(_ onCompleted: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
-        self.onCompleted = onCompleted
+    init(_ onCompletion: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
+        self.onCompletion = onCompletion
         self.onSignIn = onSignIn
     }
 
@@ -30,7 +30,7 @@ struct ForgotPassword: View {
                     isLoading = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                         isLoading = false
-                        onCompleted?()
+                        onCompletion?()
                     }
                 } label: {
                     VOButtonLabel(

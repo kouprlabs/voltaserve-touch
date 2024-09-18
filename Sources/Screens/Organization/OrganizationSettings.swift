@@ -10,10 +10,10 @@ struct OrganizationSettings: View {
     @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var isDeleting = false
-    private var shouldDismiss: (() -> Void)?
+    private var onCompletion: (() -> Void)?
 
-    init(_ shouldDismiss: (() -> Void)? = nil) {
-        self.shouldDismiss = shouldDismiss
+    init(_ onCompletion: (() -> Void)? = nil) {
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -60,13 +60,21 @@ struct OrganizationSettings: View {
     }
 
     private func performDelete() {
+        guard let current = organizationStore.current else { return }
+
         isDeleting = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-            Task { @MainActor in
-                isDeleting = false
-                presentationMode.wrappedValue.dismiss()
-                shouldDismiss?()
-            }
+
+        VOErrorResponse.withErrorHandling {
+            try await organizationStore.delete(current.id)
+        } success: {
+            presentationMode.wrappedValue.dismiss()
+            onCompletion?()
+        } failure: { message in
+            errorTitle = "Error: Deleting Organization"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isDeleting = false
         }
     }
 }

@@ -6,6 +6,9 @@ struct WorkspaceEditName: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var value = ""
     @State private var isSaving = false
+    @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
 
     var body: some View {
         if let current = workspaceStore.current {
@@ -19,14 +22,14 @@ struct WorkspaceEditName: View {
                         performSave()
                     } label: {
                         HStack {
-                            Text("Save")
+                            Text("Save Name")
                             if isSaving {
                                 Spacer()
                                 ProgressView()
                             }
                         }
                     }
-                    .disabled(isSaving)
+                    .disabled(isSaving || !isValid())
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -36,6 +39,7 @@ struct WorkspaceEditName: View {
                         .font(.headline)
                 }
             }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
                 value = current.name
             }
@@ -49,13 +53,34 @@ struct WorkspaceEditName: View {
         }
     }
 
+    private var normalizedValue: String {
+        value.trimmingCharacters(in: .whitespaces)
+    }
+
     private func performSave() {
+        guard let current = workspaceStore.current else { return }
+
         isSaving = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-            Task { @MainActor in
-                presentationMode.wrappedValue.dismiss()
-                isSaving = false
-            }
+
+        VOErrorResponse.withErrorHandling {
+            try await workspaceStore.patchName(current.id, name: normalizedValue)
+        } success: {
+            presentationMode.wrappedValue.dismiss()
+        } failure: { message in
+            errorTitle = "Error: Saving Name"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isSaving = false
         }
+    }
+
+    private func isValid() -> Bool {
+        if let current = workspaceStore.current,
+           !normalizedValue.isEmpty,
+           normalizedValue != current.name {
+            return true
+        }
+        return false
     }
 }

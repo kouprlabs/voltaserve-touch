@@ -11,11 +11,11 @@ struct FileRename: View {
     @State private var showError = false
     @State var file: VOFile.Entity?
     private let id: String
-    private let onDismiss: (() -> Void)?
+    private let onCompletion: (() -> Void)?
 
-    init(_ id: String, onDismiss: (() -> Void)?) {
+    init(_ id: String, onCompletion: (() -> Void)?) {
         self.id = id
-        self.onDismiss = onDismiss
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -51,7 +51,7 @@ struct FileRename: View {
             .navigationTitle("Rename")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { onDismiss?() }
+                    Button("Done") { onCompletion?() }
                         .disabled(isProcessing)
                 }
             }
@@ -81,7 +81,7 @@ struct FileRename: View {
         isProcessing = true
         Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
             Task { @MainActor in
-                onDismiss?()
+                onCompletion?()
                 isProcessing = false
             }
         }

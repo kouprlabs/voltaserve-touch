@@ -1,17 +1,17 @@
 import SwiftUI
 
 struct SignUp: View {
-    var onCompleted: (() -> Void)?
-    var onSignIn: (() -> Void)?
     @EnvironmentObject private var store: SignUpStore
     @State private var fullName: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var isLoading = false
+    private let onCompletion: (() -> Void)?
+    private let onSignIn: (() -> Void)?
 
-    init(_ onCompleted: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
-        self.onCompleted = onCompleted
+    init(_ onCompletion: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
+        self.onCompletion = onCompletion
         self.onSignIn = onSignIn
     }
 
@@ -50,7 +50,7 @@ struct SignUp: View {
                         isLoading = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                             isLoading = false
-                            onCompleted?()
+                            onCompletion?()
                         }
                     } label: {
                         VOButtonLabel(

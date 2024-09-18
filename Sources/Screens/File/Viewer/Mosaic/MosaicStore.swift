@@ -7,12 +7,12 @@ class MosaicStore: ObservableObject {
     @Published private(set) var grid: [[UIImage?]] = []
 
     private var busy: [[Bool]] = []
-    private var client: VOMosaic?
+    private var mosaicClient: VOMosaic?
 
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                mosaicClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -21,7 +21,7 @@ class MosaicStore: ObservableObject {
     }
 
     func loadMosaic(_ id: String) async throws {
-        let info = try await client?.fetchInfo(id)
+        let info = try await mosaicClient?.fetchInfo(id)
         if let info {
             Task { @MainActor in
                 self.info = info
@@ -51,7 +51,7 @@ class MosaicStore: ObservableObject {
         busy[row][col] = true
         if let zoomLevel, let info {
             Task {
-                let data = try await client?.fetchData(
+                let data = try await mosaicClient?.fetchData(
                     id,
                     zoomLevel: zoomLevel,
                     forCellAtRow: row, col: col,

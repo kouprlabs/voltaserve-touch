@@ -12,7 +12,7 @@ struct ServerList: View {
                 ServerRow(server) {
                     selectedServer = server
                     showActivate = true
-                } onDelete: {
+                } onDeletion: {
                     serverStore.delete(server.id)
                 }
             }

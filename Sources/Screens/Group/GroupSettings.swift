@@ -7,12 +7,13 @@ struct GroupSettings: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var showDelete = false
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var isDeleting = false
-    private var shouldDismiss: (() -> Void)?
+    private var onCompletion: (() -> Void)?
 
-    init(_ shouldDismiss: (() -> Void)? = nil) {
-        self.shouldDismiss = shouldDismiss
+    init(_ onCompletion: (() -> Void)? = nil) {
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -52,20 +53,28 @@ struct GroupSettings: View {
             } message: {
                 Text("Are you sure you want to delete this group?")
             }
-            .voErrorAlert(isPresented: $showError, message: errorMessage)
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         } else {
             ProgressView()
         }
     }
 
     private func performDelete() {
+        guard let current = groupStore.current else { return }
+
         isDeleting = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-            Task { @MainActor in
-                isDeleting = false
-                presentationMode.wrappedValue.dismiss()
-                shouldDismiss?()
-            }
+
+        VOErrorResponse.withErrorHandling {
+            try await groupStore.delete(current.id)
+        } success: {
+            presentationMode.wrappedValue.dismiss()
+            onCompletion?()
+        } failure: { message in
+            errorTitle = "Error: Deleting Group"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isDeleting = false
         }
     }
 }

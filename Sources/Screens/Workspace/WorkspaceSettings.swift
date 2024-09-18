@@ -10,16 +10,16 @@ struct WorkspaceSettings: View {
     @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var isDeleting = false
-    private var shouldDismiss: (() -> Void)?
+    private var onCompletion: (() -> Void)?
 
-    init(_ shouldDismiss: (() -> Void)? = nil) {
-        self.shouldDismiss = shouldDismiss
+    init(_ onCompletion: (() -> Void)? = nil) {
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
         if let current = workspaceStore.current {
             Form {
-                Section(header: VOSectionHeader("Storage Capacity")) {
+                Section(header: VOSectionHeader("Storage")) {
                     VStack(alignment: .leading) {
                         if let storageUsage = workspaceStore.storageUsage {
                             Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
@@ -89,7 +89,7 @@ struct WorkspaceSettings: View {
         }
     }
 
-    func onAppearOnChange() {
+    private func onAppearOnChange() {
         guard let current = workspaceStore.current else { return }
         fetchStorageUsage(current.id)
     }
@@ -101,19 +101,28 @@ struct WorkspaceSettings: View {
         } success: {
             workspaceStore.storageUsage = usage
         } failure: { message in
-            errorTitle = "Error: Fetching Workspace Storage Usage"
+            errorTitle = "Error: Fetching Storage Usage"
             errorMessage = message
             showError = true
         }
     }
 
     private func performDelete() {
+        guard let current = workspaceStore.current else { return }
+
         isDeleting = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-            Task { @MainActor in
-                presentationMode.wrappedValue.dismiss()
-                shouldDismiss?()
-            }
+
+        VOErrorResponse.withErrorHandling {
+            try await workspaceStore.delete(current.id)
+        } success: {
+            presentationMode.wrappedValue.dismiss()
+            onCompletion?()
+        } failure: { message in
+            errorTitle = "Error: Deleting Workspace"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isDeleting = false
         }
     }
 }

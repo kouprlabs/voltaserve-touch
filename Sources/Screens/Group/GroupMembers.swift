@@ -86,19 +86,19 @@ struct GroupMembers: View {
         }
     }
 
-    func onAppearOrChange() {
+    private func onAppearOrChange() {
         guard let group = groupStore.current else { return }
         fetchList(replace: true)
         membersStore.startTimer(group.id)
     }
 
-    func onListItemAppear(_ id: String) {
+    private func onListItemAppear(_ id: String) {
         if membersStore.isLast(id) {
             fetchList()
         }
     }
 
-    func fetchList(replace: Bool = false) {
+    private func fetchList(replace: Bool = false) {
         guard let group = groupStore.current else { return }
 
         if isLoading { return }
@@ -121,7 +121,7 @@ struct GroupMembers: View {
                 }
             }
         } failure: { message in
-            errorTitle = "Error: Fetching Group Members"
+            errorTitle = "Error: Fetching Members"
             errorMessage = message
             showError = true
         } anyways: {

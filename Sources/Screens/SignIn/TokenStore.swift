@@ -32,6 +32,18 @@ class TokenStore: ObservableObject {
         }
         return nil
     }
+
+    func loadFromKeyChain() -> VOToken.Value? {
+        KeychainManager.standard.getToken(KeychainManager.Constants.tokenKey)
+    }
+
+    func saveInKeychain(_ token: VOToken.Value) {
+        KeychainManager.standard.saveToken(token, forKey: KeychainManager.Constants.tokenKey)
+    }
+
+    func deleteFromKeychain() {
+        KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
+    }
 }
 
 extension VOToken.Value {

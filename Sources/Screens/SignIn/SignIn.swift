@@ -2,7 +2,6 @@ import SwiftUI
 import VoltaserveCore
 
 struct SignIn: View {
-    var onCompleted: (() -> Void)?
     @EnvironmentObject private var tokenStore: TokenStore
     @State private var isLoading = false
     @State private var email: String = ""
@@ -12,9 +11,10 @@ struct SignIn: View {
     @State private var showSignUp = false
     @State private var showForgotPassword = false
     @State private var showError = false
+    private let onCompletion: (() -> Void)?
 
-    init(_ onCompleted: (() -> Void)? = nil) {
-        self.onCompleted = onCompleted
+    init(_ onCompletion: (() -> Void)? = nil) {
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -102,8 +102,8 @@ struct SignIn: View {
         } success: {
             if let token {
                 tokenStore.token = token
-                KeychainManager.standard.saveToken(token, forKey: KeychainManager.Constants.tokenKey)
-                onCompleted?()
+                tokenStore.saveInKeychain(token)
+                onCompletion?()
             }
         } failure: { message in
             errorTitle = "Error: Signing In"

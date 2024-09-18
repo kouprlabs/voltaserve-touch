@@ -4,16 +4,16 @@ import VoltaserveCore
 struct FileCopy: View {
     @EnvironmentObject private var fileStore: FileStore
     @Environment(\.colorScheme) private var colorScheme
-    private let files: [VOFile.Entity]
-    private let onDismiss: (() -> Void)?
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorType: ErrorType?
     @State private var errorMessage: String?
+    private let files: [VOFile.Entity]
+    private let onCompletion: (() -> Void)?
 
-    init(_ files: [VOFile.Entity], onDismiss: (() -> Void)? = nil) {
+    init(_ files: [VOFile.Entity], onCompletion: (() -> Void)? = nil) {
         self.files = files
-        self.onDismiss = onDismiss
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -35,7 +35,7 @@ struct FileCopy: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onDismiss?() } label: { VOButtonLabel("Done") }
+                Button { onCompletion?() } label: { VOButtonLabel("Done") }
                     .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
                     .padding(.horizontal)
             } else if showError, errorType == .some {
@@ -47,7 +47,7 @@ struct FileCopy: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onDismiss?() } label: { VOButtonLabel("Done") }
+                Button { onCompletion?() } label: { VOButtonLabel("Done") }
                     .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
                     .padding(.horizontal)
             }
@@ -56,7 +56,7 @@ struct FileCopy: View {
         .presentationDetents([.fraction(0.25)])
     }
 
-    func performCopy() {
+    private func performCopy() {
         Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
             if files.count == 1 {
                 onSuccess()
@@ -70,14 +70,14 @@ struct FileCopy: View {
         }
     }
 
-    func onSuccess() {
+    private func onSuccess() {
         isProcessing = false
         showError = false
         errorType = .unknown
-        onDismiss?()
+        onCompletion?()
     }
 
-    func onError(count: Int) {
+    private func onError(count: Int) {
         isProcessing = false
         showError = true
         if files.count == 1 {

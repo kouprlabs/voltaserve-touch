@@ -12,7 +12,7 @@ class BrowserStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                fileClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -20,14 +20,14 @@ class BrowserStore: ObservableObject {
         }
     }
 
-    private var client: VOFile?
+    private var fileClient: VOFile?
 
     func fetch(_ id: String) async throws -> VOFile.Entity? {
-        try await client?.fetch(id)
+        try await fileClient?.fetch(id)
     }
 
     func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await client?.fetchList(id, options: .init(query: query, page: page, size: size, type: .folder))
+        try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size, type: .folder))
     }
 
     func append(_ newEntities: [VOFile.Entity]) {

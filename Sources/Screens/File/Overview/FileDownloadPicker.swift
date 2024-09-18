@@ -2,15 +2,15 @@ import SwiftUI
 
 struct FileDownloadPicker: UIViewControllerRepresentable {
     let urls: [URL]
-    let onDismiss: (() -> Void)?
+    let onCompletion: (() -> Void)?
 
-    init(sourceURLs: [URL], onDismiss: (() -> Void)? = nil) {
+    init(sourceURLs: [URL], onCompletion: (() -> Void)? = nil) {
         urls = sourceURLs
-        self.onDismiss = onDismiss
+        self.onCompletion = onCompletion
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(sourceURLs: urls, onDismiss: onDismiss)
+        Coordinator(sourceURLs: urls, onCompletion: onCompletion)
     }
 
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
@@ -23,15 +23,15 @@ struct FileDownloadPicker: UIViewControllerRepresentable {
 
     class Coordinator: NSObject, UIDocumentPickerDelegate {
         let sourceURLs: [URL]
-        let onDismiss: (() -> Void)?
+        let onCompletion: (() -> Void)?
 
-        init(sourceURLs: [URL], onDismiss: (() -> Void)?) {
+        init(sourceURLs: [URL], onCompletion: (() -> Void)?) {
             self.sourceURLs = sourceURLs
-            self.onDismiss = onDismiss
+            self.onCompletion = onCompletion
         }
 
         func documentPickerWasCancelled(_: UIDocumentPickerViewController) {
-            onDismiss?()
+            onCompletion?()
         }
     }
 }

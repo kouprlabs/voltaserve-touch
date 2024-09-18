@@ -13,7 +13,7 @@ class WorkspaceStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                workspaceClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -25,7 +25,7 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    private var client: VOWorkspace?
+    private var workspaceClient: VOWorkspace?
     private var storageClient: VOStorage?
 
     init() {}
@@ -35,15 +35,48 @@ class WorkspaceStore: ObservableObject {
     }
 
     func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
-        try await client?.fetch(id)
+        try await workspaceClient?.fetch(id)
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
-        try await client?.fetchList(.init(query: query, page: page, size: size))
+        try await workspaceClient?.fetchList(.init(query: query, page: page, size: size))
     }
 
     func fetchStorageUsage(_ id: String) async throws -> VOStorage.Usage? {
         try await storageClient?.fetchWorkspaceUsage(id)
+    }
+
+    func patchName(_: String, name _: String) async throws {
+        try await Fake.serverCall { continuation in
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
+    func patchStorageCapacity(_: String, storageCapacity _: Int) async throws {
+        try await Fake.serverCall { continuation in
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
+    func delete(_: String) async throws {
+        try await Fake.serverCall { continuation in
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
     }
 
     func append(_ newEntities: [VOWorkspace.Entity]) {

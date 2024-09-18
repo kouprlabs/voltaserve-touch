@@ -3,11 +3,11 @@ import SwiftUI
 struct FileDelete: View {
     @State private var isProcessing = false
     private let selection: Set<String>
-    private let onDismiss: (() -> Void)?
+    private let onCompletion: (() -> Void)?
 
-    init(_ selection: Set<String>, onDismiss: (() -> Void)? = nil) {
+    init(_ selection: Set<String>, onCompletion: (() -> Void)? = nil) {
         self.selection = selection
-        self.onDismiss = onDismiss
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -32,7 +32,7 @@ struct FileDelete: View {
         isProcessing = true
         Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
             Task { @MainActor in
-                onDismiss?()
+                onCompletion?()
                 isProcessing = false
             }
         }

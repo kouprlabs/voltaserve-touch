@@ -3,12 +3,12 @@ import SwiftUI
 import VoltaserveCore
 
 class PDFStore: ObservableObject {
-    private var client: VOFile?
+    private var fileClient: VOFile?
 
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                fileClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -17,6 +17,6 @@ class PDFStore: ObservableObject {
     }
 
     func url(_ id: String) -> URL? {
-        client?.urlForPreview(id, fileExtension: "pdf")
+        fileClient?.urlForPreview(id, fileExtension: "pdf")
     }
 }

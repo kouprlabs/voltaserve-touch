@@ -55,7 +55,7 @@ struct AccountEditEmail: View {
         }
     }
 
-    var normalizedValue: String {
+    private var normalizedValue: String {
         value.trimmingCharacters(in: .whitespaces)
     }
 

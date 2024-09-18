@@ -4,14 +4,14 @@ import VoltaserveCore
 struct FileDownload: View {
     @EnvironmentObject private var fileStore: FileStore
     @Environment(\.colorScheme) private var colorScheme
-    private let files: [VOFile.Entity]
-    private let onCompletion: (([URL]) -> Void)?
-    private let onDismiss: (() -> Void)?
     @State private var localURLs: [URL] = []
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorType: ErrorType?
     @State private var errorMessage: String?
+    private let files: [VOFile.Entity]
+    private let onCompletion: (([URL]) -> Void)?
+    private let onDismiss: (() -> Void)?
 
     init(
         _ files: [VOFile.Entity],
@@ -104,14 +104,14 @@ struct FileDownload: View {
         }
     }
 
-    func onSuccess() {
+    private func onSuccess() {
         isProcessing = false
         showError = false
         errorType = .unknown
         onCompletion?(localURLs)
     }
 
-    func onError(count: Int) {
+    private func onError(count: Int) {
         isProcessing = false
         showError = true
         if files.count == 1 {

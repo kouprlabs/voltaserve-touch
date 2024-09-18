@@ -10,7 +10,7 @@ class InvitationStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(
+                invitationClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -18,10 +18,10 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    private var client: VOInvitation?
+    private var invitationClient: VOInvitation?
 
     func fetchList(_ id: String, page _: Int = 1, size _: Int = Constants.pageSize) async throws -> VOInvitation.List? {
-        try await client?.fetchOutgoing(.init(organizationID: id))
+        try await invitationClient?.fetchOutgoing(.init(organizationID: id))
     }
 
     func startRefreshToken(_ organizationID: String) {

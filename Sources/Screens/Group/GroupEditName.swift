@@ -22,20 +22,20 @@ struct GroupEditName: View {
                         performSave()
                     } label: {
                         HStack {
-                            Text("Save Group Name")
+                            Text("Save Name")
                             if isSaving {
                                 Spacer()
                                 ProgressView()
                             }
                         }
                     }
-                    .disabled(isSaving)
+                    .disabled(isSaving || !isValid())
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Change Group Name")
+                    Text("Change Name")
                         .font(.headline)
                 }
             }
@@ -53,20 +53,32 @@ struct GroupEditName: View {
         }
     }
 
+    private var normalizedValue: String {
+        value.trimmingCharacters(in: .whitespaces)
+    }
+
     private func performSave() {
+        guard let current = groupStore.current else { return }
+
         isSaving = true
-        if let current = groupStore.current {
-            VOErrorResponse.withErrorHandling {
-                try await groupStore.patchName(current.id, options: .init(name: value))
-            } success: {
-                presentationMode.wrappedValue.dismiss()
-                isSaving = false
-            } failure: { message in
-                isSaving = false
-                errorTitle = "Error: Saving Group Name"
-                errorMessage = message
-                showError = true
-            }
+
+        VOErrorResponse.withErrorHandling {
+            try await groupStore.patchName(current.id, options: .init(name: value))
+        } success: {
+            presentationMode.wrappedValue.dismiss()
+        } failure: { message in
+            errorTitle = "Error: Saving Name"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isSaving = false
         }
+    }
+
+    private func isValid() -> Bool {
+        if let current = groupStore.current {
+            return !normalizedValue.isEmpty && normalizedValue != current.name
+        }
+        return false
     }
 }

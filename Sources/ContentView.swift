@@ -22,10 +22,10 @@ struct ContentView: View {
     var body: some View {
         MainView()
             .onAppear {
-                if let token = KeychainManager.standard.getToken(KeychainManager.Constants.tokenKey) {
+                if let token = tokenStore.loadFromKeyChain() {
                     if token.isExpired {
                         tokenStore.token = nil
-                        KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
+                        tokenStore.deleteFromKeychain()
                         showSignIn = true
                     } else {
                         tokenStore.token = token
@@ -106,7 +106,7 @@ struct ContentView: View {
                     if let newToken = try await tokenStore.refreshTokenIfNecessary() {
                         Task { @MainActor in
                             tokenStore.token = newToken
-                            KeychainManager.standard.saveToken(newToken, forKey: KeychainManager.Constants.tokenKey)
+                            tokenStore.saveInKeychain(newToken)
                         }
                     }
                 }

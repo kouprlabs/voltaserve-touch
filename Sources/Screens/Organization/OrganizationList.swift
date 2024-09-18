@@ -74,18 +74,18 @@ struct OrganizationList: View {
         }
     }
 
-    func onAppearOrChange() {
+    private func onAppearOrChange() {
         fetchList(replace: true)
         organizationStore.startTimer()
     }
 
-    func onListItemAppear(_ id: String) {
+    private func onListItemAppear(_ id: String) {
         if organizationStore.isLast(id) {
             fetchList()
         }
     }
 
-    func fetchList(replace: Bool = false) {
+    private func fetchList(replace: Bool = false) {
         if isLoading { return }
         isLoading = true
 
