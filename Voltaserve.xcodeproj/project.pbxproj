@@ -53,6 +53,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Button.swift,
+				ErrorAlert.swift,
 				FormHintLabel.swift,
 				FormHintText.swift,
 				Heading.swift,
@@ -140,8 +141,8 @@
 				Server/ServerNew.swift,
 				Server/ServerRow.swift,
 				Server/ServerStore.swift,
-				SignIn/AuthStore.swift,
 				SignIn/SignIn.swift,
+				SignIn/TokenStore.swift,
 				SignUp/SignUp.swift,
 				SignUp/SignUpStore.swift,
 				Workspace/WorkspaceEditName.swift,

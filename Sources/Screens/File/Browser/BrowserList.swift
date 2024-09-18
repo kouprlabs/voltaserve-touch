@@ -3,10 +3,11 @@ import SwiftUI
 import VoltaserveCore
 
 struct BrowserList: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var browserStore: BrowserStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var tappedItem: VOFile.Entity?
     @State private var searchText = ""
@@ -53,13 +54,7 @@ struct BrowserList: View {
                             fetchList(replace: true)
                         }
                         .navigationDestination(item: $tappedItem) { FileViewer($0) }
-                        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                            Button(VOTextConstants.errorAlertButtonLabel) {}
-                        } message: {
-                            if let errorMessage {
-                                Text(errorMessage)
-                            }
-                        }
+                        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
                     }
                 }
             } else {
@@ -81,7 +76,7 @@ struct BrowserList: View {
                 .removeDuplicates()
                 .sink { browserStore.query = .init(text: $0) }
                 .store(in: &cancellables)
-            if authStore.token != nil {
+            if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
@@ -90,7 +85,7 @@ struct BrowserList: View {
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
-        .onChange(of: authStore.token) { _, newToken in
+        .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
@@ -115,64 +110,44 @@ struct BrowserList: View {
     }
 
     private func fetchFile() {
-        Task {
-            do {
-                let file = try await browserStore.fetch(id)
-                Task { @MainActor in
-                    browserStore.current = file
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        var file: VOFile.Entity?
+        VOErrorResponse.withErrorHandling {
+            file = try await browserStore.fetch(id)
+        } success: {
+            browserStore.current = file
+        } failure: { message in
+            errorTitle = "Error: Fetching File"
+            errorMessage = message
+            showError = true
         }
     }
 
     private func fetchList(replace: Bool = false) {
-        Task {
-            if isLoading { return }
-            Task { @MainActor in
-                isLoading = true
-            }
-            defer {
-                Task { @MainActor in
-                    isLoading = false
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOFile.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !browserStore.hasNextPage() { return }
+            nextPage = browserStore.nextPage()
+            list = try await browserStore.fetchList(id, page: nextPage)
+        } success: {
+            browserStore.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    browserStore.entities = list.data
+                } else {
+                    browserStore.append(list.data)
                 }
             }
-            do {
-                if !browserStore.hasNextPage() { return }
-                let nextPage = browserStore.nextPage()
-                let list = try await browserStore.fetchList(id, page: nextPage)
-                Task { @MainActor in
-                    browserStore.list = list
-                    if let list {
-                        if replace, nextPage == 1 {
-                            browserStore.entities = list.data
-                        } else {
-                            browserStore.append(list.data)
-                        }
-                    }
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        } failure: { message in
+            errorTitle = "Error: Fetching Files"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isLoading = false
         }
     }
 }

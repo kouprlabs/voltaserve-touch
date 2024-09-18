@@ -6,6 +6,9 @@ struct GroupEditName: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var value = ""
     @State private var isSaving = false
+    @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
 
     var body: some View {
         if let current = groupStore.current {
@@ -19,7 +22,7 @@ struct GroupEditName: View {
                         performSave()
                     } label: {
                         HStack {
-                            Text("Save")
+                            Text("Save Group Name")
                             if isSaving {
                                 Spacer()
                                 ProgressView()
@@ -29,6 +32,14 @@ struct GroupEditName: View {
                     .disabled(isSaving)
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Change Group Name")
+                        .font(.headline)
+                }
+            }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
                 value = current.name
             }
@@ -44,16 +55,18 @@ struct GroupEditName: View {
 
     private func performSave() {
         isSaving = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-            Task { @MainActor in
+        if let current = groupStore.current {
+            VOErrorResponse.withErrorHandling {
+                try await groupStore.patchName(current.id, options: .init(name: value))
+            } success: {
                 presentationMode.wrappedValue.dismiss()
                 isSaving = false
+            } failure: { message in
+                isSaving = false
+                errorTitle = "Error: Saving Group Name"
+                errorMessage = message
+                showError = true
             }
         }
     }
-}
-
-#Preview {
-    GroupEditName()
-        .environmentObject(GroupStore(VOGroup.Entity.devInstance))
 }

@@ -2,10 +2,11 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileRename: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var fileStore: FileStore
     @State private var isProcessing = false
     @State private var value = ""
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var showError = false
     @State var file: VOFile.Entity?
@@ -28,13 +29,7 @@ struct FileRename: View {
                         }
                         Section {
                             Button {
-                                isProcessing = true
-                                Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                                    Task { @MainActor in
-                                        onDismiss?()
-                                        isProcessing = false
-                                    }
-                                }
+                                performRename()
                             } label: {
                                 HStack {
                                     Text("Save")
@@ -60,13 +55,7 @@ struct FileRename: View {
                         .disabled(isProcessing)
                 }
             }
-            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                Button(VOTextConstants.errorAlertButtonLabel) {}
-            } message: {
-                if let errorMessage {
-                    Text(errorMessage)
-                }
-            }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
                 fetch()
             }
@@ -79,20 +68,21 @@ struct FileRename: View {
     }
 
     private func fetch() {
-        Task {
-            do {
-                file = try await fileStore.fetch(id)
-            } catch let error as VOErrorResponse {
-                Task {
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
+        VOErrorResponse.withErrorHandling {
+            file = try await fileStore.fetch(id)
+        } failure: { message in
+            errorTitle = "Error: Renaming File"
+            errorMessage = message
+            showError = true
+        }
+    }
+
+    private func performRename() {
+        isProcessing = true
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            Task { @MainActor in
+                onDismiss?()
+                isProcessing = false
             }
         }
     }

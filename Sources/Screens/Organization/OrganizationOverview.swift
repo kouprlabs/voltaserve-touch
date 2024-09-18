@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct OrganizationOverview: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @Environment(\.presentationMode) private var presentationMode
     private let organization: VOOrganization.Entity
@@ -42,10 +42,4 @@ struct OrganizationOverview: View {
             organizationStore.current = organization
         }
     }
-}
-
-#Preview {
-    OrganizationOverview(VOOrganization.Entity.devInstance)
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(OrganizationStore(VOOrganization.Entity.devInstance))
 }

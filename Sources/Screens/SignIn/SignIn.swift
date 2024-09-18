@@ -3,11 +3,12 @@ import VoltaserveCore
 
 struct SignIn: View {
     var onCompleted: (() -> Void)?
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @State private var isLoading = false
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var errorMessage: String = ""
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
     @State private var showSignUp = false
     @State private var showForgotPassword = false
     @State private var showError = false
@@ -24,7 +25,7 @@ struct SignIn: View {
                     .voHeading(fontSize: VOMetrics.headingFontSize)
                 TextField("Email", text: $email)
                     .voTextField(width: VOMetrics.formWidth)
-                    .textInputAutocapitalization(.none)
+                    .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .disabled(isLoading)
                 SecureField("Password", text: $password)
@@ -79,11 +80,7 @@ struct SignIn: View {
                     showForgotPassword = false
                 }
             }
-            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                Button(VOTextConstants.errorAlertButtonLabel) {}
-            } message: {
-                Text(errorMessage)
-            }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: ServerList()) {
@@ -96,30 +93,24 @@ struct SignIn: View {
     }
 
     func signIn() {
-        Task {
-            isLoading = true
-            defer {
-                isLoading = false
+        isLoading = true
+
+        var token: VOToken.Value?
+
+        VOErrorResponse.withErrorHandling {
+            token = try await tokenStore.signIn(username: email, password: password)
+        } success: {
+            if let token {
+                tokenStore.token = token
+                KeychainManager.standard.saveToken(token, forKey: KeychainManager.Constants.tokenKey)
+                onCompleted?()
             }
-            do {
-                let token = try await authStore.signIn(username: email, password: password)
-                Task { @MainActor in
-                    authStore.token = token
-                    KeychainManager.standard.saveToken(token, forKey: KeychainManager.Constants.tokenKey)
-                    onCompleted?()
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        } failure: { message in
+            errorTitle = "Error: Signing In"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isLoading = false
         }
     }
 }

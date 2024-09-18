@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct GroupOverview: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
     @Environment(\.presentationMode) private var presentationMode
     private let group: VOGroup.Entity
@@ -28,7 +28,7 @@ struct GroupOverview: View {
                             GroupSettings {
                                 presentationMode.wrappedValue.dismiss()
                             }
-                            .navigationTitle("Settings")
+                            .navigationTitle("Group Settings")
                         } label: {
                             Label("Settings", systemImage: "gear")
                         }
@@ -42,10 +42,4 @@ struct GroupOverview: View {
             groupStore.current = group
         }
     }
-}
-
-#Preview {
-    GroupOverview(VOGroup.Entity.devInstance)
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(GroupStore(VOGroup.Entity.devInstance))
 }

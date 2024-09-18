@@ -39,12 +39,6 @@ class ServerStore: ObservableObject {
         _entities.removeAll(where: { $0.id == id })
     }
 
-    private func activateCloud() {
-        if let index = _entities.firstIndex(where: { $0.isCloud }) {
-            _entities[index].isActive = true
-        }
-    }
-
     func update(_ id: String, value: Entity) {
         if let index = _entities.firstIndex(where: { $0.id == id }) {
             _entities[index].name = value.name
@@ -58,6 +52,12 @@ class ServerStore: ObservableObject {
             _entities[index].isActive = false
         }
         if let index = _entities.firstIndex(where: { $0.id == id }) {
+            _entities[index].isActive = true
+        }
+    }
+
+    private func activateCloud() {
+        if let index = _entities.firstIndex(where: { $0.isCloud }) {
             _entities[index].isActive = true
         }
     }

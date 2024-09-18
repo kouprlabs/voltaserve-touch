@@ -3,7 +3,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct ContentView: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var accountStore: AccountStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var organizationStore: OrganizationStore
@@ -24,11 +24,11 @@ struct ContentView: View {
             .onAppear {
                 if let token = KeychainManager.standard.getToken(KeychainManager.Constants.tokenKey) {
                     if token.isExpired {
-                        authStore.token = nil
+                        tokenStore.token = nil
                         KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
                         showSignIn = true
                     } else {
-                        authStore.token = token
+                        tokenStore.token = token
                     }
                 } else {
                     showSignIn = true
@@ -44,11 +44,11 @@ struct ContentView: View {
                 }
             }
             .onAppear {
-                if let token = authStore.token {
+                if let token = tokenStore.token {
                     assignTokenToStores(token)
                 }
             }
-            .onChange(of: authStore.token) { oldToken, newToken in
+            .onChange(of: tokenStore.token) { oldToken, newToken in
                 if let newToken {
                     assignTokenToStores(newToken)
                 }
@@ -100,12 +100,12 @@ struct ContentView: View {
     func startTokenTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
-            guard authStore.token != nil else { return }
-            if let token = authStore.token, token.isExpired {
+            guard tokenStore.token != nil else { return }
+            if let token = tokenStore.token, token.isExpired {
                 Task {
-                    if let newToken = try await authStore.refreshTokenIfNecessary() {
+                    if let newToken = try await tokenStore.refreshTokenIfNecessary() {
                         Task { @MainActor in
-                            authStore.token = newToken
+                            tokenStore.token = newToken
                             KeychainManager.standard.saveToken(newToken, forKey: KeychainManager.Constants.tokenKey)
                         }
                     }

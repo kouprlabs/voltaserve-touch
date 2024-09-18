@@ -21,7 +21,3 @@ struct GroupRow: View {
         }
     }
 }
-
-#Preview {
-    GroupRow(VOGroup.Entity.devInstance)
-}

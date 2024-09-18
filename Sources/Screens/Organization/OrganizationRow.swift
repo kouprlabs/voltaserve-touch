@@ -17,7 +17,3 @@ struct OrganizationRow: View {
         }
     }
 }
-
-#Preview {
-    OrganizationRow(VOOrganization.Entity.devInstance)
-}

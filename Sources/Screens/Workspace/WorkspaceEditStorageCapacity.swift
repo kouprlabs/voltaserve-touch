@@ -91,8 +91,3 @@ struct WorkspaceEditStorageCapacity: View {
         }
     }
 }
-
-#Preview {
-    WorkspaceEditStorageCapacity()
-        .environmentObject(WorkspaceStore(VOWorkspace.Entity.devInstance))
-}

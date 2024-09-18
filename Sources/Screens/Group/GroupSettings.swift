@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct GroupSettings: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showDelete = false
@@ -46,34 +46,26 @@ struct GroupSettings: View {
             }
             .alert("Delete Group", isPresented: $showDelete) {
                 Button("Delete Permanently", role: .destructive) {
-                    isDeleting = true
-                    Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-                        Task { @MainActor in
-                            isDeleting = false
-                            presentationMode.wrappedValue.dismiss()
-                            shouldDismiss?()
-                        }
-                    }
+                    performDelete()
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Are you sure you would like to delete this group?")
+                Text("Are you sure you want to delete this group?")
             }
-            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                Button(VOTextConstants.errorAlertButtonLabel) {}
-            } message: {
-                if let errorMessage {
-                    Text(errorMessage)
-                }
-            }
+            .voErrorAlert(isPresented: $showError, message: errorMessage)
         } else {
             ProgressView()
         }
     }
-}
 
-#Preview {
-    GroupSettings()
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(GroupStore(VOGroup.Entity.devInstance))
+    private func performDelete() {
+        isDeleting = true
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+            Task { @MainActor in
+                isDeleting = false
+                presentationMode.wrappedValue.dismiss()
+                shouldDismiss?()
+            }
+        }
+    }
 }

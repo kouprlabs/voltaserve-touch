@@ -3,9 +3,10 @@ import SwiftUI
 import VoltaserveCore
 
 struct GroupList: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var searchText = ""
     @State private var searchPublisher = PassthroughSubject<String, Never>()
@@ -44,13 +45,7 @@ struct GroupList: View {
                 ProgressView()
             }
         }
-        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-            Button(VOTextConstants.errorAlertButtonLabel) {}
-        } message: {
-            if let errorMessage {
-                Text(errorMessage)
-            }
-        }
+        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         .onAppear {
             groupStore.clear()
             searchPublisher
@@ -58,7 +53,7 @@ struct GroupList: View {
                 .removeDuplicates()
                 .sink { groupStore.query = $0 }
                 .store(in: &cancellables)
-            if authStore.token != nil {
+            if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
@@ -67,7 +62,7 @@ struct GroupList: View {
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
-        .onChange(of: authStore.token) { _, newToken in
+        .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
@@ -91,42 +86,31 @@ struct GroupList: View {
     }
 
     func fetchList(replace: Bool = false) {
-        Task {
-            if isLoading { return }
-            Task { @MainActor in
-                isLoading = true
-            }
-            defer {
-                Task { @MainActor in
-                    isLoading = false
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOGroup.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !groupStore.hasNextPage() { return }
+            nextPage = groupStore.nextPage()
+            list = try await groupStore.fetchList(page: nextPage)
+        } success: {
+            groupStore.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    groupStore.entities = list.data
+                } else {
+                    groupStore.append(list.data)
                 }
             }
-            do {
-                if !groupStore.hasNextPage() { return }
-                let nextPage = groupStore.nextPage()
-                let list = try await groupStore.fetchList(page: nextPage)
-                Task { @MainActor in
-                    groupStore.list = list
-                    if let list {
-                        if replace, nextPage == 1 {
-                            groupStore.entities = list.data
-                        } else {
-                            groupStore.append(list.data)
-                        }
-                    }
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    showError = true
-                    errorMessage = error.userMessage
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        } failure: { message in
+            errorTitle = "Error: Fetching Groups"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isLoading = false
         }
     }
 }

@@ -56,7 +56,7 @@ struct FileUpload: View {
         .presentationDetents([.fraction(0.25)])
     }
 
-    func performUpload() {
+    private func performUpload() {
         Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
             if urls.count == 1 {
                 onSuccess()
@@ -70,14 +70,14 @@ struct FileUpload: View {
         }
     }
 
-    func onSuccess() {
+    private func onSuccess() {
         isProcessing = false
         showError = false
         errorType = .unknown
         onDismiss?()
     }
 
-    func onError(count: Int) {
+    private func onError(count: Int) {
         isProcessing = false
         showError = true
         if urls.count == 1 {

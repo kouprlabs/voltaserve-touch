@@ -6,12 +6,17 @@ struct AccountEditEmail: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var value = ""
     @State private var isSaving = false
+    @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
 
     var body: some View {
-        if let user = accountStore.user {
+        if let identityUser = accountStore.identityUser {
             Form {
-                Section(header: VOSectionHeader("Name")) {
-                    TextField("Name", text: $value)
+                Section(header: VOSectionHeader("Email")) {
+                    TextField("Email", text: $value)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                         .disabled(isSaving)
                 }
                 Section {
@@ -19,14 +24,14 @@ struct AccountEditEmail: View {
                         performSave()
                     } label: {
                         HStack {
-                            Text("Save")
+                            Text("Save Email")
                             if isSaving {
                                 Spacer()
                                 ProgressView()
                             }
                         }
                     }
-                    .disabled(isSaving)
+                    .disabled(isSaving || !isValid())
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -36,10 +41,11 @@ struct AccountEditEmail: View {
                         .font(.headline)
                 }
             }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
-                value = user.email
+                value = identityUser.email
             }
-            .onChange(of: accountStore.user) { _, newUser in
+            .onChange(of: accountStore.identityUser) { _, newUser in
                 if let newUser {
                     value = newUser.email
                 }
@@ -49,18 +55,29 @@ struct AccountEditEmail: View {
         }
     }
 
+    var normalizedValue: String {
+        value.trimmingCharacters(in: .whitespaces)
+    }
+
+    private func isValid() -> Bool {
+        if let identityUser = accountStore.identityUser {
+            return !normalizedValue.isEmpty && normalizedValue != identityUser.email
+        }
+        return false
+    }
+
     private func performSave() {
         isSaving = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-            Task { @MainActor in
-                isSaving = false
-                presentationMode.wrappedValue.dismiss()
-            }
+        VOErrorResponse.withErrorHandling {
+            try await accountStore.updateEmail(normalizedValue)
+        } success: {
+            presentationMode.wrappedValue.dismiss()
+        } failure: { message in
+            errorTitle = "Error: Saving Email"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isSaving = false
         }
     }
-}
-
-#Preview {
-    AccountEditEmail()
-        .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
 }

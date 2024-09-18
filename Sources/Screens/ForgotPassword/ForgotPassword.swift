@@ -23,7 +23,7 @@ struct ForgotPassword: View {
                     .multilineTextAlignment(.center)
                 TextField("Email", text: $email)
                     .voTextField(width: VOMetrics.formWidth)
-                    .autocapitalization(.none)
+                    .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .disabled(isLoading)
                 Button {

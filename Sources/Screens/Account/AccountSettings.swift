@@ -2,21 +2,22 @@ import SwiftUI
 import VoltaserveCore
 
 struct AccountSettings: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var accountStore: AccountStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showDelete = false
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var isDeleting = false
 
     var body: some View {
         NavigationView {
             VStack {
-                if accountStore.user == nil ||
+                if accountStore.identityUser == nil ||
                     accountStore.storageUsage == nil {
                     ProgressView()
-                } else if let user = accountStore.user {
+                } else if let user = accountStore.identityUser {
                     VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
                         .padding()
                     Form {
@@ -62,8 +63,7 @@ struct AccountSettings: View {
                             }
                             .disabled(isDeleting)
                             Button("Sign Out", role: .destructive) {
-                                authStore.token = nil
-                                KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
+                                performSignOut()
                             }
                             .disabled(isDeleting)
                         }
@@ -98,35 +98,21 @@ struct AccountSettings: View {
                 }
             }
         }
-        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-            Button(VOTextConstants.errorAlertButtonLabel) {}
-        } message: {
-            if let errorMessage {
-                Text(errorMessage)
-            }
-        }
+        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         .alert("Delete Account", isPresented: $showDelete) {
             Button("Delete Permanently", role: .destructive) {
-                isDeleting = true
-                Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                    Task { @MainActor in
-                        presentationMode.wrappedValue.dismiss()
-                        authStore.token = nil
-                        KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
-                        isDeleting = false
-                    }
-                }
+                performDelete()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Are you sure want to delete your account?")
         }
         .onAppear {
-            if authStore.token != nil {
+            if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
-        .onChange(of: authStore.token) { _, newToken in
+        .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
@@ -143,46 +129,49 @@ struct AccountSettings: View {
     }
 
     private func fetchUser() {
-        Task {
-            do {
-                let user = try await accountStore.fetchUser()
-                Task { @MainActor in
-                    accountStore.user = user
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        var user: VOIdentityUser.Entity?
+        VOErrorResponse.withErrorHandling {
+            user = try await accountStore.fetchUser()
+        } success: {
+            accountStore.identityUser = user
+        } failure: { message in
+            errorTitle = "Error: Fetching User"
+            errorMessage = message
+            showError = true
         }
     }
 
     private func fetchAccountStorageUsage() {
-        Task {
-            do {
-                let usage = try await accountStore.fetchAccountStorageUsage()
-                Task { @MainActor in
-                    accountStore.storageUsage = usage
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        var usage: VOStorage.Usage?
+        VOErrorResponse.withErrorHandling {
+            usage = try await accountStore.fetchAccountStorageUsage()
+        } success: {
+            accountStore.storageUsage = usage
+        } failure: { message in
+            errorTitle = "Error: Fetching Account Storage Usage"
+            errorMessage = message
+            showError = true
         }
+    }
+
+    private func performDelete() {
+        isDeleting = true
+        VOErrorResponse.withErrorHandling {
+            try await accountStore.deleteAccount()
+        } success: {
+            performSignOut()
+        } failure: { message in
+            errorTitle = "Error: Deleting Account"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isDeleting = false
+        }
+    }
+
+    private func performSignOut() {
+        tokenStore.token = nil
+        accountStore.deleteTokenFromKeychain()
+        presentationMode.wrappedValue.dismiss()
     }
 }

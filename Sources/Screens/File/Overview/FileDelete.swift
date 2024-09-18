@@ -23,13 +23,17 @@ struct FileDelete: View {
                 }
             }
             .onAppear {
-                isProcessing = true
-                Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                    Task { @MainActor in
-                        onDismiss?()
-                        isProcessing = false
-                    }
-                }
+                performDelete()
+            }
+        }
+    }
+
+    private func performDelete() {
+        isProcessing = true
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            Task { @MainActor in
+                onDismiss?()
+                isProcessing = false
             }
         }
     }

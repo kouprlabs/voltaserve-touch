@@ -4,16 +4,19 @@ import VoltaserveCore
 struct AccountEditPassword: View {
     @EnvironmentObject private var accountStore: AccountStore
     @Environment(\.presentationMode) private var presentationMode
-    @State private var currentPassword = ""
-    @State private var newPassword = ""
+    @State private var currentValue = ""
+    @State private var newValue = ""
     @State private var isSaving = false
+    @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
 
     var body: some View {
         Form {
             Section(header: VOSectionHeader("Password")) {
-                SecureField("Current Password", text: $currentPassword)
+                SecureField("Current Password", text: $currentValue)
                     .disabled(isSaving)
-                SecureField("New Password", text: $newPassword)
+                SecureField("New Password", text: $newValue)
                     .disabled(isSaving)
             }
             Section {
@@ -21,14 +24,14 @@ struct AccountEditPassword: View {
                     performSave()
                 } label: {
                     HStack {
-                        Text("Save")
+                        Text("Save Password")
                         if isSaving {
                             Spacer()
                             ProgressView()
                         }
                     }
                 }
-                .disabled(isSaving)
+                .disabled(isSaving || !isValid())
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -38,18 +41,25 @@ struct AccountEditPassword: View {
                     .font(.headline)
             }
         }
+        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
     }
 
     private func performSave() {
         isSaving = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+        VOErrorResponse.withErrorHandling {
+            try await accountStore.updatePassword(current: currentValue, new: newValue)
+        } success: {
             presentationMode.wrappedValue.dismiss()
+        } failure: { message in
+            errorTitle = "Error: Saving Password"
+            errorMessage = message
+            showError = true
+        } anyways: {
             isSaving = false
         }
     }
-}
 
-#Preview {
-    AccountEditPassword()
-        .environmentObject(AccountStore(VOAuthUser.Entity.devInstance))
+    private func isValid() -> Bool {
+        !currentValue.isEmpty && !newValue.isEmpty
+    }
 }

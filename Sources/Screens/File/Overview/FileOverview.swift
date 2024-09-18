@@ -5,7 +5,7 @@ import VoltaserveCore
 
 struct FileOverview: View {
     @StateObject private var fileStore = FileStore()
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
 
     private let id: String
 
@@ -34,27 +34,25 @@ struct FileOverview: View {
                 ProgressView()
             }
         }
-        .alert(VOTextConstants.errorAlertTitle, isPresented: $fileStore.showError) {
-            Button(VOTextConstants.errorAlertButtonLabel) {}
-        } message: {
-            if let errorMessage = fileStore.errorMessage {
-                Text(errorMessage)
-            }
-        }
+        .voErrorAlert(
+            isPresented: $fileStore.showError,
+            title: fileStore.errorTitle,
+            message: fileStore.errorMessage
+        )
         .fileSheets()
         .fileToolbar()
         .onAppear {
             fileStore.id = id
             fileStore.startTimer()
-            if authStore.token != nil {
+            if tokenStore.token != nil {
                 onAppearOrChange()
-                fileStore.token = authStore.token
+                fileStore.token = tokenStore.token
             }
         }
         .onDisappear {
             fileStore.stopTimer()
         }
-        .onChange(of: authStore.token) { _, newToken in
+        .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
                 fileStore.token = newToken

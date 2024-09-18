@@ -9,7 +9,7 @@ struct VoltaserveApp: App {
                 .font(.custom(VOMetrics.bodyFontFamily, size: VOMetrics.bodyFontSize))
                 .environmentObject(AccountStore())
                 .environmentObject(SignUpStore())
-                .environmentObject(AuthStore())
+                .environmentObject(TokenStore())
                 .environmentObject(WorkspaceStore())
                 .environmentObject(GroupStore())
                 .environmentObject(GroupMembersStore())

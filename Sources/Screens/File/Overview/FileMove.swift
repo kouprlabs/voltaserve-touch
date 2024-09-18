@@ -56,7 +56,7 @@ struct FileMove: View {
         .presentationDetents([.fraction(0.25)])
     }
 
-    func performMove() {
+    private func performMove() {
         Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
             if files.count == 1 {
                 onSuccess()
@@ -70,14 +70,14 @@ struct FileMove: View {
         }
     }
 
-    func onSuccess() {
+    private func onSuccess() {
         isProcessing = false
         showError = false
         errorType = .unknown
         onDismiss?()
     }
 
-    func onError(count: Int) {
+    private func onError(count: Int) {
         isProcessing = false
         showError = true
         if files.count == 1 {

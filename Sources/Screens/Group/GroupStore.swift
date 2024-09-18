@@ -36,6 +36,16 @@ class GroupStore: ObservableObject {
         try await client?.fetchList(.init(query: query, page: page, size: size))
     }
 
+    func patchName(_: String, options: VOGroup.PatchNameOptions) async throws {
+        try await Fake.serverCall { continuation in
+            if options.name.lowercasedAndTrimmed() == "error" {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
     func append(_ newEntities: [VOGroup.Entity]) {
         if entities == nil {
             entities = []
@@ -102,14 +112,4 @@ class GroupStore: ObservableObject {
     private enum Constants {
         static let pageSize = 10
     }
-}
-
-extension VOGroup.Entity {
-    static let devInstance = VOGroup.Entity(
-        id: "QvlPbDzXrlJM1",
-        name: "My Group",
-        organization: VOOrganization.Entity.devInstance,
-        permission: .owner,
-        createTime: Date().ISO8601Format()
-    )
 }

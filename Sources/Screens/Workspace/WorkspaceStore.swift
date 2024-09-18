@@ -113,15 +113,3 @@ class WorkspaceStore: ObservableObject {
         static let pageSize = 10
     }
 }
-
-extension VOWorkspace.Entity {
-    static let devInstance = VOWorkspace.Entity(
-        id: UUID().uuidString,
-        name: "My Workspace",
-        permission: .owner,
-        storageCapacity: 5_000_000_000,
-        rootID: UUID().uuidString,
-        organization: VOOrganization.Entity.devInstance,
-        createTime: Date().ISO8601Format()
-    )
-}

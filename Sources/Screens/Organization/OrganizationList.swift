@@ -3,9 +3,10 @@ import SwiftUI
 import VoltaserveCore
 
 struct OrganizationList: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var searchText = ""
     @State private var searchPublisher = PassthroughSubject<String, Never>()
@@ -44,13 +45,7 @@ struct OrganizationList: View {
                 ProgressView()
             }
         }
-        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-            Button(VOTextConstants.errorAlertButtonLabel) {}
-        } message: {
-            if let errorMessage {
-                Text(errorMessage)
-            }
-        }
+        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         .onAppear {
             organizationStore.clear()
             searchPublisher
@@ -58,7 +53,7 @@ struct OrganizationList: View {
                 .removeDuplicates()
                 .sink { organizationStore.query = $0 }
                 .store(in: &cancellables)
-            if authStore.token != nil {
+            if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
@@ -67,7 +62,7 @@ struct OrganizationList: View {
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
-        .onChange(of: authStore.token) { _, newToken in
+        .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
@@ -91,42 +86,31 @@ struct OrganizationList: View {
     }
 
     func fetchList(replace: Bool = false) {
-        Task {
-            do {
-                if isLoading { return }
-                Task { @MainActor in
-                    isLoading = true
-                }
-                defer {
-                    Task { @MainActor in
-                        isLoading = false
-                    }
-                }
-                if !organizationStore.hasNextPage() { return }
-                let nextPage = organizationStore.nextPage()
-                let list = try await organizationStore.fetchList(page: nextPage)
-                Task { @MainActor in
-                    organizationStore.list = list
-                    if let list {
-                        if replace, nextPage == 1 {
-                            organizationStore.entities = list.data
-                        } else {
-                            organizationStore.append(list.data)
-                        }
-                    }
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOOrganization.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !organizationStore.hasNextPage() { return }
+            nextPage = organizationStore.nextPage()
+            list = try await organizationStore.fetchList(page: nextPage)
+        } success: {
+            organizationStore.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    organizationStore.entities = list.data
+                } else {
+                    organizationStore.append(list.data)
                 }
             }
+        } failure: { message in
+            errorTitle = "Error: Fetching Organizations"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isLoading = false
         }
     }
 }

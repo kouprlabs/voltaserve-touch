@@ -2,11 +2,12 @@ import SwiftUI
 import VoltaserveCore
 
 struct WorkspaceSettings: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showDelete = false
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var isDeleting = false
     private var shouldDismiss: (() -> Void)?
@@ -66,31 +67,19 @@ struct WorkspaceSettings: View {
             }
             .alert("Delete Workspace", isPresented: $showDelete) {
                 Button("Delete Permanently", role: .destructive) {
-                    isDeleting = true
-                    Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                        Task { @MainActor in
-                            presentationMode.wrappedValue.dismiss()
-                            shouldDismiss?()
-                        }
-                    }
+                    performDelete()
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Are you sure you would like to delete this workspace?")
+                Text("Are you sure you want to delete this workspace?")
             }
-            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                Button(VOTextConstants.errorAlertButtonLabel) {}
-            } message: {
-                if let errorMessage {
-                    Text(errorMessage)
-                }
-            }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
-                if authStore.token != nil {
+                if tokenStore.token != nil {
                     onAppearOnChange()
                 }
             }
-            .onChange(of: authStore.token) { _, newToken in
+            .onChange(of: tokenStore.token) { _, newToken in
                 if newToken != nil {
                     onAppearOnChange()
                 }
@@ -106,22 +95,24 @@ struct WorkspaceSettings: View {
     }
 
     private func fetchStorageUsage(_ id: String) {
-        Task {
-            do {
-                let usage = try await workspaceStore.fetchStorageUsage(id)
-                Task { @MainActor in
-                    workspaceStore.storageUsage = usage
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    showError = true
-                    errorMessage = error.userMessage
-                }
-            } catch {
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
+        var usage: VOStorage.Usage?
+        VOErrorResponse.withErrorHandling {
+            usage = try await workspaceStore.fetchStorageUsage(id)
+        } success: {
+            workspaceStore.storageUsage = usage
+        } failure: { message in
+            errorTitle = "Error: Fetching Workspace Storage Usage"
+            errorMessage = message
+            showError = true
+        }
+    }
+
+    private func performDelete() {
+        isDeleting = true
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            Task { @MainActor in
+                presentationMode.wrappedValue.dismiss()
+                shouldDismiss?()
             }
         }
     }

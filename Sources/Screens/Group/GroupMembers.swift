@@ -3,13 +3,14 @@ import SwiftUI
 import VoltaserveCore
 
 struct GroupMembers: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var membersStore: GroupMembersStore
     @EnvironmentObject private var groupStore: GroupStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showAddMember = false
     @State private var showSettings = false
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var searchText = ""
     @State private var searchPublisher = PassthroughSubject<String, Never>()
@@ -54,13 +55,7 @@ struct GroupMembers: View {
                 .sheet(isPresented: $showAddMember) {
                     Text("Add Member")
                 }
-                .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-                    Button(VOTextConstants.errorAlertButtonLabel) {}
-                } message: {
-                    if let errorMessage {
-                        Text(errorMessage)
-                    }
-                }
+                .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             } else {
                 ProgressView()
             }
@@ -72,7 +67,7 @@ struct GroupMembers: View {
                 .removeDuplicates()
                 .sink { membersStore.query = $0 }
                 .store(in: &cancellables)
-            if authStore.token != nil {
+            if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
@@ -81,7 +76,7 @@ struct GroupMembers: View {
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
-        .onChange(of: authStore.token) { _, newToken in
+        .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
@@ -105,42 +100,32 @@ struct GroupMembers: View {
 
     func fetchList(replace: Bool = false) {
         guard let group = groupStore.current else { return }
-        Task {
-            if isLoading { return }
-            Task { @MainActor in
-                isLoading = true
-            }
-            defer {
-                Task { @MainActor in
-                    isLoading = false
+
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOUser.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !membersStore.hasNextPage() { return }
+            nextPage = membersStore.nextPage()
+            list = try await membersStore.fetchList(group.id, page: nextPage)
+        } success: {
+            membersStore.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    membersStore.entities = list.data
+                } else {
+                    membersStore.append(list.data)
                 }
             }
-            do {
-                if !membersStore.hasNextPage() { return }
-                let nextPage = membersStore.nextPage()
-                let list = try await membersStore.fetchList(group.id, page: nextPage)
-                Task { @MainActor in
-                    membersStore.list = list
-                    if let list {
-                        if replace, nextPage == 1 {
-                            membersStore.entities = list.data
-                        } else {
-                            membersStore.append(list.data)
-                        }
-                    }
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.message
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        } failure: { message in
+            errorTitle = "Error: Fetching Group Members"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isLoading = false
         }
     }
 }

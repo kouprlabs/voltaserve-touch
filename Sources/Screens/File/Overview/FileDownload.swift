@@ -66,7 +66,7 @@ struct FileDownload: View {
         .presentationDetents([.fraction(0.25)])
     }
 
-    func performDownload() {
+    private func performDownload() {
         let dispatchGroup = DispatchGroup()
         localURLs.removeAll()
         for file in files {

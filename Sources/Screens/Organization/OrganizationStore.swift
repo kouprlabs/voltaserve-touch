@@ -103,12 +103,3 @@ class OrganizationStore: ObservableObject {
         static let pageSize = 10
     }
 }
-
-extension VOOrganization.Entity {
-    static let devInstance = VOOrganization.Entity(
-        id: UUID().uuidString,
-        name: "My Organization",
-        permission: .owner,
-        createTime: Date().ISO8601Format()
-    )
-}

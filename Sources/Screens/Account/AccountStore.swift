@@ -2,15 +2,15 @@ import Foundation
 import VoltaserveCore
 
 class AccountStore: ObservableObject {
-    @Published var user: VOAuthUser.Entity?
+    @Published var identityUser: VOIdentityUser.Entity?
     @Published var storageUsage: VOStorage.Usage?
     private var timer: Timer?
 
     var token: VOToken.Value? {
         didSet {
             if let token {
-                client = .init(baseURL: Config.production.idpURL)
-                authUserClient = .init(
+                accountClient = .init(baseURL: Config.production.idpURL)
+                identityUserClient = .init(
                     baseURL: Config.production.idpURL,
                     accessToken: token.accessToken
                 )
@@ -22,48 +22,76 @@ class AccountStore: ObservableObject {
         }
     }
 
-    private var client: VOAccount?
-    private var authUserClient: VOAuthUser?
+    private var accountClient: VOAccount?
+    private var identityUserClient: VOIdentityUser?
     private var storageClient: VOStorage?
 
-    init(_ user: VOAuthUser.Entity? = nil) {
-        self.user = user
+    init(_ identityUser: VOIdentityUser.Entity? = nil) {
+        self.identityUser = identityUser
     }
 
-    func fetchUser() async throws -> VOAuthUser.Entity? {
-        try await authUserClient?.fetch()
+    func fetchUser() async throws -> VOIdentityUser.Entity? {
+        try await identityUserClient?.fetch()
     }
 
     func fetchAccountStorageUsage() async throws -> VOStorage.Usage? {
         try await storageClient?.fetchAccountUsage()
     }
 
-    func update(email: String, fullName: String) async throws {
-        try await withCheckedThrowingContinuation { continutation in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
-                if let user {
-                    self.user = .init(
-                        id: user.id,
-                        username: user.username,
-                        email: email,
-                        fullName: fullName,
-                        picture: user.picture
-                    )
-                }
-                continutation.resume()
+    func updateEmail(_ email: String) async throws {
+        try await Fake.serverCall { continuation in
+            if email.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
             }
         }
+    }
+
+    func updateFullName(_ fullName: String) async throws {
+        try await Fake.serverCall { continuation in
+            if fullName.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
+    func updatePassword(current _: String, new: String) async throws {
+        try await Fake.serverCall { continuation in
+            if new.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
+    func deleteAccount() async throws {
+        try await Fake.serverCall { continuation in
+            if let identityUser = self.identityUser,
+               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
+    func deleteTokenFromKeychain() {
+        KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
     }
 
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.user != nil {
+            if self.identityUser != nil {
                 Task {
                     let user = try await self.fetchUser()
                     if let user {
                         Task { @MainActor in
-                            self.user = user
+                            self.identityUser = user
                         }
                     }
                 }
@@ -85,13 +113,4 @@ class AccountStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
-}
-
-extension VOAuthUser.Entity {
-    static let devInstance = VOAuthUser.Entity(
-        id: UUID().uuidString,
-        username: "anass@koupr.com",
-        email: "anass@koupr.com",
-        fullName: "Anass"
-    )
 }

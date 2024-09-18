@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct WorkspaceOverview: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var fileStore: FileStore
     @Environment(\.presentationMode) private var presentationMode
@@ -43,10 +43,4 @@ struct WorkspaceOverview: View {
             workspaceStore.current = workspace
         }
     }
-}
-
-#Preview {
-    WorkspaceOverview(VOWorkspace.Entity.devInstance)
-        .environmentObject(AuthStore(VOToken.Value.devInstance))
-        .environmentObject(WorkspaceStore())
 }

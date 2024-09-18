@@ -57,8 +57,3 @@ struct OrganizationEditName: View {
         }
     }
 }
-
-#Preview {
-    OrganizationEditName()
-        .environmentObject(OrganizationStore(VOOrganization.Entity.devInstance))
-}

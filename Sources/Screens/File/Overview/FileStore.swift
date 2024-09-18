@@ -23,6 +23,7 @@ class FileStore: ObservableObject {
     @Published var searchText = ""
     @Published var isLoading = false
     @Published var showError = false
+    @Published var errorTitle: String?
     @Published var errorMessage: String?
     private(set) var searchPublisher = PassthroughSubject<String, Never>()
     private var searchCancellable: AnyCancellable?
@@ -61,24 +62,15 @@ class FileStore: ObservableObject {
 
     func fetch() {
         guard let id else { return }
-        Task {
-            do {
-                let file = try await fetch(id)
-                Task { @MainActor in
-                    self.file = file
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        var file: VOFile.Entity?
+        VOErrorResponse.withErrorHandling {
+            file = try await self.fetch(id)
+        } success: {
+            self.file = file
+        } failure: { message in
+            self.errorTitle = "Error: Fetching File"
+            self.errorMessage = message
+            self.showError = true
         }
     }
 
@@ -88,42 +80,32 @@ class FileStore: ObservableObject {
 
     func fetchList(replace: Bool = false) {
         guard let id else { return }
-        Task {
-            if isLoading { return }
-            Task { @MainActor in
-                isLoading = true
-            }
-            defer {
-                Task { @MainActor in
-                    isLoading = false
+
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOFile.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !self.hasNextPage() { return }
+            nextPage = self.nextPage()
+            list = try await self.fetchList(id, page: nextPage)
+        } success: {
+            self.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    self.entities = list.data
+                } else {
+                    self.append(list.data)
                 }
             }
-            do {
-                if !hasNextPage() { return }
-                let nextPage = nextPage()
-                let list = try await fetchList(id, page: nextPage)
-                Task { @MainActor in
-                    self.list = list
-                    if let list {
-                        if replace, nextPage == 1 {
-                            entities = list.data
-                        } else {
-                            append(list.data)
-                        }
-                    }
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Files"
+            self.errorMessage = message
+            self.showError = true
+        } anyways: {
+            self.isLoading = false
         }
     }
 

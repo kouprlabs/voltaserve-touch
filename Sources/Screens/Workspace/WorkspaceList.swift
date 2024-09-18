@@ -3,10 +3,11 @@ import SwiftUI
 import VoltaserveCore
 
 struct WorkspaceList: View {
-    @EnvironmentObject private var authStore: AuthStore
+    @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var accountStore: AccountStore
     @State private var showError = false
+    @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var showAccount = false
     @State private var selection: String?
@@ -58,13 +59,7 @@ struct WorkspaceList: View {
                 ProgressView()
             }
         }
-        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-            Button(VOTextConstants.errorAlertButtonLabel) {}
-        } message: {
-            if let errorMessage {
-                Text(errorMessage)
-            }
-        }
+        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         .onAppear {
             workspaceStore.clear()
             searchPublisher
@@ -72,7 +67,7 @@ struct WorkspaceList: View {
                 .removeDuplicates()
                 .sink { workspaceStore.query = $0 }
                 .store(in: &cancellables)
-            if authStore.token != nil {
+            if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
@@ -81,7 +76,7 @@ struct WorkspaceList: View {
             cancellables.forEach { $0.cancel() }
             cancellables.removeAll()
         }
-        .onChange(of: authStore.token) { _, newToken in
+        .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
@@ -97,7 +92,7 @@ struct WorkspaceList: View {
         Button {
             showAccount.toggle()
         } label: {
-            if let user = accountStore.user, let picture = user.picture {
+            if let user = accountStore.identityUser, let picture = user.picture {
                 VOAvatar(name: user.fullName, size: 30, base64Image: picture)
                     .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
             } else {
@@ -119,62 +114,44 @@ struct WorkspaceList: View {
     }
 
     private func fetchList(replace: Bool = false) {
-        Task {
-            if isLoading { return }
-            Task { @MainActor in
-                isLoading = true
-            }
-            defer {
-                Task { @MainActor in
-                    isLoading = false
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOWorkspace.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !workspaceStore.hasNextPage() { return }
+            nextPage = workspaceStore.nextPage()
+            list = try await workspaceStore.fetchList(page: nextPage)
+        } success: {
+            workspaceStore.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    workspaceStore.entities = list.data
+                } else {
+                    workspaceStore.append(list.data)
                 }
             }
-            do {
-                if !workspaceStore.hasNextPage() { return }
-                let nextPage = workspaceStore.nextPage()
-                let list = try await workspaceStore.fetchList(page: nextPage)
-                Task { @MainActor in
-                    workspaceStore.list = list
-                    if let list {
-                        if replace, nextPage == 1 {
-                            workspaceStore.entities = list.data
-                        } else {
-                            workspaceStore.append(list.data)
-                        }
-                    }
-                }
-            } catch let error as VOErrorResponse {
-                showError = true
-                errorMessage = error.message
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        } failure: { message in
+            errorTitle = "Error: Fetching Workspaces"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isLoading = false
         }
     }
 
     private func fetchUser() {
-        Task {
-            do {
-                let user = try await accountStore.fetchUser()
-                Task { @MainActor in
-                    accountStore.user = user
-                }
-            } catch let error as VOErrorResponse {
-                Task { @MainActor in
-                    errorMessage = error.userMessage
-                    showError = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                Task { @MainActor in
-                    errorMessage = VOTextConstants.unexpectedErrorOccurred
-                    showError = true
-                }
-            }
+        var user: VOIdentityUser.Entity?
+        VOErrorResponse.withErrorHandling {
+            user = try await accountStore.fetchUser()
+        } success: {
+            accountStore.identityUser = user
+        } failure: { message in
+            errorTitle = "Error: Fetching User"
+            errorMessage = message
+            showError = true
         }
     }
 }
