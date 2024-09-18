@@ -17,73 +17,82 @@ struct SignIn: View {
     }
 
     var body: some View {
-        VStack(spacing: VOMetrics.spacing) {
-            VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-            Text("Sign In to Voltaserve")
-                .voHeading(fontSize: VOMetrics.headingFontSize)
-            TextField("Email", text: $email)
-                .voTextField(width: VOMetrics.formWidth)
-                .autocapitalization(.none)
-                .autocorrectionDisabled()
-                .disabled(isLoading)
-            SecureField("Password", text: $password)
-                .voTextField(width: VOMetrics.formWidth)
-                .disabled(isLoading)
-            Button {
-                signIn()
-            } label: {
-                VOButtonLabel(
-                    "Sign In",
-                    isLoading: isLoading,
-                    progressViewTint: .white
-                )
-            }
-            .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
-            VStack {
-                HStack {
-                    Text("Don't have an account yet?")
-                        .voFormHintText()
-                    Button {
-                        showSignUp = true
-                    } label: {
-                        Text("Sign Up")
-                            .voFormHintLabel()
-                    }
+        NavigationStack {
+            VStack(spacing: VOMetrics.spacing) {
+                VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
+                Text("Sign In to Voltaserve")
+                    .voHeading(fontSize: VOMetrics.headingFontSize)
+                TextField("Email", text: $email)
+                    .voTextField(width: VOMetrics.formWidth)
+                    .textInputAutocapitalization(.none)
+                    .autocorrectionDisabled()
                     .disabled(isLoading)
-                }
-                HStack {
-                    Text("Cannot sign in?")
-                        .voFormHintText()
-                    Button {
-                        showForgotPassword = true
-                    } label: {
-                        Text("Reset Password")
-                            .voFormHintLabel()
-                    }
+                SecureField("Password", text: $password)
+                    .voTextField(width: VOMetrics.formWidth)
                     .disabled(isLoading)
+                Button {
+                    signIn()
+                } label: {
+                    VOButtonLabel(
+                        "Sign In",
+                        isLoading: isLoading,
+                        progressViewTint: .white
+                    )
+                }
+                .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
+                VStack {
+                    HStack {
+                        Text("Don't have an account yet?")
+                            .voFormHintText()
+                        Button {
+                            showSignUp = true
+                        } label: {
+                            Text("Sign Up")
+                                .voFormHintLabel()
+                        }
+                        .disabled(isLoading)
+                    }
+                    HStack {
+                        Text("Cannot sign in?")
+                            .voFormHintText()
+                        Button {
+                            showForgotPassword = true
+                        } label: {
+                            Text("Reset Password")
+                                .voFormHintLabel()
+                        }
+                        .disabled(isLoading)
+                    }
                 }
             }
-        }
-        .fullScreenCover(isPresented: $showSignUp) {
-            SignUp {
-                showSignUp = false
-            } onSignIn: {
-                showSignUp = false
+            .fullScreenCover(isPresented: $showSignUp) {
+                SignUp {
+                    showSignUp = false
+                } onSignIn: {
+                    showSignUp = false
+                }
             }
-        }
-        .fullScreenCover(isPresented: $showForgotPassword) {
-            ForgotPassword {
-                showForgotPassword = false
-            } onSignIn: {
-                showForgotPassword = false
+            .fullScreenCover(isPresented: $showForgotPassword) {
+                ForgotPassword {
+                    showForgotPassword = false
+                } onSignIn: {
+                    showForgotPassword = false
+                }
             }
+            .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
+                Button(VOTextConstants.errorAlertButtonLabel) {}
+            } message: {
+                Text(errorMessage)
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: ServerList()) {
+                        Label("Server List", systemImage: "gear")
+                    }
+                }
+            }
+            .padding()
         }
-        .alert(VOTextConstants.errorAlertTitle, isPresented: $showError) {
-            Button(VOTextConstants.errorAlertButtonLabel) {}
-        } message: {
-            Text(errorMessage)
-        }
-        .padding()
     }
 
     func signIn() {

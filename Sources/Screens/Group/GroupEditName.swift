@@ -16,13 +16,7 @@ struct GroupEditName: View {
                 }
                 Section {
                     Button {
-                        isSaving = true
-                        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-                            Task { @MainActor in
-                                presentationMode.wrappedValue.dismiss()
-                                isSaving = false
-                            }
-                        }
+                        performSave()
                     } label: {
                         HStack {
                             Text("Save")
@@ -45,6 +39,16 @@ struct GroupEditName: View {
             }
         } else {
             ProgressView()
+        }
+    }
+
+    private func performSave() {
+        isSaving = true
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+            Task { @MainActor in
+                presentationMode.wrappedValue.dismiss()
+                isSaving = false
+            }
         }
     }
 }

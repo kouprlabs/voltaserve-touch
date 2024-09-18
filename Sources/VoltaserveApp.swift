@@ -22,6 +22,7 @@ struct VoltaserveApp: App {
                 .environmentObject(GLBStore())
                 .environmentObject(MosaicStore())
                 .environmentObject(BrowserStore())
+                .environmentObject(ServerStore())
         }
     }
 }

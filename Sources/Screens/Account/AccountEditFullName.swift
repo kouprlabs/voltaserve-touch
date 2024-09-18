@@ -16,13 +16,7 @@ struct AccountEditFullName: View {
                 }
                 Section {
                     Button {
-                        isSaving = true
-                        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                            Task { @MainActor in
-                                presentationMode.wrappedValue.dismiss()
-                                isSaving = false
-                            }
-                        }
+                        performSave()
                     } label: {
                         HStack {
                             Text("Save")
@@ -52,6 +46,16 @@ struct AccountEditFullName: View {
             }
         } else {
             ProgressView()
+        }
+    }
+
+    private func performSave() {
+        isSaving = true
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            Task { @MainActor in
+                presentationMode.wrappedValue.dismiss()
+                isSaving = false
+            }
         }
     }
 }

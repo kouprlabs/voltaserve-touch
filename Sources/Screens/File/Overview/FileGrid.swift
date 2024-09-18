@@ -22,7 +22,7 @@ struct FileGrid: View {
                                     FileCell(file)
                                         .fileActions(file)
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                .buttonStyle(.plain)
                                 .onAppear { onListItemAppear(file.id) }
                             } else if file.type == .folder {
                                 NavigationLink {

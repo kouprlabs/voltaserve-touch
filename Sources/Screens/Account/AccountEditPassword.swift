@@ -18,11 +18,7 @@ struct AccountEditPassword: View {
             }
             Section {
                 Button {
-                    isSaving = true
-                    Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                        presentationMode.wrappedValue.dismiss()
-                        isSaving = false
-                    }
+                    performSave()
                 } label: {
                     HStack {
                         Text("Save")
@@ -41,6 +37,14 @@ struct AccountEditPassword: View {
                 Text("Change Password")
                     .font(.headline)
             }
+        }
+    }
+
+    private func performSave() {
+        isSaving = true
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            presentationMode.wrappedValue.dismiss()
+            isSaving = false
         }
     }
 }

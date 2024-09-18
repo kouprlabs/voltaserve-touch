@@ -12,43 +12,54 @@ struct ForgotPassword: View {
     }
 
     var body: some View {
-        VStack(spacing: VOMetrics.spacing) {
-            VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-            Text("Forgot Password")
-                .voHeading(fontSize: VOMetrics.headingFontSize)
-            Text("Please provide your account Email where we can send you the password recovery instructions.")
-                .voFormHintText()
-                .frame(width: VOMetrics.formWidth)
-                .multilineTextAlignment(.center)
-            TextField("Email", text: $email)
-                .voTextField(width: VOMetrics.formWidth)
-                .autocapitalization(.none)
-                .autocorrectionDisabled()
-                .disabled(isLoading)
-            Button {
-                isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    isLoading = false
-                    onCompleted?()
-                }
-            } label: {
-                VOButtonLabel(
-                    "Send Recovery Instructions",
-                    isLoading: isLoading,
-                    progressViewTint: .white
-                )
-            }
-            .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
-            HStack {
-                Text("Password recovered?")
+        NavigationView {
+            VStack(spacing: VOMetrics.spacing) {
+                VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
+                Text("Forgot Password")
+                    .voHeading(fontSize: VOMetrics.headingFontSize)
+                Text("Please provide your account Email where we can send you the password recovery instructions.")
                     .voFormHintText()
+                    .frame(width: VOMetrics.formWidth)
+                    .multilineTextAlignment(.center)
+                TextField("Email", text: $email)
+                    .voTextField(width: VOMetrics.formWidth)
+                    .autocapitalization(.none)
+                    .autocorrectionDisabled()
+                    .disabled(isLoading)
                 Button {
-                    onSignIn?()
+                    isLoading = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        isLoading = false
+                        onCompleted?()
+                    }
                 } label: {
-                    Text("Sign In")
-                        .voFormHintLabel()
+                    VOButtonLabel(
+                        "Send Recovery Instructions",
+                        isLoading: isLoading,
+                        progressViewTint: .white
+                    )
                 }
-                .disabled(isLoading)
+                .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
+                HStack {
+                    Text("Password recovered?")
+                        .voFormHintText()
+                    Button {
+                        onSignIn?()
+                    } label: {
+                        Text("Sign In")
+                            .voFormHintLabel()
+                    }
+                    .disabled(isLoading)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        onSignIn?()
+                    } label: {
+                        Text("Back to Sign In")
+                    }
+                }
             }
         }
     }

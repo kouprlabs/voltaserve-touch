@@ -84,7 +84,7 @@ struct FileThumbnail<FallbackContent: View>: View {
                     .cornerRadius(VOMetrics.borderRadiusSm)
                     .overlay {
                         RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
-                            .stroke(borderColor(), lineWidth: 1)
+                            .stroke(voBorderColor(colorScheme: colorScheme), lineWidth: 1)
                     }
                     .fileCellBadge(file)
                     .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
@@ -93,14 +93,6 @@ struct FileThumbnail<FallbackContent: View>: View {
             @unknown default:
                 fallback()
             }
-        }
-    }
-
-    private func borderColor() -> Color {
-        if colorScheme == .dark {
-            Color(.sRGB, red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.16)
-        } else {
-            Color(red: 226 / 255, green: 232 / 255, blue: 240 / 255)
         }
     }
 }
