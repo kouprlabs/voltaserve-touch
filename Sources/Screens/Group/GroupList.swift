@@ -68,8 +68,7 @@ struct GroupList: View {
             }
         }
         .onChange(of: groupStore.query) {
-            groupStore.entities = nil
-            groupStore.list = nil
+            groupStore.clear()
             fetchList()
         }
     }

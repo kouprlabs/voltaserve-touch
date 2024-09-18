@@ -68,8 +68,7 @@ struct OrganizationList: View {
             }
         }
         .onChange(of: organizationStore.query) {
-            organizationStore.entities = nil
-            organizationStore.list = nil
+            organizationStore.clear()
             fetchList()
         }
     }

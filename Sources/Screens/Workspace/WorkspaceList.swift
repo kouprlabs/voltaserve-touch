@@ -82,8 +82,7 @@ struct WorkspaceList: View {
             }
         }
         .onChange(of: workspaceStore.query) {
-            workspaceStore.entities = nil
-            workspaceStore.list = nil
+            workspaceStore.clear()
             fetchList()
         }
     }

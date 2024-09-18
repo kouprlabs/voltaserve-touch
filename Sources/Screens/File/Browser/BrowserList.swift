@@ -93,8 +93,7 @@ struct BrowserList: View {
             }
         }
         .onChange(of: browserStore.query) {
-            browserStore.entities = nil
-            browserStore.list = nil
+            browserStore.clear()
             fetchList()
         }
     }
