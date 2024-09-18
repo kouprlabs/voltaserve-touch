@@ -46,8 +46,10 @@ struct AccountEditPassword: View {
 
     private func performSave() {
         isSaving = true
+
         VOErrorResponse.withErrorHandling {
             try await accountStore.updatePassword(current: currentValue, new: newValue)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
         } failure: { message in

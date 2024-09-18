@@ -73,8 +73,6 @@ struct GroupMembers: View {
         }
         .onDisappear {
             membersStore.stopTimer()
-            cancellables.forEach { $0.cancel() }
-            cancellables.removeAll()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -108,9 +106,10 @@ struct GroupMembers: View {
         var list: VOUser.List?
 
         VOErrorResponse.withErrorHandling {
-            if !membersStore.hasNextPage() { return }
+            if !membersStore.hasNextPage() { return false }
             nextPage = membersStore.nextPage()
             list = try await membersStore.fetchList(group.id, page: nextPage)
+            return true
         } success: {
             membersStore.list = list
             if let list {

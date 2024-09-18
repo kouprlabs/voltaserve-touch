@@ -3,17 +3,22 @@ import VoltaserveCore
 
 extension VOErrorResponse {
     static func withErrorHandling(
-        _ code: @escaping () async throws -> Void,
+        _ code: @escaping () async throws -> Bool,
         success: (() -> Void)? = nil,
         failure: @escaping (String) -> Void,
         anyways: (() -> Void)? = nil
     ) {
         Task {
             do {
-                try await code()
-                Task { @MainActor in
-                    success?()
-                    anyways?()
+                if try await code() {
+                    Task { @MainActor in
+                        success?()
+                        anyways?()
+                    }
+                } else {
+                    Task { @MainActor in
+                        anyways?()
+                    }
                 }
             } catch let error as VOErrorResponse {
                 Task { @MainActor in

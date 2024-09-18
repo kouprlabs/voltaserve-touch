@@ -70,6 +70,7 @@ struct AccountEditEmail: View {
         isSaving = true
         VOErrorResponse.withErrorHandling {
             try await accountStore.updateEmail(normalizedValue)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
         } failure: { message in

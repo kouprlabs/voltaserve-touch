@@ -64,6 +64,7 @@ struct OrganizationEditName: View {
 
         VOErrorResponse.withErrorHandling {
             try await organizationStore.patchName(current.id, name: nornalizedValue)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
         } failure: { message in

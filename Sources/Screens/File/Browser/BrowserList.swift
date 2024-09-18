@@ -82,8 +82,6 @@ struct BrowserList: View {
         }
         .onDisappear {
             browserStore.stopTimer()
-            cancellables.forEach { $0.cancel() }
-            cancellables.removeAll()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -111,8 +109,10 @@ struct BrowserList: View {
 
     private func fetchFile() {
         var file: VOFile.Entity?
+
         VOErrorResponse.withErrorHandling {
             file = try await browserStore.fetch(id)
+            return true
         } success: {
             browserStore.current = file
         } failure: { message in
@@ -130,9 +130,10 @@ struct BrowserList: View {
         var list: VOFile.List?
 
         VOErrorResponse.withErrorHandling {
-            if !browserStore.hasNextPage() { return }
+            if !browserStore.hasNextPage() { return false }
             nextPage = browserStore.nextPage()
             list = try await browserStore.fetchList(id, page: nextPage)
+            return true
         } success: {
             browserStore.list = list
             if let list {

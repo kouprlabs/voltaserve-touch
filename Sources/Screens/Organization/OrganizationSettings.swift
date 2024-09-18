@@ -66,6 +66,7 @@ struct OrganizationSettings: View {
 
         VOErrorResponse.withErrorHandling {
             try await organizationStore.delete(current.id)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
             onCompletion?()

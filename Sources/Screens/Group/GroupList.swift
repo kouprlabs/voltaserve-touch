@@ -59,8 +59,6 @@ struct GroupList: View {
         }
         .onDisappear {
             groupStore.stopTimer()
-            cancellables.forEach { $0.cancel() }
-            cancellables.removeAll()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -93,9 +91,10 @@ struct GroupList: View {
         var list: VOGroup.List?
 
         VOErrorResponse.withErrorHandling {
-            if !groupStore.hasNextPage() { return }
+            if !groupStore.hasNextPage() { return false }
             nextPage = groupStore.nextPage()
             list = try await groupStore.fetchList(page: nextPage)
+            return true
         } success: {
             groupStore.list = list
             if let list {

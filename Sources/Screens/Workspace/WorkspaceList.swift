@@ -73,8 +73,6 @@ struct WorkspaceList: View {
         }
         .onDisappear {
             workspaceStore.stopTimer()
-            cancellables.forEach { $0.cancel() }
-            cancellables.removeAll()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -121,9 +119,10 @@ struct WorkspaceList: View {
         var list: VOWorkspace.List?
 
         VOErrorResponse.withErrorHandling {
-            if !workspaceStore.hasNextPage() { return }
+            if !workspaceStore.hasNextPage() { return false }
             nextPage = workspaceStore.nextPage()
             list = try await workspaceStore.fetchList(page: nextPage)
+            return true
         } success: {
             workspaceStore.list = list
             if let list {
@@ -144,8 +143,10 @@ struct WorkspaceList: View {
 
     private func fetchUser() {
         var user: VOIdentityUser.Entity?
+
         VOErrorResponse.withErrorHandling {
             user = try await accountStore.fetchUser()
+            return true
         } success: {
             accountStore.identityUser = user
         } failure: { message in

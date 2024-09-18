@@ -70,6 +70,7 @@ struct FileRename: View {
     private func fetch() {
         VOErrorResponse.withErrorHandling {
             file = try await fileStore.fetch(id)
+            return true
         } failure: { message in
             errorTitle = "Error: Renaming File"
             errorMessage = message

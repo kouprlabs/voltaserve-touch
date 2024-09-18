@@ -66,6 +66,7 @@ struct GroupSettings: View {
 
         VOErrorResponse.withErrorHandling {
             try await groupStore.delete(current.id)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
             onCompletion?()

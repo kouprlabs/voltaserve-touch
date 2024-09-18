@@ -130,8 +130,10 @@ struct AccountSettings: View {
 
     private func fetchUser() {
         var user: VOIdentityUser.Entity?
+
         VOErrorResponse.withErrorHandling {
             user = try await accountStore.fetchUser()
+            return true
         } success: {
             accountStore.identityUser = user
         } failure: { message in
@@ -143,8 +145,10 @@ struct AccountSettings: View {
 
     private func fetchAccountStorageUsage() {
         var usage: VOStorage.Usage?
+
         VOErrorResponse.withErrorHandling {
             usage = try await accountStore.fetchAccountStorageUsage()
+            return true
         } success: {
             accountStore.storageUsage = usage
         } failure: { message in
@@ -156,8 +160,10 @@ struct AccountSettings: View {
 
     private func performDelete() {
         isDeleting = true
+
         VOErrorResponse.withErrorHandling {
             try await accountStore.deleteAccount()
+            return true
         } success: {
             performSignOut()
         } failure: { message in

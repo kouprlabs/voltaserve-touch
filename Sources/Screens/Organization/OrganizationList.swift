@@ -59,8 +59,6 @@ struct OrganizationList: View {
         }
         .onDisappear {
             organizationStore.stopTimer()
-            cancellables.forEach { $0.cancel() }
-            cancellables.removeAll()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -93,9 +91,10 @@ struct OrganizationList: View {
         var list: VOOrganization.List?
 
         VOErrorResponse.withErrorHandling {
-            if !organizationStore.hasNextPage() { return }
+            if !organizationStore.hasNextPage() { return false }
             nextPage = organizationStore.nextPage()
             list = try await organizationStore.fetchList(page: nextPage)
+            return true
         } success: {
             organizationStore.list = list
             if let list {

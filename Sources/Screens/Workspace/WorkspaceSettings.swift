@@ -98,6 +98,7 @@ struct WorkspaceSettings: View {
         var usage: VOStorage.Usage?
         VOErrorResponse.withErrorHandling {
             usage = try await workspaceStore.fetchStorageUsage(id)
+            return true
         } success: {
             workspaceStore.storageUsage = usage
         } failure: { message in
@@ -114,6 +115,7 @@ struct WorkspaceSettings: View {
 
         VOErrorResponse.withErrorHandling {
             try await workspaceStore.delete(current.id)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
             onCompletion?()

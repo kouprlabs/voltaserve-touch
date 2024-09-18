@@ -99,6 +99,7 @@ struct SignIn: View {
 
         VOErrorResponse.withErrorHandling {
             token = try await tokenStore.signIn(username: email, password: password)
+            return true
         } success: {
             if let token {
                 tokenStore.token = token

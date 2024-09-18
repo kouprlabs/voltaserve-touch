@@ -64,6 +64,7 @@ struct GroupEditName: View {
 
         VOErrorResponse.withErrorHandling {
             try await groupStore.patchName(current.id, options: .init(name: value))
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
         } failure: { message in

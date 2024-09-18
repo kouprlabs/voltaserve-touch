@@ -64,6 +64,7 @@ struct WorkspaceEditName: View {
 
         VOErrorResponse.withErrorHandling {
             try await workspaceStore.patchName(current.id, name: normalizedValue)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
         } failure: { message in

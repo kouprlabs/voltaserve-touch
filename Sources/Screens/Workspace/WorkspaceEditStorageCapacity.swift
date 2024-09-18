@@ -93,6 +93,7 @@ struct WorkspaceEditStorageCapacity: View {
 
         VOErrorResponse.withErrorHandling {
             try await workspaceStore.patchStorageCapacity(current.id, storageCapacity: value)
+            return true
         } success: {
             presentationMode.wrappedValue.dismiss()
         } failure: { message in
