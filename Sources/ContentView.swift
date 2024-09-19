@@ -38,7 +38,6 @@ struct ContentView: View {
             .onDisappear { stopTokenTimer() }
             .fullScreenCover(isPresented: $showSignIn) {
                 SignIn {
-                    startStoreTimers()
                     startTokenTimer()
                     showSignIn = false
                 }
@@ -53,7 +52,6 @@ struct ContentView: View {
                     assignTokenToStores(newToken)
                 }
                 if oldToken != nil, newToken == nil {
-                    stopStoreTimers()
                     stopTokenTimer()
                     showSignIn = true
                 }
@@ -73,28 +71,6 @@ struct ContentView: View {
         imageStore.token = token
         videoStore.token = token
         browserStore.token = token
-    }
-
-    func startStoreTimers() {
-        accountStore.startTimer()
-        workspaceStore.startTimer()
-        organizationStore.startTimer()
-        groupStore.startTimer()
-        if let current = organizationStore.current {
-            organizationMembersStore.startTimer(current.id)
-        }
-        if let current = groupStore.current {
-            groupMembersStore.startTimer(current.id)
-        }
-    }
-
-    func stopStoreTimers() {
-        accountStore.stopTimer()
-        workspaceStore.stopTimer()
-        organizationStore.stopTimer()
-        groupStore.stopTimer()
-        organizationMembersStore.stopTimer()
-        groupMembersStore.stopTimer()
     }
 
     func startTokenTimer() {

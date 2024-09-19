@@ -13,18 +13,24 @@ struct GroupMembers: View {
     var body: some View {
         VStack {
             if let entities = membersStore.entities {
-                List {
-                    ForEach(entities, id: \.id) { member in
-                        VOUserRow(member)
-                            .onAppear {
-                                onListItemAppear(member.id)
+                Group {
+                    if entities.count == 0 {
+                        Text("There are no items.")
+                    } else {
+                        List {
+                            ForEach(entities, id: \.id) { member in
+                                VOUserRow(member)
+                                    .onAppear {
+                                        onListItemAppear(member.id)
+                                    }
                             }
-                    }
-                    if membersStore.isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
+                            if membersStore.isLoading {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                            }
                         }
                     }
                 }
@@ -79,7 +85,8 @@ struct GroupMembers: View {
         }
         .onChange(of: membersStore.query) {
             if let group = groupStore.current {
-                membersStore.fetchList(group: group, replace: true)
+                membersStore.clear()
+                membersStore.fetchList(group: group)
             }
         }
     }

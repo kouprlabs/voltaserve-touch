@@ -9,24 +9,30 @@ struct GroupList: View {
     var body: some View {
         NavigationStack {
             if let entities = groupStore.entities {
-                List {
-                    ForEach(entities, id: \.id) { group in
-                        NavigationLink {
-                            GroupOverview(group)
-                                .navigationBarTitleDisplayMode(.inline)
-                                .navigationTitle(group.name)
-                        } label: {
-                            GroupRow(group)
-                                .onAppear {
-                                    onListItemAppear(group.id)
+                Group {
+                    if entities.count == 0 {
+                        Text("There are no items.")
+                    } else {
+                        List {
+                            ForEach(entities, id: \.id) { group in
+                                NavigationLink {
+                                    GroupOverview(group)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                        .navigationTitle(group.name)
+                                } label: {
+                                    GroupRow(group)
+                                        .onAppear {
+                                            onListItemAppear(group.id)
+                                        }
                                 }
-                        }
-                    }
-                    if groupStore.isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
+                            }
+                            if groupStore.isLoading {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                            }
                         }
                     }
                 }

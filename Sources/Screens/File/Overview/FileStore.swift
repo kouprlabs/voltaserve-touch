@@ -256,6 +256,7 @@ class FileStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            print("file timer ticks...")
             if self.isLoading { return }
             if let entities = self.entities, let file = self.file, !entities.isEmpty {
                 Task {
@@ -283,6 +284,7 @@ class FileStore: ObservableObject {
     func stopTimer() {
         timer?.invalidate()
         timer = nil
+        print("file timer stopped!")
     }
 
     func isOwnerInSelection(_ selection: Set<String>) -> Bool {

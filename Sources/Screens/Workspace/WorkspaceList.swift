@@ -11,24 +11,30 @@ struct WorkspaceList: View {
     var body: some View {
         NavigationStack {
             if let entities = workspaceStore.entities {
-                List {
-                    ForEach(entities, id: \.id) { workspace in
-                        NavigationLink {
-                            WorkspaceOverview(workspace)
-                                .navigationBarTitleDisplayMode(.inline)
-                                .navigationTitle(workspace.name)
-                        } label: {
-                            WorkspaceRow(workspace)
-                                .onAppear {
-                                    onListItemAppear(workspace.id)
+                Group {
+                    if entities.count == 0 {
+                        Text("There are no items.")
+                    } else {
+                        List {
+                            ForEach(entities, id: \.id) { workspace in
+                                NavigationLink {
+                                    WorkspaceOverview(workspace)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                        .navigationTitle(workspace.name)
+                                } label: {
+                                    WorkspaceRow(workspace)
+                                        .onAppear {
+                                            onListItemAppear(workspace.id)
+                                        }
                                 }
-                        }
-                    }
-                    if workspaceStore.isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
+                            }
+                            if workspaceStore.isLoading {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                            }
                         }
                     }
                 }

@@ -9,24 +9,30 @@ struct OrganizationList: View {
     var body: some View {
         NavigationStack {
             if let entities = organizationStore.entities {
-                List {
-                    ForEach(entities, id: \.id) { organization in
-                        NavigationLink {
-                            OrganizationOverview(organization)
-                                .navigationBarTitleDisplayMode(.inline)
-                                .navigationTitle(organization.name)
-                        } label: {
-                            OrganizationRow(organization)
-                                .onAppear {
-                                    onListItemAppear(organization.id)
+                Group {
+                    if entities.count == 0 {
+                        Text("There are no items.")
+                    } else {
+                        List {
+                            ForEach(entities, id: \.id) { organization in
+                                NavigationLink {
+                                    OrganizationOverview(organization)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                        .navigationTitle(organization.name)
+                                } label: {
+                                    OrganizationRow(organization)
+                                        .onAppear {
+                                            onListItemAppear(organization.id)
+                                        }
                                 }
-                        }
-                    }
-                    if organizationStore.isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
+                            }
+                            if organizationStore.isLoading {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                            }
                         }
                     }
                 }

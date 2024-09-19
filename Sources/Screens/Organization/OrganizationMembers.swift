@@ -13,12 +13,18 @@ struct OrganizationMembers: View {
     var body: some View {
         VStack {
             if let entities = membersStore.entities {
-                List {
-                    ForEach(entities, id: \.id) { member in
-                        VOUserRow(member)
-                            .onAppear {
-                                onListItemAppear(member.id)
+                Group {
+                    if entities.count == 0 {
+                        Text("There are no items.")
+                    } else {
+                        List {
+                            ForEach(entities, id: \.id) { member in
+                                VOUserRow(member)
+                                    .onAppear {
+                                        onListItemAppear(member.id)
+                                    }
                             }
+                        }
                     }
                 }
                 .searchable(text: $membersStore.searchText)
@@ -71,7 +77,8 @@ struct OrganizationMembers: View {
         }
         .onChange(of: membersStore.query) {
             if let organization = organizationStore.current {
-                membersStore.fetchList(organization: organization, replace: true)
+                membersStore.clear()
+                membersStore.fetchList(organization: organization)
             }
         }
     }

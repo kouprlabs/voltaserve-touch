@@ -112,6 +112,9 @@ struct AccountSettings: View {
                 onAppearOrChange()
             }
         }
+        .onDisappear {
+            accountStore.stopTimer()
+        }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
@@ -121,6 +124,7 @@ struct AccountSettings: View {
 
     private func onAppearOrChange() {
         fetchData()
+        accountStore.startTimer()
     }
 
     private func fetchData() {

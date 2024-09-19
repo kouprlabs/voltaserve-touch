@@ -43,11 +43,10 @@ struct FileOverview: View {
         .fileToolbar()
         .onAppear {
             fileStore.id = id
-            fileStore.startTimer()
             fileStore.loadViewModeFromUserDefaults()
             if tokenStore.token != nil {
-                onAppearOrChange()
                 fileStore.token = tokenStore.token
+                onAppearOrChange()
             }
         }
         .onDisappear {
