@@ -5,7 +5,6 @@ struct WorkspaceEditStorageCapacity: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var value: Int?
-    @State private var unit: StorageUnit?
     @State private var isSaving = false
     @State private var showError = false
     @State private var errorTitle: String?
@@ -15,39 +14,8 @@ struct WorkspaceEditStorageCapacity: View {
         if let current = workspaceStore.current {
             Form {
                 Section(header: VOSectionHeader("Storage Capacity")) {
-                    TextField(
-                        "Storage Capacity",
-                        value: Binding<Int>(
-                            get: {
-                                if let value {
-                                    return value.convertFromByte(unit: value.storageUnit)
-                                }
-                                return value ?? 0
-                            },
-                            set: {
-                                value = Int($0).normalizeToByte(unit: unit ?? .byte)
-                            }
-                        ),
-                        formatter: NumberFormatter()
-                    ).disabled(isSaving)
-                        .onChange(of: value) { _, newCapacity in
-                            if let newCapacity {
-                                unit = newCapacity.storageUnit
-                            }
-                        }
-                    Picker("Unit", selection: $unit) {
-                        Text("B").tag(StorageUnit.byte)
-                        Text("MB").tag(StorageUnit.megabyte)
-                        Text("GB").tag(StorageUnit.gigabyte)
-                        Text("TB").tag(StorageUnit.terabyte)
-                    }
-                    .disabled(isSaving)
-                    .onChange(of: unit) { _, newUnit in
-                        if let newUnit, let value {
-                            let visibleCapacity = value.convertFromByte(unit: value.storageUnit)
-                            self.value = visibleCapacity.normalizeToByte(unit: newUnit)
-                        }
-                    }
+                    StoragePicker(value: $value)
+                        .disabled(isSaving)
                 }
                 Section {
                     Button {

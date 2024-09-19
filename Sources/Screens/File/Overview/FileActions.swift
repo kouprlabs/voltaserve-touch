@@ -13,7 +13,7 @@ struct FileActions: ViewModifier {
         content
             .fileContextMenu(
                 file,
-                selection: $fileStore.selection,
+                ids: $fileStore.selection,
                 onUpload: {
                     fileStore.showUploadDocumentPicker = true
                 },

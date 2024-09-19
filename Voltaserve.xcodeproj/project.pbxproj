@@ -71,6 +71,7 @@
 				SectionHeader.swift,
 				SheetIcon.swift,
 				SheetProgressView.swift,
+				StoragePicker.swift,
 				UserRow.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;

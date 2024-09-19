@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct FileContextMenu: ViewModifier {
     @EnvironmentObject private var fileStore: FileStore
-    @Binding private var selection: Set<String>
+    @Binding private var ids: Set<String>
     var file: VOFile.Entity
     var onInsights: (() -> Void)?
     var onMosaic: (() -> Void)?
@@ -19,7 +19,7 @@ struct FileContextMenu: ViewModifier {
 
     init(
         _ file: VOFile.Entity,
-        selection: Binding<Set<String>>,
+        ids: Binding<Set<String>>,
         onInsights: (() -> Void)? = nil,
         onMosaic: (() -> Void)? = nil,
         onSharing: (() -> Void)? = nil,
@@ -33,7 +33,7 @@ struct FileContextMenu: ViewModifier {
         onOpen: (() -> Void)? = nil
     ) {
         self.file = file
-        _selection = selection
+        _ids = ids
         self.onInsights = onInsights
         self.onMosaic = onMosaic
         self.onSharing = onSharing
@@ -153,14 +153,14 @@ struct FileContextMenu: ViewModifier {
     }
 
     private func updateSelection() {
-        selection = [file.id]
+        ids = [file.id]
     }
 }
 
 extension View {
     func fileContextMenu(
         _ file: VOFile.Entity,
-        selection: Binding<Set<String>>,
+        ids: Binding<Set<String>>,
         onInsights: (() -> Void)? = nil,
         onMosaic: (() -> Void)? = nil,
         onSharing: (() -> Void)? = nil,
@@ -175,7 +175,7 @@ extension View {
     ) -> some View {
         modifier(FileContextMenu(
             file,
-            selection: selection,
+            ids: ids,
             onInsights: onInsights,
             onMosaic: onMosaic,
             onSharing: onSharing,

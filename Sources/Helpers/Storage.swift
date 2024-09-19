@@ -37,7 +37,7 @@ extension Int {
         }
     }
 
-    func convertFromByte(unit: StorageUnit) -> Int {
+    func convertFromByte(to unit: StorageUnit) -> Int {
         switch unit {
         case .byte:
             self
@@ -50,7 +50,7 @@ extension Int {
         }
     }
 
-    func normalizeToByte(unit: StorageUnit) -> Int {
+    func normalizeToByte(from unit: StorageUnit) -> Int {
         switch unit {
         case .byte:
             self

@@ -47,11 +47,18 @@ struct WorkspaceList: View {
                 }
                 .navigationTitle("Home")
                 .toolbar {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
-                        accountButton
-                            .padding(.trailing, VOMetrics.spacingXs)
-                    } else {
-                        accountButton
+                    ToolbarItem(placement: .topBarTrailing) {
+                        if UIDevice.current.userInterfaceIdiom == .phone {
+                            accountButton
+                                .padding(.trailing, VOMetrics.spacingXs)
+                        } else {
+                            accountButton
+                        }
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {} label: {
+                            Label("New Workspace", systemImage: "plus")
+                        }
                     }
                 }
                 .sheet(isPresented: $showAccount) {

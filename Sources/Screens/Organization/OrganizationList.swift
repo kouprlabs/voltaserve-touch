@@ -42,6 +42,13 @@ struct OrganizationList: View {
                 .refreshable {
                     fetchList(replace: true)
                 }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {} label: {
+                            Label("New Organization", systemImage: "plus")
+                        }
+                    }
+                }
                 .onChange(of: searchText) { searchPublisher.send($1) }
             } else {
                 ProgressView()

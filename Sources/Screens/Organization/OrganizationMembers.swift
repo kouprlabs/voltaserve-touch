@@ -38,7 +38,7 @@ struct OrganizationMembers: View {
                         Button {
                             showAddMember = true
                         } label: {
-                            Label("Add Members", systemImage: "plus")
+                            Label("Add Members", systemImage: "person.badge.plus")
                         }
                     }
                 }
