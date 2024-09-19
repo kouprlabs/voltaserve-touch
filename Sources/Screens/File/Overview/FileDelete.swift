@@ -1,40 +1,89 @@
 import SwiftUI
+import VoltaserveCore
 
 struct FileDelete: View {
-    @State private var isProcessing = false
-    private let ids: Set<String>
+    @EnvironmentObject private var fileStore: FileStore
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var isProcessing = true
+    @State private var showError = false
+    @State private var errorSeverity: ErrorSeverity?
+    @State private var errorMessage: String?
+    private let ids: [String]
     private let onCompletion: (() -> Void)?
 
-    init(_ ids: Set<String>, onCompletion: (() -> Void)? = nil) {
+    init(_ ids: [String], onCompletion: (() -> Void)? = nil) {
         self.ids = ids
         self.onCompletion = onCompletion
     }
 
     var body: some View {
-        NavigationView {
-            VStack {
-                if isProcessing {
-                    ProgressView()
-                    Text(
-                        ids.count == 1 ?
-                            "Deleting item." :
-                            "Deleting \(ids.count) item(s)."
-                    )
+        VStack {
+            if isProcessing, !showError {
+                SheetProgressView()
+                Text("Deleting \(ids.count) item(s).")
+            } else if showError, errorSeverity == .full {
+                SheetErrorIcon()
+                if let errorMessage {
+                    Text(errorMessage)
                 }
-            }
-            .onAppear {
-                performDelete()
+                Button {
+                    onCompletion?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voSecondaryButton(colorScheme: colorScheme)
+                .padding(.horizontal)
+            } else if showError, errorSeverity == .partial {
+                SheetWarningIcon()
+                if let errorMessage {
+                    Text(errorMessage)
+                }
+                Button {
+                    onCompletion?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voSecondaryButton(colorScheme: colorScheme)
+                .padding(.horizontal)
             }
         }
+        .onAppear {
+            performDelete()
+        }
+        .presentationDetents([.fraction(0.25)])
     }
 
     private func performDelete() {
-        isProcessing = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-            Task { @MainActor in
-                onCompletion?()
-                isProcessing = false
+        var result: VOFile.DeleteResult?
+        VOErrorResponse.withErrorHandling {
+            result = try await fileStore.delete(ids)
+            errorSeverity = .full
+            if let result {
+                if result.failed.isEmpty {
+                    return true
+                } else {
+                    errorMessage = "Failed to delete \(result.failed.count) item(s)."
+                    if result.failed.count < ids.count {
+                        errorSeverity = .partial
+                    }
+                    showError = true
+                }
             }
+            return false
+        } success: {
+            showError = false
+            onCompletion?()
+        } failure: { _ in
+            errorMessage = "Failed to delete \(ids.count) item(s)."
+            errorSeverity = .full
+            showError = true
+        } anyways: {
+            isProcessing = false
         }
+    }
+
+    private enum ErrorSeverity {
+        case full
+        case partial
     }
 }

@@ -48,7 +48,9 @@ struct FileCopy: View {
                 .padding(.horizontal)
             }
         }
-        .onAppear { performCopy() }
+        .onAppear {
+            performCopy()
+        }
         .presentationDetents([.fraction(0.25)])
     }
 

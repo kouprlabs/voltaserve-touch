@@ -61,7 +61,9 @@ struct FileDownload: View {
                 .padding(.horizontal)
             }
         }
-        .onAppear { performDownload() }
+        .onAppear {
+            performDownload()
+        }
         .presentationDetents([.fraction(0.25)])
     }
 

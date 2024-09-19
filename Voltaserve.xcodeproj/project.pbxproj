@@ -11,6 +11,7 @@
 		64562B6C2C69EC2A00E10D97 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 64562B6A2C69EC2A00E10D97 /* .swiftformat */; };
 		64562B6D2C69EC2A00E10D97 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 64562B682C69EC2A00E10D97 /* .gitignore */; };
 		64562B6F2C69EC2A00E10D97 /* .swift-version in Resources */ = {isa = PBXBuildFile; fileRef = 64562B692C69EC2A00E10D97 /* .swift-version */; };
+		6476FD3A2C9BD9CB00C1BC38 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 6476FD392C9BD9C700C1BC38 /* .swiftlint.yml */; };
 		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
 		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
 		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
@@ -27,6 +28,7 @@
 		64562B682C69EC2A00E10D97 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		64562B692C69EC2A00E10D97 /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		64562B6A2C69EC2A00E10D97 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
+		6476FD392C9BD9C700C1BC38 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
 		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
+				6476FD392C9BD9C700C1BC38 /* .swiftlint.yml */,
 				6446B6212C7F61FD00868B3E /* Voltaserve-Info.plist */,
 				64562B682C69EC2A00E10D97 /* .gitignore */,
 				64562B692C69EC2A00E10D97 /* .swift-version */,
@@ -310,6 +313,7 @@
 				64562B6D2C69EC2A00E10D97 /* .gitignore in Resources */,
 				64D0D97B2C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf in Resources */,
 				64D0D97C2C8120E800B96180 /* Unbounded-VariableFont_wght.ttf in Resources */,
+				6476FD3A2C9BD9CB00C1BC38 /* .swiftlint.yml in Resources */,
 				64562B6F2C69EC2A00E10D97 /* .swift-version in Resources */,
 				649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */,
 				649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */,

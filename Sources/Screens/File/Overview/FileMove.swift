@@ -24,7 +24,6 @@ struct FileMove: View {
                 Text("Moving \(files.count) item(s).")
             } else if showError, errorSeverity == .full {
                 SheetErrorIcon()
-                    .foregroundStyle(VOColors.red500)
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -49,7 +48,9 @@ struct FileMove: View {
                 .padding(.horizontal)
             }
         }
-        .onAppear { performMove() }
+        .onAppear {
+            performMove()
+        }
         .presentationDetents([.fraction(0.25)])
     }
 

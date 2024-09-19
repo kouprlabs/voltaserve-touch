@@ -48,7 +48,9 @@ struct FileUpload: View {
                 .padding(.horizontal)
             }
         }
-        .onAppear { performUpload() }
+        .onAppear {
+            performUpload()
+        }
         .presentationDetents([.fraction(0.25)])
     }
 

@@ -115,6 +115,16 @@ class FileStore: ObservableObject {
         }
     }
 
+    func patchName(_: String, name: String) async throws {
+        try await Fake.serverCall { continuation in
+            if name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
     func copy(_ ids: [String], to _: String) async throws -> VOFile.CopyResult {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<VOFile.CopyResult, any Error>) in
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
@@ -164,8 +174,27 @@ class FileStore: ObservableObject {
         }
     }
 
-    func delete(_: String) async throws -> VOFile.DeleteResult {
-        
+    func delete(_ ids: [String]) async throws -> VOFile.DeleteResult {
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                if ids.count == 2 {
+                    continuation.resume(returning: VOFile.DeleteResult(
+                        succeeded: [],
+                        failed: ids
+                    ))
+                } else if ids.count == 3 {
+                    continuation.resume(returning: VOFile.DeleteResult(
+                        succeeded: [ids[1], ids[2]],
+                        failed: [ids[0]]
+                    ))
+                } else {
+                    continuation.resume(returning: VOFile.DeleteResult(
+                        succeeded: ids,
+                        failed: []
+                    ))
+                }
+            }
+        }
     }
 
     func upload(_ url: URL, workspaceID _: String) async throws {

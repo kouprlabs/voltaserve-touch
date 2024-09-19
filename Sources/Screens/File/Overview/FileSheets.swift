@@ -59,7 +59,7 @@ struct FileSheets: ViewModifier {
                 }
                 .sheet(isPresented: $fileStore.showDelete) {
                     if !fileStore.selection.isEmpty {
-                        FileDelete(fileStore.selection) {
+                        FileDelete(Array(fileStore.selection)) {
                             fileStore.showDelete = false
                         }
                     }

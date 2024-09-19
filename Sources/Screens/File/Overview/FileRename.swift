@@ -4,7 +4,7 @@ import VoltaserveCore
 struct FileRename: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var fileStore: FileStore
-    @State private var isProcessing = false
+    @State private var isSaving = false
     @State private var value = ""
     @State private var errorTitle: String?
     @State private var errorMessage: String?
@@ -25,21 +25,21 @@ struct FileRename: View {
                     Form {
                         Section(header: VOSectionHeader("Name")) {
                             TextField("Name", text: $value)
-                                .disabled(isProcessing)
+                                .disabled(isSaving)
                         }
                         Section {
                             Button {
                                 performRename()
                             } label: {
                                 HStack {
-                                    Text("Save")
-                                    if isProcessing {
+                                    Text("Save Name")
+                                    if isSaving {
                                         Spacer()
                                         ProgressView()
                                     }
                                 }
                             }
-                            .disabled(isProcessing)
+                            .disabled(isSaving || !isValid())
                         }
                     }
 
@@ -54,7 +54,7 @@ struct FileRename: View {
                     Button("Done") {
                         onCompletion?()
                     }
-                    .disabled(isProcessing)
+                    .disabled(isSaving)
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
@@ -69,24 +69,44 @@ struct FileRename: View {
         }
     }
 
+    private var normalizedValue: String {
+        value.trimmingCharacters(in: .whitespaces)
+    }
+
     private func fetch() {
         VOErrorResponse.withErrorHandling {
             file = try await fileStore.fetch(id)
             return true
         } failure: { message in
-            errorTitle = "Error: Renaming File"
+            errorTitle = "Error: Fetching File"
             errorMessage = message
             showError = true
         }
     }
 
     private func performRename() {
-        isProcessing = true
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-            Task { @MainActor in
-                onCompletion?()
-                isProcessing = false
-            }
+        guard let file else { return }
+
+        isSaving = true
+
+        VOErrorResponse.withErrorHandling {
+            try await fileStore.patchName(file.id, name: normalizedValue)
+            return true
+        } success: {
+            onCompletion?()
+        } failure: { message in
+            errorTitle = "Error: Renaming File"
+            errorMessage = message
+            showError = true
+        } anyways: {
+            isSaving = false
         }
+    }
+
+    private func isValid() -> Bool {
+        if let file {
+            return !normalizedValue.isEmpty && normalizedValue != file.name
+        }
+        return false
     }
 }
