@@ -35,9 +35,13 @@ struct FileUpload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onCompletion?() } label: { VOButtonLabel("Done") }
-                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
-                    .padding(.horizontal)
+                Button {
+                    onCompletion?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .padding(.horizontal)
             } else if showError, errorType == .some {
                 Image(systemName: "exclamationmark.circle")
                     .resizable()
@@ -47,9 +51,13 @@ struct FileUpload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onCompletion?() } label: { VOButtonLabel("Done") }
-                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
-                    .padding(.horizontal)
+                Button {
+                    onCompletion?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .padding(.horizontal)
             }
         }
         .onAppear { performUpload() }

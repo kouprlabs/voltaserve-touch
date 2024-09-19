@@ -16,7 +16,9 @@ struct FileList: View {
                             FileRow(file)
                                 .fileActions(file)
                         }
-                        .onAppear { onListItemAppear(file.id) }
+                        .onAppear {
+                            onListItemAppear(file.id)
+                        }
                     } else if file.type == .folder {
                         NavigationLink {
                             FileOverview(file.id)
@@ -25,7 +27,9 @@ struct FileList: View {
                             FileRow(file)
                                 .fileActions(file)
                         }
-                        .onAppear { onListItemAppear(file.id) }
+                        .onAppear {
+                            onListItemAppear(file.id)
+                        }
                     }
                 }
                 if fileStore.isLoading {

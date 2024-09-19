@@ -23,7 +23,9 @@ struct OrganizationMembers: View {
                 List {
                     ForEach(entities, id: \.id) { member in
                         VOUserRow(member)
-                            .onAppear { onListItemAppear(member.id) }
+                            .onAppear {
+                                onListItemAppear(member.id)
+                            }
                     }
                 }
                 .searchable(text: $searchText)

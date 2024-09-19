@@ -24,7 +24,9 @@ struct GroupList: View {
                                 .navigationTitle(group.name)
                         } label: {
                             GroupRow(group)
-                                .onAppear { onListItemAppear(group.id) }
+                                .onAppear {
+                                    onListItemAppear(group.id)
+                                }
                         }
                     }
                     if isLoading {

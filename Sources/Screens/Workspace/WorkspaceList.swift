@@ -27,7 +27,9 @@ struct WorkspaceList: View {
                                 .navigationTitle(workspace.name)
                         } label: {
                             WorkspaceRow(workspace)
-                                .onAppear { onListItemAppear(workspace.id) }
+                                .onAppear {
+                                    onListItemAppear(workspace.id)
+                                }
                         }
                     }
                     if isLoading {

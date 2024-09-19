@@ -3,6 +3,7 @@ import VoltaserveCore
 
 struct FileCopy: View {
     @EnvironmentObject private var fileStore: FileStore
+    @EnvironmentObject private var browserStore: BrowserStore
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
@@ -35,9 +36,13 @@ struct FileCopy: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onCompletion?() } label: { VOButtonLabel("Done") }
-                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
-                    .padding(.horizontal)
+                Button {
+                    onCompletion?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .padding(.horizontal)
             } else if showError, errorType == .some {
                 Image(systemName: "exclamationmark.circle")
                     .resizable()
@@ -47,9 +52,13 @@ struct FileCopy: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onCompletion?() } label: { VOButtonLabel("Done") }
-                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
-                    .padding(.horizontal)
+                Button {
+                    onCompletion?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .padding(.horizontal)
             }
         }
         .onAppear { performCopy() }

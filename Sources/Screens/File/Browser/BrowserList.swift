@@ -16,12 +16,19 @@ struct BrowserList: View {
     @State private var isLoading = false
     private let id: String
     private let onCompletion: (() -> Void)?
+    private let onDismiss: (() -> Void)?
     private let confirmLabelText: String
 
-    init(_ id: String, confirmLabelText: String = "Done", _ onCompletion: (() -> Void)? = nil) {
+    init(
+        _ id: String,
+        confirmLabelText: String = "Done",
+        onCompletion: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
+    ) {
         self.id = id
         self.confirmLabelText = confirmLabelText
         self.onCompletion = onCompletion
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -34,12 +41,19 @@ struct BrowserList: View {
                         List {
                             ForEach(entities, id: \.id) { file in
                                 NavigationLink {
-                                    BrowserList(file.id, confirmLabelText: confirmLabelText) {
-                                        onCompletion?()
-                                    }
+                                    BrowserList(
+                                        file.id,
+                                        confirmLabelText: confirmLabelText,
+                                        onCompletion: onCompletion,
+                                        onDismiss: onDismiss
+                                    )
                                     .navigationTitle(file.name)
-                                } label: { FileRow(file) }
-                                    .onAppear { onListItemAppear(file.id) }
+                                } label: {
+                                    FileRow(file)
+                                }
+                                .onAppear {
+                                    onListItemAppear(file.id)
+                                }
                             }
                             if isLoading {
                                 HStack {
@@ -65,10 +79,14 @@ struct BrowserList: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(confirmLabelText) { onCompletion?() }
+                Button(confirmLabelText) {
+                    onCompletion?()
+                }
             }
             ToolbarItem(placement: .topBarLeading) {
-                Button("Cancel", role: .cancel) { onCompletion?() }
+                Button("Cancel", role: .cancel) {
+                    onDismiss?()
+                }
             }
         }
         .onAppear {

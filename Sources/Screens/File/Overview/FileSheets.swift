@@ -14,6 +14,8 @@ struct FileSheets: ViewModifier {
                         BrowserList(workspace.rootID, confirmLabelText: "Move Here") {
                             fileStore.showMove = true
                             fileStore.showBrowserForMove = false
+                        } onDismiss: {
+                            fileStore.showBrowserForMove = false
                         }
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle(workspace.name)
@@ -31,6 +33,8 @@ struct FileSheets: ViewModifier {
                     NavigationStack {
                         BrowserList(workspace.rootID, confirmLabelText: "Copy Here") {
                             fileStore.showCopy = true
+                            fileStore.showBrowserForCopy = false
+                        } onDismiss: {
                             fileStore.showBrowserForCopy = false
                         }
                         .navigationBarTitleDisplayMode(.inline)

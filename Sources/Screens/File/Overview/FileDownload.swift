@@ -42,9 +42,13 @@ struct FileDownload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onDismiss?() } label: { VOButtonLabel("Done") }
-                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
-                    .padding(.horizontal)
+                Button {
+                    onDismiss?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .padding(.horizontal)
             } else if showError, errorType == .some {
                 Image(systemName: "exclamationmark.circle")
                     .resizable()
@@ -54,12 +58,20 @@ struct FileDownload: View {
                 if let errorMessage {
                     Text(errorMessage)
                 }
-                Button { onCompletion?(localURLs) } label: { VOButtonLabel("Continue") }
-                    .voButton()
-                    .padding(.horizontal)
-                Button { onDismiss?() } label: { VOButtonLabel("Done") }
-                    .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
-                    .padding(.horizontal)
+                Button {
+                    onCompletion?(localURLs)
+                } label: {
+                    VOButtonLabel("Continue")
+                }
+                .voButton()
+                .padding(.horizontal)
+                Button {
+                    onDismiss?()
+                } label: {
+                    VOButtonLabel("Done")
+                }
+                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .padding(.horizontal)
             }
         }
         .onAppear { performDownload() }

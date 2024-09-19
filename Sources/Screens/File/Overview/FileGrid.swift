@@ -23,7 +23,9 @@ struct FileGrid: View {
                                         .fileActions(file)
                                 }
                                 .buttonStyle(.plain)
-                                .onAppear { onListItemAppear(file.id) }
+                                .onAppear {
+                                    onListItemAppear(file.id)
+                                }
                             } else if file.type == .folder {
                                 NavigationLink {
                                     FileOverview(file.id)
@@ -33,7 +35,9 @@ struct FileGrid: View {
                                         .fileActions(file)
                                 }
                                 .buttonStyle(PlainButtonStyle())
-                                .onAppear { onListItemAppear(file.id) }
+                                .onAppear {
+                                    onListItemAppear(file.id)
+                                }
                             }
                         }
                     }

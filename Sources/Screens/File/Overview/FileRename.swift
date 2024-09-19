@@ -51,8 +51,10 @@ struct FileRename: View {
             .navigationTitle("Rename")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { onCompletion?() }
-                        .disabled(isProcessing)
+                    Button("Done") {
+                        onCompletion?()
+                    }
+                    .disabled(isProcessing)
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)

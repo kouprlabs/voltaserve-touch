@@ -24,7 +24,9 @@ struct OrganizationList: View {
                                 .navigationTitle(organization.name)
                         } label: {
                             OrganizationRow(organization)
-                                .onAppear { onListItemAppear(organization.id) }
+                                .onAppear {
+                                    onListItemAppear(organization.id)
+                                }
                         }
                     }
                     if isLoading {

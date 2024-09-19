@@ -15,12 +15,24 @@ struct FileToolbar: ViewModifier {
                         ToolbarItem(placement: .bottomBar) {
                             FileMenu(
                                 fileStore.selection,
-                                onUpload: { fileStore.showUploadDocumentPicker = true },
-                                onDownload: { fileStore.showDownload = true },
-                                onDelete: { fileStore.showDelete = true },
-                                onRename: { fileStore.showRename = true },
-                                onMove: { fileStore.showBrowserForMove = true },
-                                onCopy: { fileStore.showBrowserForCopy = true }
+                                onUpload: {
+                                    fileStore.showUploadDocumentPicker = true
+                                },
+                                onDownload: {
+                                    fileStore.showDownload = true
+                                },
+                                onDelete: {
+                                    fileStore.showDelete = true
+                                },
+                                onRename: {
+                                    fileStore.showRename = true
+                                },
+                                onMove: {
+                                    fileStore.showBrowserForMove = true
+                                },
+                                onCopy: {
+                                    fileStore.showBrowserForCopy = true
+                                }
                             )
                         }
                     }
