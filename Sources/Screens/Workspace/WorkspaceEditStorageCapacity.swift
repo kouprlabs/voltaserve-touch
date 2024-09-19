@@ -25,7 +25,7 @@ struct WorkspaceEditStorageCapacity: View {
                                 return value ?? 0
                             },
                             set: {
-                                value = Int($0).normalizeToByte(unit: unit ?? .b)
+                                value = Int($0).normalizeToByte(unit: unit ?? .byte)
                             }
                         ),
                         formatter: NumberFormatter()
@@ -36,10 +36,10 @@ struct WorkspaceEditStorageCapacity: View {
                             }
                         }
                     Picker("Unit", selection: $unit) {
-                        Text("B").tag(StorageUnit.b)
-                        Text("MB").tag(StorageUnit.mb)
-                        Text("GB").tag(StorageUnit.gb)
-                        Text("TB").tag(StorageUnit.tb)
+                        Text("B").tag(StorageUnit.byte)
+                        Text("MB").tag(StorageUnit.megabyte)
+                        Text("GB").tag(StorageUnit.gigabyte)
+                        Text("TB").tag(StorageUnit.terabyte)
                     }
                     .disabled(isSaving)
                     .onChange(of: unit) { _, newUnit in

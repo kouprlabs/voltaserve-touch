@@ -67,20 +67,20 @@ extension Color {
         let hex = hex.trimmingCharacters(in: .alphanumerics.inverted)
         var int = UInt64()
         Scanner(string: hex).scanHexInt64(&int)
-        let r, g, b: Double
+        let red, green, blue: Double
         switch hex.count {
         case 6: // RGB (24-bit)
-            (r, g, b) = (Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF))
+            (red, green, blue) = (Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF))
         case 8: // ARGB (32-bit)
-            (r, g, b) = (Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF))
+            (red, green, blue) = (Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF))
         default:
-            (r, g, b) = (0, 0, 0)
+            (red, green, blue) = (0, 0, 0)
         }
         self.init(
             .sRGB,
-            red: r / 255.0,
-            green: g / 255.0,
-            blue: b / 255.0,
+            red: red / 255.0,
+            green: green / 255.0,
+            blue: blue / 255.0,
             opacity: 1.0
         )
     }

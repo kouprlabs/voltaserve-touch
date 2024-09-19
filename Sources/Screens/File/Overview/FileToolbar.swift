@@ -4,6 +4,7 @@ struct FileToolbar: ViewModifier {
     @EnvironmentObject private var fileStore: FileStore
     @Environment(\.editMode) private var editMode
 
+    // swiftlint:disable:next function_body_length
     func body(content: Content) -> some View {
         content
             .toolbar {

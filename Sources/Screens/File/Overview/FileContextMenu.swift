@@ -47,6 +47,7 @@ struct FileContextMenu: ViewModifier {
         self.onOpen = onOpen
     }
 
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func body(content: Content) -> some View {
         content
             .contextMenu {

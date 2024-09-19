@@ -6,6 +6,7 @@ struct FileSheets: ViewModifier {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @State private var documentPickerURLs: [URL]?
 
+    // swiftlint:disable:next function_body_length
     func body(content: Content) -> some View {
         if let workspace = workspaceStore.current {
             content

@@ -29,6 +29,7 @@ class KeychainManager {
         SecItemCopyMatching(query as CFDictionary, &item)
 
         guard let data = item as? Data else { return nil }
+        // swiftlint:disable:next non_optional_string_data_conversion
         return String(data: data, encoding: .utf8)
     }
 

@@ -2,44 +2,45 @@ import SwiftUI
 import VoltaserveCore
 
 extension VOFile.Entity {
+    // swiftlint:disable:next cyclomatic_complexity
     func iconForFile(colorScheme: ColorScheme) -> String {
         guard let snapshot else { return "" }
-        guard let fe = snapshot.original.fileExtension else { return "" }
+        guard let fileExtension = snapshot.original.fileExtension else { return "" }
         let hasThumbnail = snapshot.thumbnail != nil
 
-        var image = if fe.isImage() {
+        var image = if fileExtension.isImage() {
             "icon-image"
-        } else if fe.isPDF() {
+        } else if fileExtension.isPDF() {
             "icon-pdf"
-        } else if fe.isText() {
+        } else if fileExtension.isText() {
             "icon-text"
-        } else if fe.isRichText() {
+        } else if fileExtension.isRichText() {
             "icon-rich-text"
-        } else if fe.isWord() {
+        } else if fileExtension.isWord() {
             "icon-word"
-        } else if fe.isPowerPoint() {
+        } else if fileExtension.isPowerPoint() {
             "icon-power-point"
-        } else if fe.isExcel() {
+        } else if fileExtension.isExcel() {
             "icon-spreadsheet"
-        } else if fe.isDocument() {
+        } else if fileExtension.isDocument() {
             "icon-word"
-        } else if fe.isSpreadsheet() {
+        } else if fileExtension.isSpreadsheet() {
             "icon-spreadsheet"
-        } else if fe.isSlides() {
+        } else if fileExtension.isSlides() {
             "icon-power-point"
-        } else if fe.isVideo(), hasThumbnail {
+        } else if fileExtension.isVideo(), hasThumbnail {
             "icon-video"
-        } else if fe.isAudio(), !hasThumbnail {
+        } else if fileExtension.isAudio(), !hasThumbnail {
             "icon-audio"
-        } else if fe.isArchive() {
+        } else if fileExtension.isArchive() {
             "icon-archive"
-        } else if fe.isFont() {
+        } else if fileExtension.isFont() {
             "icon-file"
-        } else if fe.isCode() {
+        } else if fileExtension.isCode() {
             "icon-code"
-        } else if fe.isCSV() {
+        } else if fileExtension.isCSV() {
             "icon-csv"
-        } else if fe.isGLB() {
+        } else if fileExtension.isGLB() {
             "icon-model"
         } else {
             "icon-file"

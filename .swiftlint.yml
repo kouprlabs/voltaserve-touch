@@ -1,8 +1,0 @@
-disabled_rules:
-    - identifier_name
-    - function_parameter_count
-    - function_body_length
-    - nesting
-    - type_body_length
-    - cyclomatic_complexity
-    - non_optional_string_data_conversion
