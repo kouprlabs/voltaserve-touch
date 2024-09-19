@@ -164,7 +164,9 @@ class FileStore: ObservableObject {
         }
     }
 
-    func delete(_: String) async throws -> VOFile.Dele {}
+    func delete(_: String) async throws -> VOFile.DeleteResult {
+        
+    }
 
     func upload(_ url: URL, workspaceID _: String) async throws {
         try await Fake.serverCall { continuation in
