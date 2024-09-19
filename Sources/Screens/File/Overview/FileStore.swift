@@ -20,7 +20,7 @@ class FileStore: ObservableObject {
     @Published var showMove = false
     @Published var showCopy = false
     @Published var showDownloadDocumentPicker = false
-    @Published var viewMode: ViewMode
+    @Published var viewMode: ViewMode = .grid
     @Published var searchText = ""
     @Published var isLoading = false
     @Published var showError = false
@@ -44,11 +44,7 @@ class FileStore: ObservableObject {
     private var fileClient: VOFile?
 
     init() {
-        if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
-            self.viewMode = ViewMode(rawValue: viewMode)!
-        } else {
-            viewMode = .grid
-        }
+        loadViewModeFromUserDefaults()
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -56,6 +52,12 @@ class FileStore: ObservableObject {
                 self.query = .init(text: $0)
             }
             .store(in: &cancellables)
+    }
+
+    func loadViewModeFromUserDefaults() {
+        if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
+            self.viewMode = ViewMode(rawValue: viewMode)!
+        }
     }
 
     func fetch(_ id: String) async throws -> VOFile.Entity? {
