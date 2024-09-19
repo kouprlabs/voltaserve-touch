@@ -14,7 +14,7 @@ class WorkspaceStore: ObservableObject {
     @Published var selection: String?
     @Published var searchText = ""
     @Published var isLoading = false
-    private(set) var searchPublisher = PassthroughSubject<String, Never>()
+    let searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 

@@ -12,8 +12,8 @@ class GroupStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var searchText = ""
     @Published var isLoading = false
-    private(set) var searchPublisher = PassthroughSubject<String, Never>()
-    var cancellables = Set<AnyCancellable>()
+    let searchPublisher = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 
     var token: VOToken.Value? {

@@ -6,6 +6,13 @@ class OrganizationMembersStore: ObservableObject {
     @Published var list: VOUser.List?
     @Published var entities: [VOUser.Entity]?
     @Published var query: String?
+    @Published var showError = false
+    @Published var errorTitle: String?
+    @Published var errorMessage: String?
+    @Published var searchText = ""
+    @Published var isLoading = false
+    let searchPublisher = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -21,12 +28,52 @@ class OrganizationMembersStore: ObservableObject {
 
     private var userClient: VOUser?
 
+    init() {
+        searchPublisher
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink {
+                self.query = $0
+            }
+            .store(in: &cancellables)
+    }
+
     func fetchList(
         _ organizationID: String,
         page: Int = 1,
         size: Int = Constants.pageSize
     ) async throws -> VOUser.List? {
         try await userClient?.fetchList(.init(query: query, organizationID: organizationID, page: page, size: size))
+    }
+
+    func fetchList(organization: VOOrganization.Entity, replace: Bool = false) {
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOUser.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !self.hasNextPage() { return false }
+            nextPage = self.nextPage()
+            list = try await self.fetchList(organization.id, page: nextPage)
+            return true
+        } success: {
+            self.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    self.entities = list.data
+                } else {
+                    self.append(list.data)
+                }
+            }
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Members"
+            self.errorMessage = message
+            self.showError = true
+        } anyways: {
+            self.isLoading = false
+        }
     }
 
     func append(_ newEntities: [VOUser.Entity]) {
