@@ -5,13 +5,6 @@ import VoltaserveCore
 struct OrganizationList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
-    @State private var searchText = ""
-    @State private var searchPublisher = PassthroughSubject<String, Never>()
-    @State private var cancellables = Set<AnyCancellable>()
-    @State private var isLoading = false
 
     var body: some View {
         NavigationStack {
@@ -29,7 +22,7 @@ struct OrganizationList: View {
                                 }
                         }
                     }
-                    if isLoading {
+                    if organizationStore.isLoading {
                         HStack {
                             Spacer()
                             ProgressView()
@@ -38,9 +31,9 @@ struct OrganizationList: View {
                     }
                 }
                 .navigationTitle("Organizations")
-                .searchable(text: $searchText)
+                .searchable(text: $organizationStore.searchText)
                 .refreshable {
-                    fetchList(replace: true)
+                    organizationStore.fetchList(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -49,21 +42,20 @@ struct OrganizationList: View {
                         }
                     }
                 }
-                .onChange(of: searchText) { searchPublisher.send($1) }
+                .onChange(of: organizationStore.searchText) {
+                    organizationStore.searchPublisher.send($1)
+                }
             } else {
                 ProgressView()
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorAlert(
+            isPresented: $organizationStore.showError,
+            title: organizationStore.errorTitle,
+            message: organizationStore.errorMessage
+        )
         .onAppear {
             organizationStore.clear()
-            searchPublisher
-                .debounce(for: .seconds(1), scheduler: RunLoop.main)
-                .removeDuplicates()
-                .sink {
-                    organizationStore.query = $0
-                }
-                .store(in: &cancellables)
             if tokenStore.token != nil {
                 onAppearOrChange()
             }
@@ -78,48 +70,18 @@ struct OrganizationList: View {
         }
         .onChange(of: organizationStore.query) {
             organizationStore.clear()
-            fetchList()
+            organizationStore.fetchList()
         }
     }
 
     private func onAppearOrChange() {
-        fetchList(replace: true)
+        organizationStore.fetchList(replace: true)
         organizationStore.startTimer()
     }
 
     private func onListItemAppear(_ id: String) {
         if organizationStore.isLast(id) {
-            fetchList()
-        }
-    }
-
-    private func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
-        var nextPage = -1
-        var list: VOOrganization.List?
-
-        VOErrorResponse.withErrorHandling {
-            if !organizationStore.hasNextPage() { return false }
-            nextPage = organizationStore.nextPage()
-            list = try await organizationStore.fetchList(page: nextPage)
-            return true
-        } success: {
-            organizationStore.list = list
-            if let list {
-                if replace, nextPage == 1 {
-                    organizationStore.entities = list.data
-                } else {
-                    organizationStore.append(list.data)
-                }
-            }
-        } failure: { message in
-            errorTitle = "Error: Fetching Organizations"
-            errorMessage = message
-            showError = true
-        } anyways: {
-            isLoading = false
+            organizationStore.fetchList()
         }
     }
 }

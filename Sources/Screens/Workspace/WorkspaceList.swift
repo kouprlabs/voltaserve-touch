@@ -6,15 +6,7 @@ struct WorkspaceList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var accountStore: AccountStore
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     @State private var showAccount = false
-    @State private var selection: String?
-    @State private var searchText = ""
-    @State private var searchPublisher = PassthroughSubject<String, Never>()
-    @State private var cancellables = Set<AnyCancellable>()
-    @State private var isLoading = false
 
     var body: some View {
         NavigationStack {
@@ -32,7 +24,7 @@ struct WorkspaceList: View {
                                 }
                         }
                     }
-                    if isLoading {
+                    if workspaceStore.isLoading {
                         HStack {
                             Spacer()
                             ProgressView()
@@ -40,10 +32,12 @@ struct WorkspaceList: View {
                         }
                     }
                 }
-                .searchable(text: $searchText)
-                .onChange(of: searchText) { searchPublisher.send($1) }
+                .searchable(text: $workspaceStore.searchText)
+                .onChange(of: workspaceStore.searchText) {
+                    workspaceStore.searchPublisher.send($1)
+                }
                 .refreshable {
-                    fetchList(replace: true)
+                    workspaceStore.fetchList(replace: true)
                 }
                 .navigationTitle("Home")
                 .toolbar {
@@ -68,16 +62,13 @@ struct WorkspaceList: View {
                 ProgressView()
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorAlert(
+            isPresented: $workspaceStore.showError,
+            title: workspaceStore.errorTitle,
+            message: workspaceStore.errorMessage
+        )
         .onAppear {
             workspaceStore.clear()
-            searchPublisher
-                .debounce(for: .seconds(1), scheduler: RunLoop.main)
-                .removeDuplicates()
-                .sink {
-                    workspaceStore.query = $0
-                }
-                .store(in: &cancellables)
             if tokenStore.token != nil {
                 onAppearOrChange()
             }
@@ -92,7 +83,7 @@ struct WorkspaceList: View {
         }
         .onChange(of: workspaceStore.query) {
             workspaceStore.clear()
-            fetchList()
+            workspaceStore.fetchList()
         }
     }
 
@@ -110,44 +101,14 @@ struct WorkspaceList: View {
     }
 
     private func onAppearOrChange() {
-        fetchList(replace: true)
+        workspaceStore.fetchList(replace: true)
         fetchUser()
         workspaceStore.startTimer()
     }
 
     private func onListItemAppear(_ id: String) {
         if workspaceStore.isLast(id) {
-            fetchList()
-        }
-    }
-
-    private func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
-        var nextPage = -1
-        var list: VOWorkspace.List?
-
-        VOErrorResponse.withErrorHandling {
-            if !workspaceStore.hasNextPage() { return false }
-            nextPage = workspaceStore.nextPage()
-            list = try await workspaceStore.fetchList(page: nextPage)
-            return true
-        } success: {
-            workspaceStore.list = list
-            if let list {
-                if replace, nextPage == 1 {
-                    workspaceStore.entities = list.data
-                } else {
-                    workspaceStore.append(list.data)
-                }
-            }
-        } failure: { message in
-            errorTitle = "Error: Fetching Workspaces"
-            errorMessage = message
-            showError = true
-        } anyways: {
-            isLoading = false
+            workspaceStore.fetchList()
         }
     }
 
@@ -160,9 +121,9 @@ struct WorkspaceList: View {
         } success: {
             accountStore.identityUser = user
         } failure: { message in
-            errorTitle = "Error: Fetching User"
-            errorMessage = message
-            showError = true
+            workspaceStore.errorTitle = "Error: Fetching User"
+            workspaceStore.errorMessage = message
+            workspaceStore.showError = true
         }
     }
 }

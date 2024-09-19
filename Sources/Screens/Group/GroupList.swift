@@ -5,13 +5,6 @@ import VoltaserveCore
 struct GroupList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
-    @State private var searchText = ""
-    @State private var searchPublisher = PassthroughSubject<String, Never>()
-    @State private var cancellables = Set<AnyCancellable>()
-    @State private var isLoading = false
 
     var body: some View {
         NavigationStack {
@@ -29,7 +22,7 @@ struct GroupList: View {
                                 }
                         }
                     }
-                    if isLoading {
+                    if groupStore.isLoading {
                         HStack {
                             Spacer()
                             ProgressView()
@@ -38,9 +31,9 @@ struct GroupList: View {
                     }
                 }
                 .navigationTitle("Groups")
-                .searchable(text: $searchText)
+                .searchable(text: $groupStore.searchText)
                 .refreshable {
-                    fetchList(replace: true)
+                    groupStore.fetchList(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -49,21 +42,20 @@ struct GroupList: View {
                         }
                     }
                 }
-                .onChange(of: searchText) { searchPublisher.send($1) }
+                .onChange(of: groupStore.searchText) {
+                    groupStore.searchPublisher.send($1)
+                }
             } else {
                 ProgressView()
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorAlert(
+            isPresented: $groupStore.showError,
+            title: groupStore.errorTitle,
+            message: groupStore.errorMessage
+        )
         .onAppear {
             groupStore.clear()
-            searchPublisher
-                .debounce(for: .seconds(1), scheduler: RunLoop.main)
-                .removeDuplicates()
-                .sink {
-                    groupStore.query = $0
-                }
-                .store(in: &cancellables)
             if tokenStore.token != nil {
                 onAppearOrChange()
             }
@@ -78,48 +70,18 @@ struct GroupList: View {
         }
         .onChange(of: groupStore.query) {
             groupStore.clear()
-            fetchList()
+            groupStore.fetchList()
         }
     }
 
     private func onAppearOrChange() {
-        fetchList(replace: true)
+        groupStore.fetchList(replace: true)
         groupStore.startTimer()
     }
 
     private func onListItemAppear(_ id: String) {
         if groupStore.isLast(id) {
-            fetchList()
-        }
-    }
-
-    private func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
-        var nextPage = -1
-        var list: VOGroup.List?
-
-        VOErrorResponse.withErrorHandling {
-            if !groupStore.hasNextPage() { return false }
-            nextPage = groupStore.nextPage()
-            list = try await groupStore.fetchList(page: nextPage)
-            return true
-        } success: {
-            groupStore.list = list
-            if let list {
-                if replace, nextPage == 1 {
-                    groupStore.entities = list.data
-                } else {
-                    groupStore.append(list.data)
-                }
-            }
-        } failure: { message in
-            errorTitle = "Error: Fetching Groups"
-            errorMessage = message
-            showError = true
-        } anyways: {
-            isLoading = false
+            groupStore.fetchList()
         }
     }
 }

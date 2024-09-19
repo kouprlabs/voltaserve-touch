@@ -65,11 +65,15 @@ struct BrowserList: View {
                         }
                         .listStyle(.inset)
                         .searchable(text: $searchText)
-                        .onChange(of: searchText) { searchPublisher.send($1) }
+                        .onChange(of: searchText) {
+                            searchPublisher.send($1)
+                        }
                         .refreshable {
                             fetchList(replace: true)
                         }
-                        .navigationDestination(item: $tappedItem) { FileViewer($0) }
+                        .navigationDestination(item: $tappedItem) {
+                            FileViewer($0)
+                        }
                         .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
                     }
                 }

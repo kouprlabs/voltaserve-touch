@@ -32,7 +32,9 @@ struct OrganizationMembers: View {
                 .refreshable {
                     fetchList(replace: true)
                 }
-                .onChange(of: searchText) { searchPublisher.send($1) }
+                .onChange(of: searchText) {
+                    searchPublisher.send($1)
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {

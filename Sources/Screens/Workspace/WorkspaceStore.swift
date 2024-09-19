@@ -8,6 +8,14 @@ class WorkspaceStore: ObservableObject {
     @Published var current: VOWorkspace.Entity?
     @Published var storageUsage: VOStorage.Usage?
     @Published var query: String?
+    @Published var showError = false
+    @Published var errorTitle: String?
+    @Published var errorMessage: String?
+    @Published var selection: String?
+    @Published var searchText = ""
+    @Published var isLoading = false
+    private(set) var searchPublisher = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -28,10 +36,14 @@ class WorkspaceStore: ObservableObject {
     private var workspaceClient: VOWorkspace?
     private var storageClient: VOStorage?
 
-    init() {}
-
-    init(_ current: VOWorkspace.Entity) {
-        self.current = current
+    init() {
+        searchPublisher
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink {
+                self.query = $0
+            }
+            .store(in: &cancellables)
     }
 
     func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
@@ -40,6 +52,36 @@ class WorkspaceStore: ObservableObject {
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
         try await workspaceClient?.fetchList(.init(query: query, page: page, size: size))
+    }
+
+    func fetchList(replace: Bool = false) {
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOWorkspace.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !self.hasNextPage() { return false }
+            nextPage = self.nextPage()
+            list = try await self.fetchList(page: nextPage)
+            return true
+        } success: {
+            self.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    self.entities = list.data
+                } else {
+                    self.append(list.data)
+                }
+            }
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Workspaces"
+            self.errorMessage = message
+            self.showError = true
+        } anyways: {
+            self.isLoading = false
+        }
     }
 
     func fetchStorageUsage(_ id: String) async throws -> VOStorage.Usage? {

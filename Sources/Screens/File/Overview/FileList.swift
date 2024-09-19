@@ -41,7 +41,9 @@ struct FileList: View {
                 }
             }
             .listStyle(.inset)
-            .navigationDestination(item: $tappedItem) { FileViewer($0) }
+            .navigationDestination(item: $tappedItem) {
+                FileViewer($0)
+            }
         }
     }
 

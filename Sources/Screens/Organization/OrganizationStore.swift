@@ -7,6 +7,13 @@ class OrganizationStore: ObservableObject {
     @Published var entities: [VOOrganization.Entity]?
     @Published var current: VOOrganization.Entity?
     @Published var query: String?
+    @Published var searchText = ""
+    @Published var isLoading = false
+    @Published var showError = false
+    @Published var errorTitle: String?
+    @Published var errorMessage: String?
+    private(set) var searchPublisher = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -22,10 +29,14 @@ class OrganizationStore: ObservableObject {
 
     private var organizationClient: VOOrganization?
 
-    init() {}
-
-    init(_ current: VOOrganization.Entity) {
-        self.current = current
+    init() {
+        searchPublisher
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink {
+                self.query = $0
+            }
+            .store(in: &cancellables)
     }
 
     func fetch(_ id: String) async throws -> VOOrganization.Entity? {
@@ -34,6 +45,36 @@ class OrganizationStore: ObservableObject {
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
         try await organizationClient?.fetchList(.init(query: query, page: page, size: size))
+    }
+
+    func fetchList(replace: Bool = false) {
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOOrganization.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !self.hasNextPage() { return false }
+            nextPage = self.nextPage()
+            list = try await self.fetchList(page: nextPage)
+            return true
+        } success: {
+            self.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    self.entities = list.data
+                } else {
+                    self.append(list.data)
+                }
+            }
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Organizations"
+            self.errorMessage = message
+            self.showError = true
+        } anyways: {
+            self.isLoading = false
+        }
     }
 
     func patchName(_: String, name _: String) async throws {

@@ -41,7 +41,9 @@ struct FileGrid: View {
                             }
                         }
                     }
-                    .navigationDestination(item: $tappedItem) { FileViewer($0) }
+                    .navigationDestination(item: $tappedItem) {
+                        FileViewer($0)
+                    }
                     .padding(.vertical, VOMetrics.spacing)
                 }
             }

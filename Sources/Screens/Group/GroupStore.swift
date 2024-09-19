@@ -7,6 +7,13 @@ class GroupStore: ObservableObject {
     @Published var entities: [VOGroup.Entity]?
     @Published var current: VOGroup.Entity?
     @Published var query: String?
+    @Published var showError = false
+    @Published var errorTitle: String?
+    @Published var errorMessage: String?
+    @Published var searchText = ""
+    @Published var isLoading = false
+    private(set) var searchPublisher = PassthroughSubject<String, Never>()
+    var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -22,10 +29,14 @@ class GroupStore: ObservableObject {
 
     private var groupClient: VOGroup?
 
-    init() {}
-
-    init(_ current: VOGroup.Entity) {
-        self.current = current
+    init() {
+        searchPublisher
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink {
+                self.query = $0
+            }
+            .store(in: &cancellables)
     }
 
     func fetch(_ id: String) async throws -> VOGroup.Entity? {
@@ -34,6 +45,36 @@ class GroupStore: ObservableObject {
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
         try await groupClient?.fetchList(.init(query: query, page: page, size: size))
+    }
+
+    func fetchList(replace: Bool = false) {
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOGroup.List?
+
+        VOErrorResponse.withErrorHandling {
+            if !self.hasNextPage() { return false }
+            nextPage = self.nextPage()
+            list = try await self.fetchList(page: nextPage)
+            return true
+        } success: {
+            self.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    self.entities = list.data
+                } else {
+                    self.append(list.data)
+                }
+            }
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Groups"
+            self.errorMessage = message
+            self.showError = true
+        } anyways: {
+            self.isLoading = false
+        }
     }
 
     func patchName(_: String, options _: VOGroup.PatchNameOptions) async throws {
