@@ -115,6 +115,65 @@ class FileStore: ObservableObject {
         }
     }
 
+    func copy(_ ids: [String], to _: String) async throws -> VOFile.CopyResult {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<VOFile.CopyResult, any Error>) in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                if ids.count == 2 {
+                    continuation.resume(returning: VOFile.CopyResult(
+                        new: [],
+                        succeeded: [],
+                        failed: ids
+                    ))
+                } else if ids.count == 3 {
+                    continuation.resume(returning: VOFile.CopyResult(
+                        new: [ids[1], ids[2]],
+                        succeeded: [ids[1], ids[2]],
+                        failed: [ids[0]]
+                    ))
+                } else {
+                    continuation.resume(returning: VOFile.CopyResult(
+                        new: ids,
+                        succeeded: ids,
+                        failed: []
+                    ))
+                }
+            }
+        }
+    }
+
+    func move(_ ids: [String], to _: String) async throws -> VOFile.MoveResult {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<VOFile.MoveResult, any Error>) in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                if ids.count == 2 {
+                    continuation.resume(returning: VOFile.MoveResult(
+                        succeeded: [],
+                        failed: ids
+                    ))
+                } else if ids.count == 3 {
+                    continuation.resume(returning: VOFile.MoveResult(
+                        succeeded: [ids[1], ids[2]],
+                        failed: [ids[0]]
+                    ))
+                } else {
+                    continuation.resume(returning: VOFile.MoveResult(
+                        succeeded: ids,
+                        failed: []
+                    ))
+                }
+            }
+        }
+    }
+
+    func upload(_ url: URL, workspaceID _: String) async throws {
+        try await Fake.serverCall { continuation in
+            if url.lastPathComponent.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
     func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
         fileClient?.urlForThumbnail(id, fileExtension: fileExtension)
     }

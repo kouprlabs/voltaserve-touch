@@ -4,10 +4,10 @@ import VoltaserveCore
 struct FileDownload: View {
     @EnvironmentObject private var fileStore: FileStore
     @Environment(\.colorScheme) private var colorScheme
-    @State private var localURLs: [URL] = []
+    @State private var urls: [URL] = []
     @State private var isProcessing = true
     @State private var showError = false
-    @State private var errorType: ErrorType?
+    @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let files: [VOFile.Entity]
     private let onCompletion: (([URL]) -> Void)?
@@ -26,19 +26,10 @@ struct FileDownload: View {
     var body: some View {
         VStack {
             if isProcessing, !showError {
-                ProgressView()
-                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
-                if files.count == 1 {
-                    Text("Downloading item.")
-                } else {
-                    Text("Downloading \(files.count) items.")
-                }
-            } else if showError, errorType == .all {
-                Image(systemName: "xmark.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
-                    .foregroundStyle(VOColors.red500)
+                SheetProgressView()
+                Text("Downloading \(files.count) item(s).")
+            } else if showError, errorSeverity == .full {
+                SheetErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -47,30 +38,26 @@ struct FileDownload: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
-            } else if showError, errorType == .some {
-                Image(systemName: "exclamationmark.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
-                    .foregroundStyle(VOColors.yellow300)
+            } else if showError, errorSeverity == .partial {
+                SheetWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
                 Button {
-                    onCompletion?(localURLs)
+                    onCompletion?(urls)
                 } label: {
                     VOButtonLabel("Continue")
                 }
-                .voButton()
+                .voPrimaryButton()
                 .padding(.horizontal)
                 Button {
                     onDismiss?()
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             }
         }
@@ -80,7 +67,7 @@ struct FileDownload: View {
 
     private func performDownload() {
         let dispatchGroup = DispatchGroup()
-        localURLs.removeAll()
+        urls.removeAll()
         for file in files {
             if let snapshot = file.snapshot,
                let fileExtension = snapshot.original.fileExtension,
@@ -99,7 +86,7 @@ struct FileDownload: View {
                             let newLocalURL = directoryURL.appendingPathComponent(file.name)
                             do {
                                 try fileManager.moveItem(at: localURL, to: newLocalURL)
-                                localURLs.append(newLocalURL)
+                                urls.append(newLocalURL)
                             } catch {}
                         }
                     }
@@ -108,43 +95,26 @@ struct FileDownload: View {
             }
         }
         dispatchGroup.notify(queue: .main) {
-            if localURLs.count == files.count {
-                onSuccess()
+            if urls.count == files.count {
+                showError = false
+                isProcessing = false
+                onCompletion?(urls)
             } else {
-                onError(count: files.count - localURLs.count)
+                let count = files.count - urls.count
+                errorMessage = "Failed to download \(count) item(s)."
+                if count < files.count {
+                    errorSeverity = .partial
+                } else {
+                    errorSeverity = .full
+                }
+                showError = true
+                isProcessing = false
             }
         }
     }
 
-    private func onSuccess() {
-        isProcessing = false
-        showError = false
-        errorType = .unknown
-        onCompletion?(localURLs)
-    }
-
-    private func onError(count: Int) {
-        isProcessing = false
-        showError = true
-        if files.count == 1 {
-            errorType = .all
-            errorMessage = "Failed to download item."
-        } else if count == files.count {
-            errorType = .all
-            errorMessage = "Failed to download \(count) item(s)."
-        } else if count < files.count {
-            errorType = .some
-            errorMessage = "Failed to download \(count) item(s)."
-        }
-    }
-
-    enum ErrorType {
-        case all
-        case some
-        case unknown
-    }
-
-    private enum Constants {
-        static let errorIconSize: CGFloat = 30
+    private enum ErrorSeverity {
+        case full
+        case partial
     }
 }

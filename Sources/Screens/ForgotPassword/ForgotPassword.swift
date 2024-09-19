@@ -39,7 +39,7 @@ struct ForgotPassword: View {
                         progressViewTint: .white
                     )
                 }
-                .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
+                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isLoading)
                 HStack {
                     Text("Password recovered?")
                         .voFormHintText()

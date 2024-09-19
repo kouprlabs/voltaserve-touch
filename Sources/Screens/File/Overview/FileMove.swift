@@ -3,10 +3,11 @@ import VoltaserveCore
 
 struct FileMove: View {
     @EnvironmentObject private var fileStore: FileStore
+    @EnvironmentObject private var browserStore: BrowserStore
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
-    @State private var errorType: ErrorType?
+    @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let files: [VOFile.Entity]
     private let onCompletion: (() -> Void)?
@@ -19,18 +20,10 @@ struct FileMove: View {
     var body: some View {
         VStack {
             if isProcessing, !showError {
-                ProgressView()
-                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
-                if files.count == 1 {
-                    Text("Moving item.")
-                } else {
-                    Text("Moving \(files.count) items.")
-                }
-            } else if showError, errorType == .all {
-                Image(systemName: "xmark.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
+                SheetProgressView()
+                Text("Moving \(files.count) item(s).")
+            } else if showError, errorSeverity == .full {
+                SheetErrorIcon()
                     .foregroundStyle(VOColors.red500)
                 if let errorMessage {
                     Text(errorMessage)
@@ -40,14 +33,10 @@ struct FileMove: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
-            } else if showError, errorType == .some {
-                Image(systemName: "exclamationmark.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.errorIconSize, height: Constants.errorIconSize)
-                    .foregroundStyle(VOColors.yellow300)
+            } else if showError, errorSeverity == .partial {
+                SheetWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -56,7 +45,7 @@ struct FileMove: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voButton(color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200)
+                .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             }
         }
@@ -65,48 +54,37 @@ struct FileMove: View {
     }
 
     private func performMove() {
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-            if files.count == 1 {
-                onSuccess()
-            } else if files.count == 2 {
-                onError(count: 2)
-            } else if files.count == 3 {
-                onError(count: 1)
-            } else {
-                onSuccess()
+        guard let destination = browserStore.current else { return }
+        var result: VOFile.MoveResult?
+        VOErrorResponse.withErrorHandling {
+            result = try await fileStore.move(files.map(\.id), to: destination.id)
+            errorSeverity = .full
+            if let result {
+                if result.failed.isEmpty {
+                    return true
+                } else {
+                    errorMessage = "Failed to move \(result.failed.count) item(s)."
+                    if result.failed.count < files.count {
+                        errorSeverity = .partial
+                    }
+                    showError = true
+                }
             }
+            return false
+        } success: {
+            showError = false
+            onCompletion?()
+        } failure: { _ in
+            errorMessage = "Failed to move \(files.count) item(s)."
+            errorSeverity = .full
+            showError = true
+        } anyways: {
+            isProcessing = false
         }
     }
 
-    private func onSuccess() {
-        isProcessing = false
-        showError = false
-        errorType = .unknown
-        onCompletion?()
-    }
-
-    private func onError(count: Int) {
-        isProcessing = false
-        showError = true
-        if files.count == 1 {
-            errorType = .all
-            errorMessage = "Failed to move item."
-        } else if count == files.count {
-            errorType = .all
-            errorMessage = "Failed to move \(count) item(s)."
-        } else if count < files.count {
-            errorType = .some
-            errorMessage = "Failed to move \(count) item(s)."
-        }
-    }
-
-    enum ErrorType {
-        case all
-        case some
-        case unknown
-    }
-
-    private enum Constants {
-        static let errorIconSize: CGFloat = 30
+    private enum ErrorSeverity {
+        case full
+        case partial
     }
 }

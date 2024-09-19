@@ -40,7 +40,7 @@ struct SignIn: View {
                         progressViewTint: .white
                     )
                 }
-                .voButton(width: VOMetrics.formWidth, isDisabled: isLoading)
+                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isLoading)
                 VStack {
                     HStack {
                         Text("Don't have an account yet?")
