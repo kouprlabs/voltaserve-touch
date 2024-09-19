@@ -33,11 +33,9 @@ struct ServerRow: View {
                     }
                     .buttonStyle(.borderless)
                 }
-                // Checkmark
                 if server.isActive && editMode?.wrappedValue != .active {
                     checkmark
                 }
-                // Spacer
                 if (!server.isActive && editMode?.wrappedValue != .active) ||
                     (editMode?.wrappedValue == .active && server.isCloud) {
                     spacer

@@ -46,6 +46,24 @@ class WorkspaceStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    func create(name: String, organization: VOOrganization.Entity) async throws -> VOWorkspace.Entity {
+        try await Fake.serverCall { (continuation: CheckedContinuation<VOWorkspace.Entity, any Error>) in
+            if name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume(returning: VOWorkspace.Entity(
+                    id: UUID().uuidString,
+                    name: name,
+                    permission: .owner,
+                    storageCapacity: 1,
+                    rootID: UUID().uuidString,
+                    organization: organization,
+                    createTime: Date().ISO8601Format()
+                ))
+            }
+        }
+    }
+
     func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
         try await workspaceClient?.fetch(id)
     }

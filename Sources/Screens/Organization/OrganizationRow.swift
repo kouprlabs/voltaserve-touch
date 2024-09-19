@@ -2,6 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct OrganizationRow: View {
+    @Environment(\.colorScheme) private var colorScheme
     private let organization: VOOrganization.Entity
 
     init(_ organization: VOOrganization.Entity) {
@@ -14,6 +15,7 @@ struct OrganizationRow: View {
             Text(organization.name)
                 .lineLimit(1)
                 .truncationMode(.middle)
+                .foregroundStyle(colorScheme == .dark ? .white : .black)
         }
     }
 }

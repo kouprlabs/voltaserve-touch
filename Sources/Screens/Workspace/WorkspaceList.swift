@@ -7,6 +7,7 @@ struct WorkspaceList: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var accountStore: AccountStore
     @State private var showAccount = false
+    @State private var showNewWorkspace = false
 
     var body: some View {
         NavigationStack {
@@ -56,7 +57,9 @@ struct WorkspaceList: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {} label: {
+                        NavigationLink {
+                            WorkspaceNew()
+                        } label: {
                             Label("New Workspace", systemImage: "plus")
                         }
                     }
