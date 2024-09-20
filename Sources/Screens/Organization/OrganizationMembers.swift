@@ -3,8 +3,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct OrganizationMembers: View {
+    @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var membersStore: OrganizationMembersStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showAddMember = false
@@ -12,7 +12,7 @@ struct OrganizationMembers: View {
 
     var body: some View {
         VStack {
-            if let entities = membersStore.entities {
+            if let entities = userStore.entities {
                 Group {
                     if entities.count == 0 {
                         Text("There are no items.")
@@ -27,14 +27,12 @@ struct OrganizationMembers: View {
                         }
                     }
                 }
-                .searchable(text: $membersStore.searchText)
+                .searchable(text: $userStore.searchText)
                 .refreshable {
-                    if let organization = organizationStore.current {
-                        membersStore.fetchList(organization: organization, replace: true)
-                    }
+                    userStore.fetchList(replace: true)
                 }
-                .onChange(of: membersStore.searchText) {
-                    membersStore.searchPublisher.send($1)
+                .onChange(of: userStore.searchText) {
+                    userStore.searchPublisher.send($1)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -54,46 +52,45 @@ struct OrganizationMembers: View {
                     Text("Add Member")
                 }
                 .voErrorAlert(
-                    isPresented: $membersStore.showError,
-                    title: membersStore.errorTitle,
-                    message: membersStore.errorMessage
+                    isPresented: $userStore.showError,
+                    title: userStore.errorTitle,
+                    message: userStore.errorMessage
                 )
             } else {
                 ProgressView()
             }
         }
         .onAppear {
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                userStore.token = token
+                if let organization = organizationStore.current {
+                    userStore.organizationID = organization.id
+                }
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            membersStore.stopTimer()
+            userStore.stopTimer()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
         }
-        .onChange(of: membersStore.query) {
-            if let organization = organizationStore.current {
-                membersStore.clear()
-                membersStore.fetchList(organization: organization)
-            }
+        .onChange(of: userStore.query) {
+            userStore.clear()
+            userStore.fetchList()
         }
     }
 
     private func onAppearOrChange() {
-        guard let organization = organizationStore.current else { return }
-        membersStore.fetchList(organization: organization, replace: true)
-        membersStore.startTimer(organization.id)
+        userStore.fetchList(replace: true)
+        userStore.startTimer()
     }
 
     private func onListItemAppear(_ id: String) {
-        if membersStore.isLast(id) {
-            if let organization = organizationStore.current {
-                membersStore.fetchList(organization: organization)
-            }
+        if userStore.isLast(id) {
+            userStore.fetchList()
         }
     }
 }

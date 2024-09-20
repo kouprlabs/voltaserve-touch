@@ -44,8 +44,8 @@ struct FileOverview: View {
         .onAppear {
             fileStore.id = id
             fileStore.loadViewModeFromUserDefaults()
-            if tokenStore.token != nil {
-                fileStore.token = tokenStore.token
+            if let token = tokenStore.token {
+                fileStore.token = token
                 onAppearOrChange()
             }
         }

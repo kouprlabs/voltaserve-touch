@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
-class GroupMembersStore: ObservableObject {
+class UserStore: ObservableObject {
     @Published var list: VOUser.List?
     @Published var entities: [VOUser.Entity]?
     @Published var query: String?
@@ -14,6 +14,8 @@ class GroupMembersStore: ObservableObject {
     let searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
+    var organizationID: String?
+    var groupID: String?
 
     var token: VOToken.Value? {
         didSet {
@@ -38,11 +40,26 @@ class GroupMembersStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func fetchList(_ groupID: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
-        try await userClient?.fetchList(.init(query: query, groupID: groupID, page: page, size: size))
+    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
+        if let organizationID {
+            return try await userClient?.fetchList(.init(
+                query: query,
+                organizationID: organizationID,
+                page: page,
+                size: size
+            ))
+        } else if let groupID {
+            return try await userClient?.fetchList(.init(
+                query: query,
+                groupID: groupID,
+                page: page,
+                size: size
+            ))
+        }
+        return nil
     }
 
-    func fetchList(group: VOGroup.Entity, replace: Bool = false) {
+    func fetchList(replace: Bool = false) {
         if isLoading { return }
         isLoading = true
 
@@ -52,7 +69,7 @@ class GroupMembersStore: ObservableObject {
         VOErrorResponse.withErrorHandling {
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(group.id, page: nextPage)
+            list = try await self.fetchList(page: nextPage)
             return true
         } success: {
             self.list = list
@@ -64,7 +81,7 @@ class GroupMembersStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Members"
+            self.errorTitle = "Error: Fetching Users"
             self.errorMessage = message
             self.showError = true
         } anyways: {
@@ -104,12 +121,12 @@ class GroupMembersStore: ObservableObject {
         id == entities?.last?.id
     }
 
-    func startTimer(_ groupID: String) {
+    func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let entities = self.entities, !entities.isEmpty {
                 Task {
-                    let list = try await self.fetchList(groupID, page: 1, size: entities.count)
+                    let list = try await self.fetchList(page: 1, size: entities.count)
                     if let list {
                         Task { @MainActor in
                             self.entities = list.data

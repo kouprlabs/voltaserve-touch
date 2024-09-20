@@ -3,8 +3,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct GroupMembers: View {
+    @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var membersStore: GroupMembersStore
     @EnvironmentObject private var groupStore: GroupStore
     @Environment(\.presentationMode) private var presentationMode
     @State private var showAddMember = false
@@ -12,7 +12,7 @@ struct GroupMembers: View {
 
     var body: some View {
         VStack {
-            if let entities = membersStore.entities {
+            if let entities = userStore.entities {
                 Group {
                     if entities.count == 0 {
                         Text("There are no items.")
@@ -24,7 +24,7 @@ struct GroupMembers: View {
                                         onListItemAppear(member.id)
                                     }
                             }
-                            if membersStore.isLoading {
+                            if userStore.isLoading {
                                 HStack {
                                     Spacer()
                                     ProgressView()
@@ -34,14 +34,12 @@ struct GroupMembers: View {
                         }
                     }
                 }
-                .searchable(text: $membersStore.searchText)
+                .searchable(text: $userStore.searchText)
                 .refreshable {
-                    if let group = groupStore.current {
-                        membersStore.fetchList(group: group, replace: true)
-                    }
+                    userStore.fetchList(replace: true)
                 }
-                .onChange(of: membersStore.searchText) {
-                    membersStore.searchPublisher.send($1)
+                .onChange(of: userStore.searchText) {
+                    userStore.searchPublisher.send($1)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -61,47 +59,45 @@ struct GroupMembers: View {
                     Text("Add Member")
                 }
                 .voErrorAlert(
-                    isPresented: $membersStore.showError,
-                    title: membersStore.errorTitle,
-                    message: membersStore.errorMessage
+                    isPresented: $userStore.showError,
+                    title: userStore.errorTitle,
+                    message: userStore.errorMessage
                 )
             } else {
                 ProgressView()
             }
         }
         .onAppear {
-            membersStore.clear()
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                userStore.token = token
+                if let group = groupStore.current {
+                    userStore.groupID = group.id
+                }
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            membersStore.stopTimer()
+            userStore.stopTimer()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
         }
-        .onChange(of: membersStore.query) {
-            if let group = groupStore.current {
-                membersStore.clear()
-                membersStore.fetchList(group: group)
-            }
+        .onChange(of: userStore.query) {
+            userStore.clear()
+            userStore.fetchList()
         }
     }
 
     private func onAppearOrChange() {
-        guard let group = groupStore.current else { return }
-        membersStore.fetchList(group: group, replace: true)
-        membersStore.startTimer(group.id)
+        userStore.fetchList(replace: true)
+        userStore.startTimer()
     }
 
     private func onListItemAppear(_ id: String) {
-        if membersStore.isLast(id) {
-            if let group = groupStore.current {
-                membersStore.fetchList(group: group)
-            }
+        if userStore.isLast(id) {
+            userStore.fetchList()
         }
     }
 }

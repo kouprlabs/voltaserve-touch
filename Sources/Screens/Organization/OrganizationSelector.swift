@@ -63,8 +63,8 @@ struct OrganizationSelector: View {
         )
         .onAppear {
             organizationStore.clear()
-            if tokenStore.token != nil {
-                organizationStore.token = tokenStore.token
+            if let token = tokenStore.token {
+                organizationStore.token = token
                 onAppearOrChange()
             }
         }
