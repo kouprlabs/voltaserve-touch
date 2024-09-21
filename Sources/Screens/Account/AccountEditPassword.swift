@@ -13,32 +13,23 @@ struct AccountEditPassword: View {
 
     var body: some View {
         Form {
-            Section(header: VOSectionHeader("Password")) {
-                SecureField("Current Password", text: $currentValue)
-                    .disabled(isSaving)
-                SecureField("New Password", text: $newValue)
-                    .disabled(isSaving)
-            }
-            Section {
-                Button {
-                    performSave()
-                } label: {
-                    HStack {
-                        Text("Save Password")
-                        if isSaving {
-                            Spacer()
-                            ProgressView()
-                        }
-                    }
-                }
-                .disabled(isSaving || !isValid())
-            }
+            SecureField("Current Password", text: $currentValue)
+                .disabled(isSaving)
+            SecureField("New Password", text: $newValue)
+                .disabled(isSaving)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Password")
         .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("Change Password")
-                    .font(.headline)
+            ToolbarItem(placement: .topBarTrailing) {
+                if isSaving {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
             }
         }
         .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)

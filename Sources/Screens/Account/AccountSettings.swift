@@ -85,11 +85,8 @@ struct AccountSettings: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Account")
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Account")
-                        .font(.headline)
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         presentationMode.wrappedValue.dismiss()

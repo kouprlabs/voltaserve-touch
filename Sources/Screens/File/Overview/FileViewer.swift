@@ -24,15 +24,6 @@ struct FileViewer: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                HStack {
-                    Text(file.name)
-                        .font(.headline)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                }
-            }
-        }
+        .navigationTitle(file.name)
     }
 }

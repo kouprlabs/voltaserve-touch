@@ -2,13 +2,11 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct GroupMembers: View {
+struct OrganizationMemberList: View {
     @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var groupStore: GroupStore
-    @Environment(\.presentationMode) private var presentationMode
-    @State private var showAddMember = false
-    @State private var showSettings = false
+    @EnvironmentObject private var organizationStore: OrganizationStore
+    @State private var showInviteMembers = false
 
     var body: some View {
         VStack {
@@ -24,13 +22,6 @@ struct GroupMembers: View {
                                         onListItemAppear(member.id)
                                     }
                             }
-                            if userStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                     }
                 }
@@ -43,19 +34,14 @@ struct GroupMembers: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            showAddMember = true
+                        NavigationLink {
+                            OrganizationMemberInvite()
                         } label: {
-                            Label("Add Member", systemImage: "person.badge.plus")
+                            Label("Invite Members", systemImage: "person.badge.plus")
                         }
                     }
                 }
-                .sheet(isPresented: $showSettings) {
-                    GroupSettings {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                }
-                .sheet(isPresented: $showAddMember) {
+                .sheet(isPresented: $showInviteMembers) {
                     Text("Add Member")
                 }
                 .voErrorAlert(
@@ -70,8 +56,8 @@ struct GroupMembers: View {
         .onAppear {
             if let token = tokenStore.token {
                 userStore.token = token
-                if let group = groupStore.current {
-                    userStore.groupID = group.id
+                if let organization = organizationStore.current {
+                    userStore.organizationID = organization.id
                 }
                 onAppearOrChange()
             }

@@ -13,30 +13,21 @@ struct WorkspaceEditStorageCapacity: View {
     var body: some View {
         if let current = workspaceStore.current {
             Form {
-                Section(header: VOSectionHeader("Storage Capacity")) {
-                    StoragePicker(value: $value)
-                        .disabled(isSaving)
-                }
-                Section {
-                    Button {
-                        performSave()
-                    } label: {
-                        HStack {
-                            Text("Save Storage Capacity")
-                            if isSaving {
-                                Spacer()
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .disabled(isSaving || !isValid())
-                }
+                StoragePicker(value: $value)
+                    .disabled(isSaving)
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Change Storage Capacity")
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Change Storage Capacity")
-                        .font(.headline)
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Save") {
+                            performSave()
+                        }
+                        .disabled(!isValid())
+                    }
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)

@@ -381,7 +381,7 @@ class FileStore: ObservableObject {
     }
 
     func isRenameAuthorized(_ file: VOFile.Entity) -> Bool {
-        file.type == .file && file.permission.ge(.editor)
+        file.permission.ge(.editor)
     }
 
     func isToolsAuthorized(_ file: VOFile.Entity) -> Bool {

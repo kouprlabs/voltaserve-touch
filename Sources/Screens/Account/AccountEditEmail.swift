@@ -13,32 +13,23 @@ struct AccountEditEmail: View {
     var body: some View {
         if let identityUser = accountStore.identityUser {
             Form {
-                Section(header: VOSectionHeader("Email")) {
-                    TextField("Email", text: $value)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .disabled(isSaving)
-                }
-                Section {
-                    Button {
-                        performSave()
-                    } label: {
-                        HStack {
-                            Text("Save Email")
-                            if isSaving {
-                                Spacer()
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .disabled(isSaving || !isValid())
-                }
+                TextField("Email", text: $value)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .disabled(isSaving)
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Change Email")
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Change Email")
-                        .font(.headline)
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Save") {
+                            performSave()
+                        }
+                        .disabled(!isValid())
+                    }
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)

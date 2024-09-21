@@ -19,7 +19,11 @@ enum Fake {
     }
 
     static func serverCall(_ code: @escaping (CheckedContinuation<Void, any Error>) -> Void) async throws {
-        try await serverCall<Void>(code)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                code(continuation)
+            }
+        }
     }
 }
 

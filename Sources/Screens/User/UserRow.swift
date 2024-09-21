@@ -3,6 +3,7 @@ import UIKit
 import VoltaserveCore
 
 struct VOUserRow: View {
+    @Environment(\.colorScheme) private var colorScheme
     private let user: VOUser.Entity
 
     init(_ user: VOUser.Entity) {
@@ -14,9 +15,10 @@ struct VOUserRow: View {
             VOAvatar(name: user.fullName, size: 45, base64Image: user.picture)
             VStack(alignment: .leading) {
                 Text(user.fullName)
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
                 Text(user.email)
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.gray)
             }
         }
     }

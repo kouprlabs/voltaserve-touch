@@ -88,7 +88,7 @@ struct BrowserList: View {
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
-                Button("Cancel", role: .cancel) {
+                Button("Cancel") {
                     onDismiss?()
                 }
             }

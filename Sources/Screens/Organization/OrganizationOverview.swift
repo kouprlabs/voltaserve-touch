@@ -19,7 +19,7 @@ struct OrganizationOverview: View {
                         .padding()
                     Form {
                         NavigationLink {
-                            OrganizationMembers()
+                            OrganizationMemberList()
                                 .navigationTitle("Members")
                         } label: {
                             Label("Members", systemImage: "person.2")

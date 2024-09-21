@@ -13,30 +13,21 @@ struct AccountEditFullName: View {
     var body: some View {
         if let user = accountStore.identityUser {
             Form {
-                Section(header: VOSectionHeader("Full Name")) {
-                    TextField("Full Name", text: $value)
-                        .disabled(isSaving)
-                }
-                Section {
-                    Button {
-                        performSave()
-                    } label: {
-                        HStack {
-                            Text("Save Full Name")
-                            if isSaving {
-                                Spacer()
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .disabled(isSaving || !isValid())
-                }
+                TextField("Full Name", text: $value)
+                    .disabled(isSaving)
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Change Full Name")
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Change Full Name")
-                        .font(.headline)
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Save") {
+                            performSave()
+                        }
+                        .disabled(!isValid())
+                    }
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)

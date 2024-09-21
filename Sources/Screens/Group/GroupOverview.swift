@@ -19,7 +19,7 @@ struct GroupOverview: View {
                         .padding()
                     Form {
                         NavigationLink {
-                            GroupMembers()
+                            GroupMemberList()
                                 .navigationTitle("Members")
                         } label: {
                             Label("Members", systemImage: "person.2")

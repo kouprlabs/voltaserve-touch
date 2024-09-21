@@ -18,6 +18,7 @@ struct ServerList: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Servers")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 NavigationLink(destination: ServerNew()) {
@@ -28,10 +29,6 @@ struct ServerList: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
-            }
-            ToolbarItem(placement: .principal) {
-                Text("Servers")
-                    .font(.headline)
             }
         }
         .alert("Activate Server", isPresented: $showActivate) {

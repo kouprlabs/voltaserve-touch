@@ -10,37 +10,29 @@ struct ServerNew: View {
 
     var body: some View {
         Form {
-            Section(header: VOSectionHeader("Properties")) {
-                TextField("Name", text: $name)
-                    .disabled(isSaving)
-                TextField("API URL", text: $apiURL)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .disabled(isSaving)
-                TextField("Identity Provider URL", text: $idpURL)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .disabled(isSaving)
-            }
-            Section {
-                Button {
-                    performSave()
-                } label: {
-                    HStack {
-                        Text("Save")
-                        if isSaving {
-                            Spacer()
-                            ProgressView()
-                        }
-                    }
-                }
-                .disabled(isSaving || !isValid())
-            }
+            TextField("Name", text: $name)
+                .disabled(isSaving)
+            TextField("API URL", text: $apiURL)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .disabled(isSaving)
+            TextField("Identity Provider URL", text: $idpURL)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .disabled(isSaving)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("New Server")
         .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("New Server")
-                    .font(.headline)
+            ToolbarItem(placement: .topBarTrailing) {
+                if isSaving {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
             }
         }
     }

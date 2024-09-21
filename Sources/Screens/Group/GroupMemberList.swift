@@ -2,13 +2,11 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct OrganizationMembers: View {
+struct GroupMemberList: View {
     @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var organizationStore: OrganizationStore
-    @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject private var groupStore: GroupStore
     @State private var showAddMember = false
-    @State private var showSettings = false
 
     var body: some View {
         VStack {
@@ -23,6 +21,13 @@ struct OrganizationMembers: View {
                                     .onAppear {
                                         onListItemAppear(member.id)
                                     }
+                            }
+                            if userStore.isLoading {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
                             }
                         }
                     }
@@ -39,17 +44,14 @@ struct OrganizationMembers: View {
                         Button {
                             showAddMember = true
                         } label: {
-                            Label("Add Members", systemImage: "person.badge.plus")
+                            Label("Add Member", systemImage: "person.badge.plus")
                         }
                     }
                 }
-                .sheet(isPresented: $showSettings) {
-                    OrganizationSettings {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                }
                 .sheet(isPresented: $showAddMember) {
-                    Text("Add Member")
+                    GroupMemberAdd {
+                        showAddMember = false
+                    }
                 }
                 .voErrorAlert(
                     isPresented: $userStore.showError,
@@ -63,8 +65,8 @@ struct OrganizationMembers: View {
         .onAppear {
             if let token = tokenStore.token {
                 userStore.token = token
-                if let organization = organizationStore.current {
-                    userStore.organizationID = organization.id
+                if let group = groupStore.current {
+                    userStore.groupID = group.id
                 }
                 onAppearOrChange()
             }

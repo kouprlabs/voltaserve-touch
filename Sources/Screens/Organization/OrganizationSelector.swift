@@ -7,11 +7,9 @@ struct OrganizationSelector: View {
     @StateObject private var organizationStore = OrganizationStore()
     @State private var selection: String?
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
-    private let onDismiss: (() -> Void)?
 
-    init(onCompletion: ((VOOrganization.Entity) -> Void)? = nil, onDismiss: (() -> Void)? = nil) {
+    init(onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
         self.onCompletion = onCompletion
-        self.onDismiss = onDismiss
     }
 
     var body: some View {

@@ -1,24 +1,47 @@
 import SwiftUI
 import VoltaserveCore
 
-struct GroupEditName: View {
+struct GroupMemberAdd: View {
     @EnvironmentObject private var groupStore: GroupStore
-    @Environment(\.presentationMode) private var presentationMode
-    @State private var value = ""
+    @State private var user: VOUser.Entity?
     @State private var isSaving = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    private let onCompletion: (() -> Void)?
+
+    init(onCompletion: (() -> Void)? = nil) {
+        self.onCompletion = onCompletion
+    }
 
     var body: some View {
-        if let current = groupStore.current {
+        NavigationStack {
             Form {
-                TextField("Name", text: $value)
-                    .disabled(isSaving)
+                Section {
+                    NavigationLink {
+                        UserSelector { user in
+                            self.user = user
+                        }
+                    } label: {
+                        HStack {
+                            Text("Select User")
+                            if let user {
+                                Spacer()
+                                Text(user.fullName)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Change Name")
+            .navigationTitle("Add Member")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        onCompletion?()
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     if isSaving {
                         ProgressView()
@@ -31,35 +54,21 @@ struct GroupEditName: View {
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
-            .onAppear {
-                value = current.name
-            }
-            .onChange(of: groupStore.current) { _, newCurrent in
-                if let newCurrent {
-                    value = newCurrent.name
-                }
-            }
-        } else {
-            ProgressView()
         }
     }
 
-    private var normalizedValue: String {
-        value.trimmingCharacters(in: .whitespaces)
-    }
-
     private func performSave() {
-        guard let current = groupStore.current else { return }
+        guard let user else { return }
 
         isSaving = true
 
         VOErrorResponse.withErrorHandling {
-            try await groupStore.patchName(current.id, options: .init(name: value))
+            try await groupStore.addMember(user.id)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            onCompletion?()
         } failure: { message in
-            errorTitle = "Error: Saving Name"
+            errorTitle = "Error: Adding Member"
             errorMessage = message
             showError = true
         } anyways: {
@@ -68,9 +77,6 @@ struct GroupEditName: View {
     }
 
     private func isValid() -> Bool {
-        if let current = groupStore.current {
-            return !normalizedValue.isEmpty && normalizedValue != current.name
-        }
-        return false
+        user != nil
     }
 }

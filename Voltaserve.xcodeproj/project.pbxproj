@@ -72,7 +72,6 @@
 				SheetIcon.swift,
 				SheetProgressView.swift,
 				StoragePicker.swift,
-				UserRow.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;
 		};
@@ -124,7 +123,8 @@
 				ForgotPassword/ForgotPasswordStore.swift,
 				Group/GroupEditName.swift,
 				Group/GroupList.swift,
-				Group/GroupMembers.swift,
+				Group/GroupMemberAdd.swift,
+				Group/GroupMemberList.swift,
 				Group/GroupOverview.swift,
 				Group/GroupRow.swift,
 				Group/GroupSettings.swift,
@@ -133,7 +133,8 @@
 				Invitation/InvitationStore.swift,
 				Organization/OrganizationEditName.swift,
 				Organization/OrganizationList.swift,
-				Organization/OrganizationMembers.swift,
+				Organization/OrganizationMemberInvite.swift,
+				Organization/OrganizationMemberList.swift,
 				Organization/OrganizationOverview.swift,
 				Organization/OrganizationRow.swift,
 				Organization/OrganizationSelector.swift,
@@ -147,6 +148,7 @@
 				SignIn/TokenStore.swift,
 				SignUp/SignUp.swift,
 				SignUp/SignUpStore.swift,
+				User/UserRow.swift,
 				User/UserSelector.swift,
 				User/UserStore.swift,
 				Workspace/WorkspaceEditName.swift,

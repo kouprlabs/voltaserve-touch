@@ -23,24 +23,8 @@ struct FileRename: View {
             VStack {
                 if file != nil {
                     Form {
-                        Section(header: VOSectionHeader("Name")) {
-                            TextField("Name", text: $value)
-                                .disabled(isSaving)
-                        }
-                        Section {
-                            Button {
-                                performRename()
-                            } label: {
-                                HStack {
-                                    Text("Save Name")
-                                    if isSaving {
-                                        Spacer()
-                                        ProgressView()
-                                    }
-                                }
-                            }
-                            .disabled(isSaving || !isValid())
-                        }
+                        TextField("Name", text: $value)
+                            .disabled(isSaving)
                     }
 
                 } else {
@@ -50,11 +34,20 @@ struct FileRename: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Rename")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
                         onCompletion?()
                     }
-                    .disabled(isSaving)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Save") {
+                            performRename()
+                        }
+                        .disabled(!isValid())
+                    }
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)

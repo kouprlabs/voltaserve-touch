@@ -13,30 +13,21 @@ struct WorkspaceEditName: View {
     var body: some View {
         if let current = workspaceStore.current {
             Form {
-                Section(header: VOSectionHeader("Name")) {
-                    TextField("Name", text: $value)
-                        .disabled(isSaving)
-                }
-                Section {
-                    Button {
-                        performSave()
-                    } label: {
-                        HStack {
-                            Text("Save Name")
-                            if isSaving {
-                                Spacer()
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .disabled(isSaving || !isValid())
-                }
+                TextField("Name", text: $value)
+                    .disabled(isSaving)
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Change Name")
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Change Name")
-                        .font(.headline)
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Save") {
+                            performSave()
+                        }
+                        .disabled(!isValid())
+                    }
                 }
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)

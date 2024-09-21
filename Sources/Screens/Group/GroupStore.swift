@@ -99,6 +99,17 @@ class GroupStore: ObservableObject {
         }
     }
 
+    func addMember(_: String) async throws {
+        try await Fake.serverCall { continuation in
+            if let current = self.current,
+               current.name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
     func append(_ newEntities: [VOGroup.Entity]) {
         if entities == nil {
             entities = []
