@@ -136,6 +136,7 @@
 				Organization/OrganizationList.swift,
 				Organization/OrganizationMemberInvite.swift,
 				Organization/OrganizationMemberList.swift,
+				Organization/OrganizationNew.swift,
 				Organization/OrganizationOverview.swift,
 				Organization/OrganizationRow.swift,
 				Organization/OrganizationSelector.swift,

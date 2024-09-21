@@ -3,16 +3,12 @@ import VoltaserveCore
 
 struct GroupMemberAdd: View {
     @EnvironmentObject private var groupStore: GroupStore
+    @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var isSaving = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
-    private let onCompletion: (() -> Void)?
-
-    init(onCompletion: (() -> Void)? = nil) {
-        self.onCompletion = onCompletion
-    }
 
     var body: some View {
         NavigationStack {
@@ -39,7 +35,7 @@ struct GroupMemberAdd: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
-                        onCompletion?()
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -66,7 +62,7 @@ struct GroupMemberAdd: View {
             try await groupStore.addMember(user.id)
             return true
         } success: {
-            onCompletion?()
+            dismiss()
         } failure: { message in
             errorTitle = "Error: Adding Member"
             errorMessage = message

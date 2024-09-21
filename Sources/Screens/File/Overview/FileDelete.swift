@@ -3,17 +3,16 @@ import VoltaserveCore
 
 struct FileDelete: View {
     @EnvironmentObject private var fileStore: FileStore
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let ids: [String]
-    private let onCompletion: (() -> Void)?
 
-    init(_ ids: [String], onCompletion: (() -> Void)? = nil) {
+    init(_ ids: [String]) {
         self.ids = ids
-        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -27,7 +26,7 @@ struct FileDelete: View {
                     Text(errorMessage)
                 }
                 Button {
-                    onCompletion?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -39,7 +38,7 @@ struct FileDelete: View {
                     Text(errorMessage)
                 }
                 Button {
-                    onCompletion?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -72,7 +71,7 @@ struct FileDelete: View {
             return false
         } success: {
             showError = false
-            onCompletion?()
+            dismiss()
         } failure: { _ in
             errorMessage = "Failed to delete \(ids.count) item(s)."
             errorSeverity = .full

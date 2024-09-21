@@ -5,6 +5,8 @@ struct FileSheets: ViewModifier {
     @EnvironmentObject private var fileStore: FileStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @State private var documentPickerURLs: [URL]?
+    @State private var destinationIDForMove: String?
+    @State private var destinationIDForCopy: String?
 
     // swiftlint:disable:next function_body_length
     func body(content: Content) -> some View {
@@ -12,11 +14,13 @@ struct FileSheets: ViewModifier {
             content
                 .sheet(isPresented: $fileStore.showBrowserForMove) {
                     NavigationStack {
-                        BrowserList(workspace.rootID, confirmLabelText: "Move Here") {
+                        BrowserOverview(
+                            workspace.rootID,
+                            workspace: workspace,
+                            confirmLabelText: "Move Here"
+                        ) { id in
+                            destinationIDForMove = id
                             fileStore.showMove = true
-                            fileStore.showBrowserForMove = false
-                        } onDismiss: {
-                            fileStore.showBrowserForMove = false
                         }
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle(workspace.name)
@@ -24,19 +28,19 @@ struct FileSheets: ViewModifier {
                 }
                 .sheet(isPresented: $fileStore.showMove) {
                     let files = selectionToFiles()
-                    if !files.isEmpty {
-                        FileMove(files) {
-                            fileStore.showMove = false
-                        }
+                    if let destinationIDForMove, !files.isEmpty {
+                        FileMove(files, to: destinationIDForMove)
                     }
                 }
                 .sheet(isPresented: $fileStore.showBrowserForCopy) {
                     NavigationStack {
-                        BrowserList(workspace.rootID, confirmLabelText: "Copy Here") {
+                        BrowserOverview(
+                            workspace.rootID,
+                            workspace: workspace,
+                            confirmLabelText: "Copy Here"
+                        ) { id in
+                            destinationIDForCopy = id
                             fileStore.showCopy = true
-                            fileStore.showBrowserForCopy = false
-                        } onDismiss: {
-                            fileStore.showBrowserForCopy = false
                         }
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle(workspace.name)
@@ -44,35 +48,26 @@ struct FileSheets: ViewModifier {
                 }
                 .sheet(isPresented: $fileStore.showCopy) {
                     let files = selectionToFiles()
-                    if !files.isEmpty {
-                        FileCopy(files) {
-                            fileStore.showCopy = false
-                        }
+                    if let destinationIDForCopy, !files.isEmpty {
+                        FileCopy(files, to: destinationIDForCopy)
                     }
                 }
                 .sheet(isPresented: $fileStore.showRename) {
                     if !fileStore.selection.isEmpty {
-                        FileRename(fileStore.selection.first!) {
-                            fileStore.showRename = false
-                        }
+                        FileRename(fileStore.selection.first!)
                     }
                 }
                 .sheet(isPresented: $fileStore.showDelete) {
                     if !fileStore.selection.isEmpty {
-                        FileDelete(Array(fileStore.selection)) {
-                            fileStore.showDelete = false
-                        }
+                        FileDelete(Array(fileStore.selection))
                     }
                 }
                 .sheet(isPresented: $fileStore.showDownload) {
                     let files = selectionToFiles()
                     if !files.isEmpty {
                         FileDownload(files) { localURLs in
-                            fileStore.showDownload = false
                             documentPickerURLs = localURLs
                             fileStore.showDownloadDocumentPicker = true
-                        } onDismiss: {
-                            fileStore.showDownload = false
                         }
                     }
                 }
@@ -93,9 +88,7 @@ struct FileSheets: ViewModifier {
                 }
                 .sheet(isPresented: $fileStore.showUpload) {
                     if let documentPickerURLs {
-                        FileUpload(documentPickerURLs) {
-                            fileStore.showUpload = false
-                        }
+                        FileUpload(documentPickerURLs)
                     }
                 }
         }

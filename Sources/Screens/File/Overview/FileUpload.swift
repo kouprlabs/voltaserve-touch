@@ -4,17 +4,16 @@ import VoltaserveCore
 struct FileUpload: View {
     @EnvironmentObject private var fileStore: FileStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let urls: [URL]
-    private let onCompletion: (() -> Void)?
 
-    init(_ urls: [URL], onCompletion: (() -> Void)? = nil) {
+    init(_ urls: [URL]) {
         self.urls = urls
-        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -28,7 +27,7 @@ struct FileUpload: View {
                     Text(errorMessage)
                 }
                 Button {
-                    onCompletion?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -40,7 +39,7 @@ struct FileUpload: View {
                     Text(errorMessage)
                 }
                 Button {
-                    onCompletion?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -74,7 +73,7 @@ struct FileUpload: View {
         dispatchGroup.notify(queue: .main) {
             if failedCount == 0 {
                 showError = false
-                onCompletion?()
+                dismiss()
             } else {
                 errorMessage = "Failed to upload \(failedCount) item(s)."
                 if failedCount == urls.count {

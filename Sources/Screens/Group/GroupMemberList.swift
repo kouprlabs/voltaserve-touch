@@ -49,9 +49,7 @@ struct GroupMemberList: View {
                     }
                 }
                 .sheet(isPresented: $showAddMember) {
-                    GroupMemberAdd {
-                        showAddMember = false
-                    }
+                    GroupMemberAdd()
                 }
                 .voErrorAlert(
                     isPresented: $userStore.showError,

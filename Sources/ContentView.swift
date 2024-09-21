@@ -13,7 +13,6 @@ struct ContentView: View {
     @EnvironmentObject private var pdfStore: PDFStore
     @EnvironmentObject private var imageStore: ImageStore
     @EnvironmentObject private var videoStore: VideoStore
-    @EnvironmentObject private var browserStore: BrowserStore
     @State private var timer: Timer?
     @State private var showSignIn = false
 
@@ -66,7 +65,6 @@ struct ContentView: View {
         pdfStore.token = token
         imageStore.token = token
         videoStore.token = token
-        browserStore.token = token
     }
 
     func startTokenTimer() {

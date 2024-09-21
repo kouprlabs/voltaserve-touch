@@ -3,6 +3,7 @@ import VoltaserveCore
 
 struct FileDownload: View {
     @EnvironmentObject private var fileStore: FileStore
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var urls: [URL] = []
     @State private var isProcessing = true
@@ -11,16 +12,10 @@ struct FileDownload: View {
     @State private var errorMessage: String?
     private let files: [VOFile.Entity]
     private let onCompletion: (([URL]) -> Void)?
-    private let onDismiss: (() -> Void)?
 
-    init(
-        _ files: [VOFile.Entity],
-        _ onCompletion: (([URL]) -> Void)? = nil,
-        onDismiss: (() -> Void)? = nil
-    ) {
+    init(_ files: [VOFile.Entity], onCompletion: (([URL]) -> Void)? = nil) {
         self.files = files
         self.onCompletion = onCompletion
-        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -34,7 +29,7 @@ struct FileDownload: View {
                     Text(errorMessage)
                 }
                 Button {
-                    onDismiss?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -47,13 +42,14 @@ struct FileDownload: View {
                 }
                 Button {
                     onCompletion?(urls)
+                    dismiss()
                 } label: {
                     VOButtonLabel("Continue")
                 }
                 .voPrimaryButton()
                 .padding(.horizontal)
                 Button {
-                    onDismiss?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -101,6 +97,7 @@ struct FileDownload: View {
                 showError = false
                 isProcessing = false
                 onCompletion?(urls)
+                dismiss()
             } else {
                 let count = files.count - urls.count
                 errorMessage = "Failed to download \(count) item(s)."

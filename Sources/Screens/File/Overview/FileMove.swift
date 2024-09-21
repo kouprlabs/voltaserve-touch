@@ -4,17 +4,18 @@ import VoltaserveCore
 struct FileMove: View {
     @EnvironmentObject private var fileStore: FileStore
     @EnvironmentObject private var browserStore: BrowserStore
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let files: [VOFile.Entity]
-    private let onCompletion: (() -> Void)?
+    private let destinationID: String
 
-    init(_ files: [VOFile.Entity], onCompletion: (() -> Void)? = nil) {
+    init(_ files: [VOFile.Entity], to destinationID: String) {
         self.files = files
-        self.onCompletion = onCompletion
+        self.destinationID = destinationID
     }
 
     var body: some View {
@@ -28,7 +29,7 @@ struct FileMove: View {
                     Text(errorMessage)
                 }
                 Button {
-                    onCompletion?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -40,7 +41,7 @@ struct FileMove: View {
                     Text(errorMessage)
                 }
                 Button {
-                    onCompletion?()
+                    dismiss()
                 } label: {
                     VOButtonLabel("Done")
                 }
@@ -55,10 +56,9 @@ struct FileMove: View {
     }
 
     private func performMove() {
-        guard let destination = browserStore.current else { return }
         var result: VOFile.MoveResult?
         VOErrorResponse.withErrorHandling {
-            result = try await fileStore.move(files.map(\.id), to: destination.id)
+            result = try await fileStore.move(files.map(\.id), to: destinationID)
             errorSeverity = .full
             if let result {
                 if result.failed.isEmpty {
@@ -74,7 +74,7 @@ struct FileMove: View {
             return false
         } success: {
             showError = false
-            onCompletion?()
+            dismiss()
         } failure: { _ in
             errorMessage = "Failed to move \(files.count) item(s)."
             errorSeverity = .full

@@ -39,6 +39,21 @@ class OrganizationStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    func create(name: String) async throws -> VOOrganization.Entity? {
+        try await Fake.serverCall { (continuation: CheckedContinuation<VOOrganization.Entity, any Error>) in
+            if name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume(returning: VOOrganization.Entity(
+                    id: UUID().uuidString,
+                    name: name,
+                    permission: .owner,
+                    createTime: Date().ISO8601Format()
+                ))
+            }
+        }
+    }
+
     func fetch(_ id: String) async throws -> VOOrganization.Entity? {
         try await organizationClient?.fetch(id)
     }

@@ -4,6 +4,7 @@ import VoltaserveCore
 struct FileRename: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var fileStore: FileStore
+    @Environment(\.dismiss) private var dismiss
     @State private var isSaving = false
     @State private var value = ""
     @State private var errorTitle: String?
@@ -11,11 +12,9 @@ struct FileRename: View {
     @State private var showError = false
     @State var file: VOFile.Entity?
     private let id: String
-    private let onCompletion: (() -> Void)?
 
-    init(_ id: String, onCompletion: (() -> Void)?) {
+    init(_ id: String) {
         self.id = id
-        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -36,7 +35,7 @@ struct FileRename: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
-                        onCompletion?()
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -86,7 +85,7 @@ struct FileRename: View {
             try await fileStore.patchName(file.id, name: normalizedValue)
             return true
         } success: {
-            onCompletion?()
+            dismiss()
         } failure: { message in
             errorTitle = "Error: Renaming File"
             errorMessage = message

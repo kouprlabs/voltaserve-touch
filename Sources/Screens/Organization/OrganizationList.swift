@@ -5,6 +5,7 @@ import VoltaserveCore
 struct OrganizationList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
+    @State private var showNew = false
 
     var body: some View {
         NavigationStack {
@@ -43,10 +44,15 @@ struct OrganizationList: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {} label: {
+                        Button {
+                            showNew = true
+                        } label: {
                             Label("New Organization", systemImage: "plus")
                         }
                     }
+                }
+                .sheet(isPresented: $showNew) {
+                    OrganizationNew()
                 }
                 .onChange(of: organizationStore.searchText) {
                     organizationStore.searchPublisher.send($1)

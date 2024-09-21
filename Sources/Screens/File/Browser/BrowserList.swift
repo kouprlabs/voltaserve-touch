@@ -2,9 +2,46 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
+struct BrowserOverview: View {
+    @Environment(\.dismiss) private var dismiss
+    private let id: String
+    private let workspace: VOWorkspace.Entity
+    private let confirmLabelText: String?
+    private let onCompletion: ((String) -> Void)?
+
+    init(
+        _ id: String,
+        workspace: VOWorkspace.Entity,
+        confirmLabelText: String?,
+        onCompletion: ((String) -> Void)?
+    ) {
+        self.id = id
+        self.workspace = workspace
+        self.onCompletion = onCompletion
+        self.confirmLabelText = confirmLabelText
+    }
+
+    var body: some View {
+        NavigationStack {
+            BrowserList(
+                workspace.rootID,
+                workspace: workspace,
+                confirmLabelText: confirmLabelText
+            ) { id in
+                onCompletion?(id)
+                dismiss()
+            } onDismiss: {
+                dismiss()
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(workspace.name)
+        }
+    }
+}
+
 struct BrowserList: View {
+    @StateObject private var browserStore = BrowserStore()
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var browserStore: BrowserStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @State private var showError = false
     @State private var errorTitle: String?
@@ -15,17 +52,20 @@ struct BrowserList: View {
     @State private var cancellables = Set<AnyCancellable>()
     @State private var isLoading = false
     private let id: String
-    private let onCompletion: (() -> Void)?
+    private let workspace: VOWorkspace.Entity
+    private let confirmLabelText: String?
+    private let onCompletion: ((String) -> Void)?
     private let onDismiss: (() -> Void)?
-    private let confirmLabelText: String
 
     init(
         _ id: String,
-        confirmLabelText: String = "Done",
-        onCompletion: (() -> Void)? = nil,
+        workspace: VOWorkspace.Entity,
+        confirmLabelText: String?,
+        onCompletion: ((String) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.id = id
+        self.workspace = workspace
         self.confirmLabelText = confirmLabelText
         self.onCompletion = onCompletion
         self.onDismiss = onDismiss
@@ -42,10 +82,9 @@ struct BrowserList: View {
                             ForEach(entities, id: \.id) { file in
                                 NavigationLink {
                                     BrowserList(
-                                        file.id,
+                                        file.id, workspace: workspace,
                                         confirmLabelText: confirmLabelText,
-                                        onCompletion: onCompletion,
-                                        onDismiss: onDismiss
+                                        onCompletion: onCompletion
                                     )
                                     .navigationTitle(file.name)
                                 } label: {
@@ -83,18 +122,19 @@ struct BrowserList: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(confirmLabelText) {
-                    onCompletion?()
+                Button(confirmLabelText ?? "Done") {
+                    onCompletion?(id)
                 }
             }
-            ToolbarItem(placement: .topBarLeading) {
-                Button("Cancel") {
-                    onDismiss?()
+            if id == workspace.rootID {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        onDismiss?()
+                    }
                 }
             }
         }
         .onAppear {
-            browserStore.clear()
             searchPublisher
                 .debounce(for: .seconds(1), scheduler: RunLoop.main)
                 .removeDuplicates()
@@ -102,7 +142,8 @@ struct BrowserList: View {
                     browserStore.query = .init(text: $0)
                 }
                 .store(in: &cancellables)
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                browserStore.token = token
                 onAppearOrChange()
             }
         }
@@ -110,7 +151,8 @@ struct BrowserList: View {
             browserStore.stopTimer()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                browserStore.token = newToken
                 onAppearOrChange()
             }
         }
