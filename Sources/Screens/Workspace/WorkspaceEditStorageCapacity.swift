@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct WorkspaceEditStorageCapacity: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var value: Int?
     @State private var isSaving = false
     @State private var showError = false
@@ -54,7 +54,7 @@ struct WorkspaceEditStorageCapacity: View {
             try await workspaceStore.patchStorageCapacity(current.id, storageCapacity: value)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } failure: { message in
             errorTitle = "Error: Saving Storage Capacity"
             errorMessage = message

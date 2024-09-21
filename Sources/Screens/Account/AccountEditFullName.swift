@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct AccountEditFullName: View {
     @EnvironmentObject private var accountStore: AccountStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var value = ""
     @State private var isSaving = false
     @State private var showError = false
@@ -55,7 +55,7 @@ struct AccountEditFullName: View {
             try await accountStore.updateFullName(normalizedValue)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } failure: { message in
             errorTitle = "Error: Saving Full Name"
             errorMessage = message

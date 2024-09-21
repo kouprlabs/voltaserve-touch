@@ -4,7 +4,7 @@ import VoltaserveCore
 struct OrganizationSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var showDelete = false
     @State private var showError = false
     @State private var errorTitle: String?
@@ -68,7 +68,7 @@ struct OrganizationSettings: View {
             try await organizationStore.delete(current.id)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
             onCompletion?()
         } failure: { message in
             errorTitle = "Error: Deleting Organization"

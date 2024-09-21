@@ -5,7 +5,7 @@ struct WorkspaceOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var fileStore: FileStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     private var workspace: VOWorkspace.Entity
 
     init(_ workspace: VOWorkspace.Entity) {
@@ -27,7 +27,7 @@ struct WorkspaceOverview: View {
                         }
                         NavigationLink {
                             WorkspaceSettings {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
                             .navigationTitle("Settings")
                         } label: {

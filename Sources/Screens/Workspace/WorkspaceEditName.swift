@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct WorkspaceEditName: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var value = ""
     @State private var isSaving = false
     @State private var showError = false
@@ -57,7 +57,7 @@ struct WorkspaceEditName: View {
             try await workspaceStore.patchName(current.id, name: normalizedValue)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } failure: { message in
             errorTitle = "Error: Saving Name"
             errorMessage = message

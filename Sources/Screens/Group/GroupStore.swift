@@ -39,6 +39,22 @@ class GroupStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    func create(name: String, organization: VOOrganization.Entity) async throws -> VOGroup.Entity? {
+        try await Fake.serverCall { (continuation: CheckedContinuation<VOGroup.Entity?, any Error>) in
+            if name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume(returning: VOGroup.Entity(
+                    id: UUID().uuidString,
+                    name: name,
+                    organization: organization,
+                    permission: .owner,
+                    createTime: Date().ISO8601Format()
+                ))
+            }
+        }
+    }
+
     func fetch(_ id: String) async throws -> VOGroup.Entity? {
         try await groupClient?.fetch(id)
     }

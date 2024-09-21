@@ -5,7 +5,7 @@ struct UserSelector: View {
     @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     private let onCompletion: ((VOUser.Entity) -> Void)?
 
     init(_ onCompletion: ((VOUser.Entity) -> Void)? = nil) {
@@ -22,7 +22,7 @@ struct UserSelector: View {
                         List {
                             ForEach(entities, id: \.id) { member in
                                 Button {
-                                    presentationMode.wrappedValue.dismiss()
+                                    dismiss()
                                     onCompletion?(member)
                                 } label: {
                                     VOUserRow(member)

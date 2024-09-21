@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct AccountEditPassword: View {
     @EnvironmentObject private var accountStore: AccountStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var currentValue = ""
     @State private var newValue = ""
     @State private var isSaving = false
@@ -42,7 +42,7 @@ struct AccountEditPassword: View {
             try await accountStore.updatePassword(current: currentValue, new: newValue)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } failure: { message in
             errorTitle = "Error: Saving Password"
             errorMessage = message

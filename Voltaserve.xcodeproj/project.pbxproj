@@ -125,6 +125,7 @@
 				Group/GroupList.swift,
 				Group/GroupMemberAdd.swift,
 				Group/GroupMemberList.swift,
+				Group/GroupNew.swift,
 				Group/GroupOverview.swift,
 				Group/GroupRow.swift,
 				Group/GroupSettings.swift,

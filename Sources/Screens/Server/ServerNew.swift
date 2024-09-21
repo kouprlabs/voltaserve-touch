@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ServerNew: View {
     @EnvironmentObject var serverStore: ServerStore
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     @State private var name = ""
     @State private var apiURL = ""
     @State private var idpURL = ""
@@ -53,7 +53,7 @@ struct ServerNew: View {
                     isCloud: false,
                     isActive: false
                 ))
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
                 isSaving = false
             }
         }

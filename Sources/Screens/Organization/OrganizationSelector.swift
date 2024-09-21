@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct OrganizationSelector: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var organizationStore = OrganizationStore()
     @State private var selection: String?
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
@@ -22,7 +22,7 @@ struct OrganizationSelector: View {
                         List(selection: $selection) {
                             ForEach(entities, id: \.id) { organization in
                                 Button {
-                                    presentationMode.wrappedValue.dismiss()
+                                    dismiss()
                                     onCompletion?(organization)
                                 } label: {
                                     OrganizationRow(organization)

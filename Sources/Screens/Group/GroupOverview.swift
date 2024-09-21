@@ -4,7 +4,7 @@ import VoltaserveCore
 struct GroupOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     private let group: VOGroup.Entity
 
     init(_ group: VOGroup.Entity) {
@@ -26,7 +26,7 @@ struct GroupOverview: View {
                         }
                         NavigationLink {
                             GroupSettings {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
                             .navigationTitle("Settings")
                         } label: {

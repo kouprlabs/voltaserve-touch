@@ -4,7 +4,7 @@ import VoltaserveCore
 struct GroupSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var showDelete = false
     @State private var showError = false
     @State private var errorTitle: String?
@@ -68,7 +68,7 @@ struct GroupSettings: View {
             try await groupStore.delete(current.id)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
             onCompletion?()
         } failure: { message in
             errorTitle = "Error: Deleting Group"

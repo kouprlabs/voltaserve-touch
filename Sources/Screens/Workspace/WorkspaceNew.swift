@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct WorkspaceNew: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var name: String = ""
     @State private var organization: VOOrganization.Entity?
     @State private var storageCapacity: Int? = 100_000_000_000
@@ -71,7 +71,7 @@ struct WorkspaceNew: View {
             _ = try await workspaceStore.create(name: normalizedName, organization: organization)
             return true
         } success: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } failure: { message in
             errorTitle = "Error: Creating Workspace"
             errorMessage = message

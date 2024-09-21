@@ -4,7 +4,7 @@ import VoltaserveCore
 struct AccountSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var accountStore: AccountStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var showDelete = false
     @State private var showError = false
     @State private var errorTitle: String?
@@ -89,7 +89,7 @@ struct AccountSettings: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }
                     .disabled(isDeleting)
                 }
@@ -179,6 +179,6 @@ struct AccountSettings: View {
     private func performSignOut() {
         tokenStore.token = nil
         tokenStore.deleteFromKeychain()
-        presentationMode.wrappedValue.dismiss()
+        dismiss()
     }
 }

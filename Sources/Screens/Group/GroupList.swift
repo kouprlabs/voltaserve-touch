@@ -5,6 +5,7 @@ import VoltaserveCore
 struct GroupList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
+    @State private var showNew = false
 
     var body: some View {
         NavigationStack {
@@ -43,10 +44,15 @@ struct GroupList: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {} label: {
+                        Button {
+                            showNew = true
+                        } label: {
                             Label("New Group", systemImage: "plus")
                         }
                     }
+                }
+                .sheet(isPresented: $showNew) {
+                    GroupNew()
                 }
                 .onChange(of: groupStore.searchText) {
                     groupStore.searchPublisher.send($1)

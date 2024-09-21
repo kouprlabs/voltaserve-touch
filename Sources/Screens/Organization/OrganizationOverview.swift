@@ -4,7 +4,7 @@ import VoltaserveCore
 struct OrganizationOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     private let organization: VOOrganization.Entity
 
     init(_ organization: VOOrganization.Entity) {
@@ -26,7 +26,7 @@ struct OrganizationOverview: View {
                         }
                         NavigationLink {
                             OrganizationSettings {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
                             .navigationTitle("Settings")
                         } label: {
