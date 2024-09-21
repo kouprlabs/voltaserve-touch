@@ -37,8 +37,8 @@ struct ServerNew: View {
         }
     }
 
-    private func isValid() -> Bool {
-        !name.isEmpty && !apiURL.isEmpty && !idpURL.isEmpty
+    private var normalizedName: String {
+        name.trimmingCharacters(in: .whitespaces)
     }
 
     private func performSave() {
@@ -47,7 +47,7 @@ struct ServerNew: View {
             Task { @MainActor in
                 serverStore.create(ServerStore.Entity(
                     id: UUID().uuidString,
-                    name: name,
+                    name: normalizedName,
                     apiURL: apiURL,
                     idpURL: idpURL,
                     isCloud: false,
@@ -58,8 +58,8 @@ struct ServerNew: View {
             }
         }
     }
-}
 
-#Preview {
-    ServerNew()
+    private func isValid() -> Bool {
+        !normalizedName.isEmpty && !apiURL.isEmpty && !idpURL.isEmpty
+    }
 }

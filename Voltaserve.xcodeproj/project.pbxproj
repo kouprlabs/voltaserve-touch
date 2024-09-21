@@ -107,6 +107,7 @@
 				File/Overview/FileUpload.swift,
 				File/Overview/FileUploadPicker.swift,
 				File/Overview/FileViewer.swift,
+				File/Overview/FolderNew.swift,
 				File/Viewer/Audio/AudioPlayer.swift,
 				File/Viewer/Audio/AudioStore.swift,
 				File/Viewer/GLB/GLBStore.swift,

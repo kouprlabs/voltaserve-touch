@@ -16,6 +16,7 @@ class FileStore: ObservableObject {
     @Published var showBrowserForMove = false
     @Published var showBrowserForCopy = false
     @Published var showUploadDocumentPicker = false
+    @Published var showNewFolder = false
     @Published var showUpload = false
     @Published var showMove = false
     @Published var showCopy = false
@@ -54,9 +55,21 @@ class FileStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func loadViewModeFromUserDefaults() {
-        if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
-            self.viewMode = ViewMode(rawValue: viewMode)!
+    func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
+        try await Fake.serverCall { (continuation: CheckedContinuation<VOFile.Entity, any Error>) in
+            if name.lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume(returning: VOFile.Entity(
+                    id: UUID().uuidString,
+                    workspaceID: workspaceID,
+                    name: name,
+                    type: .folder,
+                    parentID: parentID,
+                    permission: .owner,
+                    createTime: Date().ISO8601Format()
+                ))
+            }
         }
     }
 
@@ -402,6 +415,12 @@ class FileStore: ObservableObject {
     func toggleViewMode() {
         viewMode = viewMode == .list ? .grid : .list
         UserDefaults.standard.set(viewMode.rawValue, forKey: Constants.userDefaultViewModeKey)
+    }
+
+    func loadViewModeFromUserDefaults() {
+        if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
+            self.viewMode = ViewMode(rawValue: viewMode)!
+        }
     }
 
     enum ViewMode: String {

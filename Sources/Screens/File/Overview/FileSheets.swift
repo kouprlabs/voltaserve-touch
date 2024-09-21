@@ -91,6 +91,11 @@ struct FileSheets: ViewModifier {
                         FileUpload(documentPickerURLs)
                     }
                 }
+                .sheet(isPresented: $fileStore.showNewFolder) {
+                    if let parent = fileStore.file, let workspace = workspaceStore.current {
+                        FolderNew(parentID: parent.id, workspaceId: workspace.id)
+                    }
+                }
         }
     }
 

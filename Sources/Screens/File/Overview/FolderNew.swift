@@ -1,14 +1,21 @@
 import SwiftUI
 import VoltaserveCore
 
-struct OrganizationNew: View {
-    @EnvironmentObject private var organizationStore: OrganizationStore
+struct FolderNew: View {
+    @EnvironmentObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    private let parentID: String
+    private let workspaceId: String
+
+    init(parentID: String, workspaceId: String) {
+        self.workspaceId = workspaceId
+        self.parentID = parentID
+    }
 
     var body: some View {
         NavigationView {
@@ -17,7 +24,7 @@ struct OrganizationNew: View {
                     .disabled(isProcessing)
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("New Organization")
+            .navigationTitle("New Folder")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     if isProcessing {
@@ -47,14 +54,18 @@ struct OrganizationNew: View {
         isProcessing = true
 
         VOErrorResponse.withErrorHandling {
-            _ = try await organizationStore.create(name: normalizedName)
+            _ = try await fileStore.createFolder(
+                name: normalizedName,
+                workspaceID: workspaceId,
+                parentID: parentID
+            )
             return true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Creating Organization"
+            errorTitle = "Error: Creating Folder"
             errorMessage = message
-            showError = true
+            showError = false
         } anyways: {
             isProcessing = false
         }

@@ -55,6 +55,7 @@ struct WorkspaceNew: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("New Workspace")
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         }
     }
 

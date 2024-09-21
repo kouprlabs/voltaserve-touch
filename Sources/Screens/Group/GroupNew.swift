@@ -51,7 +51,12 @@ struct GroupNew: View {
                     }
                 }
             }
+            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         }
+    }
+
+    private var normalizedName: String {
+        name.lowercased().trimmingCharacters(in: .whitespaces)
     }
 
     private func performSave() {
@@ -60,7 +65,7 @@ struct GroupNew: View {
         isProcessing = true
 
         VOErrorResponse.withErrorHandling {
-            _ = try await groupStore.create(name: name, organization: organization)
+            _ = try await groupStore.create(name: normalizedName, organization: organization)
             return true
         } success: {
             dismiss()
@@ -74,6 +79,6 @@ struct GroupNew: View {
     }
 
     private func isValid() -> Bool {
-        !name.isEmpty && organization != nil
+        !normalizedName.isEmpty && organization != nil
     }
 }

@@ -50,10 +50,12 @@ struct FileToolbar: ViewModifier {
                         Button {
                             fileStore.showUploadDocumentPicker = true
                         } label: {
-                            Label("Upload files", systemImage: "icloud.and.arrow.up")
+                            Label("Upload Files", systemImage: "icloud.and.arrow.up")
                         }
-                        Button {} label: {
-                            Label("New folder", systemImage: "folder.badge.plus")
+                        Button {
+                            fileStore.showNewFolder = true
+                        } label: {
+                            Label("New Folder", systemImage: "folder.badge.plus")
                         }
                     } label: {
                         Label("Upload", systemImage: "plus")
