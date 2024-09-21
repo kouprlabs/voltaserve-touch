@@ -65,7 +65,7 @@ struct FolderNew: View {
         } failure: { message in
             errorTitle = "Error: Creating Folder"
             errorMessage = message
-            showError = false
+            showError = true
         } anyways: {
             isProcessing = false
         }

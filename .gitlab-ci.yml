@@ -1,0 +1,28 @@
+stages:
+  - lint
+
+swiftlint:
+  stage: lint
+  image: swift:5.10-noble
+  before_script:
+    - apt-get update && apt-get install -y unzip curl
+    - unzip ci/swiftlint.zip -d /usr/local/bin/
+    - chmod +x /usr/local/bin/swiftlint
+  script:
+    - swiftlint .
+  only:
+    - merge_requests
+    - branches
+
+swiftformat:
+  stage: lint
+  image: swift:5.10-noble
+  before_script:
+    - apt-get update && apt-get install -y unzip curl
+    - unzip ci/swiftformat.zip -d /usr/local/bin/
+    - chmod +x /usr/local/bin/swiftformat
+  script:
+    - swiftformat --lint .
+  only:
+    - merge_requests
+    - branches
