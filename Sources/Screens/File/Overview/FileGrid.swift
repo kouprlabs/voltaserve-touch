@@ -10,7 +10,8 @@ struct FileGrid: View {
             GeometryReader { geometry in
                 let columns = Array(
                     repeating: GridItem(.fixed(FileMetrics.cellSize.width), spacing: VOMetrics.spacing),
-                    count: Int(geometry.size.width / FileMetrics.cellSize.width)
+                    count: Int(geometry.size.width / FileMetrics.cellSize.width) +
+                        (UIDevice.current.userInterfaceIdiom == .pad ? -1 : 0)
                 )
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: VOMetrics.spacing) {
@@ -44,8 +45,13 @@ struct FileGrid: View {
                     .navigationDestination(item: $tappedItem) {
                         FileViewer($0)
                     }
-                    .padding(.vertical, VOMetrics.spacing)
+                    .modifierIfPhone {
+                        $0.padding(.vertical, VOMetrics.spacing)
+                    }
                 }
+            }
+            .modifierIfPad {
+                $0.edgesIgnoringSafeArea(.bottom)
             }
             if fileStore.isLoading {
                 HStack {
