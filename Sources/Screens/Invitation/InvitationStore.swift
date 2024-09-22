@@ -20,6 +20,16 @@ class InvitationStore: ObservableObject {
 
     private var invitationClient: VOInvitation?
 
+    func create(organizationID _: String, emails: [String]) async throws {
+        try await Fake.serverCall { continuation in
+            if !emails.isEmpty, emails[0].lowercasedAndTrimmed().starts(with: "error") {
+                continuation.resume(throwing: Fake.serverError)
+            } else {
+                continuation.resume()
+            }
+        }
+    }
+
     func fetchList(_ id: String, page _: Int = 1, size _: Int = Constants.pageSize) async throws -> VOInvitation.List? {
         try await invitationClient?.fetchOutgoing(.init(organizationID: id))
     }

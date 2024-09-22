@@ -12,7 +12,7 @@ swiftlint:
     - swiftlint .
   only:
     - merge_requests
-    - branches
+    - main
 
 swiftformat:
   stage: lint
@@ -25,4 +25,4 @@ swiftformat:
     - swiftformat --lint .
   only:
     - merge_requests
-    - branches
+    - main

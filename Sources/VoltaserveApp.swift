@@ -13,6 +13,7 @@ struct VoltaserveApp: App {
                 .environmentObject(WorkspaceStore())
                 .environmentObject(GroupStore())
                 .environmentObject(OrganizationStore())
+                .environmentObject(InvitationStore())
                 .environmentObject(PDFStore())
                 .environmentObject(ImageStore())
                 .environmentObject(VideoStore())
