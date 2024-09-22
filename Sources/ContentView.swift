@@ -7,6 +7,7 @@ struct ContentView: View {
     @EnvironmentObject private var accountStore: AccountStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var organizationStore: OrganizationStore
+    @EnvironmentObject private var invitationStore: InvitationStore
     @EnvironmentObject private var groupStore: GroupStore
     @EnvironmentObject private var mosaicStore: MosaicStore
     @EnvironmentObject private var glbStore: GLBStore
@@ -60,6 +61,7 @@ struct ContentView: View {
         workspaceStore.token = token
         organizationStore.token = token
         groupStore.token = token
+        invitationStore.token = token
         mosaicStore.token = token
         glbStore.token = token
         pdfStore.token = token
