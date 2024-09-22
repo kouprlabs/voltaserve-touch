@@ -25,5 +25,8 @@ struct FileViewer: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(file.name)
+        .modifierIfPad {
+            $0.edgesIgnoringSafeArea(.bottom)
+        }
     }
 }
