@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ServerList: View {
     @EnvironmentObject private var serverStore: ServerStore
+    @Environment(\.editMode) private var editMode
     @State private var showNew = false
     @State private var showActivate = false
     @State private var selectedServer: ServerStore.Entity?
@@ -25,7 +26,7 @@ struct ServerList: View {
                     Label("New Server", systemImage: "plus")
                 }
             }
-            if serverStore.entities.count > 1 {
+            if serverStore.entities.count > 1 || editMode?.wrappedValue == .active {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }

@@ -40,8 +40,6 @@ struct ServerRow: View {
                     (editMode?.wrappedValue == .active && server.isCloud) {
                     spacer
                 }
-                Text(server.name)
-                    .foregroundStyle(colorScheme == .dark ? .white : .black)
                 if server.isCloud {
                     Image("social")
                         .resizable()
@@ -53,6 +51,8 @@ struct ServerRow: View {
                         }
                         .frame(width: 20, height: 20)
                 }
+                Text(server.name)
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
             }
         }
         .swipeActions {
