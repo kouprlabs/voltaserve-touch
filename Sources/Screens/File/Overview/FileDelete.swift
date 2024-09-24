@@ -18,10 +18,10 @@ struct FileDelete: View {
     var body: some View {
         VStack {
             if isProcessing, !showError {
-                SheetProgressView()
+                VOSheetProgressView()
                 Text("Deleting \(ids.count) item(s).")
             } else if showError, errorSeverity == .full {
-                SheetErrorIcon()
+                VOSheetErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -54,7 +54,7 @@ struct FileDelete: View {
 
     private func performDelete() {
         var result: VOFile.DeleteResult?
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             result = try await fileStore.delete(ids)
             errorSeverity = .full
             if let result {

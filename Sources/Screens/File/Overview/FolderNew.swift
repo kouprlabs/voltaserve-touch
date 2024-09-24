@@ -52,8 +52,7 @@ struct FolderNew: View {
 
     private func performSave() {
         isProcessing = true
-
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             _ = try await fileStore.createFolder(
                 name: normalizedName,
                 workspaceID: workspaceId,

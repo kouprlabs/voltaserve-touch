@@ -13,7 +13,7 @@ struct WorkspaceEditStorageCapacity: View {
     var body: some View {
         if let current = workspaceStore.current {
             Form {
-                StoragePicker(value: $value)
+                VOStoragePicker(value: $value)
                     .disabled(isSaving)
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -47,10 +47,9 @@ struct WorkspaceEditStorageCapacity: View {
     private func performSave() {
         guard let current = workspaceStore.current else { return }
         guard let value else { return }
-
         isSaving = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await workspaceStore.patchStorageCapacity(current.id, storageCapacity: value)
             return true
         } success: {

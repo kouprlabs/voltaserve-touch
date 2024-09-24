@@ -65,10 +65,9 @@ struct OrganizationMemberInvite: View {
 
     private func performSend() {
         guard let organization = organizationStore.current else { return }
-
         isSending = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await invitationStore.create(organizationID: organization.id, emails: emails)
             return true
         } success: {

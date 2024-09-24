@@ -21,10 +21,10 @@ struct FileDownload: View {
     var body: some View {
         VStack {
             if isProcessing, !showError {
-                SheetProgressView()
+                VOSheetProgressView()
                 Text("Downloading \(files.count) item(s).")
             } else if showError, errorSeverity == .full {
-                SheetErrorIcon()
+                VOSheetErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }

@@ -66,7 +66,7 @@ struct FileRename: View {
     }
 
     private func fetch() {
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             file = try await fileStore.fetch(id)
             return true
         } failure: { message in
@@ -78,10 +78,9 @@ struct FileRename: View {
 
     private func performRename() {
         guard let file else { return }
-
         isSaving = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await fileStore.patchName(file.id, name: normalizedValue)
             return true
         } success: {

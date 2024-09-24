@@ -1,24 +1,40 @@
 import SwiftUI
-import VoltaserveCore
 
 struct FileBadge: View {
-    private let file: VOFile.Entity
+    static let shared = FileBadge("person.2.fill")
+    static let mosaic = FileBadge("flame.fill")
+    static let insights = FileBadge("eye.fill")
 
-    init(_ file: VOFile.Entity) {
-        self.file = file
+    private let icon: String
+
+    init(_ icon: String) {
+        self.icon = icon
     }
 
     var body: some View {
-        HStack(spacing: VOMetrics.spacingXs) {
-            if let isShared = file.isShared, isShared {
-                VOBadge.shared
-            }
-            if file.snapshot?.mosaic != nil {
-                VOBadge.mosaic
-            }
-            if file.snapshot?.entities != nil {
-                VOBadge.insights
-            }
+        ZStack {
+            Circle()
+                .fill(.white)
+                .stroke(Color(.systemGray4), lineWidth: 1)
+                .frame(width: Constants.circleSize, height: Constants.circleSize)
+            Image(systemName: icon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundStyle(.orange)
+                .frame(width: Constants.iconSize, height: Constants.iconSize)
         }
+    }
+
+    private enum Constants {
+        static let circleSize: CGFloat = 25
+        static let iconSize: CGFloat = 15
+    }
+}
+
+#Preview {
+    VStack {
+        FileBadge.shared
+        FileBadge.mosaic
+        FileBadge.insights
     }
 }

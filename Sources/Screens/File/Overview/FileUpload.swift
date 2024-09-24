@@ -19,10 +19,10 @@ struct FileUpload: View {
     var body: some View {
         VStack {
             if isProcessing, !showError {
-                SheetProgressView()
+                VOSheetProgressView()
                 Text("Uploading \(urls.count) item(s).")
             } else if showError, errorSeverity == .full {
-                SheetErrorIcon()
+                VOSheetErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }

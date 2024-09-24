@@ -97,7 +97,7 @@ struct SignIn: View {
 
         var token: VOToken.Value?
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             token = try await tokenStore.signIn(username: email, password: password)
             return true
         } success: {

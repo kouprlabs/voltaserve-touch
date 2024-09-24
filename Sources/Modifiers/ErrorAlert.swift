@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ErrorAlert: ViewModifier {
+struct VOErrorAlert: ViewModifier {
     private let isPresented: Binding<Bool>
     private let title: String?
     private let message: String?
@@ -23,6 +23,6 @@ struct ErrorAlert: ViewModifier {
 
 extension View {
     func voErrorAlert(isPresented: Binding<Bool>, title: String? = nil, message: String? = nil) -> some View {
-        modifier(ErrorAlert(isPresented: isPresented, title: title, message: message))
+        modifier(VOErrorAlert(isPresented: isPresented, title: title, message: message))
     }
 }

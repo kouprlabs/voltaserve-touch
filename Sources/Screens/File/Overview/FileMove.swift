@@ -21,10 +21,10 @@ struct FileMove: View {
     var body: some View {
         VStack {
             if isProcessing, !showError {
-                SheetProgressView()
+                VOSheetProgressView()
                 Text("Moving \(files.count) item(s).")
             } else if showError, errorSeverity == .full {
-                SheetErrorIcon()
+                VOSheetErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -57,7 +57,7 @@ struct FileMove: View {
 
     private func performMove() {
         var result: VOFile.MoveResult?
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             result = try await fileStore.move(files.map(\.id), to: destinationID)
             errorSeverity = .full
             if let result {

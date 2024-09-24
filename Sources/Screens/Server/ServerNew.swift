@@ -10,16 +10,22 @@ struct ServerNew: View {
 
     var body: some View {
         Form {
-            TextField("Name", text: $name)
-                .disabled(isSaving)
-            TextField("API URL", text: $apiURL)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .disabled(isSaving)
-            TextField("Identity Provider URL", text: $idpURL)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .disabled(isSaving)
+            Section(header: VOSectionHeader("Name")) {
+                TextField("Name", text: $name)
+                    .disabled(isSaving)
+            }
+            Section(header: VOSectionHeader("API URL")) {
+                TextField("API URL", text: $apiURL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .disabled(isSaving)
+            }
+            Section(header: VOSectionHeader("Identity Provider URL")) {
+                TextField("Identity Provider URL", text: $idpURL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .disabled(isSaving)
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("New Server")

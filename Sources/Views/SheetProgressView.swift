@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SheetProgressView: View {
+struct VOSheetProgressView: View {
     var body: some View {
         ProgressView()
             .frame(width: 30, height: 30)
@@ -8,5 +8,5 @@ struct SheetProgressView: View {
 }
 
 #Preview {
-    SheetProgressView()
+    VOSheetProgressView()
 }

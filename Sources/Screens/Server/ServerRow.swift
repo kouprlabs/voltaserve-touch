@@ -2,79 +2,50 @@ import SwiftUI
 
 struct ServerRow: View {
     @EnvironmentObject private var serverStore: ServerStore
-    @Environment(\.editMode) private var editMode
     @Environment(\.colorScheme) private var colorScheme
     private let server: ServerStore.Entity
-    private let action: (() -> Void)?
-    private let onDeletion: (() -> Void)?
 
-    init(
-        _ server: ServerStore.Entity,
-        action: (() -> Void)? = nil,
-        onDeletion: (() -> Void)? = nil
-    ) {
+    init(_ server: ServerStore.Entity) {
         self.server = server
-        self.action = action
-        self.onDeletion = onDeletion
     }
 
     var body: some View {
-        Button {
-            action?()
-        } label: {
-            HStack(spacing: VOMetrics.spacingSm) {
-                if editMode?.wrappedValue == .active && !server.isCloud {
-                    Button {
-                        onDeletion?()
-                    } label: {
-                        Image(systemName: "minus.circle.fill")
-                            .scaleEffect(VOMetrics.sfSymbolScaleEffect)
-                            .foregroundStyle(.red)
-                    }
-                    .buttonStyle(.borderless)
-                }
-                if server.isActive && editMode?.wrappedValue != .active {
-                    checkmark
-                }
-                if (!server.isActive && editMode?.wrappedValue != .active) ||
-                    (editMode?.wrappedValue == .active && server.isCloud) {
-                    spacer
-                }
-                if server.isCloud {
-                    Image("social")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .cornerRadius(VOMetrics.borderRadiusXs)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs)
-                                .stroke(voBorderColor(colorScheme: colorScheme), lineWidth: 1)
-                        }
-                        .frame(width: 20, height: 20)
-                }
-                Text(server.name)
-                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+        HStack(spacing: VOMetrics.spacingSm) {
+            if server.isActive {
+                checkmark
             }
-        }
-        .swipeActions {
-            if !server.isCloud {
-                Button(role: .destructive) {
-                    onDeletion?()
-                } label: {
-                    Image(systemName: "trash")
-                }
+            if !server.isActive {
+                spacer
             }
+            if server.isCloud {
+                cloudBadge
+            }
+            Text(server.name)
+                .foregroundStyle(colorScheme == .dark ? .white : .black)
         }
     }
 
-    var checkmark: some View {
+    private var checkmark: some View {
         Image(systemName: "checkmark")
             .foregroundStyle(.blue)
             .fontWeight(.medium)
             .frame(width: 20, height: 20)
     }
 
-    var spacer: some View {
+    private var spacer: some View {
         Color.clear
+            .frame(width: 20, height: 20)
+    }
+
+    private var cloudBadge: some View {
+        Image("social")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .cornerRadius(VOMetrics.borderRadiusXs)
+            .overlay {
+                RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs)
+                    .stroke(voBorderColor(colorScheme: colorScheme), lineWidth: 1)
+            }
             .frame(width: 20, height: 20)
     }
 }

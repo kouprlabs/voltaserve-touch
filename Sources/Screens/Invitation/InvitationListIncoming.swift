@@ -4,6 +4,8 @@ import VoltaserveCore
 struct InvitationListIncoming: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var invitationStore: InvitationStore
+    @State private var showInfo = false
+    @State private var invitation: VOInvitation.Entity?
 
     var body: some View {
         Group {
@@ -13,10 +15,14 @@ struct InvitationListIncoming: View {
                 } else {
                     List {
                         ForEach(entities, id: \.id) { invitation in
-                            InvitationIncomingRow(invitation)
-                                .onAppear {
-                                    onListItemAppear(invitation.id)
-                                }
+                            NavigationLink {
+                                InvitationInfo(invitation, isAcceptableDeclinable: true)
+                            } label: {
+                                InvitationRowIncoming(invitation)
+                                    .onAppear {
+                                        onListItemAppear(invitation.id)
+                                    }
+                            }
                         }
                         if invitationStore.isLoading {
                             HStack {
@@ -31,9 +37,10 @@ struct InvitationListIncoming: View {
                 ProgressView()
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Invitations")
         .onAppear {
-            if let token = tokenStore.token {
-                invitationStore.token = token
+            if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
@@ -41,8 +48,7 @@ struct InvitationListIncoming: View {
             invitationStore.stopTimer()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if let newToken {
-                invitationStore.token = newToken
+            if newToken != nil {
                 onAppearOrChange()
             }
         }

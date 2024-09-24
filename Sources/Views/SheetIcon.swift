@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SheetErrorIcon: View {
+struct VOSheetErrorIcon: View {
     var body: some View {
         Image(systemName: "xmark.circle.fill")
             .resizable()
@@ -22,7 +22,7 @@ struct SheetWarningIcon: View {
 
 #Preview {
     VStack {
-        SheetErrorIcon()
+        VOSheetErrorIcon()
         SheetWarningIcon()
     }
 }

@@ -176,8 +176,7 @@ struct BrowserList: View {
 
     private func fetchFile() {
         var file: VOFile.Entity?
-
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             file = try await browserStore.fetch(id)
             return true
         } success: {
@@ -195,8 +194,7 @@ struct BrowserList: View {
 
         var nextPage = -1
         var list: VOFile.List?
-
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             if !browserStore.hasNextPage() { return false }
             nextPage = browserStore.nextPage()
             list = try await browserStore.fetchList(id, page: nextPage)

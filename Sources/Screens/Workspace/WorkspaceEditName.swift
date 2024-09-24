@@ -50,10 +50,9 @@ struct WorkspaceEditName: View {
 
     private func performSave() {
         guard let current = workspaceStore.current else { return }
-
         isSaving = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await workspaceStore.patchName(current.id, name: normalizedValue)
             return true
         } success: {

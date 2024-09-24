@@ -38,7 +38,7 @@ struct AccountEditPassword: View {
     private func performSave() {
         isSaving = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await accountStore.updatePassword(current: currentValue, new: newValue)
             return true
         } success: {

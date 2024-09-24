@@ -6,6 +6,7 @@ struct WorkspaceList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var accountStore: AccountStore
+    @EnvironmentObject private var invitationStore: InvitationStore
     @State private var showAccount = false
     @State private var showNewWorkspace = false
 
@@ -65,7 +66,7 @@ struct WorkspaceList: View {
                     }
                 }
                 .sheet(isPresented: $showAccount) {
-                    AccountSettings()
+                    AccountOverview()
                 }
             } else {
                 ProgressView()
@@ -84,6 +85,8 @@ struct WorkspaceList: View {
         }
         .onDisappear {
             workspaceStore.stopTimer()
+            accountStore.stopTimer()
+            invitationStore.stopTimer()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -97,14 +100,24 @@ struct WorkspaceList: View {
     }
 
     var accountButton: some View {
-        Button {
-            showAccount.toggle()
-        } label: {
-            if let user = accountStore.identityUser, let picture = user.picture {
-                VOAvatar(name: user.fullName, size: 30, base64Image: picture)
-                    .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
-            } else {
-                Label("Account", systemImage: "person.crop.circle")
+        ZStack {
+            Button {
+                showAccount.toggle()
+            } label: {
+                if let user = accountStore.identityUser, let picture = user.picture {
+                    VOAvatar(name: user.fullName, size: 30, base64Image: picture)
+                        .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
+                } else {
+                    Image(systemName: "person.crop.circle")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                }
+            }
+            if let count = invitationStore.incomingCount, count > 0 {
+                Circle()
+                    .fill(.red)
+                    .frame(width: 10, height: 10)
+                    .offset(x: 14, y: -11)
             }
         }
     }
@@ -112,7 +125,10 @@ struct WorkspaceList: View {
     private func onAppearOrChange() {
         workspaceStore.fetchList(replace: true)
         fetchUser()
+        fetchInvitationIncomingCount()
         workspaceStore.startTimer()
+        accountStore.startTimer()
+        invitationStore.startTimer()
     }
 
     private func onListItemAppear(_ id: String) {
@@ -123,14 +139,27 @@ struct WorkspaceList: View {
 
     private func fetchUser() {
         var user: VOIdentityUser.Entity?
-
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             user = try await accountStore.fetchUser()
             return true
         } success: {
             accountStore.identityUser = user
         } failure: { message in
             workspaceStore.errorTitle = "Error: Fetching User"
+            workspaceStore.errorMessage = message
+            workspaceStore.showError = true
+        }
+    }
+
+    private func fetchInvitationIncomingCount() {
+        var count: Int?
+        withErrorHandling {
+            count = try await invitationStore.fetchIncomingCount()
+            return true
+        } success: {
+            invitationStore.incomingCount = count
+        } failure: { message in
+            workspaceStore.errorTitle = "Error: Fetching Invitation Incoming Count"
             workspaceStore.errorMessage = message
             workspaceStore.showError = true
         }

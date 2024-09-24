@@ -103,7 +103,7 @@ struct FileCellBadge: ViewModifier {
     func body(content: Content) -> some View {
         ZStack(alignment: .bottomTrailing) {
             content
-            FileBadge(file)
+            FileBadgeList(file)
                 .offset(x: FileMetrics.badgeOffset.width, y: FileMetrics.badgeOffset.height)
         }
     }

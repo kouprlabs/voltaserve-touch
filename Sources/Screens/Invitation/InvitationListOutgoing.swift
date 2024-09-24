@@ -3,7 +3,9 @@ import VoltaserveCore
 
 struct InvitationListOutgoing: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var invitationStore: InvitationStore
+    @EnvironmentObject private var organizationStore: OrganizationStore
+    @StateObject private var invitationStore = InvitationStore()
+    @State private var invitation: VOInvitation.Entity?
 
     var body: some View {
         Group {
@@ -13,10 +15,14 @@ struct InvitationListOutgoing: View {
                 } else {
                     List {
                         ForEach(entities, id: \.id) { invitation in
-                            InvitationOutgoingRow(invitation)
-                                .onAppear {
-                                    onListItemAppear(invitation.id)
-                                }
+                            NavigationLink {
+                                InvitationInfo(invitation, isDeletable: true)
+                            } label: {
+                                InvitationRowOutgoing(invitation)
+                                    .onAppear {
+                                        onListItemAppear(invitation.id)
+                                    }
+                            }
                         }
                         if invitationStore.isLoading {
                             HStack {
@@ -31,9 +37,14 @@ struct InvitationListOutgoing: View {
                 ProgressView()
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Invitations")
         .onAppear {
             if let token = tokenStore.token {
                 invitationStore.token = token
+                if let organization = organizationStore.current {
+                    invitationStore.organizationID = organization.id
+                }
                 onAppearOrChange()
             }
         }

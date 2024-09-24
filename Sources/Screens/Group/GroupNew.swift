@@ -61,10 +61,9 @@ struct GroupNew: View {
 
     private func performSave() {
         guard let organization else { return }
-
         isProcessing = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             _ = try await groupStore.create(name: normalizedName, organization: organization)
             return true
         } success: {
