@@ -12,6 +12,7 @@ struct VONumberBadge: View {
         Text("\(value)")
             .padding(value > 9 ? VOMetrics.spacingSm : 0)
             .font(.footnote)
+            .fontWeight(.semibold)
             .frame(height: 24)
             .frame(minWidth: 24)
             .foregroundStyle(colorScheme == .dark ? .black : .white)
