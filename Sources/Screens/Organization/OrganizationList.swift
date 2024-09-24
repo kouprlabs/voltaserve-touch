@@ -47,7 +47,7 @@ struct OrganizationList: View {
                         Button {
                             showNew = true
                         } label: {
-                            Label("New Organization", systemImage: "plus")
+                            Image(systemName: "plus")
                         }
                     }
                 }

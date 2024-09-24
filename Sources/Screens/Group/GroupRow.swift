@@ -9,8 +9,8 @@ struct GroupRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 15) {
-            VOAvatar(name: group.name, size: 45)
+        HStack(spacing: VOMetrics.spacing) {
+            VOAvatar(name: group.name, size: VOMetrics.avatarSize)
             VStack(alignment: .leading) {
                 Text(group.name)
                     .lineLimit(1)

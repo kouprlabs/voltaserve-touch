@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 import VoltaserveCore
 
-struct VOUserRow: View {
+struct UserRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let user: VOUser.Entity
 
@@ -11,8 +11,8 @@ struct VOUserRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 15) {
-            VOAvatar(name: user.fullName, size: 45, base64Image: user.picture)
+        HStack(spacing: VOMetrics.spacing) {
+            VOAvatar(name: user.fullName, size: VOMetrics.avatarSize, base64Image: user.picture)
             VStack(alignment: .leading) {
                 Text(user.fullName)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
@@ -25,7 +25,7 @@ struct VOUserRow: View {
 }
 
 #Preview {
-    VOUserRow(VOUser.Entity(
+    UserRow(VOUser.Entity(
         id: UUID().uuidString,
         username: "brucelee@example.com",
         email: "brucelee@example.com",

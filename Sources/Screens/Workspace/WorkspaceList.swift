@@ -60,7 +60,7 @@ struct WorkspaceList: View {
                         NavigationLink {
                             WorkspaceNew()
                         } label: {
-                            Label("New Workspace", systemImage: "plus")
+                            Image(systemName: "plus")
                         }
                     }
                 }

@@ -42,7 +42,7 @@ struct FileToolbar: ViewModifier {
                     Button {
                         fileStore.toggleViewMode()
                     } label: {
-                        Label("View Mode", systemImage: fileStore.viewMode == .list ? "square.grid.2x2" : "list.bullet")
+                        Image(systemName: fileStore.viewMode == .list ? "square.grid.2x2" : "list.bullet")
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {
@@ -58,7 +58,7 @@ struct FileToolbar: ViewModifier {
                             Label("New Folder", systemImage: "folder.badge.plus")
                         }
                     } label: {
-                        Label("Upload", systemImage: "plus")
+                        Image(systemName: "plus")
                     }
                 }
             }

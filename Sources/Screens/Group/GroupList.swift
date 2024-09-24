@@ -47,7 +47,7 @@ struct GroupList: View {
                         Button {
                             showNew = true
                         } label: {
-                            Label("New Group", systemImage: "plus")
+                            Image(systemName: "plus")
                         }
                     }
                 }

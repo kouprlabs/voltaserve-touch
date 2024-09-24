@@ -25,6 +25,20 @@ extension String {
             return formattedDate(date, format: "d MMM yyyy")
         }
     }
+
+    var date: Date? {
+        ISO8601DateFormatter().date(from: self)
+    }
+}
+
+extension Date {
+    var pretty: String {
+        DateFormatter.localizedString(
+            from: self,
+            dateStyle: .medium,
+            timeStyle: .short
+        )
+    }
 }
 
 func timeAgo(from startDate: Date, to endDate: Date) -> String {

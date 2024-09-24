@@ -10,12 +10,21 @@ struct OrganizationRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 15) {
-            VOAvatar(name: organization.name, size: 45)
+        HStack(spacing: VOMetrics.spacing) {
+            VOAvatar(name: organization.name, size: VOMetrics.avatarSize)
             Text(organization.name)
                 .lineLimit(1)
                 .truncationMode(.middle)
                 .foregroundStyle(colorScheme == .dark ? .white : .black)
         }
     }
+}
+
+#Preview {
+    OrganizationRow(VOOrganization.Entity(
+        id: UUID().uuidString,
+        name: "My Organization",
+        permission: .owner,
+        createTime: Date().ISO8601Format()
+    ))
 }

@@ -19,4 +19,6 @@ enum VOMetrics {
     static let borderRadiusSm: CGFloat = 10
     static let borderRadiusXs: CGFloat = 5
     static let formWidth: CGFloat = 300
+    static let avatarSize: CGFloat = 45
+    static let sfSymbolScaleEffect = 1.2
 }
