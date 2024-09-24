@@ -29,7 +29,6 @@ struct WorkspaceOverview: View {
                             WorkspaceSettings {
                                 dismiss()
                             }
-                            .navigationTitle("Settings")
                         } label: {
                             Label("Settings", systemImage: "gear")
                         }

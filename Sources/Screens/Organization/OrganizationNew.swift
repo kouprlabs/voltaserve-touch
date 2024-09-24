@@ -45,8 +45,7 @@ struct OrganizationNew: View {
 
     private func performSave() {
         isProcessing = true
-
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             _ = try await organizationStore.create(name: normalizedName)
             return true
         } success: {

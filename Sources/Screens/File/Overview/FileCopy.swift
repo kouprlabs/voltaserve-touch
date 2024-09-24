@@ -21,10 +21,10 @@ struct FileCopy: View {
     var body: some View {
         VStack {
             if isProcessing, !showError {
-                SheetProgressView()
+                VOSheetProgressView()
                 Text("Copying \(files.count) item(s).")
             } else if showError, errorSeverity == .full {
-                SheetErrorIcon()
+                VOSheetErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -57,7 +57,7 @@ struct FileCopy: View {
 
     private func performCopy() {
         var result: VOFile.CopyResult?
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             result = try await fileStore.copy(files.map(\.id), to: destinationID)
             errorSeverity = .full
             if let result {

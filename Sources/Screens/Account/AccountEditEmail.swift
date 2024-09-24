@@ -59,7 +59,8 @@ struct AccountEditEmail: View {
 
     private func performSave() {
         isSaving = true
-        VOErrorResponse.withErrorHandling {
+
+        withErrorHandling {
             try await accountStore.updateEmail(normalizedValue)
             return true
         } success: {

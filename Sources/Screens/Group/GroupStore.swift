@@ -70,8 +70,8 @@ class GroupStore: ObservableObject {
         var nextPage = -1
         var list: VOGroup.List?
 
-        VOErrorResponse.withErrorHandling {
-            if !self.hasNextPage() { return false }
+        withErrorHandling {
+            if !self.hasNextPage() { return true }
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
             return true

@@ -30,7 +30,7 @@ struct FileRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            FileBadge(file)
+            FileBadgeList(file)
                 .padding(.trailing, VOMetrics.spacingMd)
         }
         .padding(VOMetrics.spacingSm)

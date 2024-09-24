@@ -35,7 +35,7 @@ struct WorkspaceNew: View {
                     .disabled(isProcessing)
                 }
                 Section(header: VOSectionHeader("Storage Capacity")) {
-                    StoragePicker(value: $storageCapacity)
+                    VOStoragePicker(value: $storageCapacity)
                         .disabled(isProcessing)
                 }
                 Section {
@@ -65,10 +65,9 @@ struct WorkspaceNew: View {
 
     private func performCreate() {
         guard let organization else { return }
-
         isProcessing = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             _ = try await workspaceStore.create(name: normalizedName, organization: organization)
             return true
         } success: {

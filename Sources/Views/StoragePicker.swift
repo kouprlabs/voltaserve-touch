@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct StoragePicker: View {
+struct VOStoragePicker: View {
     @Binding private var valueBinding: Int?
     @State private var value: Int?
     @State private var unit: StorageUnit?
@@ -66,7 +66,7 @@ struct StoragePicker: View {
     @Previewable @State var value: Int? = 5_000_000_000
     Form {
         Section {
-            StoragePicker(value: $value)
+            VOStoragePicker(value: $value)
         }
         Section {
             if let value {

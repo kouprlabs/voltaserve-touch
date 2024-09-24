@@ -50,10 +50,9 @@ struct GroupEditName: View {
 
     private func performSave() {
         guard let current = groupStore.current else { return }
-
         isSaving = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await groupStore.patchName(current.id, options: .init(name: value))
             return true
         } success: {

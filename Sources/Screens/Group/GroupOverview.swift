@@ -20,7 +20,6 @@ struct GroupOverview: View {
                     Form {
                         NavigationLink {
                             GroupMemberList()
-                                .navigationTitle("Members")
                         } label: {
                             Label("Members", systemImage: "person.2")
                         }
@@ -28,7 +27,6 @@ struct GroupOverview: View {
                             GroupSettings {
                                 dismiss()
                             }
-                            .navigationTitle("Settings")
                         } label: {
                             Label("Settings", systemImage: "gear")
                         }

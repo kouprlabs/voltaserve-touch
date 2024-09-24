@@ -20,15 +20,18 @@ struct OrganizationOverview: View {
                     Form {
                         NavigationLink {
                             OrganizationMemberList()
-                                .navigationTitle("Members")
                         } label: {
                             Label("Members", systemImage: "person.2")
+                        }
+                        NavigationLink {
+                            InvitationListOutgoing()
+                        } label: {
+                            Label("Invitations", systemImage: "paperplane")
                         }
                         NavigationLink {
                             OrganizationSettings {
                                 dismiss()
                             }
-                            .navigationTitle("Settings")
                         } label: {
                             Label("Settings", systemImage: "gear")
                         }

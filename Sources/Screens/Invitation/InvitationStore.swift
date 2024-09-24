@@ -5,6 +5,7 @@ import VoltaserveCore
 class InvitationStore: ObservableObject {
     @Published var list: VOInvitation.List?
     @Published var entities: [VOInvitation.Entity]?
+    @Published var incomingCount: Int?
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
@@ -50,8 +51,8 @@ class InvitationStore: ObservableObject {
         var nextPage = -1
         var list: VOInvitation.List?
 
-        VOErrorResponse.withErrorHandling {
-            if !self.hasNextPage() { return false }
+        withErrorHandling {
+            if !self.hasNextPage() { return true }
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
             return true
@@ -70,6 +71,22 @@ class InvitationStore: ObservableObject {
             self.showError = true
         } anyways: {
             self.isLoading = false
+        }
+    }
+
+    func fetchIncomingCount() async throws -> Int? {
+        try await invitationClient?.fetchIncomingCount()
+    }
+
+    func accept(_: String) async throws {
+        try await Fake.serverCall { continuation in
+            continuation.resume()
+        }
+    }
+
+    func decline(_: String) async throws {
+        try await Fake.serverCall { continuation in
+            continuation.resume()
         }
     }
 

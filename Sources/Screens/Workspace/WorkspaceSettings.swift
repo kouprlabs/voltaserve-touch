@@ -5,7 +5,7 @@ struct WorkspaceSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showDelete = false
+    @State private var showDeleteConfirmation = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
@@ -17,76 +17,79 @@ struct WorkspaceSettings: View {
     }
 
     var body: some View {
-        if let current = workspaceStore.current {
-            Form {
-                Section(header: VOSectionHeader("Storage")) {
-                    VStack(alignment: .leading) {
-                        if let storageUsage = workspaceStore.storageUsage {
-                            Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
-                            ProgressView(value: Double(storageUsage.percentage) / 100.0)
-                        } else {
-                            Text("Calculating…")
-                            ProgressView()
-                        }
-                    }
-                    NavigationLink(destination: WorkspaceEditStorageCapacity()) {
-                        HStack {
-                            Text("Capacity")
-                            Spacer()
-                            Text("\(current.storageCapacity.prettyBytes())")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .disabled(isDeleting)
-                }
-                Section(header: VOSectionHeader("Basics")) {
-                    NavigationLink(destination: WorkspaceEditName()) {
-                        HStack {
-                            Text("Name")
-                            Spacer()
-                            Text(current.name)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .disabled(isDeleting)
-                }
-                Section(header: VOSectionHeader("Advanced")) {
-                    Button(role: .destructive) {
-                        showDelete = true
-                    } label: {
-                        HStack {
-                            Text("Delete Workspace")
-                            if isDeleting {
-                                Spacer()
+        Group {
+            if let current = workspaceStore.current {
+                Form {
+                    Section(header: VOSectionHeader("Storage")) {
+                        VStack(alignment: .leading) {
+                            if let storageUsage = workspaceStore.storageUsage {
+                                // swiftlint:disable:next line_length
+                                Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                                ProgressView(value: Double(storageUsage.percentage) / 100.0)
+                            } else {
+                                Text("Calculating…")
                                 ProgressView()
                             }
                         }
+                        NavigationLink(destination: WorkspaceEditStorageCapacity()) {
+                            HStack {
+                                Text("Capacity")
+                                Spacer()
+                                Text("\(current.storageCapacity.prettyBytes())")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .disabled(isDeleting)
                     }
-                    .disabled(isDeleting)
+                    Section(header: VOSectionHeader("Basics")) {
+                        NavigationLink(destination: WorkspaceEditName()) {
+                            HStack {
+                                Text("Name")
+                                Spacer()
+                                Text(current.name)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .disabled(isDeleting)
+                    }
+                    Section(header: VOSectionHeader("Advanced")) {
+                        Button(role: .destructive) {
+                            showDeleteConfirmation = true
+                        } label: {
+                            HStack {
+                                Text("Delete Workspace")
+                                if isDeleting {
+                                    Spacer()
+                                    ProgressView()
+                                }
+                            }
+                        }
+                        .disabled(isDeleting)
+                        .confirmationDialog("Delete Workspace", isPresented: $showDeleteConfirmation) {
+                            Button("Delete Permanently", role: .destructive) {
+                                performDelete()
+                            }
+                        } message: {
+                            Text("Are you sure you want to delete this workspace?")
+                        }
+                    }
                 }
-            }
-            .alert("Delete Workspace", isPresented: $showDelete) {
-                Button("Delete Permanently", role: .destructive) {
-                    performDelete()
+                .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+                .onAppear {
+                    if tokenStore.token != nil {
+                        onAppearOnChange()
+                    }
                 }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Are you sure you want to delete this workspace?")
-            }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
-            .onAppear {
-                if tokenStore.token != nil {
-                    onAppearOnChange()
+                .onChange(of: tokenStore.token) { _, newToken in
+                    if newToken != nil {
+                        onAppearOnChange()
+                    }
                 }
+            } else {
+                ProgressView()
             }
-            .onChange(of: tokenStore.token) { _, newToken in
-                if newToken != nil {
-                    onAppearOnChange()
-                }
-            }
-        } else {
-            ProgressView()
         }
+        .navigationTitle("Settings")
     }
 
     private func onAppearOnChange() {
@@ -96,7 +99,7 @@ struct WorkspaceSettings: View {
 
     private func fetchStorageUsage(_ id: String) {
         var usage: VOStorage.Usage?
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             usage = try await workspaceStore.fetchStorageUsage(id)
             return true
         } success: {
@@ -110,10 +113,9 @@ struct WorkspaceSettings: View {
 
     private func performDelete() {
         guard let current = workspaceStore.current else { return }
-
         isDeleting = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await workspaceStore.delete(current.id)
             return true
         } success: {

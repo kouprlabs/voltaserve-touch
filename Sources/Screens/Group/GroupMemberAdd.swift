@@ -55,10 +55,9 @@ struct GroupMemberAdd: View {
 
     private func performSave() {
         guard let user else { return }
-
         isSaving = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await groupStore.addMember(user.id)
             return true
         } success: {

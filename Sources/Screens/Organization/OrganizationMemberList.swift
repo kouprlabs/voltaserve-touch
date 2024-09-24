@@ -74,6 +74,8 @@ struct OrganizationMemberList: View {
             userStore.clear()
             userStore.fetchList()
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Members")
     }
 
     private func onAppearOrChange() {

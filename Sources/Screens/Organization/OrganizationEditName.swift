@@ -50,10 +50,9 @@ struct OrganizationEditName: View {
 
     private func performSave() {
         guard let current = organizationStore.current else { return }
-
         isSaving = true
 
-        VOErrorResponse.withErrorHandling {
+        withErrorHandling {
             try await organizationStore.patchName(current.id, name: nornalizedValue)
             return true
         } success: {
