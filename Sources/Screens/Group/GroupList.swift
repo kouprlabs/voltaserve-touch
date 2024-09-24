@@ -12,7 +12,7 @@ struct GroupList: View {
             if let entities = groupStore.entities {
                 Group {
                     if entities.count == 0 {
-                        Text("There are no items.")
+                        Text("There are no groups.")
                     } else {
                         List {
                             ForEach(entities, id: \.id) { group in

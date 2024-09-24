@@ -17,7 +17,7 @@ struct OrganizationSelector: View {
             if let entities = organizationStore.entities {
                 Group {
                     if entities.count == 0 {
-                        Text("There are no items.")
+                        Text("There are no organizations.")
                     } else {
                         List(selection: $selection) {
                             ForEach(entities, id: \.id) { organization in

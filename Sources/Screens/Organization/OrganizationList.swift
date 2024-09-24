@@ -12,7 +12,7 @@ struct OrganizationList: View {
             if let entities = organizationStore.entities {
                 Group {
                     if entities.count == 0 {
-                        Text("There are no items.")
+                        Text("There are no organizations.")
                     } else {
                         List {
                             ForEach(entities, id: \.id) { organization in

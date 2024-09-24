@@ -17,7 +17,7 @@ struct UserSelector: View {
             if let entities = userStore.entities {
                 Group {
                     if entities.count == 0 {
-                        Text("There are no items.")
+                        Text("There are no users.")
                     } else {
                         List {
                             ForEach(entities, id: \.id) { member in
@@ -73,6 +73,7 @@ struct UserSelector: View {
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
+                userStore.token = newToken
                 onAppearOrChange()
             }
         }

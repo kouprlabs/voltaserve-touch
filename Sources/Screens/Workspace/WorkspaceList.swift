@@ -14,7 +14,7 @@ struct WorkspaceList: View {
             if let entities = workspaceStore.entities {
                 Group {
                     if entities.count == 0 {
-                        Text("There are no items.")
+                        Text("There are no workspaces.")
                     } else {
                         List {
                             ForEach(entities, id: \.id) { workspace in
