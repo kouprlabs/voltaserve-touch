@@ -28,7 +28,7 @@ struct ServerRow: View {
                         onDeletion?()
                     } label: {
                         Image(systemName: "minus.circle.fill")
-                            .scaleEffect(1.2)
+                            .scaleEffect(VOMetrics.sfSymbolScaleEffect)
                             .foregroundStyle(.red)
                     }
                     .buttonStyle(.borderless)
@@ -60,7 +60,7 @@ struct ServerRow: View {
                 Button(role: .destructive) {
                     onDeletion?()
                 } label: {
-                    Label("Delete", systemImage: "trash")
+                    Image(systemName: "trash")
                 }
             }
         }

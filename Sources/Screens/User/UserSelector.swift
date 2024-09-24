@@ -25,7 +25,7 @@ struct UserSelector: View {
                                     dismiss()
                                     onCompletion?(member)
                                 } label: {
-                                    VOUserRow(member)
+                                    UserRow(member)
                                         .onAppear {
                                             onListItemAppear(member.id)
                                         }

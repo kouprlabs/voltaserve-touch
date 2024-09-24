@@ -17,7 +17,7 @@ struct GroupMemberList: View {
                     } else {
                         List {
                             ForEach(entities, id: \.id) { member in
-                                VOUserRow(member)
+                                UserRow(member)
                                     .onAppear {
                                         onListItemAppear(member.id)
                                     }
@@ -44,7 +44,7 @@ struct GroupMemberList: View {
                         Button {
                             showAddMember = true
                         } label: {
-                            Label("Add Member", systemImage: "person.badge.plus")
+                            Image(systemName: "person.badge.plus")
                         }
                     }
                 }

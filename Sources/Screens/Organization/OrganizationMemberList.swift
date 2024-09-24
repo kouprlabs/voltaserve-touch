@@ -17,7 +17,7 @@ struct OrganizationMemberList: View {
                     } else {
                         List {
                             ForEach(entities, id: \.id) { member in
-                                VOUserRow(member)
+                                UserRow(member)
                                     .onAppear {
                                         onListItemAppear(member.id)
                                     }
@@ -37,7 +37,7 @@ struct OrganizationMemberList: View {
                         NavigationLink {
                             OrganizationMemberInvite()
                         } label: {
-                            Label("Invite Members", systemImage: "person.badge.plus")
+                            Image(systemName: "person.badge.plus")
                         }
                     }
                 }

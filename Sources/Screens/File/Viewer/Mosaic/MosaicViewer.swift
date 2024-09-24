@@ -97,7 +97,7 @@ struct MosaicViewer: View {
                                 }
                             }
                         } label: {
-                            Label("Zoom Levels", systemImage: "ellipsis.circle")
+                            Image(systemName: "ellipsis.circle")
                         }
                     }
                 }

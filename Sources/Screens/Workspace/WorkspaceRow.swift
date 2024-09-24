@@ -9,8 +9,8 @@ struct WorkspaceRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 15) {
-            VOAvatar(name: workspace.name, size: 45)
+        HStack(spacing: VOMetrics.spacing) {
+            VOAvatar(name: workspace.name, size: VOMetrics.avatarSize)
             VStack(alignment: .leading) {
                 Text(workspace.name)
                 Text(workspace.organization.name)
