@@ -107,7 +107,7 @@ class FileStore: ObservableObject {
         var list: VOFile.List?
 
         withErrorHandling {
-            if !self.hasNextPage() { return true }
+            if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(id, page: nextPage)
             return true

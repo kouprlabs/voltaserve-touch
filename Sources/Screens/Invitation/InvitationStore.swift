@@ -52,7 +52,7 @@ class InvitationStore: ObservableObject {
         var list: VOInvitation.List?
 
         withErrorHandling {
-            if !self.hasNextPage() { return true }
+            if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
             return true
