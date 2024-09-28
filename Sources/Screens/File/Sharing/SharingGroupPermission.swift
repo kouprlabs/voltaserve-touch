@@ -14,15 +14,18 @@ struct SharingGroupPermission: View {
     private let files: [VOFile.Entity]
     private let fixedGroup: VOGroup.Entity?
     private let defaultPermission: VOPermission.Value?
+    private let showCancel: Bool
 
     init(
         files: [VOFile.Entity],
         fixedGroup: VOGroup.Entity? = nil,
-        defaultPermission: VOPermission.Value? = nil
+        defaultPermission: VOPermission.Value? = nil,
+        showCancel: Bool = false
     ) {
         self.files = files
         self.fixedGroup = fixedGroup
         self.defaultPermission = defaultPermission
+        self.showCancel = showCancel
     }
 
     var body: some View {
@@ -55,6 +58,13 @@ struct SharingGroupPermission: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Group Permission")
         .toolbar {
+            if showCancel {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 if isProcessing {
                     ProgressView()

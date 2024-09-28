@@ -22,12 +22,12 @@ struct SharingBatch: View {
         TabView(selection: $selection) {
             Tab("Users", systemImage: "person", value: Tag.users) {
                 NavigationStack {
-                    SharingUserPermission(files: files)
+                    SharingUserPermission(files: files, showCancel: true)
                 }
             }
             Tab("Groups", systemImage: "person.2", value: Tag.groups) {
                 NavigationStack {
-                    SharingGroupPermission(files: files)
+                    SharingGroupPermission(files: files, showCancel: true)
                 }
             }
         }

@@ -14,15 +14,18 @@ struct SharingUserPermission: View {
     private let files: [VOFile.Entity]
     private let fixedUser: VOUser.Entity?
     private let defaultPermission: VOPermission.Value?
+    private let showCancel: Bool
 
     init(
         files: [VOFile.Entity],
         fixedUser: VOUser.Entity? = nil,
-        defaultPermission: VOPermission.Value? = nil
+        defaultPermission: VOPermission.Value? = nil,
+        showCancel: Bool = false
     ) {
         self.files = files
         self.fixedUser = fixedUser
         self.defaultPermission = defaultPermission
+        self.showCancel = showCancel
     }
 
     var body: some View {
@@ -55,6 +58,13 @@ struct SharingUserPermission: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("User Permission")
         .toolbar {
+            if showCancel {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 if isProcessing {
                     ProgressView()
