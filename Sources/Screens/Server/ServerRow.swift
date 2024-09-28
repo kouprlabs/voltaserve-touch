@@ -41,10 +41,10 @@ struct ServerRow: View {
         Image("social")
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .cornerRadius(VOMetrics.borderRadiusXs)
+            .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs))
             .overlay {
                 RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs)
-                    .stroke(voBorderColor(colorScheme: colorScheme), lineWidth: 1)
+                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
             }
             .frame(width: 20, height: 20)
     }

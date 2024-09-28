@@ -16,6 +16,9 @@ struct FileToolbar: ViewModifier {
                         ToolbarItem(placement: .bottomBar) {
                             FileMenu(
                                 fileStore.selection,
+                                onSharing: {
+                                    fileStore.showSharing = true
+                                },
                                 onUpload: {
                                     fileStore.showUploadDocumentPicker = true
                                 },

@@ -26,6 +26,16 @@ struct FileSheets: ViewModifier {
                         .navigationTitle(workspace.name)
                     }
                 }
+                .sheet(isPresented: $fileStore.showSharing) {
+                    let files = selectionToFiles()
+                    if !files.isEmpty {
+                        if files.count == 1 {
+                            SharingOverview(files.first!)
+                        } else if files.count > 1 {
+                            SharingBatch(files)
+                        }
+                    }
+                }
                 .sheet(isPresented: $fileStore.showMove) {
                     let files = selectionToFiles()
                     if let destinationIDForMove, !files.isEmpty {

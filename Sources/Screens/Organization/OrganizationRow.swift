@@ -21,7 +21,7 @@ struct OrganizationRow: View {
 }
 
 #Preview {
-    OrganizationRow(VOOrganization.Entity(
+    OrganizationRow(.init(
         id: UUID().uuidString,
         name: "My Organization",
         permission: .owner,

@@ -15,13 +15,11 @@ struct OrganizationMemberList: View {
                     if entities.count == 0 {
                         Text("There are no items.")
                     } else {
-                        List {
-                            ForEach(entities, id: \.id) { member in
-                                UserRow(member)
-                                    .onAppear {
-                                        onListItemAppear(member.id)
-                                    }
-                            }
+                        List(entities, id: \.id) { member in
+                            UserRow(member)
+                                .onAppear {
+                                    onListItemAppear(member.id)
+                                }
                         }
                     }
                 }
@@ -37,7 +35,7 @@ struct OrganizationMemberList: View {
                         NavigationLink {
                             OrganizationMemberInvite()
                         } label: {
-                            Image(systemName: "person.badge.plus")
+                            Image(systemName: "plus")
                         }
                     }
                 }

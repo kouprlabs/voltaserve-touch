@@ -15,6 +15,8 @@ struct UserRow: View {
             VOAvatar(name: user.fullName, size: VOMetrics.avatarSize, base64Image: user.picture)
             VStack(alignment: .leading) {
                 Text(user.fullName)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
                 Text(user.email)
                     .font(.footnote)

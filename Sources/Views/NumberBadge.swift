@@ -17,7 +17,7 @@ struct VONumberBadge: View {
             .frame(minWidth: 24)
             .foregroundStyle(colorScheme == .dark ? .black : .white)
             .background(colorScheme == .dark ? .white : .black)
-            .cornerRadius(12)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 

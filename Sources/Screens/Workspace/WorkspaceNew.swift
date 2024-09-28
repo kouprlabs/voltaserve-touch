@@ -38,23 +38,26 @@ struct WorkspaceNew: View {
                     VOStoragePicker(value: $storageCapacity)
                         .disabled(isProcessing)
                 }
-                Section {
-                    Button {
-                        performCreate()
-                    } label: {
-                        HStack {
-                            Text("Save")
-                            if isProcessing {
-                                Spacer()
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .disabled(isProcessing || !isValid())
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("New Workspace")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isProcessing {
+                        ProgressView()
+                    } else {
+                        Button("Save") {
+                            performSave()
+                        }
+                        .disabled(!isValid())
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         }
     }
@@ -63,7 +66,7 @@ struct WorkspaceNew: View {
         name.trimmingCharacters(in: .whitespaces)
     }
 
-    private func performCreate() {
+    private func performSave() {
         guard let organization else { return }
         isProcessing = true
 

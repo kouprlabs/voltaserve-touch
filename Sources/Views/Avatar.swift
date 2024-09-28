@@ -28,7 +28,7 @@ struct VOAvatar: View {
                         .frame(width: size, height: size)
                     Text(initials(name))
                         .font(.system(size: min(geometry.size.width, geometry.size.height) * 0.3))
-                        .foregroundStyle(randomColor(from: name).colorForBackground())
+                        .foregroundStyle(randomColor(from: name).textColor())
                 }
             }
         }

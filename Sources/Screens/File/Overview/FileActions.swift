@@ -14,6 +14,9 @@ struct FileActions: ViewModifier {
             .fileContextMenu(
                 file,
                 ids: $fileStore.selection,
+                onSharing: {
+                    fileStore.showSharing = true
+                },
                 onUpload: {
                     fileStore.showUploadDocumentPicker = true
                 },

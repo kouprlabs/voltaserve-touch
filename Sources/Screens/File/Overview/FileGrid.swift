@@ -21,7 +21,6 @@ struct FileGrid: View {
                                     tappedItem = file
                                 } label: {
                                     FileCell(file)
-                                        .fileActions(file)
                                 }
                                 .buttonStyle(.plain)
                                 .onAppear {
@@ -33,7 +32,6 @@ struct FileGrid: View {
                                         .navigationTitle(file.name)
                                 } label: {
                                     FileCell(file)
-                                        .fileActions(file)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                                 .onAppear {

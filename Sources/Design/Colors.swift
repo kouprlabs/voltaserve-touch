@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum VOColors {
+extension Color {
     /* Blue */
     static let blue50 = Color(hex: "#E7EDFE")
     static let blue100 = Color(hex: "#BBCDFC")
@@ -60,9 +60,31 @@ enum VOColors {
     static let yellow700 = Color(hex: "#975A16")
     static let yellow800 = Color(hex: "#744210")
     static let yellow900 = Color(hex: "#5F370E")
-}
 
-extension Color {
+    /* Teal */
+    static let teal50 = Color(hex: "#E6FFFA")
+    static let teal100 = Color(hex: "#B2F5EA")
+    static let teal200 = Color(hex: "#81E6D9")
+    static let teal300 = Color(hex: "#4FD1C5")
+    static let teal400 = Color(hex: "#38B2AC")
+    static let teal500 = Color(hex: "#319795")
+    static let teal600 = Color(hex: "#2C7A7B")
+    static let teal700 = Color(hex: "#285E61")
+    static let teal800 = Color(hex: "#234E52")
+    static let teal900 = Color(hex: "#1D4044")
+
+    /* Purple */
+    static let purple50 = Color(hex: "#FAF5FF")
+    static let purple100 = Color(hex: "#E9D8FD")
+    static let purple200 = Color(hex: "#D6BCFA")
+    static let purple300 = Color(hex: "#B794F4")
+    static let purple400 = Color(hex: "#9F7AEA")
+    static let purple500 = Color(hex: "#805AD5")
+    static let purple600 = Color(hex: "#6B46C1")
+    static let purple700 = Color(hex: "#553C9A")
+    static let purple800 = Color(hex: "#44337A")
+    static let purple900 = Color(hex: "#322659")
+
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: .alphanumerics.inverted)
         var int = UInt64()
@@ -85,7 +107,7 @@ extension Color {
         )
     }
 
-    func colorForBackground() -> Color {
+    func textColor() -> Color {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
@@ -96,12 +118,12 @@ extension Color {
         let luminance = 0.299 * red + 0.587 * green + 0.114 * blue
         return luminance > 0.5 ? Color.black : Color.white
     }
-}
 
-func voBorderColor(colorScheme: ColorScheme) -> Color {
-    if colorScheme == .dark {
-        Color(.sRGB, red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.16)
-    } else {
-        Color(red: 226 / 255, green: 232 / 255, blue: 240 / 255)
+    static func borderColor(colorScheme: ColorScheme) -> Color {
+        if colorScheme == .dark {
+            Color(.sRGB, red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.16)
+        } else {
+            Color(red: 226 / 255, green: 232 / 255, blue: 240 / 255)
+        }
     }
 }

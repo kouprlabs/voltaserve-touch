@@ -21,6 +21,7 @@ class FileStore: ObservableObject {
     @Published var showMove = false
     @Published var showCopy = false
     @Published var showDownloadDocumentPicker = false
+    @Published var showSharing = false
     @Published var viewMode: ViewMode = .grid
     @Published var searchText = ""
     @Published var isLoading = false

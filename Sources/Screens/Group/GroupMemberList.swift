@@ -44,7 +44,7 @@ struct GroupMemberList: View {
                         Button {
                             showAddMember = true
                         } label: {
-                            Image(systemName: "person.badge.plus")
+                            Image(systemName: "plus")
                         }
                     }
                 }

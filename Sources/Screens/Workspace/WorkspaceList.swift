@@ -8,7 +8,7 @@ struct WorkspaceList: View {
     @EnvironmentObject private var accountStore: AccountStore
     @EnvironmentObject private var invitationStore: InvitationStore
     @State private var showAccount = false
-    @State private var showNewWorkspace = false
+    @State private var showNew = false
 
     var body: some View {
         NavigationStack {
@@ -58,12 +58,15 @@ struct WorkspaceList: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        NavigationLink {
-                            WorkspaceNew()
+                        Button {
+                            showNew = true
                         } label: {
                             Image(systemName: "plus")
                         }
                     }
+                }
+                .sheet(isPresented: $showNew) {
+                    WorkspaceNew()
                 }
                 .sheet(isPresented: $showAccount) {
                     AccountOverview()
@@ -106,7 +109,6 @@ struct WorkspaceList: View {
             } label: {
                 if let user = accountStore.identityUser, let picture = user.picture {
                     VOAvatar(name: user.fullName, size: 30, base64Image: picture)
-                        .overlay(Circle().stroke(Color(.systemGray4), lineWidth: 1))
                 } else {
                     Image(systemName: "person.crop.circle")
                         .resizable()
