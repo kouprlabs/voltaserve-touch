@@ -170,6 +170,7 @@
 				SignIn/TokenStore.swift,
 				SignUp/SignUp.swift,
 				SignUp/SignUpStore.swift,
+				Task/TaskStore.swift,
 				User/UserRow.swift,
 				User/UserSelector.swift,
 				User/UserStore.swift,

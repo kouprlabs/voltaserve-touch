@@ -21,8 +21,9 @@ struct SharingUserList: View {
                         NavigationLink {
                             SharingUserPermission(
                                 files: [file],
-                                fixedUser: userPermission.user,
-                                defaultPermission: userPermission.permission
+                                predefinedUser: userPermission.user,
+                                defaultPermission: userPermission.permission,
+                                enableRevoke: true
                             )
                         } label: {
                             SharingUserRow(userPermission)

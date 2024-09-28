@@ -84,7 +84,7 @@ class SharingStore: ObservableObject {
         }
     }
 
-    func revokeUserPermission(userID _: String) async throws {
+    func revokeUserPermission(id _: String, userID _: String) async throws {
         guard file != nil else { return }
         try await Fake.serverCall { continuation in
             continuation.resume()
@@ -101,7 +101,7 @@ class SharingStore: ObservableObject {
         }
     }
 
-    func revokeGroupPermission(userID _: String, groupID _: String) async throws {
+    func revokeGroupPermission(id _: String, groupID _: String) async throws {
         try await Fake.serverCall { continuation in
             continuation.resume()
         }

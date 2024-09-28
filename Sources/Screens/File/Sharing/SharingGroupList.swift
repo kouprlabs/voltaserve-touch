@@ -21,8 +21,9 @@ struct SharingGroupList: View {
                         NavigationLink {
                             SharingGroupPermission(
                                 files: [file],
-                                fixedGroup: groupPermission.group,
-                                defaultPermission: groupPermission.permission
+                                predefinedGroup: groupPermission.group,
+                                defaultPermission: groupPermission.permission,
+                                enableRevoke: true
                             )
                         } label: {
                             SharingGroupRow(groupPermission)
