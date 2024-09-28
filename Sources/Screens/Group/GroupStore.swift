@@ -15,6 +15,7 @@ class GroupStore: ObservableObject {
     let searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
+    var organizationID: String?
 
     var token: VOToken.Value? {
         didSet {
@@ -29,7 +30,8 @@ class GroupStore: ObservableObject {
 
     private var groupClient: VOGroup?
 
-    init() {
+    init(organizationID: String? = nil) {
+        self.organizationID = organizationID
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -60,7 +62,20 @@ class GroupStore: ObservableObject {
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
-        try await groupClient?.fetchList(.init(query: query, page: page, size: size))
+        if let organizationID {
+            try await groupClient?.fetchList(.init(
+                query: query,
+                organizationID: organizationID,
+                page: page,
+                size: size
+            ))
+        } else {
+            try await groupClient?.fetchList(.init(
+                query: query,
+                page: page,
+                size: size
+            ))
+        }
     }
 
     func fetchList(replace: Bool = false) {

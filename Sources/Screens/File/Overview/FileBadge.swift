@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct FileBadge: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     static let shared = FileBadge("person.2.fill")
     static let mosaic = FileBadge("flame.fill")
     static let insights = FileBadge("eye.fill")
@@ -14,8 +16,8 @@ struct FileBadge: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(.white)
-                .stroke(Color(.systemGray4), lineWidth: 1)
+                .fill(colorScheme == .dark ? Color.gray700 : .white)
+                .stroke(colorScheme == .dark ? Color.gray600 : Color.gray300, lineWidth: 1)
                 .frame(width: Constants.circleSize, height: Constants.circleSize)
             Image(systemName: icon)
                 .resizable()

@@ -4,11 +4,18 @@ import VoltaserveCore
 struct UserSelector: View {
     @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     private let onCompletion: ((VOUser.Entity) -> Void)?
+    private let groupID: String?
+    private let organizationID: String?
 
-    init(_ onCompletion: ((VOUser.Entity) -> Void)? = nil) {
+    init(
+        groupID: String? = nil,
+        organizationID: String? = nil,
+        onCompletion: ((VOUser.Entity) -> Void)? = nil
+    ) {
+        self.groupID = groupID
+        self.organizationID = organizationID
         self.onCompletion = onCompletion
     }
 
@@ -20,14 +27,14 @@ struct UserSelector: View {
                         Text("There are no users.")
                     } else {
                         List {
-                            ForEach(entities, id: \.id) { member in
+                            ForEach(entities, id: \.id) { user in
                                 Button {
                                     dismiss()
-                                    onCompletion?(member)
+                                    onCompletion?(user)
                                 } label: {
-                                    UserRow(member)
+                                    UserRow(user)
                                         .onAppear {
-                                            onListItemAppear(member.id)
+                                            onListItemAppear(user.id)
                                         }
                                 }
                             }
@@ -62,8 +69,10 @@ struct UserSelector: View {
         .onAppear {
             if let token = tokenStore.token {
                 userStore.token = token
-                if let group = groupStore.current {
-                    userStore.groupID = group.id
+                if let groupID {
+                    userStore.groupID = groupID
+                } else if let organizationID {
+                    userStore.organizationID = organizationID
                 }
                 onAppearOrChange()
             }

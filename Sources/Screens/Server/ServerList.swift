@@ -5,13 +5,11 @@ struct ServerList: View {
     @State private var showNew = false
 
     var body: some View {
-        List {
-            ForEach(serverStore.entities, id: \.id) { server in
-                NavigationLink {
-                    ServerInfo(server)
-                } label: {
-                    ServerRow(server)
-                }
+        List(serverStore.entities, id: \.id) { server in
+            NavigationLink {
+                ServerInfo(server)
+            } label: {
+                ServerRow(server)
             }
         }
         .navigationBarTitleDisplayMode(.inline)

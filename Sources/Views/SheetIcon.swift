@@ -6,7 +6,7 @@ struct VOSheetErrorIcon: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 30, height: 30)
-            .foregroundStyle(VOColors.red500)
+            .foregroundStyle(Color.red500)
     }
 }
 
@@ -16,7 +16,7 @@ struct SheetWarningIcon: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 30, height: 30)
-            .foregroundStyle(VOColors.yellow300)
+            .foregroundStyle(Color.yellow300)
     }
 }
 

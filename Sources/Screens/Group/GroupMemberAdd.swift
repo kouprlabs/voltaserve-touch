@@ -15,8 +15,10 @@ struct GroupMemberAdd: View {
             Form {
                 Section {
                     NavigationLink {
-                        UserSelector { user in
-                            self.user = user
+                        if let group = groupStore.current {
+                            UserSelector(groupID: group.id) { user in
+                                self.user = user
+                            }
                         }
                     } label: {
                         HStack {

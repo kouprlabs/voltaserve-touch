@@ -2,6 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct WorkspaceRow: View {
+    @Environment(\.colorScheme) private var colorScheme
     var workspace: VOWorkspace.Entity
 
     init(_ workspace: VOWorkspace.Entity) {
@@ -13,9 +14,12 @@ struct WorkspaceRow: View {
             VOAvatar(name: workspace.name, size: VOMetrics.avatarSize)
             VStack(alignment: .leading) {
                 Text(workspace.name)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
                 Text(workspace.organization.name)
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.gray)
             }
         }
     }

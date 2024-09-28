@@ -6,7 +6,7 @@ struct VOButton: ViewModifier {
     var color: Color
 
     init(
-        color: Color = VOColors.blue500,
+        color: Color = .blue500,
         width: CGFloat? = nil,
         isDisabled: Bool = false
     ) {
@@ -39,9 +39,9 @@ struct VOButtonCommons: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(.horizontal)
-            .foregroundColor(button.color.colorForBackground())
+            .foregroundColor(button.color.textColor())
             .background(button.color)
-            .cornerRadius(VOButtonMetrics.height / 2)
+            .clipShape(RoundedRectangle(cornerRadius: VOButtonMetrics.height / 2))
             .opacity(button.isDisabled ? 0.5 : 1)
             .disabled(button.isDisabled)
     }
@@ -61,12 +61,12 @@ extension View {
     }
 
     func voPrimaryButton(width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
-        modifier(VOButton(color: VOColors.blue500, width: width, isDisabled: isDisabled))
+        modifier(VOButton(color: .blue500, width: width, isDisabled: isDisabled))
     }
 
     func voSecondaryButton(colorScheme: ColorScheme, width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
         modifier(VOButton(
-            color: colorScheme == .dark ? VOColors.gray700 : VOColors.gray200,
+            color: colorScheme == .dark ? .gray700 : .gray200,
             width: width,
             isDisabled: isDisabled
         ))
@@ -77,12 +77,18 @@ extension View {
     @Previewable @Environment(\.colorScheme) var colorScheme
 
     VStack {
-        Button("Lorem Ipsum", action: {})
-            .voPrimaryButton(width: 60)
-        Button("Lorem Ipsum", action: {})
-            .voSecondaryButton(colorScheme: colorScheme, width: 200)
-        Button("Dolor Sit Amet", action: {})
-            .voButton(color: VOColors.red300)
-            .padding(.horizontal)
+        Button {} label: {
+            VOButtonLabel("Lorem Ipsum")
+        }
+        .voPrimaryButton(width: 60)
+        Button {} label: {
+            VOButtonLabel("Lorem Ipsum")
+        }
+        .voSecondaryButton(colorScheme: colorScheme, width: 200)
+        Button {} label: {
+            VOButtonLabel("Dolor Sit Amet")
+        }
+        .voButton(color: .red300)
+        .padding(.horizontal)
     }
 }

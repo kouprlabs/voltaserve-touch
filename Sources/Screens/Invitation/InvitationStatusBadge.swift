@@ -13,9 +13,9 @@ struct InvitationStatusBadge: View {
             .font(.footnote)
             .padding(.horizontal)
             .frame(height: 20)
-            .foregroundStyle(background().colorForBackground())
+            .foregroundStyle(background().textColor())
             .background(background())
-            .cornerRadius(10)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
     func text() -> String {
@@ -32,11 +32,11 @@ struct InvitationStatusBadge: View {
     func background() -> Color {
         switch status {
         case .pending:
-            VOColors.gray300
+            .gray300
         case .accepted:
-            VOColors.green300
+            .green300
         case .declined:
-            VOColors.red300
+            .red300
         }
     }
 }

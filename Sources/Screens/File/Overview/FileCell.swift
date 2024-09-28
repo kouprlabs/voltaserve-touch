@@ -17,7 +17,9 @@ struct FileCell: View {
                    let thumbnail = snapshot.thumbnail,
                    let fileExtension = thumbnail.fileExtension,
                    let url = fileStore.urlForThumbnail(file.id, fileExtension: String(fileExtension.dropFirst())) {
-                    FileThumbnail(url: url, file: file) { fileIcon }
+                    FileThumbnail(url: url, file: file) {
+                        fileIcon
+                    }
                 } else {
                     fileIcon
                 }
@@ -39,22 +41,40 @@ struct FileCell: View {
 
     private var fileIcon: some View {
         VStack {
-            Image(file.iconForFile(colorScheme: colorScheme))
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .fileCellBadge(file)
-                .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
+            VStack {
+                Image(file.iconForFile(colorScheme: colorScheme))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .fileCellBadge(file)
+                    .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
+            }
+            .frame(
+                width: FileMetrics.iconSize.width + VOMetrics.spacingLg,
+                height: FileMetrics.iconSize.height + VOMetrics.spacing2Xl
+            )
+            .background(colorScheme == .light ? .white : .clear)
+            .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+            .fileActions(file)
         }
         .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
     }
 
     private var folderIcon: some View {
         VStack {
-            Image("icon-folder")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .fileCellBadge(file)
-                .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
+            VStack {
+                Image("icon-folder")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .fileCellBadge(file)
+                    .frame(width: FileMetrics.iconSize.width, height: FileMetrics.iconSize.height)
+            }
+            .frame(
+                width: FileMetrics.iconSize.width + VOMetrics.spacing2Xl,
+                height: FileMetrics.iconSize.height + VOMetrics.spacingLg
+            )
+            .background(colorScheme == .light ? .white : .clear)
+            .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+            .fileActions(file)
         }
         .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
     }
@@ -81,10 +101,12 @@ struct FileThumbnail<FallbackContent: View>: View {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .cornerRadius(VOMetrics.borderRadiusSm)
+                    .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+                    .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+                    .fileActions(file)
                     .overlay {
                         RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
-                            .stroke(voBorderColor(colorScheme: colorScheme), lineWidth: 1)
+                            .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                     }
                     .fileCellBadge(file)
                     .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
