@@ -18,8 +18,6 @@ struct GroupList: View {
                             ForEach(entities, id: \.id) { group in
                                 NavigationLink {
                                     GroupOverview(group)
-                                        .navigationBarTitleDisplayMode(.inline)
-                                        .navigationTitle(group.name)
                                 } label: {
                                     GroupRow(group)
                                         .onAppear {
@@ -73,7 +71,7 @@ struct GroupList: View {
             }
         }
         .onDisappear {
-            groupStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -87,8 +85,20 @@ struct GroupList: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         groupStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         groupStore.startTimer()
+    }
+
+    private func stopTimers() {
+        groupStore.stopTimer()
     }
 
     private func onListItemAppear(_ id: String) {

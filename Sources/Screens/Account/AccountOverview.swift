@@ -7,9 +7,6 @@ struct AccountOverview: View {
     @EnvironmentObject private var invitationStore: InvitationStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDelete = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -40,7 +37,7 @@ struct AccountOverview: View {
                             }) {
                                 Label("Settings", systemImage: "gear")
                             }
-                            NavigationLink(destination: InvitationListIncoming()) {
+                            NavigationLink(destination: InvitationIncomingList()) {
                                 HStack {
                                     Label("Invitations", systemImage: "paperplane")
                                     Spacer()
@@ -68,14 +65,18 @@ struct AccountOverview: View {
                 }
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorAlert(
+            isPresented: $accountStore.showError,
+            title: accountStore.errorTitle,
+            message: accountStore.errorMessage
+        )
         .onAppear {
             if tokenStore.token != nil {
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            accountStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -86,12 +87,20 @@ struct AccountOverview: View {
 
     private func onAppearOrChange() {
         fetchData()
-        accountStore.startTimer()
+        startTimers()
     }
 
     private func fetchData() {
         fetchUser()
         fetchAccountStorageUsage()
+    }
+
+    private func startTimers() {
+        accountStore.startTimer()
+    }
+
+    private func stopTimers() {
+        accountStore.stopTimer()
     }
 
     private func fetchUser() {
@@ -102,9 +111,9 @@ struct AccountOverview: View {
         } success: {
             accountStore.identityUser = user
         } failure: { message in
-            errorTitle = "Error: Fetching User"
-            errorMessage = message
-            showError = true
+            accountStore.errorTitle = "Error: Fetching User"
+            accountStore.errorMessage = message
+            accountStore.showError = true
         }
     }
 
@@ -116,9 +125,9 @@ struct AccountOverview: View {
         } success: {
             accountStore.storageUsage = usage
         } failure: { message in
-            errorTitle = "Error: Fetching Storage Usage"
-            errorMessage = message
-            showError = true
+            accountStore.errorTitle = "Error: Fetching Storage Usage"
+            accountStore.errorMessage = message
+            accountStore.showError = true
         }
     }
 

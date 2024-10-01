@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InvitationInfo: View {
+struct InvitationOverview: View {
     @EnvironmentObject private var invitationStore: InvitationStore
     @Environment(\.dismiss) private var dismiss
     @State private var showError = false
@@ -175,7 +175,7 @@ struct InvitationInfo: View {
 }
 
 #Preview {
-    InvitationInfo(
+    InvitationOverview(
         VOInvitation.Entity(
             id: UUID().uuidString,
             owner: VOUser.Entity(

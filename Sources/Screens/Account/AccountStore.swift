@@ -4,6 +4,9 @@ import VoltaserveCore
 class AccountStore: ObservableObject {
     @Published var identityUser: VOIdentityUser.Entity?
     @Published var storageUsage: VOStorage.Usage?
+    @Published var showError = false
+    @Published var errorTitle: String?
+    @Published var errorMessage: String?
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -89,7 +92,7 @@ class AccountStore: ObservableObject {
                 Task {
                     let user = try await self.fetchUser()
                     if let user {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.identityUser = user
                         }
                     }
@@ -99,7 +102,7 @@ class AccountStore: ObservableObject {
                 Task {
                     let storageUsage = try await self.fetchAccountStorageUsage()
                     if let storageUsage {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.storageUsage = storageUsage
                         }
                     }

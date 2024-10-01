@@ -64,18 +64,18 @@ struct GroupSelector: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Select Group")
         .onAppear {
+            groupStore.organizationID = organizationID
             if let token = tokenStore.token {
-                groupStore.token = token
-                groupStore.organizationID = organizationID
+                assignTokenToStores(token)
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            groupStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if let newToken {
-                groupStore.token = newToken
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
@@ -86,13 +86,29 @@ struct GroupSelector: View {
     }
 
     private func onAppearOrChange() {
-        groupStore.fetchList(replace: true)
-        groupStore.startTimer()
+        fetchData()
+        startTimers()
     }
 
     private func onListItemAppear(_ id: String) {
         if groupStore.isLast(id) {
             groupStore.fetchList()
         }
+    }
+
+    private func fetchData() {
+        groupStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
+        groupStore.startTimer()
+    }
+
+    private func stopTimers() {
+        groupStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        groupStore.token = token
     }
 }

@@ -19,9 +19,13 @@ struct SharingUserRow: View {
             VStack(alignment: .leading) {
                 Text(userPermission.user.fullName)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
                 Text(userPermission.user.email)
                     .font(.footnote)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.gray500)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
             }
             Spacer()
             SharingPermissionBadge(userPermission.permission)

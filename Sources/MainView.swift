@@ -2,33 +2,26 @@ import SwiftUI
 import VoltaserveCore
 
 struct MainView: View {
-    @State private var selection: Tab = .workspaces
+    @State private var selection: TabType = .workspaces
 
-    enum Tab {
+    enum TabType {
         case workspaces
         case groups
         case organizations
+        case tasks
     }
 
     var body: some View {
         TabView(selection: $selection) {
-            WorkspaceList()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-                .tag(Tab.workspaces)
-
-            GroupList()
-                .tabItem {
-                    Label("Groups", systemImage: "person.2.fill")
-                }
-                .tag(Tab.groups)
-
-            OrganizationList()
-                .tabItem {
-                    Label("Organizations", systemImage: "flag")
-                }
-                .tag(Tab.organizations)
+            Tab("Home", systemImage: "house", value: TabType.workspaces) {
+                WorkspaceList()
+            }
+            Tab("Groups", systemImage: "person.2.fill", value: TabType.groups) {
+                GroupList()
+            }
+            Tab("Organizations", systemImage: "flag", value: TabType.organizations) {
+                OrganizationList()
+            }
         }
     }
 }

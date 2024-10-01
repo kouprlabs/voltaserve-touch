@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InvitationRowIncoming: View {
+struct InvitationIncomingRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let invitation: VOInvitation.Entity
 
@@ -14,10 +14,12 @@ struct InvitationRowIncoming: View {
             if let owner = invitation.owner {
                 Text(owner.email)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
             }
             Text(invitation.createTime.relativeDate())
-                .foregroundStyle(.gray)
                 .font(.footnote)
+                .foregroundStyle(Color.gray500)
         }
     }
 }
@@ -32,7 +34,7 @@ struct InvitationRowIncoming: View {
     )
     Form {
         List {
-            InvitationRowIncoming(
+            InvitationIncomingRow(
                 VOInvitation.Entity(
                     id: UUID().uuidString,
                     owner: owner,
@@ -47,7 +49,7 @@ struct InvitationRowIncoming: View {
                     createTime: "2024-09-23T10:00:00Z"
                 )
             )
-            InvitationRowIncoming(
+            InvitationIncomingRow(
                 VOInvitation.Entity(
                     id: UUID().uuidString,
                     owner: owner,
@@ -62,7 +64,7 @@ struct InvitationRowIncoming: View {
                     createTime: "2024-09-22T19:53:41Z"
                 )
             )
-            InvitationRowIncoming(
+            InvitationIncomingRow(
                 VOInvitation.Entity(
                     id: UUID().uuidString,
                     owner: owner,

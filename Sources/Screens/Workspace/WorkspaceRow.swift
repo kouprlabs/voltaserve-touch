@@ -15,11 +15,13 @@ struct WorkspaceRow: View {
             VStack(alignment: .leading) {
                 Text(workspace.name)
                     .lineLimit(1)
-                    .truncationMode(.middle)
+                    .truncationMode(.tail)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
                 Text(workspace.organization.name)
                     .font(.footnote)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.gray500)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
         }
     }

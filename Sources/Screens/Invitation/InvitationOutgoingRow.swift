@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InvitationRowOutgoing: View {
+struct InvitationOutgoingRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let invitation: VOInvitation.Entity
 
@@ -14,9 +14,11 @@ struct InvitationRowOutgoing: View {
             VStack(alignment: .leading) {
                 Text(invitation.email)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
                 Text(invitation.createTime.relativeDate())
-                    .foregroundStyle(.gray)
                     .font(.footnote)
+                    .foregroundStyle(Color.gray500)
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     InvitationStatusBadge(invitation.status)
                 }
@@ -39,7 +41,7 @@ struct InvitationRowOutgoing: View {
     )
     NavigationView {
         List {
-            InvitationRowOutgoing(
+            InvitationOutgoingRow(
                 VOInvitation.Entity(
                     id: UUID().uuidString,
                     owner: owner,
@@ -54,7 +56,7 @@ struct InvitationRowOutgoing: View {
                     createTime: "2024-09-23T10:00:00Z"
                 )
             )
-            InvitationRowOutgoing(
+            InvitationOutgoingRow(
                 VOInvitation.Entity(
                     id: UUID().uuidString,
                     owner: owner,
@@ -69,7 +71,7 @@ struct InvitationRowOutgoing: View {
                     createTime: "2024-09-22T19:53:41Z"
                 )
             )
-            InvitationRowOutgoing(
+            InvitationOutgoingRow(
                 VOInvitation.Entity(
                     id: UUID().uuidString,
                     owner: owner,

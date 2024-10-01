@@ -8,6 +8,7 @@ struct ContentView: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @EnvironmentObject private var invitationStore: InvitationStore
+    @EnvironmentObject private var taskStore: TaskStore
     @EnvironmentObject private var groupStore: GroupStore
     @EnvironmentObject private var mosaicStore: MosaicStore
     @EnvironmentObject private var glbStore: GLBStore
@@ -62,6 +63,7 @@ struct ContentView: View {
         organizationStore.token = token
         groupStore.token = token
         invitationStore.token = token
+        taskStore.token = token
         mosaicStore.token = token
         glbStore.token = token
         pdfStore.token = token
@@ -76,7 +78,7 @@ struct ContentView: View {
             if let token = tokenStore.token, token.isExpired {
                 Task {
                     if let newToken = try await tokenStore.refreshTokenIfNecessary() {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             tokenStore.token = newToken
                             tokenStore.saveInKeychain(newToken)
                         }

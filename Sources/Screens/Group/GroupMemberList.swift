@@ -61,16 +61,16 @@ struct GroupMemberList: View {
             }
         }
         .onAppear {
+            if let group = groupStore.current {
+                userStore.groupID = group.id
+            }
             if let token = tokenStore.token {
-                userStore.token = token
-                if let group = groupStore.current {
-                    userStore.groupID = group.id
-                }
+                assignTokenToStores(token)
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            userStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -86,8 +86,24 @@ struct GroupMemberList: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         userStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         userStore.startTimer()
+    }
+
+    private func stopTimers() {
+        userStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        userStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

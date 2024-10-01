@@ -10,22 +10,22 @@ func withErrorHandling(
     Task {
         do {
             if try await code() {
-                Task { @MainActor in
+                DispatchQueue.main.async {
                     success?()
                     anyways?()
                 }
             } else {
-                Task { @MainActor in
+                DispatchQueue.main.async {
                     anyways?()
                 }
             }
         } catch let error as VOErrorResponse {
-            Task { @MainActor in
+            DispatchQueue.main.async {
                 failure(error.userMessage)
                 anyways?()
             }
         } catch {
-            Task { @MainActor in
+            DispatchQueue.main.async {
                 failure("Unexpected error occurred.")
                 anyways?()
             }

@@ -43,14 +43,7 @@ struct BrowserList: View {
     @StateObject private var browserStore = BrowserStore()
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
-    @State private var tappedItem: VOFile.Entity?
-    @State private var searchText = ""
-    @State private var searchPublisher = PassthroughSubject<String, Never>()
-    @State private var cancellables = Set<AnyCancellable>()
-    @State private var isLoading = false
+    @State var tappedItem: VOFile.Entity?
     private let id: String
     private let workspace: VOWorkspace.Entity
     private let confirmLabelText: String?
@@ -94,7 +87,7 @@ struct BrowserList: View {
                                     onListItemAppear(file.id)
                                 }
                             }
-                            if isLoading {
+                            if browserStore.isLoading {
                                 HStack {
                                     Spacer()
                                     ProgressView()
@@ -103,17 +96,21 @@ struct BrowserList: View {
                             }
                         }
                         .listStyle(.inset)
-                        .searchable(text: $searchText)
-                        .onChange(of: searchText) {
-                            searchPublisher.send($1)
+                        .searchable(text: $browserStore.searchText)
+                        .onChange(of: browserStore.searchText) {
+                            browserStore.searchPublisher.send($1)
                         }
                         .refreshable {
-                            fetchList(replace: true)
+                            browserStore.fetchList(replace: true)
                         }
                         .navigationDestination(item: $tappedItem) {
                             FileViewer($0)
                         }
-                        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+                        .voErrorAlert(
+                            isPresented: $browserStore.showError,
+                            title: browserStore.errorTitle,
+                            message: browserStore.errorMessage
+                        )
                     }
                 }
             } else {
@@ -135,85 +132,51 @@ struct BrowserList: View {
             }
         }
         .onAppear {
-            searchPublisher
-                .debounce(for: .seconds(1), scheduler: RunLoop.main)
-                .removeDuplicates()
-                .sink {
-                    browserStore.query = .init(text: $0)
-                }
-                .store(in: &cancellables)
             if let token = tokenStore.token {
-                browserStore.token = token
+                assignTokensToStores(token)
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            browserStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if let newToken {
-                browserStore.token = newToken
+                assignTokensToStores(newToken)
                 onAppearOrChange()
             }
         }
         .onChange(of: browserStore.query) {
             browserStore.clear()
-            fetchList()
+            browserStore.fetchList()
         }
     }
 
     private func onAppearOrChange() {
-        fetchFile()
-        fetchList(replace: true)
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
+        browserStore.fetch()
+        browserStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         browserStore.startTimer()
+    }
+
+    private func stopTimers() {
+        browserStore.stopTimer()
+    }
+
+    private func assignTokensToStores(_ token: VOToken.Value) {
+        browserStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {
         if browserStore.isLast(id) {
-            fetchList()
-        }
-    }
-
-    private func fetchFile() {
-        var file: VOFile.Entity?
-        withErrorHandling {
-            file = try await browserStore.fetch(id)
-            return true
-        } success: {
-            browserStore.current = file
-        } failure: { message in
-            errorTitle = "Error: Fetching File"
-            errorMessage = message
-            showError = true
-        }
-    }
-
-    private func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
-        var nextPage = -1
-        var list: VOFile.List?
-        withErrorHandling {
-            if !browserStore.hasNextPage() { return false }
-            nextPage = browserStore.nextPage()
-            list = try await browserStore.fetchList(id, page: nextPage)
-            return true
-        } success: {
-            browserStore.list = list
-            if let list {
-                if replace, nextPage == 1 {
-                    browserStore.entities = list.data
-                } else {
-                    browserStore.append(list.data)
-                }
-            }
-        } failure: { message in
-            errorTitle = "Error: Fetching Files"
-            errorMessage = message
-            showError = true
-        } anyways: {
-            isLoading = false
+            browserStore.fetchList()
         }
     }
 }

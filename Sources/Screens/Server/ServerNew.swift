@@ -50,7 +50,7 @@ struct ServerNew: View {
     private func performSave() {
         isSaving = true
         Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in
-            Task { @MainActor in
+            DispatchQueue.main.async {
                 serverStore.create(ServerStore.Entity(
                     id: UUID().uuidString,
                     name: normalizedName,

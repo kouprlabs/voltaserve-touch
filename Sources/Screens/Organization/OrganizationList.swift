@@ -18,8 +18,6 @@ struct OrganizationList: View {
                             ForEach(entities, id: \.id) { organization in
                                 NavigationLink {
                                     OrganizationOverview(organization)
-                                        .navigationBarTitleDisplayMode(.inline)
-                                        .navigationTitle(organization.name)
                                 } label: {
                                     OrganizationRow(organization)
                                         .onAppear {
@@ -73,7 +71,7 @@ struct OrganizationList: View {
             }
         }
         .onDisappear {
-            organizationStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -87,8 +85,20 @@ struct OrganizationList: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         organizationStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         organizationStore.startTimer()
+    }
+
+    private func stopTimers() {
+        organizationStore.stopTimer()
     }
 
     private func onListItemAppear(_ id: String) {

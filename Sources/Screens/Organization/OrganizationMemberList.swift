@@ -52,16 +52,16 @@ struct OrganizationMemberList: View {
             }
         }
         .onAppear {
+            if let organization = organizationStore.current {
+                userStore.organizationID = organization.id
+            }
             if let token = tokenStore.token {
-                userStore.token = token
-                if let organization = organizationStore.current {
-                    userStore.organizationID = organization.id
-                }
+                assignTokenToStores(token)
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            userStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -77,8 +77,24 @@ struct OrganizationMemberList: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         userStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         userStore.startTimer()
+    }
+
+    private func stopTimers() {
+        userStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        userStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

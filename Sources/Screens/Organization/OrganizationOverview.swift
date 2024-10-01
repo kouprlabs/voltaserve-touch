@@ -24,7 +24,7 @@ struct OrganizationOverview: View {
                             Label("Members", systemImage: "person.2")
                         }
                         NavigationLink {
-                            InvitationListOutgoing()
+                            InvitationOutgoingList()
                         } label: {
                             Label("Invitations", systemImage: "paperplane")
                         }
@@ -41,6 +41,8 @@ struct OrganizationOverview: View {
                 ProgressView()
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(organization.name)
         .onAppear {
             organizationStore.current = organization
         }

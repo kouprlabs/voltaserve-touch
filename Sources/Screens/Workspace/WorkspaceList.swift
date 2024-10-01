@@ -7,6 +7,7 @@ struct WorkspaceList: View {
     @EnvironmentObject private var workspaceStore: WorkspaceStore
     @EnvironmentObject private var accountStore: AccountStore
     @EnvironmentObject private var invitationStore: InvitationStore
+    @EnvironmentObject private var taskStore: TaskStore
     @State private var showAccount = false
     @State private var showNew = false
 
@@ -21,8 +22,6 @@ struct WorkspaceList: View {
                             ForEach(entities, id: \.id) { workspace in
                                 NavigationLink {
                                     WorkspaceOverview(workspace)
-                                        .navigationBarTitleDisplayMode(.inline)
-                                        .navigationTitle(workspace.name)
                                 } label: {
                                     WorkspaceRow(workspace)
                                         .onAppear {
@@ -80,6 +79,16 @@ struct WorkspaceList: View {
             title: workspaceStore.errorTitle,
             message: workspaceStore.errorMessage
         )
+        .voErrorAlert(
+            isPresented: $accountStore.showError,
+            title: accountStore.errorTitle,
+            message: accountStore.errorMessage
+        )
+        .voErrorAlert(
+            isPresented: $invitationStore.showError,
+            title: invitationStore.errorTitle,
+            message: invitationStore.errorMessage
+        )
         .onAppear {
             workspaceStore.clear()
             if tokenStore.token != nil {
@@ -87,9 +96,7 @@ struct WorkspaceList: View {
             }
         }
         .onDisappear {
-            workspaceStore.stopTimer()
-            accountStore.stopTimer()
-            invitationStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
@@ -125,12 +132,29 @@ struct WorkspaceList: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         workspaceStore.fetchList(replace: true)
+        taskStore.fetchList(replace: true)
         fetchUser()
         fetchInvitationIncomingCount()
+    }
+
+    private func startTimers() {
         workspaceStore.startTimer()
         accountStore.startTimer()
         invitationStore.startTimer()
+        taskStore.startTimer()
+    }
+
+    private func stopTimers() {
+        workspaceStore.stopTimer()
+        accountStore.stopTimer()
+        invitationStore.stopTimer()
+        taskStore.stopTimer()
     }
 
     private func onListItemAppear(_ id: String) {
@@ -147,9 +171,9 @@ struct WorkspaceList: View {
         } success: {
             accountStore.identityUser = user
         } failure: { message in
-            workspaceStore.errorTitle = "Error: Fetching User"
-            workspaceStore.errorMessage = message
-            workspaceStore.showError = true
+            accountStore.errorTitle = "Error: Fetching User"
+            accountStore.errorMessage = message
+            accountStore.showError = true
         }
     }
 
@@ -161,9 +185,9 @@ struct WorkspaceList: View {
         } success: {
             invitationStore.incomingCount = count
         } failure: { message in
-            workspaceStore.errorTitle = "Error: Fetching Invitation Incoming Count"
-            workspaceStore.errorMessage = message
-            workspaceStore.showError = true
+            invitationStore.errorTitle = "Error: Fetching Invitation Incoming Count"
+            invitationStore.errorMessage = message
+            invitationStore.showError = true
         }
     }
 }

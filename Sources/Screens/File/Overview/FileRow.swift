@@ -27,7 +27,8 @@ struct FileRow: View {
                     .lineLimit(1)
                     .truncationMode(.middle)
                 Text(file.createTime.relativeDate())
-                    .foregroundStyle(.secondary)
+                    .font(.footnote)
+                    .foregroundStyle(Color.gray500)
             }
             Spacer()
             FileBadgeList(file)

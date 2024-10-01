@@ -115,7 +115,7 @@ class SharingStore: ObservableObject {
                 Task {
                     let values = try await self.fetchUserPermissions(file.id)
                     if let values {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.userPermissions = values
                         }
                     }
@@ -125,7 +125,7 @@ class SharingStore: ObservableObject {
                 Task {
                     let values = try await self.fetchGroupPermissions(file.id)
                     if let values {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.groupPermissions = values
                         }
                     }

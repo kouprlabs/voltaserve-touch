@@ -17,10 +17,11 @@ struct GroupRow: View {
                     .lineLimit(1)
                     .truncationMode(.middle)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
-
                 Text(group.organization.name)
                     .font(.footnote)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.gray500)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
         }
     }

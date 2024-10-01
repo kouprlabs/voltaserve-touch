@@ -45,17 +45,17 @@ struct FileOverview: View {
             fileStore.id = id
             fileStore.loadViewModeFromUserDefaults()
             if let token = tokenStore.token {
-                fileStore.token = token
+                assignTokenToStores(token)
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            fileStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
-                fileStore.token = newToken
             }
         }
         .onChange(of: fileStore.query) {
@@ -66,8 +66,24 @@ struct FileOverview: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         fileStore.fetch()
         fileStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         fileStore.startTimer()
+    }
+
+    private func stopTimers() {
+        fileStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        fileStore.token = token
     }
 }

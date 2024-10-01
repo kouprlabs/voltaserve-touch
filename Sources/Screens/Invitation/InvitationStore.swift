@@ -129,7 +129,7 @@ class InvitationStore: ObservableObject {
                 Task {
                     let list = try await self.fetchList(page: 1, size: entities.count)
                     if let list {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.entities = list.data
                         }
                     }
