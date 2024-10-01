@@ -50,18 +50,18 @@ struct SharingOverview: View {
                 }
             }
             .onAppear {
+                sharingStore.file = file
                 if let token = tokenStore.token {
-                    sharingStore.token = token
-                    sharingStore.file = file
+                    assignTokenToStores(token)
                     onAppearOrChange()
                 }
             }
             .onDisappear {
-                sharingStore.stopTimer()
+                stopTimers()
             }
             .onChange(of: sharingStore.token) { _, newToken in
                 if let newToken {
-                    sharingStore.token = newToken
+                    assignTokenToStores(newToken)
                     onAppearOrChange()
                 }
             }
@@ -84,9 +84,25 @@ struct SharingOverview: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         sharingStore.fetchUserPermissions()
         sharingStore.fetchGroupPermissions()
+    }
+
+    private func startTimers() {
         sharingStore.startTimer()
+    }
+
+    private func stopTimers() {
+        sharingStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        sharingStore.token = token
     }
 
     enum Tag {

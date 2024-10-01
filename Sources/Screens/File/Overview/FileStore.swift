@@ -22,6 +22,7 @@ class FileStore: ObservableObject {
     @Published var showCopy = false
     @Published var showDownloadDocumentPicker = false
     @Published var showSharing = false
+    @Published var showTasks = false
     @Published var viewMode: ViewMode = .grid
     @Published var searchText = ""
     @Published var isLoading = false
@@ -266,11 +267,15 @@ class FileStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.isLoading { return }
-            if let entities = self.entities, let file = self.file, !entities.isEmpty {
+            if let file = self.file {
                 Task {
-                    let list = try await self.fetchList(file.id, page: 1, size: entities.count)
+                    var size = Constants.pageSize
+                    if let entities = self.entities, !entities.isEmpty {
+                        size = entities.count
+                    }
+                    let list = try await self.fetchList(file.id, page: 1, size: size)
                     if let list {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.entities = list.data
                         }
                     }
@@ -280,7 +285,7 @@ class FileStore: ObservableObject {
                 Task {
                     let file = try await self.fetch(file.id)
                     if let file {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.file = file
                         }
                     }

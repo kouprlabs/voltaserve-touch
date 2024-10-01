@@ -38,6 +38,8 @@ struct WorkspaceOverview: View {
                 ProgressView()
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(workspace.name)
         .onAppear {
             workspaceStore.current = workspace
         }

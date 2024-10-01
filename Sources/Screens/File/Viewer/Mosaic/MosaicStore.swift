@@ -23,7 +23,7 @@ class MosaicStore: ObservableObject {
     func loadMosaic(_ id: String) async throws {
         let info = try await mosaicClient?.fetchInfo(id)
         if let info {
-            Task { @MainActor in
+            DispatchQueue.main.async {
                 self.info = info
                 if let zoomLevel = self.info?.metadata.zoomLevels.first {
                     self.zoomLevel = zoomLevel
@@ -59,7 +59,7 @@ class MosaicStore: ObservableObject {
                 )
                 if let data {
                     self.busy[row][col] = false
-                    Task { @MainActor in
+                    DispatchQueue.main.async {
                         self.grid[row][col] = UIImage(data: data)
                     }
                 }

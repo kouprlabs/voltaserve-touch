@@ -16,11 +16,13 @@ struct UserRow: View {
             VStack(alignment: .leading) {
                 Text(user.fullName)
                     .lineLimit(1)
-                    .truncationMode(.middle)
+                    .truncationMode(.tail)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
                 Text(user.email)
                     .font(.footnote)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.gray500)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
             }
         }
     }

@@ -67,22 +67,22 @@ struct UserSelector: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Select User")
         .onAppear {
+            if let groupID {
+                userStore.groupID = groupID
+            } else if let organizationID {
+                userStore.organizationID = organizationID
+            }
             if let token = tokenStore.token {
-                userStore.token = token
-                if let groupID {
-                    userStore.groupID = groupID
-                } else if let organizationID {
-                    userStore.organizationID = organizationID
-                }
+                assignTokenToStores(token)
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            userStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
-                userStore.token = newToken
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
@@ -93,8 +93,24 @@ struct UserSelector: View {
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         userStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         userStore.startTimer()
+    }
+
+    private func stopTimers() {
+        userStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        userStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

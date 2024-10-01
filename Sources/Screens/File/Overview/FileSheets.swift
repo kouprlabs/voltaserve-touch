@@ -26,6 +26,9 @@ struct FileSheets: ViewModifier {
                         .navigationTitle(workspace.name)
                     }
                 }
+                .sheet(isPresented: $fileStore.showTasks) {
+                    TaskList()
+                }
                 .sheet(isPresented: $fileStore.showSharing) {
                     let files = selectionToFiles()
                     if !files.isEmpty {

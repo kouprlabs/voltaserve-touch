@@ -32,7 +32,8 @@ struct FileCell: View {
                     .lineLimit(3)
                     .truncationMode(.middle)
                 Text(file.createTime.relativeDate())
-                    .foregroundStyle(.secondary)
+                    .font(.footnote)
+                    .foregroundStyle(Color.gray500)
                 Spacer()
             }
         }

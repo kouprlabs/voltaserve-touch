@@ -74,6 +74,13 @@ struct SharingGroupPermission: View {
                         }
                     }
                     .disabled(isRevoking)
+                    .confirmationDialog("Revoke Permission", isPresented: $showRevoke, titleVisibility: .visible) {
+                        Button("Revoke", role: .destructive) {
+                            performRevoke()
+                        }
+                    } message: {
+                        Text("Are you sure you want to revoke this permission?")
+                    }
                 }
             }
         }
@@ -105,13 +112,6 @@ struct SharingGroupPermission: View {
             if let defaultPermission {
                 permission = defaultPermission
             }
-        }
-        .confirmationDialog("Revoke Permission", isPresented: $showRevoke, titleVisibility: .visible) {
-            Button("Revoke", role: .destructive) {
-                performRevoke()
-            }
-        } message: {
-            Text("Are you sure you want to revoke this permission?")
         }
         .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
     }

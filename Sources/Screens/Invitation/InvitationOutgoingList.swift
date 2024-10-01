@@ -1,10 +1,10 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InvitationListIncoming: View {
+struct InvitationOutgoingList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var invitationStore: InvitationStore
-    @State private var showInfo = false
+    @EnvironmentObject private var organizationStore: OrganizationStore
+    @StateObject private var invitationStore = InvitationStore()
     @State private var invitation: VOInvitation.Entity?
 
     var body: some View {
@@ -16,9 +16,9 @@ struct InvitationListIncoming: View {
                     List {
                         ForEach(entities, id: \.id) { invitation in
                             NavigationLink {
-                                InvitationInfo(invitation, isAcceptableDeclinable: true)
+                                InvitationOverview(invitation, isDeletable: true)
                             } label: {
-                                InvitationRowIncoming(invitation)
+                                InvitationOutgoingRow(invitation)
                                     .onAppear {
                                         onListItemAppear(invitation.id)
                                     }
@@ -40,23 +40,44 @@ struct InvitationListIncoming: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Invitations")
         .onAppear {
-            if tokenStore.token != nil {
+            if let organization = organizationStore.current {
+                invitationStore.organizationID = organization.id
+            }
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
                 onAppearOrChange()
             }
         }
         .onDisappear {
-            invitationStore.stopTimer()
+            stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                invitationStore.token = newToken
                 onAppearOrChange()
             }
         }
     }
 
     private func onAppearOrChange() {
+        fetchData()
+        startTimers()
+    }
+
+    private func fetchData() {
         invitationStore.fetchList(replace: true)
+    }
+
+    private func startTimers() {
         invitationStore.startTimer()
+    }
+
+    private func stopTimers() {
+        invitationStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        invitationStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

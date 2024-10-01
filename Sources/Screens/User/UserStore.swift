@@ -124,13 +124,15 @@ class UserStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = self.entities, !entities.isEmpty {
-                Task {
-                    let list = try await self.fetchList(page: 1, size: entities.count)
-                    if let list {
-                        Task { @MainActor in
-                            self.entities = list.data
-                        }
+            Task {
+                var size = Constants.pageSize
+                if let entities = self.entities, !entities.isEmpty {
+                    size = entities.count
+                }
+                let list = try await self.fetchList(page: 1, size: size)
+                if let list {
+                    DispatchQueue.main.async {
+                        self.entities = list.data
                     }
                 }
             }

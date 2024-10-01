@@ -15,11 +15,13 @@ struct SharingGroupRow: View {
             VStack(alignment: .leading) {
                 Text(groupPermission.group.name)
                     .lineLimit(1)
-                    .truncationMode(.middle)
+                    .truncationMode(.tail)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
                 Text(groupPermission.group.organization.name)
                     .font(.footnote)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.gray500)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             Spacer()
             SharingPermissionBadge(groupPermission.permission)

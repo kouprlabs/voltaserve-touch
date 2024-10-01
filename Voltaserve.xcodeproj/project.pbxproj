@@ -21,6 +21,7 @@
 		64D0D9152C8103DF00B96180 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0D9132C8103DF00B96180 /* Config.swift */; };
 		64D0D97B2C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */; };
 		64D0D97C2C8120E800B96180 /* Unbounded-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */; };
+		64F083822CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64F083812CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		64D0D9132C8103DF00B96180 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBM Plex Sans Var-Roman.ttf"; sourceTree = "<group>"; };
 		64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Unbounded-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		64F083812CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBM Plex Sans Var-Italic.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -66,6 +68,7 @@
 			membershipExceptions = (
 				Avatar.swift,
 				ButtonLabel.swift,
+				HTMLText.swift,
 				Logo.swift,
 				NumberBadge.swift,
 				SectionHeader.swift,
@@ -144,11 +147,11 @@
 				Group/GroupSelector.swift,
 				Group/GroupSettings.swift,
 				Group/GroupStore.swift,
-				Invitation/InvitationInfo.swift,
-				Invitation/InvitationListIncoming.swift,
-				Invitation/InvitationListOutgoing.swift,
-				Invitation/InvitationRowIncoming.swift,
-				Invitation/InvitationRowOutgoing.swift,
+				Invitation/InvitationIncomingList.swift,
+				Invitation/InvitationIncomingRow.swift,
+				Invitation/InvitationOutgoingList.swift,
+				Invitation/InvitationOutgoingRow.swift,
+				Invitation/InvitationOverview.swift,
 				Invitation/InvitationStatusBadge.swift,
 				Invitation/InvitationStore.swift,
 				Organization/OrganizationEditName.swift,
@@ -170,6 +173,10 @@
 				SignIn/TokenStore.swift,
 				SignUp/SignUp.swift,
 				SignUp/SignUpStore.swift,
+				Task/TaskList.swift,
+				Task/TaskOverview.swift,
+				Task/TaskRow.swift,
+				Task/TaskStatusBadge.swift,
 				Task/TaskStore.swift,
 				User/UserRow.swift,
 				User/UserSelector.swift,
@@ -261,6 +268,7 @@
 		64D0D97A2C8120E800B96180 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				64F083812CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf */,
 				64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */,
 				64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */,
 			);
@@ -345,6 +353,7 @@
 				64562B6F2C69EC2A00E10D97 /* .swift-version in Resources */,
 				649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */,
 				649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */,
+				64F083822CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

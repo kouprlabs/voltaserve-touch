@@ -36,6 +36,8 @@ struct GroupOverview: View {
                 ProgressView()
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(group.name)
         .onAppear {
             groupStore.current = group
         }

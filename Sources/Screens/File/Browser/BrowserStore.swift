@@ -7,6 +7,13 @@ class BrowserStore: ObservableObject {
     @Published var entities: [VOFile.Entity]?
     @Published var current: VOFile.Entity?
     @Published var query: VOFile.Query?
+    @Published var showError = false
+    @Published var errorTitle: String?
+    @Published var errorMessage: String?
+    @Published var searchText = ""
+    @Published var isLoading = false
+    let searchPublisher = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
 
     var token: VOToken.Value? {
@@ -22,12 +29,69 @@ class BrowserStore: ObservableObject {
 
     private var fileClient: VOFile?
 
+    init() {
+        searchPublisher
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink {
+                self.query = .init(text: $0)
+            }
+            .store(in: &cancellables)
+    }
+
     func fetch(_ id: String) async throws -> VOFile.Entity? {
         try await fileClient?.fetch(id)
     }
 
+    func fetch() {
+        guard let current else { return }
+        var file: VOFile.Entity?
+        withErrorHandling {
+            file = try await self.fetch(current.id)
+            return true
+        } success: {
+            self.current = file
+        } failure: { message in
+            self.errorTitle = "Error: Fetching File"
+            self.errorMessage = message
+            self.showError = true
+        }
+    }
+
     func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
         try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size, type: .folder))
+    }
+
+    func fetchList(replace: Bool = false) {
+        guard let current else { return }
+
+        if isLoading { return }
+        isLoading = true
+
+        var nextPage = -1
+        var list: VOFile.List?
+
+        withErrorHandling {
+            if !self.hasNextPage() { return false }
+            nextPage = self.nextPage()
+            list = try await self.fetchList(current.id, page: nextPage)
+            return true
+        } success: {
+            self.list = list
+            if let list {
+                if replace, nextPage == 1 {
+                    self.entities = list.data
+                } else {
+                    self.append(list.data)
+                }
+            }
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Files"
+            self.errorMessage = message
+            self.showError = true
+        } anyways: {
+            self.isLoading = false
+        }
     }
 
     func append(_ newEntities: [VOFile.Entity]) {
@@ -65,11 +129,15 @@ class BrowserStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let entities = self.entities, let current = self.current, !entities.isEmpty {
+            if let current = self.current {
                 Task {
-                    let list = try await self.fetchList(current.id, page: 1, size: entities.count)
+                    var size = Constants.pageSize
+                    if let entities = self.entities, !entities.isEmpty {
+                        size = entities.count
+                    }
+                    let list = try await self.fetchList(current.id, page: 1, size: size)
                     if let list {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.entities = list.data
                         }
                     }
@@ -79,7 +147,7 @@ class BrowserStore: ObservableObject {
                 Task {
                     let file = try await self.fetch(current.id)
                     if let file {
-                        Task { @MainActor in
+                        DispatchQueue.main.async {
                             self.current = file
                         }
                     }
