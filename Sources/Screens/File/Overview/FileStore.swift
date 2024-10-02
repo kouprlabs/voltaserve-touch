@@ -270,8 +270,8 @@ class FileStore: ObservableObject {
             if let file = self.file {
                 Task {
                     var size = Constants.pageSize
-                    if let entities = self.entities, !entities.isEmpty {
-                        size = entities.count
+                    if let list = self.list {
+                        size = Constants.pageSize * list.page
                     }
                     let list = try await self.fetchList(file.id, page: 1, size: size)
                     if let list {
