@@ -94,28 +94,21 @@ struct FileThumbnail<FallbackContent: View>: View {
     }
 
     var body: some View {
-        AsyncImage(url: url) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-            case let .success(image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-                    .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-                    .fileActions(file)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
-                            .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
-                    }
-                    .fileCellBadge(file)
-                    .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
-            case .failure:
-                fallback()
-            @unknown default:
-                fallback()
-            }
+        AsyncImage(url: url) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+                .fileActions(file)
+                .overlay {
+                    RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
+                        .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                }
+                .fileCellBadge(file)
+                .frame(maxWidth: FileMetrics.frameSize.width, maxHeight: FileMetrics.frameSize.height)
+        } placeholder: {
+            fallback()
         }
     }
 }
