@@ -8,6 +8,7 @@ struct WorkspaceList: View {
     @EnvironmentObject private var accountStore: AccountStore
     @EnvironmentObject private var invitationStore: InvitationStore
     @EnvironmentObject private var taskStore: TaskStore
+    @Environment(\.dismiss) private var dismiss
     @State private var showAccount = false
     @State private var showNew = false
 
@@ -174,6 +175,8 @@ struct WorkspaceList: View {
             accountStore.errorTitle = "Error: Fetching User"
             accountStore.errorMessage = message
             accountStore.showError = true
+        } invalidCreditentials: {
+            tokenStore.token = nil
         }
     }
 

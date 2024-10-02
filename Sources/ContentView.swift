@@ -35,12 +35,6 @@ struct ContentView: View {
                 startTokenTimer()
             }
             .onDisappear { stopTokenTimer() }
-            .fullScreenCover(isPresented: $showSignIn) {
-                SignIn {
-                    startTokenTimer()
-                    showSignIn = false
-                }
-            }
             .onAppear {
                 if let token = tokenStore.token {
                     assignTokenToStores(token)
@@ -52,12 +46,24 @@ struct ContentView: View {
                 }
                 if oldToken != nil, newToken == nil {
                     stopTokenTimer()
-                    showSignIn = true
+                    // This is hack to mitigate a SwiftUI bug that causes `fullScreenCover` to dismiss
+                    // itself unexpectedly without user interaction or a direct code-triggered dismissal.
+                    Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+                        DispatchQueue.main.async {
+                            showSignIn = true
+                        }
+                    }
+                }
+            }
+            .fullScreenCover(isPresented: $showSignIn) {
+                SignIn {
+                    startTokenTimer()
+                    showSignIn = false
                 }
             }
     }
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    private func assignTokenToStores(_ token: VOToken.Value) {
         accountStore.token = token
         workspaceStore.token = token
         organizationStore.token = token
@@ -71,7 +77,7 @@ struct ContentView: View {
         videoStore.token = token
     }
 
-    func startTokenTimer() {
+    private func startTokenTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
             guard tokenStore.token != nil else { return }
@@ -88,7 +94,7 @@ struct ContentView: View {
         }
     }
 
-    func stopTokenTimer() {
+    private func stopTokenTimer() {
         timer?.invalidate()
         timer = nil
     }
