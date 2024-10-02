@@ -5,6 +5,7 @@ func withErrorHandling(
     _ code: @escaping () async throws -> Bool,
     success: (() -> Void)? = nil,
     failure: @escaping (String) -> Void,
+    invalidCreditentials: (() -> Void)? = nil,
     anyways: (() -> Void)? = nil
 ) {
     Task {
@@ -21,7 +22,11 @@ func withErrorHandling(
             }
         } catch let error as VOErrorResponse {
             DispatchQueue.main.async {
-                failure(error.userMessage)
+                if error.code == .invalidCredentials {
+                    invalidCreditentials?()
+                } else {
+                    failure(error.userMessage)
+                }
                 anyways?()
             }
         } catch {

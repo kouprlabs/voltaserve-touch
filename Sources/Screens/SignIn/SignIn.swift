@@ -92,7 +92,7 @@ struct SignIn: View {
         }
     }
 
-    func signIn() {
+    private func signIn() {
         isLoading = true
 
         var token: VOToken.Value?
