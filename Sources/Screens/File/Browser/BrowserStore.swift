@@ -132,8 +132,8 @@ class BrowserStore: ObservableObject {
             if let current = self.current {
                 Task {
                     var size = Constants.pageSize
-                    if let entities = self.entities, !entities.isEmpty {
-                        size = entities.count
+                    if let list = self.list {
+                        size = Constants.pageSize * list.page
                     }
                     let list = try await self.fetchList(current.id, page: 1, size: size)
                     if let list {

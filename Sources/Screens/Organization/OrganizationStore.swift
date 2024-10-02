@@ -151,8 +151,8 @@ class OrganizationStore: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task {
                 var size = Constants.pageSize
-                if let entities = self.entities, !entities.isEmpty {
-                    size = entities.count
+                if let list = self.list {
+                    size = Constants.pageSize * list.page
                 }
                 let list = try await self.fetchList(page: 1, size: size)
                 if let list {
