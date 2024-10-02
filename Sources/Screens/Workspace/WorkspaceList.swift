@@ -177,6 +177,7 @@ struct WorkspaceList: View {
             accountStore.showError = true
         } invalidCreditentials: {
             tokenStore.token = nil
+            tokenStore.deleteFromKeychain()
         }
     }
 
