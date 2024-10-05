@@ -68,7 +68,6 @@
 			membershipExceptions = (
 				Avatar.swift,
 				ButtonLabel.swift,
-				HTMLText.swift,
 				Logo.swift,
 				NumberBadge.swift,
 				SectionHeader.swift,
@@ -88,6 +87,7 @@
 				Account/AccountSettings.swift,
 				Account/AccountStore.swift,
 				File/Browser/BrowserList.swift,
+				File/Browser/BrowserOverview.swift,
 				File/Browser/BrowserStore.swift,
 				"File/Overview/File+Icon.swift",
 				File/Overview/FileActions.swift,

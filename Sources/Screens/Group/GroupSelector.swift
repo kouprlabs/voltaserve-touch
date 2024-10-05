@@ -5,6 +5,8 @@ struct GroupSelector: View {
     @StateObject private var groupStore = GroupStore()
     @EnvironmentObject private var tokenStore: TokenStore
     @Environment(\.dismiss) private var dismiss
+    @State private var showError = false
+    @State private var searchText = ""
     private let onCompletion: ((VOGroup.Entity) -> Void)?
     private let organizationID: String?
 
@@ -45,7 +47,7 @@ struct GroupSelector: View {
                         }
                     }
                 }
-                .searchable(text: $groupStore.searchText)
+                .searchable(text: $searchText)
                 .refreshable {
                     groupStore.fetchList(replace: true)
                 }
@@ -53,7 +55,7 @@ struct GroupSelector: View {
                     groupStore.searchPublisher.send($1)
                 }
                 .voErrorAlert(
-                    isPresented: $groupStore.showError,
+                    isPresented: $showError,
                     title: groupStore.errorTitle,
                     message: groupStore.errorMessage
                 )
@@ -83,6 +85,8 @@ struct GroupSelector: View {
             groupStore.clear()
             groupStore.fetchList()
         }
+        .sync($groupStore.showError, with: $showError)
+        .sync($groupStore.searchText, with: $searchText)
     }
 
     private func onAppearOrChange() {

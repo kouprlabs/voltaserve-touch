@@ -11,6 +11,10 @@ struct WorkspaceList: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showAccount = false
     @State private var showNew = false
+    @State private var showWorkspaceError = false
+    @State private var showAccountError = false
+    @State private var showInvitationError = false
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
@@ -40,7 +44,7 @@ struct WorkspaceList: View {
                         }
                     }
                 }
-                .searchable(text: $workspaceStore.searchText)
+                .searchable(text: $searchText)
                 .onChange(of: workspaceStore.searchText) {
                     workspaceStore.searchPublisher.send($1)
                 }
@@ -76,17 +80,17 @@ struct WorkspaceList: View {
             }
         }
         .voErrorAlert(
-            isPresented: $workspaceStore.showError,
+            isPresented: $showWorkspaceError,
             title: workspaceStore.errorTitle,
             message: workspaceStore.errorMessage
         )
         .voErrorAlert(
-            isPresented: $accountStore.showError,
+            isPresented: $showAccountError,
             title: accountStore.errorTitle,
             message: accountStore.errorMessage
         )
         .voErrorAlert(
-            isPresented: $invitationStore.showError,
+            isPresented: $showInvitationError,
             title: invitationStore.errorTitle,
             message: invitationStore.errorMessage
         )
@@ -108,6 +112,9 @@ struct WorkspaceList: View {
             workspaceStore.clear()
             workspaceStore.fetchList()
         }
+        .sync($workspaceStore.searchText, with: $searchText)
+        .sync($workspaceStore.showError, with: $showWorkspaceError)
+        .sync($workspaceStore.showError, with: $showAccountError)
     }
 
     var accountButton: some View {
@@ -139,7 +146,7 @@ struct WorkspaceList: View {
 
     private func fetchData() {
         workspaceStore.fetchList(replace: true)
-        taskStore.fetchList(replace: true)
+        taskStore.fetchCount()
         fetchUser()
         fetchInvitationIncomingCount()
     }

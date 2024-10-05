@@ -6,6 +6,8 @@ import VoltaserveCore
 struct FileOverview: View {
     @StateObject private var fileStore = FileStore()
     @EnvironmentObject private var tokenStore: TokenStore
+    @State private var searchText = ""
+    @State private var showError = false
 
     private let id: String
 
@@ -27,7 +29,7 @@ struct FileOverview: View {
                         }
                     }
                 }
-                .searchable(text: $fileStore.searchText)
+                .searchable(text: $searchText)
                 .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
                 .refreshable { fileStore.fetchList(replace: true) }
             } else {
@@ -35,7 +37,7 @@ struct FileOverview: View {
             }
         }
         .voErrorAlert(
-            isPresented: $fileStore.showError,
+            isPresented: $showError,
             title: fileStore.errorTitle,
             message: fileStore.errorMessage
         )
@@ -62,6 +64,8 @@ struct FileOverview: View {
             fileStore.clear()
             fileStore.fetchList(replace: true)
         }
+        .sync($fileStore.searchText, with: $searchText)
+        .sync($fileStore.showError, with: $showError)
         .environmentObject(fileStore)
     }
 

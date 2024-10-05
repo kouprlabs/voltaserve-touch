@@ -7,6 +7,8 @@ struct GroupMemberList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
     @State private var showAddMember = false
+    @State private var searchText = ""
+    @State private var showError = false
 
     var body: some View {
         VStack {
@@ -32,7 +34,7 @@ struct GroupMemberList: View {
                         }
                     }
                 }
-                .searchable(text: $userStore.searchText)
+                .searchable(text: $searchText)
                 .refreshable {
                     userStore.fetchList(replace: true)
                 }
@@ -52,7 +54,7 @@ struct GroupMemberList: View {
                     GroupMemberAdd()
                 }
                 .voErrorAlert(
-                    isPresented: $userStore.showError,
+                    isPresented: $showError,
                     title: userStore.errorTitle,
                     message: userStore.errorMessage
                 )
@@ -60,6 +62,8 @@ struct GroupMemberList: View {
                 ProgressView()
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Members")
         .onAppear {
             if let group = groupStore.current {
                 userStore.groupID = group.id
@@ -81,8 +85,8 @@ struct GroupMemberList: View {
             userStore.clear()
             userStore.fetchList()
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Members")
+        .sync($userStore.searchText, with: $searchText)
+        .sync($userStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {

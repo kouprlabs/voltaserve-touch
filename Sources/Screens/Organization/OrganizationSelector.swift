@@ -6,6 +6,8 @@ struct OrganizationSelector: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var organizationStore = OrganizationStore()
     @State private var selection: String?
+    @State private var showError = false
+    @State private var searchText = ""
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
     init(onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
@@ -43,7 +45,7 @@ struct OrganizationSelector: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Select Organization")
-                .searchable(text: $organizationStore.searchText)
+                .searchable(text: $searchText)
                 .refreshable {
                     organizationStore.fetchList(replace: true)
                 }
@@ -55,7 +57,7 @@ struct OrganizationSelector: View {
             }
         }
         .voErrorAlert(
-            isPresented: $organizationStore.showError,
+            isPresented: $showError,
             title: organizationStore.errorTitle,
             message: organizationStore.errorMessage
         )
@@ -79,6 +81,8 @@ struct OrganizationSelector: View {
             organizationStore.clear()
             organizationStore.fetchList()
         }
+        .sync($organizationStore.showError, with: $showError)
+        .sync($organizationStore.searchText, with: $searchText)
     }
 
     private func onAppearOrChange() {

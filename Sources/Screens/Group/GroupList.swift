@@ -6,6 +6,8 @@ struct GroupList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var groupStore: GroupStore
     @State private var showNew = false
+    @State private var showError = false
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
@@ -36,7 +38,7 @@ struct GroupList: View {
                     }
                 }
                 .navigationTitle("Groups")
-                .searchable(text: $groupStore.searchText)
+                .searchable(text: $searchText)
                 .refreshable {
                     groupStore.fetchList(replace: true)
                 }
@@ -60,7 +62,7 @@ struct GroupList: View {
             }
         }
         .voErrorAlert(
-            isPresented: $groupStore.showError,
+            isPresented: $showError,
             title: groupStore.errorTitle,
             message: groupStore.errorMessage
         )
@@ -82,6 +84,8 @@ struct GroupList: View {
             groupStore.clear()
             groupStore.fetchList()
         }
+        .sync($groupStore.searchText, with: $searchText)
+        .sync($groupStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {

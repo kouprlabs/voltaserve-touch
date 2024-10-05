@@ -7,12 +7,25 @@ struct FileSheets: ViewModifier {
     @State private var documentPickerURLs: [URL]?
     @State private var destinationIDForMove: String?
     @State private var destinationIDForCopy: String?
+    @State private var showBrowserForMove = false
+    @State private var showBrowserForCopy = false
+    @State private var showTasks = false
+    @State private var showSharing = false
+    @State private var showMove = false
+    @State private var showCopy = false
+    @State private var showRename = false
+    @State private var showDelete = false
+    @State private var showDownload = false
+    @State private var showUpload = false
+    @State private var showNewFolder = false
+    @State private var showDownloadDocumentPicker = false
+    @State private var showUploadDocumentPicker = false
 
     // swiftlint:disable:next function_body_length
     func body(content: Content) -> some View {
         if let workspace = workspaceStore.current {
             content
-                .sheet(isPresented: $fileStore.showBrowserForMove) {
+                .sheet(isPresented: $showBrowserForMove) {
                     NavigationStack {
                         BrowserOverview(
                             workspace.rootID,
@@ -26,10 +39,10 @@ struct FileSheets: ViewModifier {
                         .navigationTitle(workspace.name)
                     }
                 }
-                .sheet(isPresented: $fileStore.showTasks) {
+                .sheet(isPresented: $showTasks) {
                     TaskList()
                 }
-                .sheet(isPresented: $fileStore.showSharing) {
+                .sheet(isPresented: $showSharing) {
                     let files = selectionToFiles()
                     if !files.isEmpty {
                         if files.count == 1 {
@@ -39,13 +52,13 @@ struct FileSheets: ViewModifier {
                         }
                     }
                 }
-                .sheet(isPresented: $fileStore.showMove) {
+                .sheet(isPresented: $showMove) {
                     let files = selectionToFiles()
                     if let destinationIDForMove, !files.isEmpty {
                         FileMove(files, to: destinationIDForMove)
                     }
                 }
-                .sheet(isPresented: $fileStore.showBrowserForCopy) {
+                .sheet(isPresented: $showBrowserForCopy) {
                     NavigationStack {
                         BrowserOverview(
                             workspace.rootID,
@@ -59,23 +72,23 @@ struct FileSheets: ViewModifier {
                         .navigationTitle(workspace.name)
                     }
                 }
-                .sheet(isPresented: $fileStore.showCopy) {
+                .sheet(isPresented: $showCopy) {
                     let files = selectionToFiles()
                     if let destinationIDForCopy, !files.isEmpty {
                         FileCopy(files, to: destinationIDForCopy)
                     }
                 }
-                .sheet(isPresented: $fileStore.showRename) {
+                .sheet(isPresented: $showRename) {
                     if !fileStore.selection.isEmpty {
                         FileRename(fileStore.selection.first!)
                     }
                 }
-                .sheet(isPresented: $fileStore.showDelete) {
+                .sheet(isPresented: $showDelete) {
                     if !fileStore.selection.isEmpty {
                         FileDelete(Array(fileStore.selection))
                     }
                 }
-                .sheet(isPresented: $fileStore.showDownload) {
+                .sheet(isPresented: $showDownload) {
                     let files = selectionToFiles()
                     if !files.isEmpty {
                         FileDownload(files) { localURLs in
@@ -84,7 +97,7 @@ struct FileSheets: ViewModifier {
                         }
                     }
                 }
-                .sheet(isPresented: $fileStore.showDownloadDocumentPicker, onDismiss: handleDismissDownloadPicker) {
+                .sheet(isPresented: $showDownloadDocumentPicker, onDismiss: handleDismissDownloadPicker) {
                     if let documentPickerURLs {
                         FileDownloadPicker(
                             sourceURLs: documentPickerURLs,
@@ -92,23 +105,36 @@ struct FileSheets: ViewModifier {
                         )
                     }
                 }
-                .sheet(isPresented: $fileStore.showUploadDocumentPicker) {
+                .sheet(isPresented: $showUploadDocumentPicker) {
                     FileUploadPicker { urls in
                         documentPickerURLs = urls
                         fileStore.showUploadDocumentPicker = false
                         fileStore.showUpload = true
                     }
                 }
-                .sheet(isPresented: $fileStore.showUpload) {
+                .sheet(isPresented: $showUpload) {
                     if let documentPickerURLs {
                         FileUpload(documentPickerURLs)
                     }
                 }
-                .sheet(isPresented: $fileStore.showNewFolder) {
+                .sheet(isPresented: $showNewFolder) {
                     if let parent = fileStore.file, let workspace = workspaceStore.current {
                         FolderNew(parentID: parent.id, workspaceId: workspace.id)
                     }
                 }
+                .sync($fileStore.showBrowserForMove, with: $showBrowserForMove)
+                .sync($fileStore.showBrowserForCopy, with: $showBrowserForCopy)
+                .sync($fileStore.showTasks, with: $showTasks)
+                .sync($fileStore.showSharing, with: $showSharing)
+                .sync($fileStore.showMove, with: $showMove)
+                .sync($fileStore.showCopy, with: $showCopy)
+                .sync($fileStore.showRename, with: $showRename)
+                .sync($fileStore.showDelete, with: $showDelete)
+                .sync($fileStore.showDownload, with: $showDownload)
+                .sync($fileStore.showUpload, with: $showUpload)
+                .sync($fileStore.showNewFolder, with: $showNewFolder)
+                .sync($fileStore.showDownloadDocumentPicker, with: $showDownloadDocumentPicker)
+                .sync($fileStore.showUploadDocumentPicker, with: $showUploadDocumentPicker)
         }
     }
 

@@ -13,7 +13,6 @@ struct FileActions: ViewModifier {
         content
             .fileContextMenu(
                 file,
-                ids: $fileStore.selection,
                 onSharing: {
                     fileStore.showSharing = true
                 },

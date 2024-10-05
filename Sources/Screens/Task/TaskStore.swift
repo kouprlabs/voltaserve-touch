@@ -5,6 +5,7 @@ import VoltaserveCore
 class TaskStore: ObservableObject {
     @Published var list: VOTask.List?
     @Published var entities: [VOTask.Entity]?
+    @Published var count: Int?
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
@@ -62,6 +63,24 @@ class TaskStore: ObservableObject {
         }
     }
 
+    func fetchCount() async throws -> Int? {
+        try await taskClient?.fetchCount()
+    }
+
+    func fetchCount() {
+        var count: Int?
+        withErrorHandling {
+            count = try await self.fetchCount()
+            return true
+        } success: {
+            self.count = count
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Task Count"
+            self.errorMessage = message
+            self.showError = true
+        }
+    }
+
     func dismiss() async throws {
         try await Fake.serverCall { continuation in
             continuation.resume()
@@ -78,7 +97,9 @@ class TaskStore: ObservableObject {
         if entities == nil {
             entities = []
         }
-        entities!.append(contentsOf: newEntities)
+        for newEntity in newEntities where !entities!.contains(where: { $0.id == newEntity.id }) {
+            entities!.append(newEntity)
+        }
     }
 
     func clear() {
@@ -110,12 +131,21 @@ class TaskStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task {
-                let size = self.entities?.isEmpty ?? false ? Constants.pageSize : 0
+                var size = Constants.pageSize
+                if let list = self.list {
+                    size = Constants.pageSize * list.page
+                }
                 let list = try await self.fetchList(page: 1, size: size)
                 if let list {
                     DispatchQueue.main.async {
                         self.entities = list.data
                     }
+                }
+            }
+            Task {
+                let count = try await self.fetchCount()
+                DispatchQueue.main.async {
+                    self.count = count
                 }
             }
         }
