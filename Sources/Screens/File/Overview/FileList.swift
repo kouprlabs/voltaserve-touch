@@ -3,11 +3,12 @@ import VoltaserveCore
 
 struct FileList: View {
     @EnvironmentObject private var fileStore: FileStore
+    @State private var selection = Set<String>()
     @State private var tappedItem: VOFile.Entity?
 
     var body: some View {
         if let entities = fileStore.entities {
-            List(selection: $fileStore.selection) {
+            List(selection: $selection) {
                 ForEach(entities, id: \.id) { file in
                     if file.type == .file {
                         Button {
@@ -44,6 +45,7 @@ struct FileList: View {
             .navigationDestination(item: $tappedItem) {
                 FileViewer($0)
             }
+            .sync($fileStore.selection, with: $selection)
         }
     }
 

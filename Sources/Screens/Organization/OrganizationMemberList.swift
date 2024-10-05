@@ -7,6 +7,8 @@ struct OrganizationMemberList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @State private var showInviteMembers = false
+    @State private var showError = false
+    @State private var searchText = ""
 
     var body: some View {
         VStack {
@@ -23,7 +25,7 @@ struct OrganizationMemberList: View {
                         }
                     }
                 }
-                .searchable(text: $userStore.searchText)
+                .searchable(text: $searchText)
                 .refreshable {
                     userStore.fetchList(replace: true)
                 }
@@ -43,7 +45,7 @@ struct OrganizationMemberList: View {
                     Text("Add Member")
                 }
                 .voErrorAlert(
-                    isPresented: $userStore.showError,
+                    isPresented: $showError,
                     title: userStore.errorTitle,
                     message: userStore.errorMessage
                 )
@@ -51,6 +53,8 @@ struct OrganizationMemberList: View {
                 ProgressView()
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Members")
         .onAppear {
             if let organization = organizationStore.current {
                 userStore.organizationID = organization.id
@@ -72,8 +76,8 @@ struct OrganizationMemberList: View {
             userStore.clear()
             userStore.fetchList()
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Members")
+        .sync($userStore.searchText, with: $searchText)
+        .sync($userStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {

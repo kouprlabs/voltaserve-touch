@@ -94,7 +94,9 @@ class InvitationStore: ObservableObject {
         if entities == nil {
             entities = []
         }
-        entities!.append(contentsOf: newEntities)
+        for newEntity in newEntities where !entities!.contains(where: { $0.id == newEntity.id }) {
+            entities!.append(newEntity)
+        }
     }
 
     func clear() {

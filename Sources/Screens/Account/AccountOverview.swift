@@ -7,6 +7,7 @@ struct AccountOverview: View {
     @EnvironmentObject private var invitationStore: InvitationStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDelete = false
+    @State private var showError = false
 
     var body: some View {
         NavigationStack {
@@ -66,7 +67,7 @@ struct AccountOverview: View {
             }
         }
         .voErrorAlert(
-            isPresented: $accountStore.showError,
+            isPresented: $showError,
             title: accountStore.errorTitle,
             message: accountStore.errorMessage
         )
@@ -83,6 +84,7 @@ struct AccountOverview: View {
                 onAppearOrChange()
             }
         }
+        .sync($accountStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {

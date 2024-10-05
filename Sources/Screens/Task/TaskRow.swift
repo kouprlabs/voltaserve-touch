@@ -35,12 +35,16 @@ struct TaskRow: View {
                         Text(object)
                             .lineLimit(1)
                             .truncationMode(.middle)
-                        HTMLText(task.name, color: .gray500, fontSize: 13)
+                        Text(task.name)
+                            .font(.footnote)
+                            .foregroundStyle(Color.gray500)
                             .lineLimit(3)
                             .truncationMode(.tail)
                     }
                 } else {
-                    HTMLText(task.name)
+                    Text(task.name)
+                        .font(.footnote)
+                        .foregroundStyle(Color.gray500)
                         .lineLimit(3)
                         .truncationMode(.tail)
                 }

@@ -5,6 +5,8 @@ struct UserSelector: View {
     @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
     @Environment(\.dismiss) private var dismiss
+    @State private var searchText = ""
+    @State private var showError = false
     private let onCompletion: ((VOUser.Entity) -> Void)?
     private let groupID: String?
     private let organizationID: String?
@@ -48,7 +50,7 @@ struct UserSelector: View {
                         }
                     }
                 }
-                .searchable(text: $userStore.searchText)
+                .searchable(text: $searchText)
                 .refreshable {
                     userStore.fetchList(replace: true)
                 }
@@ -56,7 +58,7 @@ struct UserSelector: View {
                     userStore.searchPublisher.send($1)
                 }
                 .voErrorAlert(
-                    isPresented: $userStore.showError,
+                    isPresented: $showError,
                     title: userStore.errorTitle,
                     message: userStore.errorMessage
                 )
@@ -90,6 +92,8 @@ struct UserSelector: View {
             userStore.clear()
             userStore.fetchList()
         }
+        .sync($userStore.searchText, with: $searchText)
+        .sync($userStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {

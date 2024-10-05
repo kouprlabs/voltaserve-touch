@@ -5,6 +5,7 @@ struct TaskOverview: View {
     @EnvironmentObject private var taskStore: TaskStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDismissConfirmation = false
+    @State private var showError = false
     @State private var isDismissing = false
     private let task: VOTask.Entity
 
@@ -16,18 +17,18 @@ struct TaskOverview: View {
         Form {
             if let object = task.payload?.object {
                 Section(header: VOSectionHeader("Payload")) {
-                    HTMLText(object)
+                    Text(object)
                 }
             }
             Section(header: VOSectionHeader("Name")) {
-                HTMLText(task.name)
+                Text(task.name)
             }
             Section(header: VOSectionHeader("Status")) {
                 TaskStatusBadge(task.status)
             }
             if task.status == .error, let error = task.error {
                 Section(header: VOSectionHeader("Error")) {
-                    HTMLText(error)
+                    Text(error)
                 }
             }
             if task.status == .error {
@@ -61,10 +62,11 @@ struct TaskOverview: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(task.id)")
         .voErrorAlert(
-            isPresented: $taskStore.showError,
+            isPresented: $showError,
             title: taskStore.errorTitle,
             message: taskStore.errorMessage
         )
+        .sync($taskStore.showError, with: $showError)
     }
 
     private func performDismiss() {

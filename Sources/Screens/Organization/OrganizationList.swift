@@ -6,6 +6,8 @@ struct OrganizationList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
     @State private var showNew = false
+    @State private var showError = false
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
@@ -36,7 +38,7 @@ struct OrganizationList: View {
                     }
                 }
                 .navigationTitle("Organizations")
-                .searchable(text: $organizationStore.searchText)
+                .searchable(text: $searchText)
                 .refreshable {
                     organizationStore.fetchList(replace: true)
                 }
@@ -60,7 +62,7 @@ struct OrganizationList: View {
             }
         }
         .voErrorAlert(
-            isPresented: $organizationStore.showError,
+            isPresented: $showError,
             title: organizationStore.errorTitle,
             message: organizationStore.errorMessage
         )
@@ -82,6 +84,8 @@ struct OrganizationList: View {
             organizationStore.clear()
             organizationStore.fetchList()
         }
+        .sync($organizationStore.searchText, with: $searchText)
+        .sync($organizationStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {

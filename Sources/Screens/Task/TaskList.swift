@@ -1,10 +1,12 @@
 import SwiftUI
+import VoltaserveCore
 
 struct TaskList: View {
     @EnvironmentObject private var taskStore: TaskStore
     @EnvironmentObject private var tokenStore: TokenStore
     @Environment(\.dismiss) private var dismiss
     @State private var isDismissingAll = false
+    @State private var showError = false
 
     var body: some View {
         NavigationStack {
@@ -19,6 +21,9 @@ struct TaskList: View {
                                     TaskOverview(task)
                                 } label: {
                                     TaskRow(task)
+                                        .onAppear {
+                                            onListItemAppear(task.id)
+                                        }
                                 }
                             }
                             if taskStore.isLoading {
@@ -54,7 +59,7 @@ struct TaskList: View {
             }
         }
         .voErrorAlert(
-            isPresented: $taskStore.showError,
+            isPresented: $showError,
             title: taskStore.errorTitle,
             message: taskStore.errorMessage
         )
@@ -64,14 +69,12 @@ struct TaskList: View {
                 onAppearOrChange()
             }
         }
-        .onDisappear {
-            stopTimers()
-        }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
             }
         }
+        .sync($taskStore.showError, with: $showError)
     }
 
     private func performDismissAll() {
@@ -92,19 +95,10 @@ struct TaskList: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
-        taskStore.fetchList()
-    }
-
-    private func startTimers() {
-        taskStore.startTimer()
-    }
-
-    private func stopTimers() {
-        taskStore.stopTimer()
+        taskStore.fetchList(replace: true)
     }
 
     private func onListItemAppear(_ id: String) {

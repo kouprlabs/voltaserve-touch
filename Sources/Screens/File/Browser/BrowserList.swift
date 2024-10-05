@@ -2,48 +2,13 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct BrowserOverview: View {
-    @Environment(\.dismiss) private var dismiss
-    private let id: String
-    private let workspace: VOWorkspace.Entity
-    private let confirmLabelText: String?
-    private let onCompletion: ((String) -> Void)?
-
-    init(
-        _ id: String,
-        workspace: VOWorkspace.Entity,
-        confirmLabelText: String?,
-        onCompletion: ((String) -> Void)?
-    ) {
-        self.id = id
-        self.workspace = workspace
-        self.onCompletion = onCompletion
-        self.confirmLabelText = confirmLabelText
-    }
-
-    var body: some View {
-        NavigationStack {
-            BrowserList(
-                workspace.rootID,
-                workspace: workspace,
-                confirmLabelText: confirmLabelText
-            ) { id in
-                onCompletion?(id)
-                dismiss()
-            } onDismiss: {
-                dismiss()
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(workspace.name)
-        }
-    }
-}
-
 struct BrowserList: View {
     @StateObject private var browserStore = BrowserStore()
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @State var tappedItem: VOFile.Entity?
+    @State private var tappedItem: VOFile.Entity?
+    @State private var showError = false
+    @State private var searchText = ""
     private let id: String
     private let workspace: VOWorkspace.Entity
     private let confirmLabelText: String?
@@ -96,7 +61,7 @@ struct BrowserList: View {
                             }
                         }
                         .listStyle(.inset)
-                        .searchable(text: $browserStore.searchText)
+                        .searchable(text: $searchText)
                         .onChange(of: browserStore.searchText) {
                             browserStore.searchPublisher.send($1)
                         }
@@ -107,7 +72,7 @@ struct BrowserList: View {
                             FileViewer($0)
                         }
                         .voErrorAlert(
-                            isPresented: $browserStore.showError,
+                            isPresented: $showError,
                             title: browserStore.errorTitle,
                             message: browserStore.errorMessage
                         )
@@ -150,6 +115,8 @@ struct BrowserList: View {
             browserStore.clear()
             browserStore.fetchList()
         }
+        .sync($browserStore.searchText, with: $searchText)
+        .sync($browserStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {
