@@ -107,7 +107,7 @@ struct TaskRow: View {
                 NavigationLink(destination: Color.clear) {
                     TaskRow(.init(
                         id: UUID().uuidString,
-                        name: "Lorem ipsum <u>dolor</u> <i>sit</i> amet.",
+                        name: "Lorem ipsum dolor sit amet.",
                         percentage: 50,
                         isIndeterminate: false,
                         userID: UUID().uuidString,
