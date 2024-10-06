@@ -81,6 +81,7 @@ struct AccountSettings: View {
         .navigationTitle("Settings")
         .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
         .onAppear {
+            accountStore.tokenStore = tokenStore
             if tokenStore.token != nil {
                 onAppearOrChange()
             }
@@ -93,11 +94,16 @@ struct AccountSettings: View {
                 onAppearOrChange()
             }
         }
+        .sync($accountStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {
-        fetchUser()
+        fetchData()
         startTimers()
+    }
+
+    private func fetchData() {
+        accountStore.fetchUser()
     }
 
     private func startTimers() {
@@ -106,20 +112,6 @@ struct AccountSettings: View {
 
     private func stopTimers() {
         accountStore.stopTimer()
-    }
-
-    private func fetchUser() {
-        var user: VOIdentityUser.Entity?
-        withErrorHandling {
-            user = try await accountStore.fetchUser()
-            return true
-        } success: {
-            accountStore.identityUser = user
-        } failure: { message in
-            errorTitle = "Error: Fetching User"
-            errorMessage = message
-            showError = true
-        }
     }
 
     private func performDelete() {

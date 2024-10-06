@@ -29,9 +29,10 @@ class FileStore: ObservableObject {
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
-    private(set) var searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
+    private var fileClient: VOFile?
+    let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
         didSet {
@@ -43,8 +44,6 @@ class FileStore: ObservableObject {
             }
         }
     }
-
-    private var fileClient: VOFile?
 
     init() {
         loadViewModeFromUserDefaults()

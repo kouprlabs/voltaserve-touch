@@ -14,6 +14,7 @@ struct WorkspaceList: View {
     @State private var showWorkspaceError = false
     @State private var showAccountError = false
     @State private var showInvitationError = false
+    @State private var showTaskError = false
     @State private var searchText = ""
 
     var body: some View {
@@ -94,7 +95,13 @@ struct WorkspaceList: View {
             title: invitationStore.errorTitle,
             message: invitationStore.errorMessage
         )
+        .voErrorAlert(
+            isPresented: $showTaskError,
+            title: taskStore.errorTitle,
+            message: taskStore.errorMessage
+        )
         .onAppear {
+            accountStore.tokenStore = tokenStore
             workspaceStore.clear()
             if tokenStore.token != nil {
                 onAppearOrChange()
@@ -114,7 +121,9 @@ struct WorkspaceList: View {
         }
         .sync($workspaceStore.searchText, with: $searchText)
         .sync($workspaceStore.showError, with: $showWorkspaceError)
-        .sync($workspaceStore.showError, with: $showAccountError)
+        .sync($accountStore.showError, with: $showAccountError)
+        .sync($invitationStore.showError, with: $showInvitationError)
+        .sync($taskStore.showError, with: $showTaskError)
     }
 
     var accountButton: some View {
@@ -147,8 +156,8 @@ struct WorkspaceList: View {
     private func fetchData() {
         workspaceStore.fetchList(replace: true)
         taskStore.fetchCount()
-        fetchUser()
-        fetchInvitationIncomingCount()
+        accountStore.fetchUser()
+        invitationStore.fetchIncomingCount()
     }
 
     private func startTimers() {
@@ -168,37 +177,6 @@ struct WorkspaceList: View {
     private func onListItemAppear(_ id: String) {
         if workspaceStore.isLast(id) {
             workspaceStore.fetchList()
-        }
-    }
-
-    private func fetchUser() {
-        var user: VOIdentityUser.Entity?
-        withErrorHandling {
-            user = try await accountStore.fetchUser()
-            return true
-        } success: {
-            accountStore.identityUser = user
-        } failure: { message in
-            accountStore.errorTitle = "Error: Fetching User"
-            accountStore.errorMessage = message
-            accountStore.showError = true
-        } invalidCreditentials: {
-            tokenStore.token = nil
-            tokenStore.deleteFromKeychain()
-        }
-    }
-
-    private func fetchInvitationIncomingCount() {
-        var count: Int?
-        withErrorHandling {
-            count = try await invitationStore.fetchIncomingCount()
-            return true
-        } success: {
-            invitationStore.incomingCount = count
-        } failure: { message in
-            invitationStore.errorTitle = "Error: Fetching Invitation Incoming Count"
-            invitationStore.errorMessage = message
-            invitationStore.showError = true
         }
     }
 }

@@ -10,6 +10,7 @@ class SharingStore: ObservableObject {
     @Published var errorTitle: String?
     @Published var errorMessage: String?
     private var timer: Timer?
+    private var fileClient: VOFile?
     var file: VOFile.Entity?
 
     var token: VOToken.Value? {
@@ -22,8 +23,6 @@ class SharingStore: ObservableObject {
             }
         }
     }
-
-    private var fileClient: VOFile?
 
     func fetch() async throws -> VOFile.Entity? {
         guard let file else { return nil }

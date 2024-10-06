@@ -45,7 +45,7 @@ struct FileToolbar: ViewModifier {
             } label: {
                 Image(systemName: "square.3.layers.3d")
             }
-            if let count = taskStore.entities?.count, count > 0 {
+            if let count = taskStore.count, count > 0 {
                 Circle()
                     .fill(.red)
                     .frame(width: 10, height: 10)

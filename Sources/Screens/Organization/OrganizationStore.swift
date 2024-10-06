@@ -12,9 +12,10 @@ class OrganizationStore: ObservableObject {
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
-    let searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
+    private var organizationClient: VOOrganization?
+    let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
         didSet {
@@ -26,8 +27,6 @@ class OrganizationStore: ObservableObject {
             }
         }
     }
-
-    private var organizationClient: VOOrganization?
 
     init() {
         searchPublisher

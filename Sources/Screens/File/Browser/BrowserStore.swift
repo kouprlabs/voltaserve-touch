@@ -12,9 +12,10 @@ class BrowserStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var searchText = ""
     @Published var isLoading = false
-    let searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
+    let searchPublisher = PassthroughSubject<String, Never>()
+    private var fileClient: VOFile?
 
     var token: VOToken.Value? {
         didSet {
@@ -26,8 +27,6 @@ class BrowserStore: ObservableObject {
             }
         }
     }
-
-    private var fileClient: VOFile?
 
     init() {
         searchPublisher

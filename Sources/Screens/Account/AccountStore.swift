@@ -8,6 +8,10 @@ class AccountStore: ObservableObject {
     @Published var errorTitle: String?
     @Published var errorMessage: String?
     private var timer: Timer?
+    private var accountClient: VOAccount?
+    private var identityUserClient: VOIdentityUser?
+    private var storageClient: VOStorage?
+    var tokenStore: TokenStore?
 
     var token: VOToken.Value? {
         didSet {
@@ -25,10 +29,6 @@ class AccountStore: ObservableObject {
         }
     }
 
-    private var accountClient: VOAccount?
-    private var identityUserClient: VOIdentityUser?
-    private var storageClient: VOStorage?
-
     init(_ identityUser: VOIdentityUser.Entity? = nil) {
         self.identityUser = identityUser
     }
@@ -37,8 +37,39 @@ class AccountStore: ObservableObject {
         try await identityUserClient?.fetch()
     }
 
+    func fetchUser() {
+        var user: VOIdentityUser.Entity?
+        withErrorHandling {
+            user = try await self.fetchUser()
+            return true
+        } success: {
+            self.identityUser = user
+        } failure: { message in
+            self.errorTitle = "Error: Fetching User"
+            self.errorMessage = message
+            self.showError = true
+        } invalidCreditentials: {
+            self.tokenStore?.token = nil
+            self.tokenStore?.deleteFromKeychain()
+        }
+    }
+
     func fetchAccountStorageUsage() async throws -> VOStorage.Usage? {
         try await storageClient?.fetchAccountUsage()
+    }
+
+    func fetchAccountStorageUsage() {
+        var usage: VOStorage.Usage?
+        withErrorHandling {
+            usage = try await self.fetchAccountStorageUsage()
+            return true
+        } success: {
+            self.storageUsage = usage
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Storage Usage"
+            self.errorMessage = message
+            self.showError = true
+        }
     }
 
     func updateEmail(_: String) async throws {
