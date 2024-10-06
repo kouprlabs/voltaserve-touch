@@ -25,7 +25,7 @@ struct FileCellThumbnail<FallbackContent: View>: View {
                     RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
                         .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                 }
-                .fileCellBadgeList(file)
+                .fileCellAdornments(file)
                 .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
         } placeholder: {
             fallback()

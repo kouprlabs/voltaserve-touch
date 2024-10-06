@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileBadgeList: View {
+struct FileAdornments: View {
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {

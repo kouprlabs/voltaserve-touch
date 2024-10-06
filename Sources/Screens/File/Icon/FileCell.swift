@@ -46,7 +46,7 @@ struct FileCell: View {
                 Image(file.iconForFile(colorScheme: colorScheme))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .fileCellBadgeList(file)
+                    .fileCellAdornments(file)
                     .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
             }
             .frame(
@@ -66,7 +66,7 @@ struct FileCell: View {
                 Image("icon-folder")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .fileCellBadgeList(file)
+                    .fileCellAdornments(file)
                     .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
             }
             .frame(
