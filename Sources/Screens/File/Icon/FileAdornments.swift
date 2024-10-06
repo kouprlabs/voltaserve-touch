@@ -10,6 +10,15 @@ struct FileAdornments: View {
 
     var body: some View {
         HStack(spacing: VOMetrics.spacingXs) {
+            if let snapshot = file.snapshot {
+                if snapshot.status == .processing {
+                    FileBadge.processing
+                } else if snapshot.status == .waiting {
+                    FileBadge.waiting
+                } else if snapshot.status == .error {
+                    FileBadge.error
+                }
+            }
             if let isShared = file.isShared, isShared {
                 FileBadge.shared
             }
