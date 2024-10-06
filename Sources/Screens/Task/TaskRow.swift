@@ -26,7 +26,7 @@ struct TaskRow: View {
                         .font(.title2)
                         .foregroundStyle(Color.green400)
                 } else if task.status == .error {
-                    Image(systemName: "xmark.circle")
+                    Image(systemName: "exclamationmark.circle")
                         .font(.title2)
                         .foregroundStyle(Color.red400)
                 }
