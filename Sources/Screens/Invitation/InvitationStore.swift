@@ -11,6 +11,7 @@ class InvitationStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var isLoading = false
     private var timer: Timer?
+    private var invitationClient: VOInvitation?
     var organizationID: String?
 
     var token: VOToken.Value? {
@@ -23,8 +24,6 @@ class InvitationStore: ObservableObject {
             }
         }
     }
-
-    private var invitationClient: VOInvitation?
 
     func create(organizationID _: String, emails: [String]) async throws {
         try await Fake.serverCall { continuation in
@@ -76,6 +75,20 @@ class InvitationStore: ObservableObject {
 
     func fetchIncomingCount() async throws -> Int? {
         try await invitationClient?.fetchIncomingCount()
+    }
+
+    func fetchIncomingCount() {
+        var count: Int?
+        withErrorHandling {
+            count = try await self.fetchIncomingCount()
+            return true
+        } success: {
+            self.incomingCount = count
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Invitation Incoming Count"
+            self.errorMessage = message
+            self.showError = true
+        }
     }
 
     func accept(_: String) async throws {

@@ -72,6 +72,7 @@ struct AccountOverview: View {
             message: accountStore.errorMessage
         )
         .onAppear {
+            accountStore.tokenStore = tokenStore
             if tokenStore.token != nil {
                 onAppearOrChange()
             }
@@ -93,8 +94,8 @@ struct AccountOverview: View {
     }
 
     private func fetchData() {
-        fetchUser()
-        fetchAccountStorageUsage()
+        accountStore.fetchUser()
+        accountStore.fetchAccountStorageUsage()
     }
 
     private func startTimers() {
@@ -103,34 +104,6 @@ struct AccountOverview: View {
 
     private func stopTimers() {
         accountStore.stopTimer()
-    }
-
-    private func fetchUser() {
-        var user: VOIdentityUser.Entity?
-        withErrorHandling {
-            user = try await accountStore.fetchUser()
-            return true
-        } success: {
-            accountStore.identityUser = user
-        } failure: { message in
-            accountStore.errorTitle = "Error: Fetching User"
-            accountStore.errorMessage = message
-            accountStore.showError = true
-        }
-    }
-
-    private func fetchAccountStorageUsage() {
-        var usage: VOStorage.Usage?
-        withErrorHandling {
-            usage = try await accountStore.fetchAccountStorageUsage()
-            return true
-        } success: {
-            accountStore.storageUsage = usage
-        } failure: { message in
-            accountStore.errorTitle = "Error: Fetching Storage Usage"
-            accountStore.errorMessage = message
-            accountStore.showError = true
-        }
     }
 
     private func performSignOut() {

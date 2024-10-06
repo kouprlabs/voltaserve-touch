@@ -14,9 +14,11 @@ class WorkspaceStore: ObservableObject {
     @Published var selection: String?
     @Published var searchText = ""
     @Published var isLoading = false
-    let searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
+    private var workspaceClient: VOWorkspace?
+    private var storageClient: VOStorage?
+    let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
         didSet {
@@ -32,9 +34,6 @@ class WorkspaceStore: ObservableObject {
             }
         }
     }
-
-    private var workspaceClient: VOWorkspace?
-    private var storageClient: VOStorage?
 
     init() {
         searchPublisher

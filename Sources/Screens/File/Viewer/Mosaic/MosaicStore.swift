@@ -5,7 +5,6 @@ class MosaicStore: ObservableObject {
     @Published private(set) var info: VOMosaic.Info?
     @Published private(set) var zoomLevel: VOMosaic.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
-
     private var busy: [[Bool]] = []
     private var mosaicClient: VOMosaic?
 

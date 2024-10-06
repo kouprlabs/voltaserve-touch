@@ -84,6 +84,7 @@ struct TaskList: View {
             return true
         } success: {
             taskStore.fetchList(replace: true)
+            dismiss()
         } failure: { message in
             taskStore.errorTitle = "Error: Dismissing All Tasks"
             taskStore.errorMessage = message

@@ -12,9 +12,10 @@ class GroupStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var searchText = ""
     @Published var isLoading = false
-    let searchPublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
+    private var groupClient: VOGroup?
+    let searchPublisher = PassthroughSubject<String, Never>()
     var organizationID: String?
 
     var token: VOToken.Value? {
@@ -27,8 +28,6 @@ class GroupStore: ObservableObject {
             }
         }
     }
-
-    private var groupClient: VOGroup?
 
     init(organizationID: String? = nil) {
         self.organizationID = organizationID
