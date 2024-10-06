@@ -23,8 +23,8 @@ struct OrganizationNew: View {
                     if isProcessing {
                         ProgressView()
                     } else {
-                        Button("Save") {
-                            performSave()
+                        Button("Create") {
+                            performCreate()
                         }
                         .disabled(!isValid())
                     }
@@ -43,7 +43,7 @@ struct OrganizationNew: View {
         name.trimmingCharacters(in: .whitespaces)
     }
 
-    private func performSave() {
+    private func performCreate() {
         isProcessing = true
         withErrorHandling {
             _ = try await organizationStore.create(name: normalizedName)

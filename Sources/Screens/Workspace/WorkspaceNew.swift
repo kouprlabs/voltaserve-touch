@@ -46,8 +46,8 @@ struct WorkspaceNew: View {
                     if isProcessing {
                         ProgressView()
                     } else {
-                        Button("Save") {
-                            performSave()
+                        Button("Create") {
+                            performCreate()
                         }
                         .disabled(!isValid())
                     }
@@ -66,7 +66,7 @@ struct WorkspaceNew: View {
         name.trimmingCharacters(in: .whitespaces)
     }
 
-    private func performSave() {
+    private func performCreate() {
         guard let organization else { return }
         isProcessing = true
 
