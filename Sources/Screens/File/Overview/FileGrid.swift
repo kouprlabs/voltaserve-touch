@@ -9,8 +9,8 @@ struct FileGrid: View {
         if let entities = fileStore.entities {
             GeometryReader { geometry in
                 let columns = Array(
-                    repeating: GridItem(.fixed(FileMetrics.cellSize.width), spacing: VOMetrics.spacing),
-                    count: Int(geometry.size.width / FileMetrics.cellSize.width) +
+                    repeating: GridItem(.fixed(FileCellMetrics.cellSize.width), spacing: VOMetrics.spacing),
+                    count: Int(geometry.size.width / FileCellMetrics.cellSize.width) +
                         (UIDevice.current.userInterfaceIdiom == .pad ? -1 : 0)
                 )
                 ScrollView {

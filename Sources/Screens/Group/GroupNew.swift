@@ -39,8 +39,8 @@ struct GroupNew: View {
                     if isProcessing {
                         ProgressView()
                     } else {
-                        Button("Save") {
-                            performSave()
+                        Button("Create") {
+                            performCreate()
                         }
                         .disabled(!isValid())
                     }
@@ -59,7 +59,7 @@ struct GroupNew: View {
         name.lowercased().trimmingCharacters(in: .whitespaces)
     }
 
-    private func performSave() {
+    private func performCreate() {
         guard let organization else { return }
         isProcessing = true
 

@@ -30,8 +30,8 @@ struct FolderNew: View {
                     if isProcessing {
                         ProgressView()
                     } else {
-                        Button("Save") {
-                            performSave()
+                        Button("Create") {
+                            performCreate()
                         }
                         .disabled(!isValid())
                     }
@@ -50,7 +50,7 @@ struct FolderNew: View {
         name.trimmingCharacters(in: .whitespaces)
     }
 
-    private func performSave() {
+    private func performCreate() {
         isProcessing = true
         withErrorHandling {
             _ = try await fileStore.createFolder(
