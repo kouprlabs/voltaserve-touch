@@ -48,6 +48,8 @@ struct SharingGroupPermission: View {
                         if let group {
                             Spacer()
                             Text(group.name)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
                                 .foregroundStyle(.secondary)
                         }
                     }

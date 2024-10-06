@@ -47,6 +47,8 @@ struct WorkspaceSettings: View {
                                 Text("Name")
                                 Spacer()
                                 Text(current.name)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
                             }
                         }

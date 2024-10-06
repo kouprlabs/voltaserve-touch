@@ -26,6 +26,8 @@ struct GroupSettings: View {
                                 Text("Name")
                                 Spacer()
                                 Text(group.name)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
                             }
                         }

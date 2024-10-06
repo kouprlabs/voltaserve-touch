@@ -23,10 +23,12 @@ struct GroupNew: View {
                     .disabled(isProcessing)
                 } label: {
                     HStack {
-                        Text("Select Organization")
+                        Text("Organization")
                         if let organization {
                             Spacer()
                             Text(organization.name)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
                                 .foregroundStyle(.secondary)
                         }
                     }
