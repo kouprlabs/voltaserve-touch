@@ -48,6 +48,8 @@ struct SharingUserPermission: View {
                         if let user {
                             Spacer()
                             Text(user.fullName)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
                                 .foregroundStyle(.secondary)
                         }
                     }

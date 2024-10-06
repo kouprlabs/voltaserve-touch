@@ -26,6 +26,8 @@ struct OrganizationSettings: View {
                                 Text("Name")
                                 Spacer()
                                 Text(organization.name)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
                             }
                         }
