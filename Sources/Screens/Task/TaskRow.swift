@@ -18,7 +18,7 @@ struct TaskRow: View {
                         .font(.title2)
                         .foregroundStyle(Color.blue400)
                 } else if task.status == .waiting {
-                    Image(systemName: "clock.arrow.trianglehead.2.counterclockwise.rotate.90")
+                    Image(systemName: "hourglass.circle")
                         .font(.title2)
                         .foregroundStyle(Color.gray400)
                 } else if task.status == .success {
@@ -26,7 +26,7 @@ struct TaskRow: View {
                         .font(.title2)
                         .foregroundStyle(Color.green400)
                 } else if task.status == .error {
-                    Image(systemName: "exclamationmark.circle")
+                    Image(systemName: "xmark.circle")
                         .font(.title2)
                         .foregroundStyle(Color.red400)
                 }

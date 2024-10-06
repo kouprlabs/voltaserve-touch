@@ -12,7 +12,9 @@ struct FileList: View {
                 ForEach(entities, id: \.id) { file in
                     if file.type == .file {
                         Button {
-                            tappedItem = file
+                            if file.snapshot?.status == .ready {
+                                tappedItem = file
+                            }
                         } label: {
                             FileRow(file)
                                 .fileActions(file)
