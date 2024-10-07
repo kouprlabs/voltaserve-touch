@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ServerNew: View {
-    @EnvironmentObject var serverStore: ServerStore
+    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) var dismiss
     @State private var name = ""
     @State private var apiURL = ""
@@ -49,16 +49,17 @@ struct ServerNew: View {
 
     private func performSave() {
         isSaving = true
-        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in
+        Task {
+            context.insert(Server(
+                id: UUID().uuidString,
+                name: normalizedName,
+                apiURL: apiURL,
+                idpURL: idpURL,
+                isCloud: false,
+                isActive: false
+            ))
+            try? context.save()
             DispatchQueue.main.async {
-                serverStore.create(ServerStore.Entity(
-                    id: UUID().uuidString,
-                    name: normalizedName,
-                    apiURL: apiURL,
-                    idpURL: idpURL,
-                    isCloud: false,
-                    isActive: false
-                ))
                 dismiss()
                 isSaving = false
             }

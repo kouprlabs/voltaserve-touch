@@ -1,13 +1,15 @@
+import SwiftData
 import SwiftUI
 
 struct ServerList: View {
-    @EnvironmentObject private var serverStore: ServerStore
+    @Environment(\.modelContext) private var context
+    @Query private var servers: [Server]
     @State private var showNew = false
 
     var body: some View {
-        List(serverStore.entities, id: \.id) { server in
+        List(servers, id: \.id) { server in
             NavigationLink {
-                ServerInfo(server)
+                ServerOverview(server)
             } label: {
                 ServerRow(server)
             }

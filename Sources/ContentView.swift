@@ -1,4 +1,5 @@
 import Combine
+import SwiftData
 import SwiftUI
 import VoltaserveCore
 
@@ -15,6 +16,8 @@ struct ContentView: View {
     @EnvironmentObject private var pdfStore: PDFStore
     @EnvironmentObject private var imageStore: ImageStore
     @EnvironmentObject private var videoStore: VideoStore
+    @Environment(\.modelContext) private var context
+    @Query private var servers: [Server]
     @State private var timer: Timer?
     @State private var showSignIn = false
 
@@ -32,14 +35,18 @@ struct ContentView: View {
                 } else {
                     showSignIn = true
                 }
-                startTokenTimer()
-            }
-            .onDisappear { stopTokenTimer() }
-            .onAppear {
+
                 if let token = tokenStore.token {
                     assignTokenToStores(token)
                 }
+
+                startTokenTimer()
+
+                if !servers.contains(where: \.isCloud) {
+                    context.insert(Server.cloud)
+                }
             }
+            .onDisappear { stopTokenTimer() }
             .onChange(of: tokenStore.token) { oldToken, newToken in
                 if let newToken {
                     assignTokenToStores(newToken)
