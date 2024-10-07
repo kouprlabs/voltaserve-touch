@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 import VoltaserveCore
 
@@ -21,7 +22,7 @@ struct VoltaserveApp: App {
                 .environmentObject(AudioStore())
                 .environmentObject(GLBStore())
                 .environmentObject(MosaicStore())
-                .environmentObject(ServerStore())
+                .modelContainer(for: Server.self)
         }
     }
 }

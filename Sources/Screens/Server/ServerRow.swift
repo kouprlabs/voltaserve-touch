@@ -1,11 +1,10 @@
 import SwiftUI
 
 struct ServerRow: View {
-    @EnvironmentObject private var serverStore: ServerStore
     @Environment(\.colorScheme) private var colorScheme
-    private let server: ServerStore.Entity
+    private let server: Server
 
-    init(_ server: ServerStore.Entity) {
+    init(_ server: Server) {
         self.server = server
     }
 
