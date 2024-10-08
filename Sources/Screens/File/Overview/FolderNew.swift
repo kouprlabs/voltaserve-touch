@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct FolderNew: View {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
@@ -12,9 +12,10 @@ struct FolderNew: View {
     private let parentID: String
     private let workspaceId: String
 
-    init(parentID: String, workspaceId: String) {
+    init(parentID: String, workspaceId: String, fileStore: FileStore) {
         self.workspaceId = workspaceId
         self.parentID = parentID
+        self.fileStore = fileStore
     }
 
     var body: some View {

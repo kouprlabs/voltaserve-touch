@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct SharingUserPermission: View {
-    @EnvironmentObject private var sharingStore: SharingStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @ObservedObject private var sharingStore: SharingStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
@@ -21,12 +21,16 @@ struct SharingUserPermission: View {
 
     init(
         files: [VOFile.Entity],
+        sharingStore: SharingStore,
+        workspaceStore: WorkspaceStore,
         predefinedUser: VOUser.Entity? = nil,
         defaultPermission: VOPermission.Value? = nil,
         enableCancel: Bool = false,
         enableRevoke: Bool = false
     ) {
         self.files = files
+        self.sharingStore = sharingStore
+        self.workspaceStore = workspaceStore
         self.predefinedUser = predefinedUser
         self.defaultPermission = defaultPermission
         self.enableCancel = enableCancel

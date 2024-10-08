@@ -2,17 +2,19 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileActions: ViewModifier {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    init(_ file: VOFile.Entity, fileStore: FileStore) {
         self.file = file
+        self.fileStore = fileStore
     }
 
     func body(content: Content) -> some View {
         content
             .fileContextMenu(
                 file,
+                fileStore: fileStore,
                 onSharing: {
                     fileStore.showSharing = true
                 },
@@ -46,7 +48,7 @@ struct FileActions: ViewModifier {
 }
 
 extension View {
-    func fileActions(_ file: VOFile.Entity) -> some View {
-        modifier(FileActions(file))
+    func fileActions(_ file: VOFile.Entity, fileStore: FileStore) -> some View {
+        modifier(FileActions(file, fileStore: fileStore))
     }
 }

@@ -2,19 +2,17 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileMove: View {
-    @EnvironmentObject private var fileStore: FileStore
-    @EnvironmentObject private var browserStore: BrowserStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
-    private let files: [VOFile.Entity]
     private let destinationID: String
 
-    init(_ files: [VOFile.Entity], to destinationID: String) {
-        self.files = files
+    init(fileStore: FileStore, to destinationID: String) {
+        self.fileStore = fileStore
         self.destinationID = destinationID
     }
 
@@ -22,7 +20,7 @@ struct FileMove: View {
         VStack {
             if isProcessing, !showError {
                 VOSheetProgressView()
-                Text("Moving \(files.count) item(s).")
+                Text("Moving \(fileStore.selection.count) item(s).")
             } else if showError, errorSeverity == .full {
                 VOSheetErrorIcon()
                 if let errorMessage {
@@ -58,14 +56,14 @@ struct FileMove: View {
     private func performMove() {
         var result: VOFile.MoveResult?
         withErrorHandling {
-            result = try await fileStore.move(files.map(\.id), to: destinationID)
+            result = try await fileStore.move(Array(fileStore.selection), to: destinationID)
             errorSeverity = .full
             if let result {
                 if result.failed.isEmpty {
                     return true
                 } else {
                     errorMessage = "Failed to move \(result.failed.count) item(s)."
-                    if result.failed.count < files.count {
+                    if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
                     }
                     showError = true
@@ -76,7 +74,7 @@ struct FileMove: View {
             showError = false
             dismiss()
         } failure: { _ in
-            errorMessage = "Failed to move \(files.count) item(s)."
+            errorMessage = "Failed to move \(fileStore.selection.count) item(s)."
             errorSeverity = .full
             showError = true
         } anyways: {

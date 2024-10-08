@@ -2,13 +2,17 @@ import SwiftUI
 import VoltaserveCore
 
 struct GroupMemberAdd: View {
-    @EnvironmentObject private var groupStore: GroupStore
+    @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var isSaving = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+
+    init(groupStore: GroupStore) {
+        self.groupStore = groupStore
+    }
 
     var body: some View {
         NavigationStack {

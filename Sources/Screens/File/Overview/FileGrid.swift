@@ -2,8 +2,14 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileGrid: View {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var tappedItem: VOFile.Entity?
+
+    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+        self.fileStore = fileStore
+        self.workspaceStore = workspaceStore
+    }
 
     var body: some View {
         if let entities = fileStore.entities {
@@ -22,7 +28,7 @@ struct FileGrid: View {
                                         tappedItem = file
                                     }
                                 } label: {
-                                    FileCell(file)
+                                    FileCell(file, fileStore: fileStore)
                                 }
                                 .buttonStyle(.plain)
                                 .onAppear {
@@ -30,10 +36,10 @@ struct FileGrid: View {
                                 }
                             } else if file.type == .folder {
                                 NavigationLink {
-                                    FileOverview(file.id)
+                                    FileOverview(file.id, workspaceStore: workspaceStore)
                                         .navigationTitle(file.name)
                                 } label: {
-                                    FileCell(file)
+                                    FileCell(file, fileStore: fileStore)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                                 .onAppear {

@@ -2,13 +2,17 @@ import SwiftUI
 import VoltaserveCore
 
 struct OrganizationNew: View {
-    @EnvironmentObject private var organizationStore: OrganizationStore
+    @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+
+    init(organizationStore: OrganizationStore) {
+        self.organizationStore = organizationStore
+    }
 
     var body: some View {
         NavigationView {

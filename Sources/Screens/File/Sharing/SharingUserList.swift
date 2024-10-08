@@ -2,13 +2,16 @@ import SwiftUI
 import VoltaserveCore
 
 struct SharingUserList: View {
-    @EnvironmentObject private var sharingStore: SharingStore
+    @ObservedObject private var sharingStore: SharingStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    init(_ file: VOFile.Entity, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
         self.file = file
+        self.sharingStore = sharingStore
+        self.workspaceStore = workspaceStore
     }
 
     var body: some View {
@@ -21,6 +24,8 @@ struct SharingUserList: View {
                         NavigationLink {
                             SharingUserPermission(
                                 files: [file],
+                                sharingStore: sharingStore,
+                                workspaceStore: workspaceStore,
                                 predefinedUser: userPermission.user,
                                 defaultPermission: userPermission.permission,
                                 enableRevoke: true

@@ -6,13 +6,15 @@ import VoltaserveCore
 struct FileOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var fileStore = FileStore()
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var searchText = ""
     @State private var showError = false
 
     private let id: String
 
-    init(_ id: String) {
+    init(_ id: String, workspaceStore: WorkspaceStore) {
         self.id = id
+        self.workspaceStore = workspaceStore
     }
 
     var body: some View {
@@ -23,9 +25,9 @@ struct FileOverview: View {
                         Text("There are no items.")
                     } else {
                         if fileStore.viewMode == .list {
-                            FileList()
+                            FileList(fileStore: fileStore, workspaceStore: workspaceStore)
                         } else if fileStore.viewMode == .grid {
-                            FileGrid()
+                            FileGrid(fileStore: fileStore, workspaceStore: workspaceStore)
                         }
                     }
                 }
@@ -41,8 +43,8 @@ struct FileOverview: View {
             title: fileStore.errorTitle,
             message: fileStore.errorMessage
         )
-        .fileSheets()
-        .fileToolbar()
+        .fileSheets(fileStore: fileStore, workspaceStore: workspaceStore)
+        .fileToolbar(fileStore: fileStore)
         .onAppear {
             fileStore.id = id
             fileStore.loadViewModeFromUserDefaults()
@@ -67,7 +69,6 @@ struct FileOverview: View {
         }
         .sync($fileStore.searchText, with: $searchText)
         .sync($fileStore.showError, with: $showError)
-        .environmentObject(fileStore)
     }
 
     private func onAppearOrChange() {

@@ -2,8 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileMenu: View {
-    @EnvironmentObject private var fileStore: FileStore
-    private let ids: Set<String>
+    @ObservedObject private var fileStore: FileStore
     private let onSharing: (() -> Void)?
     private let onSnapshots: (() -> Void)?
     private let onUpload: (() -> Void)?
@@ -14,7 +13,7 @@ struct FileMenu: View {
     private let onCopy: (() -> Void)?
 
     init(
-        _ ids: Set<String>,
+        fileStore: FileStore,
         onSharing: (() -> Void)? = nil,
         onSnapshots: (() -> Void)? = nil,
         onUpload: (() -> Void)? = nil,
@@ -24,7 +23,7 @@ struct FileMenu: View {
         onMove: (() -> Void)? = nil,
         onCopy: (() -> Void)? = nil
     ) {
-        self.ids = ids
+        self.fileStore = fileStore
         self.onSharing = onSharing
         self.onSnapshots = onSnapshots
         self.onUpload = onUpload
@@ -37,39 +36,39 @@ struct FileMenu: View {
 
     var body: some View {
         Menu {
-            if fileStore.isSharingAuthorized(ids) {
+            if fileStore.isSharingAuthorized(fileStore.selection) {
                 Button {
                     onSharing?()
                 } label: {
                     Label("Sharing", systemImage: "person.2")
                 }
             }
-            if fileStore.isDownloadAuthorized(ids) {
+            if fileStore.isDownloadAuthorized(fileStore.selection) {
                 Button {
                     onDownload?()
                 } label: {
                     Label("Download", systemImage: "square.and.arrow.down")
                 }
             }
-            if fileStore.isSharingAuthorized(ids) ||
-                fileStore.isDownloadAuthorized(ids) {
+            if fileStore.isSharingAuthorized(fileStore.selection) ||
+                fileStore.isDownloadAuthorized(fileStore.selection) {
                 Divider()
             }
-            if fileStore.isDeleteAuthorized(ids) {
+            if fileStore.isDeleteAuthorized(fileStore.selection) {
                 Button(role: .destructive) {
                     onDelete?()
                 } label: {
                     Label("Delete", systemImage: "trash")
                 }
             }
-            if fileStore.isMoveAuthorized(ids) {
+            if fileStore.isMoveAuthorized(fileStore.selection) {
                 Button {
                     onMove?()
                 } label: {
                     Label("Move", systemImage: "arrow.turn.up.right")
                 }
             }
-            if fileStore.isCopyAuthorized(ids) {
+            if fileStore.isCopyAuthorized(fileStore.selection) {
                 Button {
                     onCopy?()
                 } label: {

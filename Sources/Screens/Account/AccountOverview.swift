@@ -32,7 +32,7 @@ struct AccountOverview: View {
                             }
                         }
                         Section {
-                            NavigationLink(destination: AccountSettings {
+                            NavigationLink(destination: AccountSettings(accountStore: accountStore) {
                                 dismiss()
                                 performSignOut()
                             }) {
@@ -89,7 +89,6 @@ struct AccountOverview: View {
             }
         }
         .sync($accountStore.showError, with: $showError)
-        .environmentObject(accountStore)
     }
 
     private func onAppearOrChange() {

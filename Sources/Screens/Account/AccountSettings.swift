@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct AccountSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var accountStore: AccountStore
+    @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
     @State private var showError = false
@@ -12,7 +12,8 @@ struct AccountSettings: View {
     @State private var isDeleting = false
     private let onDelete: (() -> Void)?
 
-    init(onDelete: (() -> Void)? = nil) {
+    init(accountStore: AccountStore, onDelete: (() -> Void)? = nil) {
+        self.accountStore = accountStore
         self.onDelete = onDelete
     }
 
@@ -24,7 +25,7 @@ struct AccountSettings: View {
             } else if let user = accountStore.identityUser {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: AccountEditFullName()) {
+                        NavigationLink(destination: AccountEditFullName(accountStore: accountStore)) {
                             HStack {
                                 Text("Full name")
                                 Spacer()
@@ -37,7 +38,7 @@ struct AccountSettings: View {
                         .disabled(isDeleting)
                     }
                     Section(header: VOSectionHeader("Credentials")) {
-                        NavigationLink(destination: AccountEditEmail()) {
+                        NavigationLink(destination: AccountEditEmail(accountStore: accountStore)) {
                             HStack {
                                 Text("Email")
                                 Spacer()
@@ -48,7 +49,7 @@ struct AccountSettings: View {
                             }
                         }
                         .disabled(isDeleting)
-                        NavigationLink(destination: AccountEditPassword()) {
+                        NavigationLink(destination: AccountEditPassword(accountStore: accountStore)) {
                             HStack {
                                 Text("Password")
                                 Spacer()

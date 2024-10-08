@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileContextMenu: ViewModifier {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     var file: VOFile.Entity
     var onInsights: (() -> Void)?
     var onMosaic: (() -> Void)?
@@ -18,6 +18,7 @@ struct FileContextMenu: ViewModifier {
 
     init(
         _ file: VOFile.Entity,
+        fileStore: FileStore,
         onInsights: (() -> Void)? = nil,
         onMosaic: (() -> Void)? = nil,
         onSharing: (() -> Void)? = nil,
@@ -31,6 +32,7 @@ struct FileContextMenu: ViewModifier {
         onOpen: (() -> Void)? = nil
     ) {
         self.file = file
+        self.fileStore = fileStore
         self.onInsights = onInsights
         self.onMosaic = onMosaic
         self.onSharing = onSharing
@@ -157,6 +159,7 @@ struct FileContextMenu: ViewModifier {
 extension View {
     func fileContextMenu(
         _ file: VOFile.Entity,
+        fileStore: FileStore,
         onInsights: (() -> Void)? = nil,
         onMosaic: (() -> Void)? = nil,
         onSharing: (() -> Void)? = nil,
@@ -171,6 +174,7 @@ extension View {
     ) -> some View {
         modifier(FileContextMenu(
             file,
+            fileStore: fileStore,
             onInsights: onInsights,
             onMosaic: onMosaic,
             onSharing: onSharing,

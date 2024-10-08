@@ -26,7 +26,7 @@ struct WorkspaceList: View {
                         List {
                             ForEach(entities, id: \.id) { workspace in
                                 NavigationLink {
-                                    WorkspaceOverview(workspace)
+                                    WorkspaceOverview(workspace, workspaceStore: workspaceStore)
                                 } label: {
                                     WorkspaceRow(workspace)
                                         .onAppear {
@@ -70,7 +70,7 @@ struct WorkspaceList: View {
                     }
                 }
                 .sheet(isPresented: $showNew) {
-                    WorkspaceNew()
+                    WorkspaceNew(workspaceStore: workspaceStore)
                 }
                 .sheet(isPresented: $showAccount) {
                     AccountOverview()
@@ -119,7 +119,6 @@ struct WorkspaceList: View {
         .sync($workspaceStore.showError, with: $showWorkspaceError)
         .sync($accountStore.showError, with: $showAccountError)
         .sync($invitationStore.showError, with: $showInvitationError)
-        .environmentObject(workspaceStore)
     }
 
     var accountButton: some View {

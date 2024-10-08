@@ -2,24 +2,23 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileDelete: View {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
-    private let ids: [String]
 
-    init(_ ids: [String]) {
-        self.ids = ids
+    init(fileStore: FileStore) {
+        self.fileStore = fileStore
     }
 
     var body: some View {
         VStack {
             if isProcessing, !showError {
                 VOSheetProgressView()
-                Text("Deleting \(ids.count) item(s).")
+                Text("Deleting \(fileStore.selection.count) item(s).")
             } else if showError, errorSeverity == .full {
                 VOSheetErrorIcon()
                 if let errorMessage {
@@ -55,14 +54,14 @@ struct FileDelete: View {
     private func performDelete() {
         var result: VOFile.DeleteResult?
         withErrorHandling {
-            result = try await fileStore.delete(ids)
+            result = try await fileStore.delete(Array(fileStore.selection))
             errorSeverity = .full
             if let result {
                 if result.failed.isEmpty {
                     return true
                 } else {
                     errorMessage = "Failed to delete \(result.failed.count) item(s)."
-                    if result.failed.count < ids.count {
+                    if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
                     }
                     showError = true
@@ -73,7 +72,7 @@ struct FileDelete: View {
             showError = false
             dismiss()
         } failure: { _ in
-            errorMessage = "Failed to delete \(ids.count) item(s)."
+            errorMessage = "Failed to delete \(fileStore.selection.count) item(s)."
             errorSeverity = .full
             showError = true
         } anyways: {

@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct WorkspaceSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
     @State private var showError = false
@@ -12,8 +12,9 @@ struct WorkspaceSettings: View {
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
-    init(_ onCompletion: (() -> Void)? = nil) {
+    init(workspaceStore: WorkspaceStore, onCompletion: (() -> Void)? = nil) {
         self.onCompletion = onCompletion
+        self.workspaceStore = workspaceStore
     }
 
     var body: some View {
@@ -31,7 +32,7 @@ struct WorkspaceSettings: View {
                                 ProgressView()
                             }
                         }
-                        NavigationLink(destination: WorkspaceEditStorageCapacity()) {
+                        NavigationLink(destination: WorkspaceEditStorageCapacity(workspaceStore: workspaceStore)) {
                             HStack {
                                 Text("Capacity")
                                 Spacer()
@@ -42,7 +43,7 @@ struct WorkspaceSettings: View {
                         .disabled(isDeleting)
                     }
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: WorkspaceEditName()) {
+                        NavigationLink(destination: WorkspaceEditName(workspaceStore: workspaceStore)) {
                             HStack {
                                 Text("Name")
                                 Spacer()

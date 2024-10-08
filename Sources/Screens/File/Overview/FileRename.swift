@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct FileRename: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var isSaving = false
     @State private var value = ""
@@ -11,10 +11,9 @@ struct FileRename: View {
     @State private var errorMessage: String?
     @State private var showError = false
     @State var file: VOFile.Entity?
-    private let id: String
 
-    init(_ id: String) {
-        self.id = id
+    init(fileStore: FileStore) {
+        self.fileStore = fileStore
     }
 
     var body: some View {
@@ -66,6 +65,7 @@ struct FileRename: View {
     }
 
     private func fetch() {
+        guard let id = fileStore.selection.first else { return }
         withErrorHandling {
             file = try await fileStore.fetch(id)
             return true

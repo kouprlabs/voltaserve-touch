@@ -3,12 +3,13 @@ import VoltaserveCore
 
 struct OrganizationOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var organizationStore: OrganizationStore
+    @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     private let organization: VOOrganization.Entity
 
-    init(_ organization: VOOrganization.Entity) {
+    init(_ organization: VOOrganization.Entity, organizationStore: OrganizationStore) {
         self.organization = organization
+        self.organizationStore = organizationStore
     }
 
     var body: some View {
@@ -19,7 +20,7 @@ struct OrganizationOverview: View {
                         .padding()
                     Form {
                         NavigationLink {
-                            OrganizationMemberList()
+                            OrganizationMemberList(organizationStore: organizationStore)
                         } label: {
                             Label("Members", systemImage: "person.2")
                         }
@@ -29,7 +30,7 @@ struct OrganizationOverview: View {
                             Label("Invitations", systemImage: "paperplane")
                         }
                         NavigationLink {
-                            OrganizationSettings {
+                            OrganizationSettings(organizationStore: organizationStore) {
                                 dismiss()
                             }
                         } label: {
