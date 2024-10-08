@@ -2,9 +2,15 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileList: View {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var selection = Set<String>()
     @State private var tappedItem: VOFile.Entity?
+
+    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+        self.fileStore = fileStore
+        self.workspaceStore = workspaceStore
+    }
 
     var body: some View {
         if let entities = fileStore.entities {
@@ -17,18 +23,18 @@ struct FileList: View {
                             }
                         } label: {
                             FileRow(file)
-                                .fileActions(file)
+                                .fileActions(file, fileStore: fileStore)
                         }
                         .onAppear {
                             onListItemAppear(file.id)
                         }
                     } else if file.type == .folder {
                         NavigationLink {
-                            FileOverview(file.id)
+                            FileOverview(file.id, workspaceStore: workspaceStore)
                                 .navigationTitle(file.name)
                         } label: {
                             FileRow(file)
-                                .fileActions(file)
+                                .fileActions(file, fileStore: fileStore)
                         }
                         .onAppear {
                             onListItemAppear(file.id)

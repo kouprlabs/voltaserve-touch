@@ -4,6 +4,7 @@ import VoltaserveCore
 struct SharingOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var sharingStore = SharingStore()
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var selection: Tag = .users
     @State private var user: VOUser.Entity?
@@ -13,19 +14,28 @@ struct SharingOverview: View {
     @State private var groupPermissionCount = 0
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
         self.file = file
+        self.workspaceStore = workspaceStore
     }
 
     var body: some View {
         NavigationStack {
             TabView(selection: $selection) {
                 Tab("Users", systemImage: "person", value: Tag.users) {
-                    SharingUserList(file)
+                    SharingUserList(
+                        file,
+                        sharingStore: sharingStore,
+                        workspaceStore: workspaceStore
+                    )
                 }
                 .badge(userPermissionCount)
                 Tab("Groups", systemImage: "person.2", value: Tag.groups) {
-                    SharingGroupList(file)
+                    SharingGroupList(
+                        file,
+                        sharingStore: sharingStore,
+                        workspaceStore: workspaceStore
+                    )
                 }
                 .badge(groupPermissionCount)
             }
@@ -35,9 +45,17 @@ struct SharingOverview: View {
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink {
                         if selection == .users {
-                            SharingUserPermission(files: [file])
+                            SharingUserPermission(
+                                files: [file],
+                                sharingStore: sharingStore,
+                                workspaceStore: workspaceStore
+                            )
                         } else if selection == .groups {
-                            SharingGroupPermission(files: [file])
+                            SharingGroupPermission(
+                                files: [file],
+                                sharingStore: sharingStore,
+                                workspaceStore: workspaceStore
+                            )
                         }
                     } label: {
                         Image(systemName: "plus")
@@ -81,7 +99,6 @@ struct SharingOverview: View {
                 }
             }
         }
-        .environmentObject(sharingStore)
     }
 
     private func onAppearOrChange() {

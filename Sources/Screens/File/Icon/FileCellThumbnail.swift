@@ -2,15 +2,17 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileCellThumbnail<FallbackContent: View>: View {
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.colorScheme) private var colorScheme
     private let url: URL
     private let fallback: () -> FallbackContent
     private let file: VOFile.Entity
 
-    init(url: URL, file: VOFile.Entity, @ViewBuilder fallback: @escaping () -> FallbackContent) {
+    init(url: URL, file: VOFile.Entity, fileStore: FileStore, @ViewBuilder fallback: @escaping () -> FallbackContent) {
         self.url = url
         self.fallback = fallback
         self.file = file
+        self.fileStore = fileStore
     }
 
     var body: some View {
@@ -20,7 +22,7 @@ struct FileCellThumbnail<FallbackContent: View>: View {
                 .aspectRatio(contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
                 .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-                .fileActions(file)
+                .fileActions(file, fileStore: fileStore)
                 .overlay {
                     RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
                         .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)

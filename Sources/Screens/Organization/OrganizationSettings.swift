@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct OrganizationSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var organizationStore: OrganizationStore
+    @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
     @State private var showError = false
@@ -12,7 +12,8 @@ struct OrganizationSettings: View {
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
-    init(_ onCompletion: (() -> Void)? = nil) {
+    init(organizationStore: OrganizationStore, onCompletion: (() -> Void)? = nil) {
+        self.organizationStore = organizationStore
         self.onCompletion = onCompletion
     }
 
@@ -21,7 +22,7 @@ struct OrganizationSettings: View {
             if let organization = organizationStore.current {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: OrganizationEditName()) {
+                        NavigationLink(destination: OrganizationEditName(organizationStore: organizationStore)) {
                             HStack {
                                 Text("Name")
                                 Spacer()

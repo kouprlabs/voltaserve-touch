@@ -19,7 +19,7 @@ struct OrganizationList: View {
                         List {
                             ForEach(entities, id: \.id) { organization in
                                 NavigationLink {
-                                    OrganizationOverview(organization)
+                                    OrganizationOverview(organization, organizationStore: organizationStore)
                                 } label: {
                                     OrganizationRow(organization)
                                         .onAppear {
@@ -52,7 +52,7 @@ struct OrganizationList: View {
                     }
                 }
                 .sheet(isPresented: $showNew) {
-                    OrganizationNew()
+                    OrganizationNew(organizationStore: organizationStore)
                 }
                 .onChange(of: organizationStore.searchText) {
                     organizationStore.searchPublisher.send($1)
@@ -88,7 +88,6 @@ struct OrganizationList: View {
         }
         .sync($organizationStore.searchText, with: $searchText)
         .sync($organizationStore.showError, with: $showError)
-        .environmentObject(organizationStore)
     }
 
     private func onAppearOrChange() {

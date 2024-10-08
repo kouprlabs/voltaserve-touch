@@ -4,26 +4,25 @@ import VoltaserveCore
 
 struct BrowserList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var browserStore = BrowserStore()
     @State private var tappedItem: VOFile.Entity?
     @State private var showError = false
     @State private var searchText = ""
     private let id: String
-    private let workspace: VOWorkspace.Entity
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
     private let onDismiss: (() -> Void)?
 
     init(
         _ id: String,
-        workspace: VOWorkspace.Entity,
+        workspaceStore: WorkspaceStore,
         confirmLabelText: String?,
         onCompletion: ((String) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.id = id
-        self.workspace = workspace
+        self.workspaceStore = workspaceStore
         self.confirmLabelText = confirmLabelText
         self.onCompletion = onCompletion
         self.onDismiss = onDismiss
@@ -40,7 +39,8 @@ struct BrowserList: View {
                             ForEach(entities, id: \.id) { file in
                                 NavigationLink {
                                     BrowserList(
-                                        file.id, workspace: workspace,
+                                        file.id,
+                                        workspaceStore: workspaceStore,
                                         confirmLabelText: confirmLabelText,
                                         onCompletion: onCompletion
                                     )
@@ -88,7 +88,7 @@ struct BrowserList: View {
                     onCompletion?(id)
                 }
             }
-            if id == workspace.rootID {
+            if let workspace = workspaceStore.current, id == workspace.rootID {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         onDismiss?()
@@ -97,6 +97,7 @@ struct BrowserList: View {
             }
         }
         .onAppear {
+            browserStore.id = id
             if let token = tokenStore.token {
                 assignTokensToStores(token)
                 startTimers()

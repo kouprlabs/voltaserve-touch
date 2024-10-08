@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct WorkspaceNew: View {
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var name: String = ""
     @State private var organization: VOOrganization.Entity?
@@ -11,6 +11,10 @@ struct WorkspaceNew: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+
+    init(workspaceStore: WorkspaceStore) {
+        self.workspaceStore = workspaceStore
+    }
 
     var body: some View {
         NavigationStack {

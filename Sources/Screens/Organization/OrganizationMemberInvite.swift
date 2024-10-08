@@ -3,8 +3,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct OrganizationMemberInvite: View {
-    @EnvironmentObject private var invitationStore: InvitationStore
-    @EnvironmentObject private var organizationStore: OrganizationStore
+    @StateObject private var invitationStore = InvitationStore()
+    @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var commaSeparated = ""
     @State private var emails: [String] = []
@@ -12,6 +12,10 @@ struct OrganizationMemberInvite: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+
+    init(organizationStore: OrganizationStore) {
+        self.organizationStore = organizationStore
+    }
 
     var body: some View {
         Form {

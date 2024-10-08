@@ -85,7 +85,6 @@ struct SignUp: View {
                 ProgressView()
             }
         }
-        .environmentObject(SignUpStore())
     }
 }
 
@@ -112,5 +111,4 @@ struct PasswordHint: View {
 
 #Preview {
     SignUp()
-        .environmentObject(SignUpStore())
 }

@@ -2,15 +2,16 @@ import SwiftUI
 import VoltaserveCore
 
 struct TaskOverview: View {
-    @EnvironmentObject private var taskStore: TaskStore
+    @ObservedObject private var taskStore: TaskStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDismissConfirmation = false
     @State private var showError = false
     @State private var isDismissing = false
     private let task: VOTask.Entity
 
-    init(_ task: VOTask.Entity) {
+    init(_ task: VOTask.Entity, taskStore: TaskStore) {
         self.task = task
+        self.taskStore = taskStore
     }
 
     var body: some View {
@@ -84,33 +85,4 @@ struct TaskOverview: View {
             isDismissing = false
         }
     }
-}
-
-#Preview {
-    NavigationView {
-        TaskOverview(.init(
-            id: "04WooxYQJJ83Q",
-            name: "Deleting.",
-            error: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            isIndeterminate: true,
-            userID: UUID().uuidString,
-            status: .error,
-            payload: VOTask.Payload(object: "Choose-an-automation-tool-ebook-Red-Hat-Developer.pdf")
-        ))
-    }
-    .environmentObject(TaskStore())
-}
-
-#Preview {
-    NavigationView {
-        TaskOverview(.init(
-            id: "04WooxYQJJ83Q",
-            name: "Measuring image dimensions.",
-            isIndeterminate: true,
-            userID: UUID().uuidString,
-            status: .running,
-            payload: VOTask.Payload(object: "human-freedom-index-2022.pdf")
-        ))
-    }
-    .environmentObject(TaskStore())
 }

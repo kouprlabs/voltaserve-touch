@@ -4,11 +4,15 @@ import VoltaserveCore
 
 struct GroupMemberList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var groupStore: GroupStore
+    @ObservedObject private var groupStore: GroupStore
     @StateObject private var userStore = UserStore()
     @State private var showAddMember = false
     @State private var searchText = ""
     @State private var showError = false
+
+    init(groupStore: GroupStore) {
+        self.groupStore = groupStore
+    }
 
     var body: some View {
         VStack {
@@ -51,7 +55,7 @@ struct GroupMemberList: View {
                     }
                 }
                 .sheet(isPresented: $showAddMember) {
-                    GroupMemberAdd()
+                    GroupMemberAdd(groupStore: groupStore)
                 }
                 .voErrorAlert(
                     isPresented: $showError,

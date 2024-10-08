@@ -19,7 +19,7 @@ struct GroupList: View {
                         List {
                             ForEach(entities, id: \.id) { group in
                                 NavigationLink {
-                                    GroupOverview(group)
+                                    GroupOverview(group, groupStore: groupStore)
                                 } label: {
                                     GroupRow(group)
                                         .onAppear {
@@ -52,7 +52,7 @@ struct GroupList: View {
                     }
                 }
                 .sheet(isPresented: $showNew) {
-                    GroupNew()
+                    GroupNew(groupStore: groupStore)
                 }
                 .onChange(of: groupStore.searchText) {
                     groupStore.searchPublisher.send($1)
@@ -88,7 +88,6 @@ struct GroupList: View {
         }
         .sync($groupStore.searchText, with: $searchText)
         .sync($groupStore.showError, with: $showError)
-        .environmentObject(groupStore)
     }
 
     private func onAppearOrChange() {

@@ -10,7 +10,13 @@ class FileStore: ObservableObject {
     @Published var id: String?
     @Published var file: VOFile.Entity?
     @Published var query: VOFile.Query?
-    @Published var selection = Set<String>()
+
+    @Published var selection = Set<String>() {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+
     @Published var showRename = false
     @Published var showDelete = false
     @Published var showDownload = false
@@ -49,6 +55,17 @@ class FileStore: ObservableObject {
                 )
             }
         }
+    }
+
+    var selectionFiles: [VOFile.Entity] {
+        var files: [VOFile.Entity] = []
+        for id in selection {
+            let file = entities?.first(where: { $0.id == id })
+            if let file {
+                files.append(file)
+            }
+        }
+        return files
     }
 
     init() {

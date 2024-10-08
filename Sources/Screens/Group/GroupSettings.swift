@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct GroupSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var groupStore: GroupStore
+    @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
     @State private var showError = false
@@ -12,7 +12,8 @@ struct GroupSettings: View {
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
-    init(_ onCompletion: (() -> Void)? = nil) {
+    init(groupStore: GroupStore, onCompletion: (() -> Void)? = nil) {
+        self.groupStore = groupStore
         self.onCompletion = onCompletion
     }
 
@@ -21,7 +22,7 @@ struct GroupSettings: View {
             if let group = groupStore.current {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: GroupEditName()) {
+                        NavigationLink(destination: GroupEditName(groupStore: groupStore)) {
                             HStack {
                                 Text("Name")
                                 Spacer()

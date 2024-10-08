@@ -2,13 +2,17 @@ import SwiftUI
 import VoltaserveCore
 
 struct AccountEditFullName: View {
-    @EnvironmentObject private var accountStore: AccountStore
+    @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
     @State private var isSaving = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+
+    init(accountStore: AccountStore) {
+        self.accountStore = accountStore
+    }
 
     var body: some View {
         if let user = accountStore.identityUser {

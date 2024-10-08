@@ -16,7 +16,11 @@ struct InvitationIncomingList: View {
                     List {
                         ForEach(entities, id: \.id) { invitation in
                             NavigationLink {
-                                InvitationOverview(invitation, isAcceptableDeclinable: true)
+                                InvitationOverview(
+                                    invitation,
+                                    invitationStore: invitationStore,
+                                    isAcceptableDeclinable: true
+                                )
                             } label: {
                                 InvitationIncomingRow(invitation)
                                     .onAppear {
@@ -55,7 +59,6 @@ struct InvitationIncomingList: View {
                 onAppearOrChange()
             }
         }
-        .environmentObject(invitationStore)
     }
 
     private func onAppearOrChange() {

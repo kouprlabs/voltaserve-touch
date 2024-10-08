@@ -4,11 +4,15 @@ import VoltaserveCore
 
 struct OrganizationMemberList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var organizationStore: OrganizationStore
+    @ObservedObject private var organizationStore: OrganizationStore
     @StateObject private var userStore = UserStore()
     @State private var showInviteMembers = false
     @State private var showError = false
     @State private var searchText = ""
+
+    init(organizationStore: OrganizationStore) {
+        self.organizationStore = organizationStore
+    }
 
     var body: some View {
         VStack {
@@ -35,7 +39,7 @@ struct OrganizationMemberList: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         NavigationLink {
-                            OrganizationMemberInvite()
+                            OrganizationMemberInvite(organizationStore: organizationStore)
                         } label: {
                             Image(systemName: "plus")
                         }

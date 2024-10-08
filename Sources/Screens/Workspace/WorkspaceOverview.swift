@@ -3,13 +3,13 @@ import VoltaserveCore
 
 struct WorkspaceOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     private var workspace: VOWorkspace.Entity
 
-    init(_ workspace: VOWorkspace.Entity) {
+    init(_ workspace: VOWorkspace.Entity, workspaceStore: WorkspaceStore) {
         self.workspace = workspace
+        self.workspaceStore = workspaceStore
     }
 
     var body: some View {
@@ -20,13 +20,13 @@ struct WorkspaceOverview: View {
                         .padding()
                     Form {
                         NavigationLink {
-                            FileOverview(current.rootID)
+                            FileOverview(current.rootID, workspaceStore: workspaceStore)
                                 .navigationTitle(current.name)
                         } label: {
                             Label("Files", systemImage: "folder")
                         }
                         NavigationLink {
-                            WorkspaceSettings {
+                            WorkspaceSettings(workspaceStore: workspaceStore) {
                                 dismiss()
                             }
                         } label: {

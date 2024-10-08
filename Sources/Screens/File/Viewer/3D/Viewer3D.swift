@@ -21,7 +21,6 @@ struct Viewer3D: View {
                let url = viewer3DStore.url {
                 Viewer3DRenderer(file: file, url: url)
                     .edgesIgnoringSafeArea(.horizontal)
-                    .environmentObject(viewer3DStore)
             }
         }
         .onAppear {

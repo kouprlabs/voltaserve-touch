@@ -3,11 +3,12 @@ import VoltaserveCore
 
 struct FileCell: View {
     @Environment(\.colorScheme) private var colorScheme
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    init(_ file: VOFile.Entity, fileStore: FileStore) {
         self.file = file
+        self.fileStore = fileStore
     }
 
     var body: some View {
@@ -17,7 +18,7 @@ struct FileCell: View {
                    let thumbnail = snapshot.thumbnail,
                    let fileExtension = thumbnail.fileExtension,
                    let url = fileStore.urlForThumbnail(file.id, fileExtension: String(fileExtension.dropFirst())) {
-                    FileCellThumbnail(url: url, file: file) {
+                    FileCellThumbnail(url: url, file: file, fileStore: fileStore) {
                         fileIcon
                     }
                 } else {
@@ -55,7 +56,7 @@ struct FileCell: View {
             )
             .background(colorScheme == .light ? .white : .clear)
             .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-            .fileActions(file)
+            .fileActions(file, fileStore: fileStore)
         }
         .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
     }
@@ -75,7 +76,7 @@ struct FileCell: View {
             )
             .background(colorScheme == .light ? .white : .clear)
             .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-            .fileActions(file)
+            .fileActions(file, fileStore: fileStore)
         }
         .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
     }

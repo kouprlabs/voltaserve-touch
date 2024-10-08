@@ -18,7 +18,7 @@ struct TaskList: View {
                         List {
                             ForEach(entities, id: \.id) { task in
                                 NavigationLink {
-                                    TaskOverview(task)
+                                    TaskOverview(task, taskStore: taskStore)
                                 } label: {
                                     TaskRow(task)
                                         .onAppear {
@@ -80,7 +80,6 @@ struct TaskList: View {
             }
         }
         .sync($taskStore.showError, with: $showError)
-        .environmentObject(taskStore)
     }
 
     private func onAppearOrChange() {

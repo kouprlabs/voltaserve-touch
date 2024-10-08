@@ -2,19 +2,17 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileCopy: View {
-    @EnvironmentObject private var fileStore: FileStore
-    @EnvironmentObject private var browserStore: BrowserStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var showError = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
-    private let files: [VOFile.Entity]
     private let destinationID: String
 
-    init(_ files: [VOFile.Entity], to destinationID: String) {
-        self.files = files
+    init(fileStore: FileStore, to destinationID: String) {
+        self.fileStore = fileStore
         self.destinationID = destinationID
     }
 
@@ -22,7 +20,7 @@ struct FileCopy: View {
         VStack {
             if isProcessing, !showError {
                 VOSheetProgressView()
-                Text("Copying \(files.count) item(s).")
+                Text("Copying \(fileStore.selection.count) item(s).")
             } else if showError, errorSeverity == .full {
                 VOSheetErrorIcon()
                 if let errorMessage {
@@ -58,14 +56,14 @@ struct FileCopy: View {
     private func performCopy() {
         var result: VOFile.CopyResult?
         withErrorHandling {
-            result = try await fileStore.copy(files.map(\.id), to: destinationID)
+            result = try await fileStore.copy(Array(fileStore.selection), to: destinationID)
             errorSeverity = .full
             if let result {
                 if result.failed.isEmpty {
                     return true
                 } else {
                     errorMessage = "Failed to copy \(result.failed.count) item(s)."
-                    if result.failed.count < files.count {
+                    if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
                     }
                     showError = true
@@ -76,7 +74,7 @@ struct FileCopy: View {
             showError = false
             dismiss()
         } failure: { _ in
-            errorMessage = "Failed to copy \(files.count) item(s)."
+            errorMessage = "Failed to copy \(fileStore.selection.count) item(s)."
             errorSeverity = .full
             showError = true
         } anyways: {

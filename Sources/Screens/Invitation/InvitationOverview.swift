@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct InvitationOverview: View {
-    @EnvironmentObject private var invitationStore: InvitationStore
+    @ObservedObject private var invitationStore: InvitationStore
     @Environment(\.dismiss) private var dismiss
     @State private var showError = false
     @State private var errorTitle: String?
@@ -18,10 +18,12 @@ struct InvitationOverview: View {
 
     init(
         _ invitation: VOInvitation.Entity,
+        invitationStore: InvitationStore,
         isDeletable: Bool = false,
         isAcceptableDeclinable: Bool = false
     ) {
         self.invitation = invitation
+        self.invitationStore = invitationStore
         self.isDeletable = isDeletable
         self.isAcceptableDeclinable = isAcceptableDeclinable
     }
@@ -172,29 +174,4 @@ struct InvitationOverview: View {
             isDeleting = false
         }
     }
-}
-
-#Preview {
-    InvitationOverview(
-        VOInvitation.Entity(
-            id: UUID().uuidString,
-            owner: VOUser.Entity(
-                id: UUID().uuidString,
-                username: "anass@example.com",
-                email: "anass@example.com",
-                fullName: "Anass",
-                createTime: Date().ISO8601Format()
-            ),
-            email: "anass@koupr.com",
-            organization: VOOrganization.Entity(
-                id: UUID().uuidString,
-                name: "Koupr",
-                permission: .none,
-                createTime: Date().ISO8601Format()
-            ),
-            status: .pending,
-            createTime: "2024-09-23T10:00:00Z"
-        ),
-        isDeletable: true
-    )
 }

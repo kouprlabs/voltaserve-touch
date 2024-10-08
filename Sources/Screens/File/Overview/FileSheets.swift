@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileSheets: ViewModifier {
-    @EnvironmentObject private var fileStore: FileStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @ObservedObject private var fileStore: FileStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var documentPickerURLs: [URL]?
     @State private var destinationIDForMove: String?
     @State private var destinationIDForCopy: String?
@@ -21,17 +21,18 @@ struct FileSheets: ViewModifier {
     @State private var showDownloadDocumentPicker = false
     @State private var showUploadDocumentPicker = false
 
+    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+        self.fileStore = fileStore
+        self.workspaceStore = workspaceStore
+    }
+
     // swiftlint:disable:next function_body_length
     func body(content: Content) -> some View {
         if let workspace = workspaceStore.current {
             content
                 .sheet(isPresented: $showBrowserForMove) {
                     NavigationStack {
-                        BrowserOverview(
-                            workspace.rootID,
-                            workspace: workspace,
-                            confirmLabelText: "Move Here"
-                        ) { id in
+                        BrowserOverview(workspaceStore: workspaceStore, confirmLabelText: "Move Here") { id in
                             destinationIDForMove = id
                             fileStore.showMove = true
                         }
@@ -43,28 +44,20 @@ struct FileSheets: ViewModifier {
                     TaskList()
                 }
                 .sheet(isPresented: $showSharing) {
-                    let files = selectionToFiles()
-                    if !files.isEmpty {
-                        if files.count == 1 {
-                            SharingOverview(files.first!)
-                        } else if files.count > 1 {
-                            SharingBatch(files)
-                        }
+                    if fileStore.selection.count == 1, let file = fileStore.selectionFiles.first {
+                        SharingOverview(file, workspaceStore: workspaceStore)
+                    } else if fileStore.selection.count > 1 {
+                        SharingBatch(fileStore.selectionFiles, workspaceStore: workspaceStore)
                     }
                 }
                 .sheet(isPresented: $showMove) {
-                    let files = selectionToFiles()
-                    if let destinationIDForMove, !files.isEmpty {
-                        FileMove(files, to: destinationIDForMove)
+                    if let destinationIDForMove, !fileStore.selection.isEmpty {
+                        FileMove(fileStore: fileStore, to: destinationIDForMove)
                     }
                 }
                 .sheet(isPresented: $showBrowserForCopy) {
                     NavigationStack {
-                        BrowserOverview(
-                            workspace.rootID,
-                            workspace: workspace,
-                            confirmLabelText: "Copy Here"
-                        ) { id in
+                        BrowserOverview(workspaceStore: workspaceStore, confirmLabelText: "Copy Here") { id in
                             destinationIDForCopy = id
                             fileStore.showCopy = true
                         }
@@ -73,25 +66,23 @@ struct FileSheets: ViewModifier {
                     }
                 }
                 .sheet(isPresented: $showCopy) {
-                    let files = selectionToFiles()
-                    if let destinationIDForCopy, !files.isEmpty {
-                        FileCopy(files, to: destinationIDForCopy)
+                    if let destinationIDForCopy, !fileStore.selection.isEmpty {
+                        FileCopy(fileStore: fileStore, to: destinationIDForCopy)
                     }
                 }
                 .sheet(isPresented: $showRename) {
                     if !fileStore.selection.isEmpty {
-                        FileRename(fileStore.selection.first!)
+                        FileRename(fileStore: fileStore)
                     }
                 }
                 .sheet(isPresented: $showDelete) {
                     if !fileStore.selection.isEmpty {
-                        FileDelete(Array(fileStore.selection))
+                        FileDelete(fileStore: fileStore)
                     }
                 }
                 .sheet(isPresented: $showDownload) {
-                    let files = selectionToFiles()
-                    if !files.isEmpty {
-                        FileDownload(files) { localURLs in
+                    if !fileStore.selection.isEmpty {
+                        FileDownload(fileStore: fileStore) { localURLs in
                             documentPickerURLs = localURLs
                             fileStore.showDownloadDocumentPicker = true
                         }
@@ -114,12 +105,12 @@ struct FileSheets: ViewModifier {
                 }
                 .sheet(isPresented: $showUpload) {
                     if let documentPickerURLs {
-                        FileUpload(documentPickerURLs)
+                        FileUpload(documentPickerURLs, fileStore: fileStore, workspaceStore: workspaceStore)
                     }
                 }
                 .sheet(isPresented: $showNewFolder) {
                     if let parent = fileStore.file, let workspace = workspaceStore.current {
-                        FolderNew(parentID: parent.id, workspaceId: workspace.id)
+                        FolderNew(parentID: parent.id, workspaceId: workspace.id, fileStore: fileStore)
                     }
                 }
                 .sync($fileStore.showBrowserForMove, with: $showBrowserForMove)
@@ -151,21 +142,10 @@ struct FileSheets: ViewModifier {
         }
         fileStore.showDownloadDocumentPicker = false
     }
-
-    private func selectionToFiles() -> [VOFile.Entity] {
-        var files: [VOFile.Entity] = []
-        for id in fileStore.selection {
-            let file = fileStore.entities?.first(where: { $0.id == id })
-            if let file {
-                files.append(file)
-            }
-        }
-        return files
-    }
 }
 
 extension View {
-    func fileSheets() -> some View {
-        modifier(FileSheets())
+    func fileSheets(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
+        modifier(FileSheets(fileStore: fileStore, workspaceStore: workspaceStore))
     }
 }

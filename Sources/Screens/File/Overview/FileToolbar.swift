@@ -1,8 +1,12 @@
 import SwiftUI
 
 struct FileToolbar: ViewModifier {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.editMode) private var editMode
+
+    init(fileStore: FileStore) {
+        self.fileStore = fileStore
+    }
 
     func body(content: Content) -> some View {
         content
@@ -72,7 +76,7 @@ struct FileToolbar: ViewModifier {
 
     private var fileMenu: some View {
         FileMenu(
-            fileStore.selection,
+            fileStore: fileStore,
             onSharing: {
                 fileStore.showSharing = true
             },
@@ -99,7 +103,7 @@ struct FileToolbar: ViewModifier {
 }
 
 extension View {
-    func fileToolbar() -> some View {
-        modifier(FileToolbar())
+    func fileToolbar(fileStore: FileStore) -> some View {
+        modifier(FileToolbar(fileStore: fileStore))
     }
 }

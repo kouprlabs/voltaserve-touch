@@ -2,7 +2,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileDownload: View {
-    @EnvironmentObject private var fileStore: FileStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var urls: [URL] = []
@@ -10,11 +10,10 @@ struct FileDownload: View {
     @State private var showError = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
-    private let files: [VOFile.Entity]
     private let onCompletion: (([URL]) -> Void)?
 
-    init(_ files: [VOFile.Entity], onCompletion: (([URL]) -> Void)? = nil) {
-        self.files = files
+    init(fileStore: FileStore, onCompletion: (([URL]) -> Void)? = nil) {
+        self.fileStore = fileStore
         self.onCompletion = onCompletion
     }
 
@@ -22,7 +21,7 @@ struct FileDownload: View {
         VStack {
             if isProcessing, !showError {
                 VOSheetProgressView()
-                Text("Downloading \(files.count) item(s).")
+                Text("Downloading \(fileStore.selectionFiles.count) item(s).")
             } else if showError, errorSeverity == .full {
                 VOSheetErrorIcon()
                 if let errorMessage {
@@ -66,7 +65,7 @@ struct FileDownload: View {
     private func performDownload() {
         let dispatchGroup = DispatchGroup()
         urls.removeAll()
-        for file in files {
+        for file in fileStore.selectionFiles {
             if let snapshot = file.snapshot,
                let fileExtension = snapshot.original.fileExtension,
                let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst())) {
@@ -93,15 +92,15 @@ struct FileDownload: View {
             }
         }
         dispatchGroup.notify(queue: .main) {
-            if urls.count == files.count {
+            if urls.count == fileStore.selection.count {
                 showError = false
                 isProcessing = false
                 onCompletion?(urls)
                 dismiss()
             } else {
-                let count = files.count - urls.count
+                let count = fileStore.selection.count - urls.count
                 errorMessage = "Failed to download \(count) item(s)."
-                if count < files.count {
+                if count < fileStore.selection.count {
                     errorSeverity = .partial
                 } else {
                     errorSeverity = .full

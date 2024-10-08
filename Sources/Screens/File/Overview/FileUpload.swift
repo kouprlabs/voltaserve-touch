@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct FileUpload: View {
-    @EnvironmentObject private var fileStore: FileStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @ObservedObject private var fileStore: FileStore
+    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
@@ -12,8 +12,10 @@ struct FileUpload: View {
     @State private var errorMessage: String?
     private let urls: [URL]
 
-    init(_ urls: [URL]) {
+    init(_ urls: [URL], fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.urls = urls
+        self.fileStore = fileStore
+        self.workspaceStore = workspaceStore
     }
 
     var body: some View {
