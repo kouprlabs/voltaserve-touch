@@ -45,7 +45,7 @@ struct FileList: View {
             }
             .listStyle(.inset)
             .navigationDestination(item: $tappedItem) {
-                FileViewer($0)
+                Viewer($0)
             }
             .sync($fileStore.selection, with: $selection)
         }

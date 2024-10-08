@@ -3,9 +3,9 @@ import SwiftUI
 import VoltaserveCore
 
 struct OrganizationMemberList: View {
-    @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var organizationStore: OrganizationStore
+    @StateObject private var userStore = UserStore()
     @State private var showInviteMembers = false
     @State private var showError = false
     @State private var searchText = ""
@@ -61,6 +61,7 @@ struct OrganizationMemberList: View {
             }
             if let token = tokenStore.token {
                 assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -68,7 +69,8 @@ struct OrganizationMemberList: View {
             stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
@@ -82,7 +84,6 @@ struct OrganizationMemberList: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {

@@ -1,28 +1,8 @@
+import Foundation
 import SwiftUI
-import VoltaserveCore
 import WebKit
 
-struct ImageViewer: View {
-    @EnvironmentObject private var imageStore: ImageStore
-    private let file: VOFile.Entity
-
-    init(_ file: VOFile.Entity) {
-        self.file = file
-    }
-
-    var body: some View {
-        if file.type == .file,
-           let snapshot = file.snapshot, snapshot.mosaic == nil,
-           let download = snapshot.preview,
-           let fileExtension = download.fileExtension, fileExtension.isImage(),
-           let url = imageStore.url(file.id, fileExtension: String(fileExtension.dropFirst())) {
-            ImageWebView(url: url)
-                .edgesIgnoringSafeArea(.horizontal)
-        }
-    }
-}
-
-struct ImageWebView: UIViewRepresentable {
+struct ViewerImageWebView: UIViewRepresentable {
     var url: URL
 
     func makeUIView(context _: Context) -> WKWebView {

@@ -5,7 +5,6 @@ import VoltaserveCore
 class TaskStore: ObservableObject {
     @Published var list: VOTask.List?
     @Published var entities: [VOTask.Entity]?
-    @Published var count: Int?
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
@@ -60,24 +59,6 @@ class TaskStore: ObservableObject {
             self.showError = true
         } anyways: {
             self.isLoading = false
-        }
-    }
-
-    func fetchCount() async throws -> Int? {
-        try await taskClient?.fetchCount()
-    }
-
-    func fetchCount() {
-        var count: Int?
-        withErrorHandling {
-            count = try await self.fetchCount()
-            return true
-        } success: {
-            self.count = count
-        } failure: { message in
-            self.errorTitle = "Error: Fetching Task Count"
-            self.errorMessage = message
-            self.showError = true
         }
     }
 
@@ -140,12 +121,6 @@ class TaskStore: ObservableObject {
                     DispatchQueue.main.async {
                         self.entities = list.data
                     }
-                }
-            }
-            Task {
-                let count = try await self.fetchCount()
-                DispatchQueue.main.async {
-                    self.count = count
                 }
             }
         }

@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct TaskList: View {
-    @EnvironmentObject private var taskStore: TaskStore
     @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
     @State private var isDismissingAll = false
     @State private var showError = false
@@ -64,17 +64,49 @@ struct TaskList: View {
             message: taskStore.errorMessage
         )
         .onAppear {
-            taskStore.clear()
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
+        .onDisappear {
+            stopTimers()
+        }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
         .sync($taskStore.showError, with: $showError)
+        .environmentObject(taskStore)
+    }
+
+    private func onAppearOrChange() {
+        fetchData()
+    }
+
+    private func fetchData() {
+        taskStore.fetchList(replace: true)
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        taskStore.token = token
+    }
+
+    private func startTimers() {
+        taskStore.startTimer()
+    }
+
+    private func stopTimers() {
+        taskStore.stopTimer()
+    }
+
+    private func onListItemAppear(_ id: String) {
+        if taskStore.isLast(id) {
+            taskStore.fetchList()
+        }
     }
 
     private func performDismissAll() {
@@ -91,20 +123,6 @@ struct TaskList: View {
             taskStore.showError = true
         } anyways: {
             isDismissingAll = false
-        }
-    }
-
-    private func onAppearOrChange() {
-        fetchData()
-    }
-
-    private func fetchData() {
-        taskStore.fetchList(replace: true)
-    }
-
-    private func onListItemAppear(_ id: String) {
-        if taskStore.isLast(id) {
-            taskStore.fetchList()
         }
     }
 }

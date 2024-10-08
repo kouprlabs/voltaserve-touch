@@ -3,8 +3,8 @@ import VoltaserveCore
 
 struct AccountOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var accountStore: AccountStore
-    @EnvironmentObject private var invitationStore: InvitationStore
+    @StateObject private var accountStore = AccountStore()
+    @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
     @State private var showDelete = false
     @State private var showError = false
@@ -73,7 +73,9 @@ struct AccountOverview: View {
         )
         .onAppear {
             accountStore.tokenStore = tokenStore
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -81,16 +83,17 @@ struct AccountOverview: View {
             stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
         .sync($accountStore.showError, with: $showError)
+        .environmentObject(accountStore)
     }
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
@@ -100,10 +103,17 @@ struct AccountOverview: View {
 
     private func startTimers() {
         accountStore.startTimer()
+        accountStore.startTimer()
     }
 
     private func stopTimers() {
         accountStore.stopTimer()
+        invitationStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        accountStore.token = token
+        invitationStore.token = token
     }
 
     private func performSignOut() {

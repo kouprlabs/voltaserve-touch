@@ -4,10 +4,9 @@ import VoltaserveCore
 
 struct WorkspaceList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @EnvironmentObject private var accountStore: AccountStore
-    @EnvironmentObject private var invitationStore: InvitationStore
-    @EnvironmentObject private var taskStore: TaskStore
+    @StateObject private var workspaceStore = WorkspaceStore()
+    @StateObject private var accountStore = AccountStore()
+    @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
     @State private var showAccount = false
     @State private var showNew = false
@@ -95,15 +94,11 @@ struct WorkspaceList: View {
             title: invitationStore.errorTitle,
             message: invitationStore.errorMessage
         )
-        .voErrorAlert(
-            isPresented: $showTaskError,
-            title: taskStore.errorTitle,
-            message: taskStore.errorMessage
-        )
         .onAppear {
             accountStore.tokenStore = tokenStore
-            workspaceStore.clear()
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -111,7 +106,8 @@ struct WorkspaceList: View {
             stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
@@ -123,7 +119,7 @@ struct WorkspaceList: View {
         .sync($workspaceStore.showError, with: $showWorkspaceError)
         .sync($accountStore.showError, with: $showAccountError)
         .sync($invitationStore.showError, with: $showInvitationError)
-        .sync($taskStore.showError, with: $showTaskError)
+        .environmentObject(workspaceStore)
     }
 
     var accountButton: some View {
@@ -150,12 +146,10 @@ struct WorkspaceList: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
         workspaceStore.fetchList(replace: true)
-        taskStore.fetchCount()
         accountStore.fetchUser()
         invitationStore.fetchIncomingCount()
     }
@@ -164,14 +158,18 @@ struct WorkspaceList: View {
         workspaceStore.startTimer()
         accountStore.startTimer()
         invitationStore.startTimer()
-        taskStore.startTimer()
     }
 
     private func stopTimers() {
         workspaceStore.stopTimer()
         accountStore.stopTimer()
         invitationStore.stopTimer()
-        taskStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        workspaceStore.token = token
+        accountStore.token = token
+        invitationStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

@@ -3,9 +3,9 @@ import SwiftUI
 import VoltaserveCore
 
 struct BrowserList: View {
-    @StateObject private var browserStore = BrowserStore()
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var workspaceStore: WorkspaceStore
+    @StateObject private var browserStore = BrowserStore()
     @State private var tappedItem: VOFile.Entity?
     @State private var showError = false
     @State private var searchText = ""
@@ -69,7 +69,7 @@ struct BrowserList: View {
                             browserStore.fetchList(replace: true)
                         }
                         .navigationDestination(item: $tappedItem) {
-                            FileViewer($0)
+                            Viewer($0)
                         }
                         .voErrorAlert(
                             isPresented: $showError,
@@ -99,6 +99,7 @@ struct BrowserList: View {
         .onAppear {
             if let token = tokenStore.token {
                 assignTokensToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -121,7 +122,6 @@ struct BrowserList: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {

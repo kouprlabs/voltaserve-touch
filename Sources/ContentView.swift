@@ -5,17 +5,6 @@ import VoltaserveCore
 
 struct ContentView: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var accountStore: AccountStore
-    @EnvironmentObject private var workspaceStore: WorkspaceStore
-    @EnvironmentObject private var organizationStore: OrganizationStore
-    @EnvironmentObject private var invitationStore: InvitationStore
-    @EnvironmentObject private var taskStore: TaskStore
-    @EnvironmentObject private var groupStore: GroupStore
-    @EnvironmentObject private var mosaicStore: MosaicStore
-    @EnvironmentObject private var glbStore: GLBStore
-    @EnvironmentObject private var pdfStore: PDFStore
-    @EnvironmentObject private var imageStore: ImageStore
-    @EnvironmentObject private var videoStore: VideoStore
     @Environment(\.modelContext) private var context
     @Query private var servers: [Server]
     @State private var timer: Timer?
@@ -36,10 +25,6 @@ struct ContentView: View {
                     showSignIn = true
                 }
 
-                if let token = tokenStore.token {
-                    assignTokenToStores(token)
-                }
-
                 startTokenTimer()
 
                 if !servers.contains(where: \.isCloud) {
@@ -48,9 +33,6 @@ struct ContentView: View {
             }
             .onDisappear { stopTokenTimer() }
             .onChange(of: tokenStore.token) { oldToken, newToken in
-                if let newToken {
-                    assignTokenToStores(newToken)
-                }
                 if oldToken != nil, newToken == nil {
                     stopTokenTimer()
                     // This is hack to mitigate a SwiftUI bug that causes `fullScreenCover` to dismiss
@@ -68,20 +50,6 @@ struct ContentView: View {
                     showSignIn = false
                 }
             }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        accountStore.token = token
-        workspaceStore.token = token
-        organizationStore.token = token
-        groupStore.token = token
-        invitationStore.token = token
-        taskStore.token = token
-        mosaicStore.token = token
-        glbStore.token = token
-        pdfStore.token = token
-        imageStore.token = token
-        videoStore.token = token
     }
 
     private func startTokenTimer() {

@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct GroupSelector: View {
-    @StateObject private var groupStore = GroupStore()
     @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject private var groupStore = GroupStore()
     @Environment(\.dismiss) private var dismiss
     @State private var showError = false
     @State private var searchText = ""
@@ -78,6 +78,7 @@ struct GroupSelector: View {
         .onChange(of: tokenStore.token) { _, newToken in
             if let newToken {
                 assignTokenToStores(newToken)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -91,7 +92,6 @@ struct GroupSelector: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func onListItemAppear(_ id: String) {

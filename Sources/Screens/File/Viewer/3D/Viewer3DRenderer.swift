@@ -3,32 +3,14 @@ import SceneKit
 import SwiftUI
 import VoltaserveCore
 
-struct GLBViewer: View {
-    @EnvironmentObject private var glbStore: GLBStore
-    private let file: VOFile.Entity
-
-    init(_ file: VOFile.Entity) {
-        self.file = file
-    }
-
-    var body: some View {
-        if file.type == .file,
-           let snapshot = file.snapshot,
-           let download = snapshot.preview,
-           let fileExtension = download.fileExtension, fileExtension.isGLB() {
-            GLBRenderer(file)
-                .edgesIgnoringSafeArea(.horizontal)
-        }
-    }
-}
-
-struct GLBRenderer: UIViewRepresentable {
-    @EnvironmentObject private var glbStore: GLBStore
+struct Viewer3DRenderer: UIViewRepresentable {
     @State private var isLoading = true
     private let file: VOFile.Entity
+    private let url: URL
 
-    init(_ file: VOFile.Entity) {
+    init(file: VOFile.Entity, url: URL) {
         self.file = file
+        self.url = url
     }
 
     func makeUIView(context: Context) -> UIView {
@@ -59,7 +41,7 @@ struct GLBRenderer: UIViewRepresentable {
         ])
 
         context.coordinator.spinner = spinner
-        context.coordinator.loadAsset(file.id)
+        context.coordinator.loadAsset()
 
         return containerView
     }
@@ -69,11 +51,11 @@ struct GLBRenderer: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(sceneView: SCNView(), store: glbStore, isLoading: $isLoading)
+        Coordinator(sceneView: SCNView(), url: url, isLoading: $isLoading)
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var glbStore: GLBStore
+        var url: URL
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
@@ -81,9 +63,9 @@ struct GLBRenderer: UIViewRepresentable {
         var spinner: UIActivityIndicatorView?
         @Binding var isLoading: Bool
 
-        init(sceneView: SCNView, store: GLBStore, isLoading: Binding<Bool>) {
+        init(sceneView: SCNView, url: URL, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
-            glbStore = store
+            self.url = url
             _isLoading = isLoading
 
             let camera = SCNCamera()
@@ -100,12 +82,27 @@ struct GLBRenderer: UIViewRepresentable {
             sceneView.isPlaying = false
         }
 
-        func loadAsset(_ id: String) {
-            glbStore.loadAsset(id) { [self] asset, _ in
+        func loadAsset() {
+            loadAsset(url: url) { [self] asset, _ in
                 if let asset {
                     self.asset = asset
                     setupScene()
                     isLoading = false
+                }
+            }
+        }
+
+        func loadAsset(url: URL, completion: @escaping (GLTFAsset?, Error?) -> Void) {
+            GLTFAsset.load(
+                with: url,
+                options: [:]
+            ) { _, status, maybeAsset, maybeError, _ in
+                DispatchQueue.main.async {
+                    if status == .complete {
+                        completion(maybeAsset, nil)
+                    } else if let error = maybeError {
+                        completion(nil, error)
+                    }
                 }
             }
         }
@@ -172,37 +169,5 @@ struct GLBRenderer: UIViewRepresentable {
                 self.sceneView.isPlaying = true
             }
         }
-    }
-}
-
-extension SCNNode {
-    // Helper function to calculate the bounding box considering all child nodes and transformations
-    func boundingBoxRelativeToCurrentObject() -> (SCNVector3, SCNVector3) {
-        var minVec: SCNVector3 = SCNVector3Zero
-        var maxVec: SCNVector3 = SCNVector3Zero
-        var first = true
-
-        enumerateChildNodes { node, _ in
-            let (nodeMin, nodeMax) = node.boundingBox
-
-            // Apply node transformation to the bounding box
-            let transformedMin = node.convertPosition(nodeMin, to: self)
-            let transformedMax = node.convertPosition(nodeMax, to: self)
-
-            if first {
-                minVec = transformedMin
-                maxVec = transformedMax
-                first = false
-            } else {
-                minVec.x = Swift.min(minVec.x, transformedMin.x)
-                minVec.y = Swift.min(minVec.y, transformedMin.y)
-                minVec.z = Swift.min(minVec.z, transformedMin.z)
-                maxVec.x = Swift.max(maxVec.x, transformedMax.x)
-                maxVec.y = Swift.max(maxVec.y, transformedMax.y)
-                maxVec.z = Swift.max(maxVec.z, transformedMax.z)
-            }
-        }
-
-        return (minVec, maxVec)
     }
 }

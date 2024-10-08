@@ -1,8 +1,9 @@
 import SwiftUI
 import VoltaserveCore
 
-struct MosaicViewer: View {
-    @EnvironmentObject private var mosaicStore: MosaicStore
+struct ViewerMosaic: View {
+    @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject private var viewerMosaicStore = ViewerMosaicStore()
     @State private var dragOffset = CGSize.zero
     @State private var lastDragOffset = CGSize.zero
     @State private var showZoomLevelMenu = false
@@ -24,19 +25,19 @@ struct MosaicViewer: View {
                     size: geometry.size
                 )
                 ZStack {
-                    if let zoomLevel = mosaicStore.zoomLevel, !mosaicStore.grid.isEmpty {
+                    if let zoomLevel = viewerMosaicStore.zoomLevel, !viewerMosaicStore.grid.isEmpty {
                         ForEach(0 ..< zoomLevel.rows, id: \.self) { row in
                             ForEach(0 ..< zoomLevel.cols, id: \.self) { col in
-                                let size = mosaicStore.sizeForCell(row: row, col: col)
-                                let position = mosaicStore.positionForCell(row: row, col: col)
-                                let frame = mosaicStore.frameForCellAt(position: position, size: size)
+                                let size = viewerMosaicStore.sizeForCell(row: row, col: col)
+                                let position = viewerMosaicStore.positionForCell(row: row, col: col)
+                                let frame = viewerMosaicStore.frameForCellAt(position: position, size: size)
 
                                 // Check if the cell is within the visible bounds or the surrounding buffer
                                 if visibleRect.insetBy(
                                     dx: -CGFloat(Constants.extraTilesToLoad) * size.width,
                                     dy: -CGFloat(Constants.extraTilesToLoad) * size.height
                                 ).intersects(frame) {
-                                    if let image = mosaicStore.grid[row][col] {
+                                    if let image = viewerMosaicStore.grid[row][col] {
                                         Image(uiImage: image)
                                             .resizable()
                                             .frame(width: size.width, height: size.height)
@@ -53,7 +54,7 @@ struct MosaicViewer: View {
                                                 y: position.y + dragOffset.height
                                             )
                                             .onAppear {
-                                                mosaicStore.loadImageForCell(file.id, row: row, col: col)
+                                                viewerMosaicStore.loadImageForCell(file.id, row: row, col: col)
                                             }
                                     }
                                 }
@@ -76,7 +77,7 @@ struct MosaicViewer: View {
                         }
                         .onEnded { _ in
                             lastDragOffset = dragOffset
-                            mosaicStore.unloadImagesOutsideRect(
+                            viewerMosaicStore.unloadImagesOutsideRect(
                                 visibleRect,
                                 extraTilesToLoad: Constants.extraTilesToLoad
                             )
@@ -86,11 +87,11 @@ struct MosaicViewer: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            if let zoomLevels = mosaicStore.info?.metadata.zoomLevels {
+                            if let zoomLevels = viewerMosaicStore.info?.metadata.zoomLevels {
                                 ForEach(zoomLevels, id: \.index) { zoomLevel in
                                     Button(action: {
                                         resetMosaicPosition()
-                                        mosaicStore.selectZoomLevel(zoomLevel)
+                                        viewerMosaicStore.selectZoomLevel(zoomLevel)
                                     }, label: {
                                         Text("\(Int(zoomLevel.scaleDownPercentage))%")
                                     })
@@ -102,12 +103,24 @@ struct MosaicViewer: View {
                     }
                 }
                 .onAppear {
-                    Task {
-                        try await mosaicStore.loadMosaic(file.id)
+                    if let token = tokenStore.token {
+                        assignTokenToStores(token)
+                        Task {
+                            try await viewerMosaicStore.loadMosaic(file.id)
+                        }
+                    }
+                }
+                .onChange(of: tokenStore.token) { _, newToken in
+                    if let newToken {
+                        assignTokenToStores(newToken)
                     }
                 }
             }
         }
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        viewerMosaicStore.token = token
     }
 
     private func resetMosaicPosition() {

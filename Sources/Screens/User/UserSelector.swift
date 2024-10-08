@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct UserSelector: View {
-    @StateObject private var userStore = UserStore()
     @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject private var userStore = UserStore()
     @Environment(\.dismiss) private var dismiss
     @State private var searchText = ""
     @State private var showError = false
@@ -76,6 +76,7 @@ struct UserSelector: View {
             }
             if let token = tokenStore.token {
                 assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -98,7 +99,6 @@ struct UserSelector: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {

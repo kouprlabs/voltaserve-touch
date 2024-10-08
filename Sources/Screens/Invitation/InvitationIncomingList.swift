@@ -3,7 +3,7 @@ import VoltaserveCore
 
 struct InvitationIncomingList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var invitationStore: InvitationStore
+    @StateObject private var invitationStore = InvitationStore()
     @State private var showInfo = false
     @State private var invitation: VOInvitation.Entity?
 
@@ -40,7 +40,9 @@ struct InvitationIncomingList: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Invitations")
         .onAppear {
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -48,15 +50,16 @@ struct InvitationIncomingList: View {
             stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
+        .environmentObject(invitationStore)
     }
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
@@ -69,6 +72,10 @@ struct InvitationIncomingList: View {
 
     private func stopTimers() {
         invitationStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        invitationStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

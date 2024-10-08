@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-class MosaicStore: ObservableObject {
+class ViewerMosaicStore: ObservableObject {
     @Published private(set) var info: VOMosaic.Info?
     @Published private(set) var zoomLevel: VOMosaic.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []

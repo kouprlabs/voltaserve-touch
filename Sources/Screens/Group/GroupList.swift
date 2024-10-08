@@ -4,7 +4,7 @@ import VoltaserveCore
 
 struct GroupList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var groupStore: GroupStore
+    @StateObject private var groupStore = GroupStore()
     @State private var showNew = false
     @State private var showError = false
     @State private var searchText = ""
@@ -67,8 +67,9 @@ struct GroupList: View {
             message: groupStore.errorMessage
         )
         .onAppear {
-            groupStore.clear()
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -76,7 +77,8 @@ struct GroupList: View {
             stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
@@ -86,11 +88,11 @@ struct GroupList: View {
         }
         .sync($groupStore.searchText, with: $searchText)
         .sync($groupStore.showError, with: $showError)
+        .environmentObject(groupStore)
     }
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
@@ -103,6 +105,10 @@ struct GroupList: View {
 
     private func stopTimers() {
         groupStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        groupStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

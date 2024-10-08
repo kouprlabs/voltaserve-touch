@@ -4,7 +4,7 @@ import VoltaserveCore
 
 struct OrganizationList: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @EnvironmentObject private var organizationStore: OrganizationStore
+    @StateObject private var organizationStore = OrganizationStore()
     @State private var showNew = false
     @State private var showError = false
     @State private var searchText = ""
@@ -67,8 +67,9 @@ struct OrganizationList: View {
             message: organizationStore.errorMessage
         )
         .onAppear {
-            organizationStore.clear()
-            if tokenStore.token != nil {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -76,7 +77,8 @@ struct OrganizationList: View {
             stopTimers()
         }
         .onChange(of: tokenStore.token) { _, newToken in
-            if newToken != nil {
+            if let newToken {
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
@@ -86,11 +88,11 @@ struct OrganizationList: View {
         }
         .sync($organizationStore.searchText, with: $searchText)
         .sync($organizationStore.showError, with: $showError)
+        .environmentObject(organizationStore)
     }
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
@@ -103,6 +105,10 @@ struct OrganizationList: View {
 
     private func stopTimers() {
         organizationStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        organizationStore.token = token
     }
 
     private func onListItemAppear(_ id: String) {

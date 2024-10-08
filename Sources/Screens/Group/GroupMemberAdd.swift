@@ -22,10 +22,12 @@ struct GroupMemberAdd: View {
                         }
                     } label: {
                         HStack {
-                            Text("Select User")
+                            Text("User")
                             if let user {
                                 Spacer()
                                 Text(user.fullName)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -44,8 +46,8 @@ struct GroupMemberAdd: View {
                     if isSaving {
                         ProgressView()
                     } else {
-                        Button("Save") {
-                            performSave()
+                        Button("Add") {
+                            performAdd()
                         }
                         .disabled(!isValid())
                     }
@@ -55,7 +57,7 @@ struct GroupMemberAdd: View {
         }
     }
 
-    private func performSave() {
+    private func performAdd() {
         guard let user else { return }
         isSaving = true
 
