@@ -43,7 +43,7 @@ struct FileGrid: View {
                         }
                     }
                     .navigationDestination(item: $tappedItem) {
-                        FileViewer($0)
+                        Viewer($0)
                     }
                     .modifierIfPhone {
                         $0.padding(.vertical, VOMetrics.spacing)

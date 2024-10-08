@@ -6,6 +6,7 @@ import VoltaserveCore
 class FileStore: ObservableObject {
     @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
+    @Published var taskCount: Int?
     @Published var id: String?
     @Published var file: VOFile.Entity?
     @Published var query: VOFile.Query?
@@ -16,11 +17,11 @@ class FileStore: ObservableObject {
     @Published var showBrowserForMove = false
     @Published var showBrowserForCopy = false
     @Published var showUploadDocumentPicker = false
+    @Published var showDownloadDocumentPicker = false
     @Published var showNewFolder = false
     @Published var showUpload = false
     @Published var showMove = false
     @Published var showCopy = false
-    @Published var showDownloadDocumentPicker = false
     @Published var showSharing = false
     @Published var showTasks = false
     @Published var viewMode: ViewMode = .grid
@@ -32,12 +33,17 @@ class FileStore: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var fileClient: VOFile?
+    private var taskClient: VOTask?
     let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
         didSet {
             if let token {
                 fileClient = .init(
+                    baseURL: Config.production.apiURL,
+                    accessToken: token.accessToken
+                )
+                taskClient = VOTask(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -127,6 +133,24 @@ class FileStore: ObservableObject {
             self.showError = true
         } anyways: {
             self.isLoading = false
+        }
+    }
+
+    func fetchTaskCount() async throws -> Int? {
+        try await taskClient?.fetchCount()
+    }
+
+    func fetchTaskCount() {
+        var taskCount: Int?
+        withErrorHandling {
+            taskCount = try await self.fetchTaskCount()
+            return true
+        } success: {
+            self.taskCount = taskCount
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Task Count"
+            self.errorMessage = message
+            self.showError = true
         }
     }
 
@@ -290,6 +314,12 @@ class FileStore: ObservableObject {
                             self.file = file
                         }
                     }
+                }
+            }
+            Task {
+                let taskCount = try await self.fetchTaskCount()
+                DispatchQueue.main.async {
+                    self.taskCount = taskCount
                 }
             }
         }

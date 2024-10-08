@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SignUp: View {
-    @EnvironmentObject private var store: SignUpStore
+    @StateObject private var signUpStore = SignUpStore()
     @State private var fullName: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
@@ -17,7 +17,7 @@ struct SignUp: View {
 
     var body: some View {
         NavigationView {
-            if let passwordRequirements = store.passwordRequirements {
+            if let passwordRequirements = signUpStore.passwordRequirements {
                 VStack(spacing: VOMetrics.spacing) {
                     VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
                     Text("Sign Up to Voltaserve")
@@ -85,6 +85,7 @@ struct SignUp: View {
                 ProgressView()
             }
         }
+        .environmentObject(SignUpStore())
     }
 }
 

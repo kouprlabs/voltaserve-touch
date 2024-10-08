@@ -65,6 +65,7 @@ struct OrganizationSelector: View {
             organizationStore.clear()
             if let token = tokenStore.token {
                 assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -87,7 +88,6 @@ struct OrganizationSelector: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {

@@ -29,6 +29,8 @@ struct AccountSettings: View {
                                 Text("Full name")
                                 Spacer()
                                 Text(user.fullName)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -40,6 +42,8 @@ struct AccountSettings: View {
                                 Text("Email")
                                 Spacer()
                                 Text(user.email)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -86,9 +90,6 @@ struct AccountSettings: View {
                 onAppearOrChange()
             }
         }
-        .onDisappear {
-            stopTimers()
-        }
         .onChange(of: tokenStore.token) { _, newToken in
             if newToken != nil {
                 onAppearOrChange()
@@ -99,19 +100,10 @@ struct AccountSettings: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
         accountStore.fetchUser()
-    }
-
-    private func startTimers() {
-        accountStore.startTimer()
-    }
-
-    private func stopTimers() {
-        accountStore.stopTimer()
     }
 
     private func performDelete() {

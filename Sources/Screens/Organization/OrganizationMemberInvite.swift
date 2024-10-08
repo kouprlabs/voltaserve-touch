@@ -42,8 +42,8 @@ struct OrganizationMemberInvite: View {
                 if isSending {
                     ProgressView()
                 } else {
-                    Button("Send") {
-                        performSend()
+                    Button("Invite") {
+                        performInvite()
                     }
                     .disabled(!isValid())
                 }
@@ -63,7 +63,7 @@ struct OrganizationMemberInvite: View {
         emails = Array(Set(values)).sorted()
     }
 
-    private func performSend() {
+    private func performInvite() {
         guard let organization = organizationStore.current else { return }
         isSending = true
 

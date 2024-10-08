@@ -2,8 +2,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct SharingOverview: View {
-    @StateObject private var sharingStore = SharingStore()
     @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject private var sharingStore = SharingStore()
     @Environment(\.dismiss) private var dismiss
     @State private var selection: Tag = .users
     @State private var user: VOUser.Entity?
@@ -53,6 +53,7 @@ struct SharingOverview: View {
                 sharingStore.file = file
                 if let token = tokenStore.token {
                     assignTokenToStores(token)
+                    startTimers()
                     onAppearOrChange()
                 }
             }
@@ -85,7 +86,6 @@ struct SharingOverview: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {

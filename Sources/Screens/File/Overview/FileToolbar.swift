@@ -2,7 +2,6 @@ import SwiftUI
 
 struct FileToolbar: ViewModifier {
     @EnvironmentObject private var fileStore: FileStore
-    @EnvironmentObject private var taskStore: TaskStore
     @Environment(\.editMode) private var editMode
 
     func body(content: Content) -> some View {
@@ -45,7 +44,7 @@ struct FileToolbar: ViewModifier {
             } label: {
                 Image(systemName: "square.3.layers.3d")
             }
-            if let count = taskStore.count, count > 0 {
+            if let taskCount = fileStore.taskCount, taskCount > 0 {
                 Circle()
                     .fill(.red)
                     .frame(width: 10, height: 10)

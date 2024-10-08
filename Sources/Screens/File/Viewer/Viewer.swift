@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileViewer: View {
+struct Viewer: View {
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
@@ -10,16 +10,16 @@ struct FileViewer: View {
 
     var body: some View {
         VStack {
-            PDFViewer(file)
-            ImageViewer(file)
-            VideoPlayer(file)
-            AudioPlayer(file)
-            GLBViewer(file)
+            ViewerPDF(file)
+            ViewerImage(file)
+            ViewerVideo(file)
+            ViewerAudio(file)
+            Viewer3D(file)
             if UIDevice.current.userInterfaceIdiom == .pad {
-                MosaicViewer(file)
+                ViewerMosaic(file)
                     .edgesIgnoringSafeArea(.bottom)
             } else {
-                MosaicViewer(file)
+                ViewerMosaic(file)
                     .edgesIgnoringSafeArea(.horizontal)
             }
         }

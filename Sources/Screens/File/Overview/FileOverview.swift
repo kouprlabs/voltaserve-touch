@@ -4,8 +4,8 @@ import UIKit
 import VoltaserveCore
 
 struct FileOverview: View {
-    @StateObject private var fileStore = FileStore()
     @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject private var fileStore = FileStore()
     @State private var searchText = ""
     @State private var showError = false
 
@@ -48,6 +48,7 @@ struct FileOverview: View {
             fileStore.loadViewModeFromUserDefaults()
             if let token = tokenStore.token {
                 assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -71,7 +72,6 @@ struct FileOverview: View {
 
     private func onAppearOrChange() {
         fetchData()
-        startTimers()
     }
 
     private func fetchData() {
