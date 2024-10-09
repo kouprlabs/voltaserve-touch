@@ -48,6 +48,7 @@
 			membershipExceptions = (
 				KeychainManager.swift,
 				TokenStorage.swift,
+				"UserDefaults+Server.swift",
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;
 		};

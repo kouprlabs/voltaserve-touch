@@ -30,6 +30,9 @@ struct ContentView: View {
                 if !servers.contains(where: \.isCloud) {
                     context.insert(Server.cloud)
                 }
+                if UserDefaults.standard.server == nil {
+                    UserDefaults.standard.server = Server.cloud
+                }
             }
             .onDisappear { stopTokenTimer() }
             .onChange(of: tokenStore.token) { oldToken, newToken in
