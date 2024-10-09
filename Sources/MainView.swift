@@ -8,7 +8,6 @@ struct MainView: View {
         case workspaces
         case groups
         case organizations
-        case tasks
     }
 
     var body: some View {

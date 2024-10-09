@@ -4,8 +4,17 @@ struct Config {
     var apiURL: String
     var idpURL: String
 
-    static let production = Config(
-        apiURL: "http://localhost:8080/v2",
-        idpURL: "http://localhost:8081/v2"
-    )
+    static var production: Config {
+        if let server = UserDefaults.standard.server {
+            Config(
+                apiURL: server.apiURL,
+                idpURL: server.idpURL
+            )
+        } else {
+            Config(
+                apiURL: "https://api.cloud.voltaserve.com/v2",
+                idpURL: "https://idp.cloud.voltaserve.com/v2"
+            )
+        }
+    }
 }

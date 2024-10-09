@@ -4,12 +4,14 @@ import VoltaserveCore
 
 class TokenStore: ObservableObject {
     @Published var token: VOToken.Value?
-    private var client = VOToken(baseURL: Config.production.idpURL)
+    private var client = createClient()
 
-    init() {}
+    private static func createClient() -> VOToken {
+        VOToken(baseURL: Config.production.idpURL)
+    }
 
-    init(_ token: VOToken.Value) {
-        self.token = token
+    func recreateClient() {
+        client = TokenStore.createClient()
     }
 
     func signIn(username: String, password: String) async throws -> VOToken.Value {
