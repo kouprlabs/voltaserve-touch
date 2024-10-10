@@ -20,8 +20,10 @@ struct WorkspaceOverview: View {
                         .padding()
                     Form {
                         NavigationLink {
-                            FileOverview(current.rootID, workspaceStore: workspaceStore)
-                                .navigationTitle(current.name)
+                            if let root = workspaceStore.root {
+                                FileOverview(root, workspaceStore: workspaceStore)
+                                    .navigationTitle(current.name)
+                            }
                         } label: {
                             Label("Files", systemImage: "folder")
                         }
@@ -42,6 +44,7 @@ struct WorkspaceOverview: View {
         .navigationTitle(workspace.name)
         .onAppear {
             workspaceStore.current = workspace
+            workspaceStore.fetchRoot()
         }
     }
 }

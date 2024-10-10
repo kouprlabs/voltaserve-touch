@@ -109,7 +109,7 @@ struct FileSheets: ViewModifier {
                     }
                 }
                 .sheet(isPresented: $showNewFolder) {
-                    if let parent = fileStore.file, let workspace = workspaceStore.current {
+                    if let parent = fileStore.current, let workspace = workspaceStore.current {
                         FolderNew(parentID: parent.id, workspaceId: workspace.id, fileStore: fileStore)
                     }
                 }

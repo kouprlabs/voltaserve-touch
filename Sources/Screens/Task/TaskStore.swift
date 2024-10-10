@@ -10,6 +10,7 @@ class TaskStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var isLoading = false
     private var timer: Timer?
+    private var taskClient: VOTask?
 
     var token: VOToken.Value? {
         didSet {
@@ -21,8 +22,6 @@ class TaskStore: ObservableObject {
             }
         }
     }
-
-    private var taskClient: VOTask?
 
     func fetch(id: String) async throws -> VOTask.Entity? {
         try await taskClient?.fetch(id)

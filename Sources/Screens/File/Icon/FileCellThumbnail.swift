@@ -28,6 +28,14 @@ struct FileCellThumbnail<FallbackContent: View>: View {
                         .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                 }
                 .fileCellAdornments(file)
+                .overlay {
+                    if let fileExtension = file.snapshot?.original.fileExtension, fileExtension.isVideo() {
+                        Image(systemName: "play.fill")
+                            .foregroundStyle(.white)
+                            .font(.largeTitle)
+                            .opacity(0.5)
+                    }
+                }
                 .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
         } placeholder: {
             fallback()
