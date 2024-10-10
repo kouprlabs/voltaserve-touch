@@ -36,7 +36,7 @@ struct FileGrid: View {
                                 }
                             } else if file.type == .folder {
                                 NavigationLink {
-                                    FileOverview(file.id, workspaceStore: workspaceStore)
+                                    FileOverview(file, workspaceStore: workspaceStore)
                                         .navigationTitle(file.name)
                                 } label: {
                                     FileCell(file, fileStore: fileStore)

@@ -30,7 +30,7 @@ struct FileList: View {
                         }
                     } else if file.type == .folder {
                         NavigationLink {
-                            FileOverview(file.id, workspaceStore: workspaceStore)
+                            FileOverview(file, workspaceStore: workspaceStore)
                                 .navigationTitle(file.name)
                         } label: {
                             FileRow(file)

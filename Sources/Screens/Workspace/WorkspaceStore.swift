@@ -6,6 +6,7 @@ class WorkspaceStore: ObservableObject {
     @Published var list: VOWorkspace.List?
     @Published var entities: [VOWorkspace.Entity]?
     @Published var current: VOWorkspace.Entity?
+    @Published var root: VOFile.Entity?
     @Published var storageUsage: VOStorage.Usage?
     @Published var query: String?
     @Published var showError = false
@@ -17,6 +18,7 @@ class WorkspaceStore: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var workspaceClient: VOWorkspace?
+    private var fileClient: VOFile?
     private var storageClient: VOStorage?
     let searchPublisher = PassthroughSubject<String, Never>()
 
@@ -24,6 +26,10 @@ class WorkspaceStore: ObservableObject {
         didSet {
             if let token {
                 workspaceClient = .init(
+                    baseURL: Config.production.apiURL,
+                    accessToken: token.accessToken
+                )
+                fileClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -98,6 +104,27 @@ class WorkspaceStore: ObservableObject {
             self.showError = true
         } anyways: {
             self.isLoading = false
+        }
+    }
+
+    func fetchFile(_ id: String) async throws -> VOFile.Entity? {
+        try await fileClient?.fetch(id)
+    }
+
+    func fetchRoot() {
+        guard let current else { return }
+
+        var root: VOFile.Entity?
+
+        withErrorHandling {
+            root = try await self.fetchFile(current.rootID)
+            return true
+        } success: {
+            self.root = root
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Workspace Root"
+            self.errorMessage = message
+            self.showError = true
         }
     }
 
@@ -193,6 +220,14 @@ class WorkspaceStore: ObservableObject {
                     if let workspace {
                         DispatchQueue.main.async {
                             self.current = workspace
+                        }
+                    }
+                }
+                Task {
+                    let root = try await self.fetchFile(current.rootID)
+                    if let root {
+                        DispatchQueue.main.async {
+                            self.root = root
                         }
                     }
                 }

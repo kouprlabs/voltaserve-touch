@@ -9,11 +9,10 @@ struct FileOverview: View {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var searchText = ""
     @State private var showError = false
+    private let file: VOFile.Entity
 
-    private let id: String
-
-    init(_ id: String, workspaceStore: WorkspaceStore) {
-        self.id = id
+    init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
+        self.file = file
         self.workspaceStore = workspaceStore
     }
 
@@ -46,7 +45,7 @@ struct FileOverview: View {
         .fileSheets(fileStore: fileStore, workspaceStore: workspaceStore)
         .fileToolbar(fileStore: fileStore)
         .onAppear {
-            fileStore.id = id
+            fileStore.current = file
             fileStore.loadViewModeFromUserDefaults()
             if let token = tokenStore.token {
                 assignTokenToStores(token)
@@ -78,6 +77,7 @@ struct FileOverview: View {
     private func fetchData() {
         fileStore.fetch()
         fileStore.fetchList(replace: true)
+        fileStore.fetchTaskCount()
     }
 
     private func startTimers() {

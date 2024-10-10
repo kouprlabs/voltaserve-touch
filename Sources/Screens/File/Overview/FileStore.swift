@@ -6,9 +6,8 @@ import VoltaserveCore
 class FileStore: ObservableObject {
     @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
+    @Published var current: VOFile.Entity?
     @Published var taskCount: Int?
-    @Published var id: String?
-    @Published var file: VOFile.Entity?
     @Published var query: VOFile.Query?
 
     @Published var selection = Set<String>() {
@@ -102,14 +101,14 @@ class FileStore: ObservableObject {
     }
 
     func fetch() {
-        guard let id else { return }
+        guard let current else { return }
 
         var file: VOFile.Entity?
         withErrorHandling {
-            file = try await self.fetch(id)
+            file = try await self.fetch(current.id)
             return true
         } success: {
-            self.file = file
+            self.current = file
         } failure: { message in
             self.errorTitle = "Error: Fetching File"
             self.errorMessage = message
@@ -122,7 +121,7 @@ class FileStore: ObservableObject {
     }
 
     func fetchList(replace: Bool = false) {
-        guard let id else { return }
+        guard let current else { return }
 
         if isLoading { return }
         isLoading = true
@@ -133,7 +132,7 @@ class FileStore: ObservableObject {
         withErrorHandling {
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(id, page: nextPage)
+            list = try await self.fetchList(current.id, page: nextPage)
             return true
         } success: {
             self.list = list
@@ -309,13 +308,13 @@ class FileStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.isLoading { return }
-            if let file = self.file {
+            if let current = self.current {
                 Task {
                     var size = Constants.pageSize
                     if let list = self.list {
                         size = Constants.pageSize * list.page
                     }
-                    let list = try await self.fetchList(file.id, page: 1, size: size)
+                    let list = try await self.fetchList(current.id, page: 1, size: size)
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
@@ -323,12 +322,12 @@ class FileStore: ObservableObject {
                     }
                 }
             }
-            if let file = self.file {
+            if let current = self.current {
                 Task {
-                    let file = try await self.fetch(file.id)
+                    let file = try await self.fetch(current.id)
                     if let file {
                         DispatchQueue.main.async {
-                            self.file = file
+                            self.current = file
                         }
                     }
                 }
