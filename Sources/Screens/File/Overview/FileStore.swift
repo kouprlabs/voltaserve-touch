@@ -28,6 +28,7 @@ class FileStore: ObservableObject {
     @Published var showMove = false
     @Published var showCopy = false
     @Published var showSharing = false
+    @Published var showSnapshots = false
     @Published var showTasks = false
     @Published var viewMode: ViewMode = .grid
     @Published var searchText = ""

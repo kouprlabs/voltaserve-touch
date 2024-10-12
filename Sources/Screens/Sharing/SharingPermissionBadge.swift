@@ -9,13 +9,7 @@ struct SharingPermissionBadge: View {
     }
 
     var body: some View {
-        Text(text())
-            .font(.footnote)
-            .padding(.horizontal)
-            .frame(height: 20)
-            .foregroundStyle(Constants.background.textColor())
-            .background(Constants.background)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+        ColorBadge(text(), color: Constants.background, style: .fill)
     }
 
     func text() -> String {

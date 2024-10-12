@@ -18,6 +18,9 @@ struct FileActions: ViewModifier {
                 onSharing: {
                     fileStore.showSharing = true
                 },
+                onSnapshots: {
+                    fileStore.showSnapshots = true
+                },
                 onUpload: {
                     fileStore.showUploadDocumentPicker = true
                 },

@@ -61,7 +61,7 @@ struct InvitationOverview: View {
                     OrganizationRow(organization)
                 }
             }
-            Section(header: VOSectionHeader("Actions")) {
+            Section {
                 if isDeletable {
                     Button(role: .destructive) {
                         showDeleteConfirmation = true

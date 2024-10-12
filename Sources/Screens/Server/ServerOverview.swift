@@ -24,7 +24,7 @@ struct ServerOverview: View {
             Section(header: VOSectionHeader("Identity Provider URL")) {
                 Text(server.idpURL)
             }
-            Section(header: VOSectionHeader("Actions")) {
+            Section {
                 Button {
                     showActivateConfirmation = true
                 } label: {
