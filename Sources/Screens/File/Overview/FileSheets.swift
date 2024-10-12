@@ -11,6 +11,7 @@ struct FileSheets: ViewModifier {
     @State private var showBrowserForCopy = false
     @State private var showTasks = false
     @State private var showSharing = false
+    @State private var showSnapshots = false
     @State private var showMove = false
     @State private var showCopy = false
     @State private var showRename = false
@@ -48,6 +49,11 @@ struct FileSheets: ViewModifier {
                         SharingOverview(file, workspaceStore: workspaceStore)
                     } else if fileStore.selection.count > 1 {
                         SharingBatch(fileStore.selectionFiles, workspaceStore: workspaceStore)
+                    }
+                }
+                .sheet(isPresented: $showSnapshots) {
+                    if fileStore.selection.count == 1, let file = fileStore.selectionFiles.first {
+                        SnapshotList(file: file)
                     }
                 }
                 .sheet(isPresented: $showMove) {
@@ -117,6 +123,7 @@ struct FileSheets: ViewModifier {
                 .sync($fileStore.showBrowserForCopy, with: $showBrowserForCopy)
                 .sync($fileStore.showTasks, with: $showTasks)
                 .sync($fileStore.showSharing, with: $showSharing)
+                .sync($fileStore.showSnapshots, with: $showSnapshots)
                 .sync($fileStore.showMove, with: $showMove)
                 .sync($fileStore.showCopy, with: $showCopy)
                 .sync($fileStore.showRename, with: $showRename)

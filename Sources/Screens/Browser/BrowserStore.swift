@@ -15,8 +15,8 @@ class BrowserStore: ObservableObject {
     @Published var isLoading = false
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
-    let searchPublisher = PassthroughSubject<String, Never>()
     private var fileClient: VOFile?
+    let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
         didSet {

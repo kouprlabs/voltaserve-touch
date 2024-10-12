@@ -33,7 +33,7 @@ struct TaskOverview: View {
                 }
             }
             if task.status == .error {
-                Section(header: VOSectionHeader("Actions")) {
+                Section {
                     Button(role: .destructive) {
                         showDismissConfirmation = true
                     } label: {
