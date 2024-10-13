@@ -13,6 +13,7 @@ struct MosaicCreate: View {
     var body: some View {
         Form {
             Section {
+                // swiftlint:disable:next line_length
                 Text("Create a mosaic to enhance view performance of a large image by splitting it into smaller, manageable tiles. This makes browsing a high-resolution image faster and more efficient.")
             }
             Section {
