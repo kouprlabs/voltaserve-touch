@@ -137,7 +137,6 @@
 				Invitation/InvitationStatusBadge.swift,
 				Invitation/InvitationStore.swift,
 				Mosaic/MosaicCreate.swift,
-				Mosaic/MosaicOverview.swift,
 				Mosaic/MosaicSettings.swift,
 				Mosaic/MosaicStore.swift,
 				Organization/OrganizationCreate.swift,
