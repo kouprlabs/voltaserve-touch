@@ -24,4 +24,12 @@ extension VOSnapshot.Entity {
     func hasFeatures() -> Bool {
         entities != nil || mosaic != nil
     }
+
+    func hasEntities() -> Bool {
+        entities != nil
+    }
+
+    func hasMosaic() -> Bool {
+        mosaic != nil
+    }
 }

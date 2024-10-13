@@ -15,6 +15,9 @@ struct FileActions: ViewModifier {
             .fileContextMenu(
                 file,
                 fileStore: fileStore,
+                onMosaic: {
+                    fileStore.showMosaic = true
+                },
                 onSharing: {
                     fileStore.showSharing = true
                 },

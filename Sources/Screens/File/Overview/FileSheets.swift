@@ -9,6 +9,7 @@ struct FileSheets: ViewModifier {
     @State private var destinationIDForCopy: String?
     @State private var showBrowserForMove = false
     @State private var showBrowserForCopy = false
+    @State private var showMosaic = false
     @State private var showTasks = false
     @State private var showSharing = false
     @State private var showSnapshots = false
@@ -39,6 +40,11 @@ struct FileSheets: ViewModifier {
                         }
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle(workspace.name)
+                    }
+                }
+                .sheet(isPresented: $showMosaic) {
+                    if fileStore.selection.count == 1, let file = fileStore.selectionFiles.first {
+                        MosaicOverview(file)
                     }
                 }
                 .sheet(isPresented: $showTasks) {
@@ -121,6 +127,7 @@ struct FileSheets: ViewModifier {
                 }
                 .sync($fileStore.showBrowserForMove, with: $showBrowserForMove)
                 .sync($fileStore.showBrowserForCopy, with: $showBrowserForCopy)
+                .sync($fileStore.showMosaic, with: $showMosaic)
                 .sync($fileStore.showTasks, with: $showTasks)
                 .sync($fileStore.showSharing, with: $showSharing)
                 .sync($fileStore.showSnapshots, with: $showSnapshots)

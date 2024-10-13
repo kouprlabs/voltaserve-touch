@@ -30,6 +30,7 @@ class FileStore: ObservableObject {
     @Published var showSharing = false
     @Published var showSnapshots = false
     @Published var showTasks = false
+    @Published var showMosaic = false
     @Published var viewMode: ViewMode = .grid
     @Published var searchText = ""
     @Published var isLoading = false
