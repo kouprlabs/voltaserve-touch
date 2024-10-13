@@ -18,7 +18,7 @@ struct MosaicCreate: View {
             Section {
                 Button {} label: {
                     HStack {
-                        Text("Create")
+                        Text("Create Mosaic")
                         if isCreating {
                             Spacer()
                             ProgressView()

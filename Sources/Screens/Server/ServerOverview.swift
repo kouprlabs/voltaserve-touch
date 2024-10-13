@@ -36,7 +36,7 @@ struct ServerOverview: View {
                         }
                     }
                 }
-                .disabled(server.isActive || isDeleting || isActivating)
+                .disabled(server.isActive || isProcessing)
                 .confirmationDialog("Activate Server", isPresented: $showActivateConfirmation) {
                     Button("Activate") {
                         performActivate()
@@ -56,7 +56,7 @@ struct ServerOverview: View {
                             }
                         }
                     }
-                    .disabled(isDeleting || isActivating)
+                    .disabled(isProcessing)
                     .confirmationDialog("Delete Server", isPresented: $showDeleteConfirmation) {
                         Button("Delete", role: .destructive) {
                             performDelete()
@@ -70,6 +70,10 @@ struct ServerOverview: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(server.name)
+    }
+
+    private var isProcessing: Bool {
+        isDeleting || isActivating
     }
 
     private func performActivate() {

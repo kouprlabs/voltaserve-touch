@@ -18,7 +18,7 @@ struct MosaicSettings: View {
                 Text("Create a mosaic for the active snapshot.")
                 Button {} label: {
                     HStack {
-                        Text("Create")
+                        Text("Create Mosaic")
                         if isCreating {
                             Spacer()
                             ProgressView()
@@ -31,7 +31,7 @@ struct MosaicSettings: View {
                 Text("Delete mosaic from the active snapshot.")
                 Button(role: .destructive) {} label: {
                     HStack {
-                        Text("Delete")
+                        Text("Delete Mosaic")
                         if isDeleting {
                             Spacer()
                             ProgressView()

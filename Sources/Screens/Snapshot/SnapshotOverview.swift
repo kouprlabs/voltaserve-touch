@@ -45,7 +45,7 @@ struct SnapshotOverview: View {
                             }
                         }
                     }
-                    .disabled(isDetaching || isActivating)
+                    .disabled(isProcessing)
                     .confirmationDialog("Activate Snapshot", isPresented: $showActivateConfirmation) {
                         Button("Activate") {
                             performActivate()
@@ -64,7 +64,7 @@ struct SnapshotOverview: View {
                             }
                         }
                     }
-                    .disabled(snapshot.isActive || isDetaching || isActivating)
+                    .disabled(snapshot.isActive || isProcessing)
                     .confirmationDialog("Detach Snapshot", isPresented: $showDetachConfirmation) {
                         Button("Detach", role: .destructive) {
                             performDetach()
@@ -84,6 +84,10 @@ struct SnapshotOverview: View {
             message: snapshotStore.errorMessage
         )
         .sync($snapshotStore.showError, with: $showError)
+    }
+
+    private var isProcessing: Bool {
+        isDetaching || isActivating
     }
 
     private func performActivate() {

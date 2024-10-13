@@ -58,13 +58,13 @@ struct SharingGroupPermission: View {
                         }
                     }
                 }
-                .disabled(predefinedGroup != nil || isGranting || isRevoking)
+                .disabled(predefinedGroup != nil || isProcessing)
                 Picker("Permission", selection: $permission) {
                     Text("Viewer").tag(VOPermission.Value.viewer)
                     Text("Editor").tag(VOPermission.Value.editor)
                     Text("Owner").tag(VOPermission.Value.owner)
                 }
-                .disabled(isGranting || isRevoking)
+                .disabled(isProcessing)
             }
             if enableRevoke, files.count == 1 {
                 Section {
@@ -120,6 +120,10 @@ struct SharingGroupPermission: View {
             }
         }
         .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+    }
+
+    private var isProcessing: Bool {
+        isGranting || isRevoking
     }
 
     private func performGrant() {
