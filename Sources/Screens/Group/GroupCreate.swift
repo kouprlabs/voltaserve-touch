@@ -1,31 +1,45 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FolderNew: View {
-    @ObservedObject private var fileStore: FileStore
+struct GroupCreate: View {
+    @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
+    @State private var organization: VOOrganization.Entity?
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
-    private let parentID: String
-    private let workspaceId: String
 
-    init(parentID: String, workspaceId: String, fileStore: FileStore) {
-        self.workspaceId = workspaceId
-        self.parentID = parentID
-        self.fileStore = fileStore
+    init(groupStore: GroupStore) {
+        self.groupStore = groupStore
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 TextField("Name", text: $name)
                     .disabled(isProcessing)
+                NavigationLink {
+                    OrganizationSelector { organization in
+                        self.organization = organization
+                    }
+                    .disabled(isProcessing)
+                } label: {
+                    HStack {
+                        Text("Organization")
+                        if let organization {
+                            Spacer()
+                            Text(organization.name)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("New Folder")
+            .navigationTitle("New Group")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     if isProcessing {
@@ -48,22 +62,20 @@ struct FolderNew: View {
     }
 
     private var normalizedName: String {
-        name.trimmingCharacters(in: .whitespaces)
+        name.lowercased().trimmingCharacters(in: .whitespaces)
     }
 
     private func performCreate() {
+        guard let organization else { return }
         isProcessing = true
+
         withErrorHandling {
-            _ = try await fileStore.createFolder(
-                name: normalizedName,
-                workspaceID: workspaceId,
-                parentID: parentID
-            )
+            _ = try await groupStore.create(name: normalizedName, organization: organization)
             return true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Creating Folder"
+            errorTitle = "Error: Crearing Group"
             errorMessage = message
             showError = true
         } anyways: {
@@ -72,6 +84,6 @@ struct FolderNew: View {
     }
 
     private func isValid() -> Bool {
-        !normalizedName.isEmpty
+        !normalizedName.isEmpty && organization != nil
     }
 }

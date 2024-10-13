@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct WorkspaceNew: View {
+struct WorkspaceCreate: View {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var name: String = ""

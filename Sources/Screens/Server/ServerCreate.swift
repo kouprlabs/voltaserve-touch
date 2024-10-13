@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ServerNew: View {
+struct ServerCreate: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) var dismiss
     @State private var name = ""

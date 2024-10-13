@@ -70,7 +70,7 @@ struct WorkspaceList: View {
                     }
                 }
                 .sheet(isPresented: $showNew) {
-                    WorkspaceNew(workspaceStore: workspaceStore)
+                    WorkspaceCreate(workspaceStore: workspaceStore)
                 }
                 .sheet(isPresented: $showAccount) {
                     AccountOverview()

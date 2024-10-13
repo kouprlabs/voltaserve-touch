@@ -18,7 +18,7 @@ struct ServerList: View {
         .navigationTitle("Servers")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                NavigationLink(destination: ServerNew()) {
+                NavigationLink(destination: ServerCreate()) {
                     Label("New Server", systemImage: "plus")
                 }
             }

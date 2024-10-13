@@ -52,7 +52,7 @@ struct GroupList: View {
                     }
                 }
                 .sheet(isPresented: $showNew) {
-                    GroupNew(groupStore: groupStore)
+                    GroupCreate(groupStore: groupStore)
                 }
                 .onChange(of: groupStore.searchText) {
                     groupStore.searchPublisher.send($1)

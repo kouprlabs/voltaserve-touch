@@ -52,7 +52,7 @@ struct OrganizationList: View {
                     }
                 }
                 .sheet(isPresented: $showNew) {
-                    OrganizationNew(organizationStore: organizationStore)
+                    OrganizationCreate(organizationStore: organizationStore)
                 }
                 .onChange(of: organizationStore.searchText) {
                     organizationStore.searchPublisher.send($1)

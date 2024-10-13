@@ -1,45 +1,27 @@
 import SwiftUI
 import VoltaserveCore
 
-struct GroupNew: View {
-    @ObservedObject private var groupStore: GroupStore
+struct OrganizationCreate: View {
+    @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
-    @State private var organization: VOOrganization.Entity?
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
 
-    init(groupStore: GroupStore) {
-        self.groupStore = groupStore
+    init(organizationStore: OrganizationStore) {
+        self.organizationStore = organizationStore
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 TextField("Name", text: $name)
                     .disabled(isProcessing)
-                NavigationLink {
-                    OrganizationSelector { organization in
-                        self.organization = organization
-                    }
-                    .disabled(isProcessing)
-                } label: {
-                    HStack {
-                        Text("Organization")
-                        if let organization {
-                            Spacer()
-                            Text(organization.name)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("New Group")
+            .navigationTitle("New Organization")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     if isProcessing {
@@ -62,20 +44,18 @@ struct GroupNew: View {
     }
 
     private var normalizedName: String {
-        name.lowercased().trimmingCharacters(in: .whitespaces)
+        name.trimmingCharacters(in: .whitespaces)
     }
 
     private func performCreate() {
-        guard let organization else { return }
         isProcessing = true
-
         withErrorHandling {
-            _ = try await groupStore.create(name: normalizedName, organization: organization)
+            _ = try await organizationStore.create(name: normalizedName)
             return true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Crearing Group"
+            errorTitle = "Error: Creating Organization"
             errorMessage = message
             showError = true
         } anyways: {
@@ -84,6 +64,6 @@ struct GroupNew: View {
     }
 
     private func isValid() -> Bool {
-        !normalizedName.isEmpty && organization != nil
+        !normalizedName.isEmpty
     }
 }
