@@ -44,7 +44,11 @@ struct FileSheets: ViewModifier {
                 }
                 .sheet(isPresented: $showMosaic) {
                     if fileStore.selection.count == 1, let file = fileStore.selectionFiles.first {
-                        MosaicOverview(file)
+                        if let snapshot = file.snapshot, snapshot.hasMosaic() {
+                            MosaicSettings(file)
+                        } else {
+                            MosaicCreate(file)
+                        }
                     }
                 }
                 .sheet(isPresented: $showTasks) {

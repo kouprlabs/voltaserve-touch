@@ -84,24 +84,4 @@ extension Color {
     static let purple700 = Color(hex: "#553C9A")
     static let purple800 = Color(hex: "#44337A")
     static let purple900 = Color(hex: "#322659")
-
-    func textColor() -> Color {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-
-        UIColor(self).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-
-        let luminance = 0.299 * red + 0.587 * green + 0.114 * blue
-        return luminance > 0.5 ? Color.black : Color.white
-    }
-
-    static func borderColor(colorScheme: ColorScheme) -> Color {
-        if colorScheme == .dark {
-            Color(.sRGB, red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.16)
-        } else {
-            Color(red: 226 / 255, green: 232 / 255, blue: 240 / 255)
-        }
-    }
 }
