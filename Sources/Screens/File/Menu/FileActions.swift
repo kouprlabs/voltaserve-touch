@@ -15,6 +15,9 @@ struct FileActions: ViewModifier {
             .fileContextMenu(
                 file,
                 fileStore: fileStore,
+                onInsights: {
+                    fileStore.showInsights = true
+                },
                 onMosaic: {
                     fileStore.showMosaic = true
                 },
