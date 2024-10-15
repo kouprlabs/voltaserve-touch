@@ -13,14 +13,14 @@ struct SharingUserPermission: View {
     @State private var errorMessage: String?
     @State private var isGranting = false
     @State private var isRevoking = false
-    private let files: [VOFile.Entity]
+    private let fileIDs: [String]
     private let predefinedUser: VOUser.Entity?
     private let defaultPermission: VOPermission.Value?
     private let enableCancel: Bool
     private let enableRevoke: Bool
 
     init(
-        files: [VOFile.Entity],
+        fileIDs: [String],
         sharingStore: SharingStore,
         workspaceStore: WorkspaceStore,
         predefinedUser: VOUser.Entity? = nil,
@@ -28,7 +28,7 @@ struct SharingUserPermission: View {
         enableCancel: Bool = false,
         enableRevoke: Bool = false
     ) {
-        self.files = files
+        self.fileIDs = fileIDs
         self.sharingStore = sharingStore
         self.workspaceStore = workspaceStore
         self.predefinedUser = predefinedUser
@@ -60,13 +60,16 @@ struct SharingUserPermission: View {
                 }
                 .disabled(predefinedUser != nil || isProcessing)
                 Picker("Permission", selection: $permission) {
-                    Text("Viewer").tag(VOPermission.Value.viewer)
-                    Text("Editor").tag(VOPermission.Value.editor)
-                    Text("Owner").tag(VOPermission.Value.owner)
+                    Text("Viewer")
+                        .tag(VOPermission.Value.viewer)
+                    Text("Editor")
+                        .tag(VOPermission.Value.editor)
+                    Text("Owner")
+                        .tag(VOPermission.Value.owner)
                 }
                 .disabled(isProcessing)
             }
-            if enableRevoke, files.count == 1 {
+            if enableRevoke, fileIDs.count == 1 {
                 Section {
                     Button(role: .destructive) {
                         showRevoke = true
@@ -130,8 +133,8 @@ struct SharingUserPermission: View {
         guard let user, let permission else { return }
         isGranting = true
         withErrorHandling {
-            for file in files {
-                try await sharingStore.grantUserPermission(id: file.id, userID: user.id, permission: permission)
+            for fileID in fileIDs {
+                try await sharingStore.grantUserPermission(id: fileID, userID: user.id, permission: permission)
             }
             return true
         } success: {
@@ -146,10 +149,10 @@ struct SharingUserPermission: View {
     }
 
     private func performRevoke() {
-        guard let user, files.count == 1, let file = files.first else { return }
+        guard let user, fileIDs.count == 1, let fileID = fileIDs.first else { return }
         isRevoking = true
         withErrorHandling {
-            try await sharingStore.revokeUserPermission(id: file.id, userID: user.id)
+            try await sharingStore.revokeUserPermission(id: fileID, userID: user.id)
             return true
         } success: {
             dismiss()

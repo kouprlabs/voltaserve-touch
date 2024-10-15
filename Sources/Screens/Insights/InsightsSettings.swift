@@ -1,15 +1,15 @@
 import SwiftUI
 import VoltaserveCore
 
-struct MosaicSettings: View {
+struct InsightsSettings: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @StateObject private var mosaicStore = MosaicStore()
+    @StateObject private var insightsStore = InsightsStore()
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
-    @State private var isCreating = false
+    @State private var isPatching = false
     @State private var isDeleting = false
     private let file: VOFile.Entity
 
@@ -20,17 +20,17 @@ struct MosaicSettings: View {
     var body: some View {
         NavigationView {
             VStack {
-                if mosaicStore.info != nil {
+                if insightsStore.info != nil {
                     VStack(spacing: VOMetrics.spacingLg) {
                         VStack {
                             VStack {
-                                Text("Create a mosaic for the active snapshot.")
+                                Text("Collect insights for the active snapshot.")
                                 Button {
-                                    performCreate()
+                                    performPatch()
                                 } label: {
-                                    VOButtonLabel("Create Mosaic", systemImage: "bolt", isLoading: isCreating)
+                                    VOButtonLabel("Collect Insights", systemImage: "bolt", isLoading: isPatching)
                                 }
-                                .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcesssing || !canCreate)
+                                .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcessing || !canCreate)
                             }
                             .padding()
                         }
@@ -40,14 +40,13 @@ struct MosaicSettings: View {
                         }
                         VStack {
                             VStack {
-                                Text("Delete mosaic from the active snapshot.")
+                                Text("Delete insights from the active snapshot.")
                                 Button {
                                     performDelete()
                                 } label: {
                                     VOButtonLabel("Delete Mosaic", systemImage: "trash", isLoading: isDeleting)
-                                        .foregroundStyle(Color.red400.textColor())
                                 }
-                                .voButton(color: .red400, isDisabled: isProcesssing || !canDelete)
+                                .voButton(color: .red400, isDisabled: isProcessing || !canDelete)
                             }
                             .padding()
                         }
@@ -57,31 +56,29 @@ struct MosaicSettings: View {
                         }
                     }
                     .padding(.horizontal)
-                    .modifierIfPad {
-                        $0.padding(.bottom)
-                    }
+                    Spacer()
                 } else {
                     ProgressView()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Mosaic")
+            .navigationTitle("Insights")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
-                    .disabled(isProcesssing)
+                    .disabled(isProcessing)
                 }
             }
         }
         .voErrorAlert(
             isPresented: $showError,
-            title: mosaicStore.errorTitle,
-            message: mosaicStore.errorMessage
+            title: insightsStore.errorTitle,
+            message: insightsStore.errorMessage
         )
         .onAppear {
-            mosaicStore.fileID = file.id
+            insightsStore.fileID = file.id
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()
@@ -97,12 +94,11 @@ struct MosaicSettings: View {
                 onAppearOrChange()
             }
         }
-        .presentationDetents([.fraction(UIDevice.current.userInterfaceIdiom == .pad ? 0.50 : 0.40)])
-        .sync($mosaicStore.showError, with: $showError)
+        .sync($insightsStore.showError, with: $showError)
     }
 
     private var canCreate: Bool {
-        if let info = mosaicStore.info {
+        if let info = insightsStore.info {
             return !(file.snapshot?.task?.isPending ?? false) &&
                 info.isOutdated &&
                 file.permission.ge(.editor)
@@ -111,7 +107,7 @@ struct MosaicSettings: View {
     }
 
     private var canDelete: Bool {
-        if let info = mosaicStore.info {
+        if let info = insightsStore.info {
             return !(file.snapshot?.task?.isPending ?? false) &&
                 !info.isOutdated &&
                 file.permission.ge(.owner)
@@ -119,35 +115,35 @@ struct MosaicSettings: View {
         return false
     }
 
-    private var isProcesssing: Bool {
-        isDeleting || isCreating
+    private var isProcessing: Bool {
+        isDeleting || isPatching
     }
 
-    private func performCreate() {
-        isCreating = true
+    private func performPatch() {
+        isPatching = true
         withErrorHandling {
-            try await mosaicStore.create()
+            try await insightsStore.patch()
             return true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Creating Mosaic"
+            errorTitle = "Error: Patching Insights"
             errorMessage = message
             showError = true
         } anyways: {
-            isCreating = false
+            isPatching = false
         }
     }
 
     private func performDelete() {
         isDeleting = true
         withErrorHandling {
-            try await mosaicStore.delete()
+            try await insightsStore.delete()
             return true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Deleting Mosaic"
+            errorTitle = "Error: Deleting Insights"
             errorMessage = message
             showError = true
         } anyways: {
@@ -160,20 +156,20 @@ struct MosaicSettings: View {
     }
 
     private func fetchData() {
-        if let snapshot = file.snapshot, snapshot.hasMosaic() {
-            mosaicStore.fetchInfo()
+        if let snapshot = file.snapshot, snapshot.hasEntities() {
+            insightsStore.fetchInfo()
         }
     }
 
     private func startTimers() {
-        mosaicStore.startTimer()
+        insightsStore.startTimer()
     }
 
     private func stopTimers() {
-        mosaicStore.stopTimer()
+        insightsStore.stopTimer()
     }
 
     private func assignTokenToStores(_ token: VOToken.Value) {
-        mosaicStore.token = token
+        insightsStore.token = token
     }
 }

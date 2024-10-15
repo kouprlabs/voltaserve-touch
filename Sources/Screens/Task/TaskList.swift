@@ -7,6 +7,8 @@ struct TaskList: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isDismissingAll = false
     @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -117,9 +119,9 @@ struct TaskList: View {
             taskStore.fetchList(replace: true)
             dismiss()
         } failure: { message in
-            taskStore.errorTitle = "Error: Dismissing All Tasks"
-            taskStore.errorMessage = message
-            taskStore.showError = true
+            errorTitle = "Error: Dismissing All Tasks"
+            errorMessage = message
+            showError = true
         } anyways: {
             isDismissingAll = false
         }

@@ -42,11 +42,11 @@ struct WorkspaceList: View {
                                 }
                             }
                         }
+                        .searchable(text: $searchText)
+                        .onChange(of: workspaceStore.searchText) {
+                            workspaceStore.searchPublisher.send($1)
+                        }
                     }
-                }
-                .searchable(text: $searchText)
-                .onChange(of: workspaceStore.searchText) {
-                    workspaceStore.searchPublisher.send($1)
                 }
                 .refreshable {
                     workspaceStore.fetchList(replace: true)

@@ -7,11 +7,13 @@ struct MosaicCreate: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
     @State private var isCreating = false
-    private let file: VOFile.Entity
+    private let fileID: String
 
-    init(_ file: VOFile.Entity) {
-        self.file = file
+    init(_ fileID: String) {
+        self.fileID = fileID
     }
 
     var body: some View {
@@ -56,7 +58,7 @@ struct MosaicCreate: View {
             message: mosaicStore.errorMessage
         )
         .onAppear {
-            mosaicStore.fileID = file.id
+            mosaicStore.fileID = fileID
             if let token = tokenStore.token {
                 assignTokenToStores(token)
             }
@@ -73,13 +75,13 @@ struct MosaicCreate: View {
     private func performCreate() {
         isCreating = true
         withErrorHandling {
-            try await mosaicStore.create(file.id)
+            try await mosaicStore.create()
             return true
         } success: {
             dismiss()
         } failure: { message in
-            mosaicStore.errorTitle = "Error: Creating Mosaic"
-            mosaicStore.errorMessage = message
+            errorTitle = "Error: Creating Mosaic"
+            errorMessage = message
             showError = true
         } anyways: {
             isCreating = false

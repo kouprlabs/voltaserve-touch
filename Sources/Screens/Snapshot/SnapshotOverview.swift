@@ -5,6 +5,8 @@ struct SnapshotOverview: View {
     @ObservedObject private var snapshotStore: SnapshotStore
     @Environment(\.dismiss) private var dismiss
     @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
     @State private var showActivateConfirmation = false
     @State private var showDetachConfirmation = false
     @State private var isActivating = false
@@ -98,9 +100,9 @@ struct SnapshotOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            snapshotStore.errorTitle = "Error: Activating Snapshot"
-            snapshotStore.errorMessage = message
-            snapshotStore.showError = true
+            errorTitle = "Error: Activating Snapshot"
+            errorMessage = message
+            showError = true
         } anyways: {
             isActivating = false
         }
@@ -114,9 +116,9 @@ struct SnapshotOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            snapshotStore.errorTitle = "Error: Detaching Snapshot"
-            snapshotStore.errorMessage = message
-            snapshotStore.showError = true
+            errorTitle = "Error: Detaching Snapshot"
+            errorMessage = message
+            showError = true
         } anyways: {
             isDetaching = true
         }

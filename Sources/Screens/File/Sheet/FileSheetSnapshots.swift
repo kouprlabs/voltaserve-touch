@@ -13,7 +13,7 @@ struct FileSheetSnapshots: ViewModifier {
         content
             .sheet(isPresented: $showSnapshots) {
                 if let file {
-                    SnapshotList(file: file)
+                    SnapshotList(fileID: file.id)
                 }
             }
             .sync($fileStore.showSnapshots, with: $showSnapshots)

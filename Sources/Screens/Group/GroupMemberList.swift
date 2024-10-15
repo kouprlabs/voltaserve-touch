@@ -36,14 +36,14 @@ struct GroupMemberList: View {
                                 }
                             }
                         }
+                        .searchable(text: $searchText)
+                        .onChange(of: userStore.searchText) {
+                            userStore.searchPublisher.send($1)
+                        }
                     }
                 }
-                .searchable(text: $searchText)
                 .refreshable {
                     userStore.fetchList(replace: true)
-                }
-                .onChange(of: userStore.searchText) {
-                    userStore.searchPublisher.send($1)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {

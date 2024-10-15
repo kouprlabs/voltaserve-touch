@@ -16,7 +16,7 @@ struct FileSheetMosaic: ViewModifier {
                     if snapshot.hasMosaic() {
                         MosaicSettings(file)
                     } else {
-                        MosaicCreate(file)
+                        MosaicCreate(file.id)
                     }
                 }
             }

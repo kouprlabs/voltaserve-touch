@@ -45,14 +45,14 @@ struct GroupSelector: View {
                                 }
                             }
                         }
+                        .searchable(text: $searchText)
+                        .onChange(of: groupStore.searchText) {
+                            groupStore.searchPublisher.send($1)
+                        }
                     }
                 }
-                .searchable(text: $searchText)
                 .refreshable {
                     groupStore.fetchList(replace: true)
-                }
-                .onChange(of: groupStore.searchText) {
-                    groupStore.searchPublisher.send($1)
                 }
                 .voErrorAlert(
                     isPresented: $showError,

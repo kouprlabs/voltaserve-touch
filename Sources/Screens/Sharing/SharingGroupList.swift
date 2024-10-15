@@ -6,10 +6,10 @@ struct SharingGroupList: View {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var group: VOGroup.Entity?
     @State private var permission: VOPermission.Value?
-    private let file: VOFile.Entity
+    private let fileID: String
 
-    init(_ file: VOFile.Entity, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
-        self.file = file
+    init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
+        self.fileID = fileID
         self.sharingStore = sharingStore
         self.workspaceStore = workspaceStore
     }
@@ -23,7 +23,7 @@ struct SharingGroupList: View {
                     List(groupPermissions, id: \.id) { groupPermission in
                         NavigationLink {
                             SharingGroupPermission(
-                                files: [file],
+                                fileIDs: [fileID],
                                 sharingStore: sharingStore,
                                 workspaceStore: workspaceStore,
                                 predefinedGroup: groupPermission.group,

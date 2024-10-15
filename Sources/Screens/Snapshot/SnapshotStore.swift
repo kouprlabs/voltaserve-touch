@@ -11,7 +11,7 @@ class SnapshotStore: ObservableObject {
     @Published var isLoading = false
     private var timer: Timer?
     private var snapshotClient: VOSnapshot?
-    var file: VOFile.Entity?
+    var fileID: String?
 
     var token: VOToken.Value? {
         didSet {
@@ -29,8 +29,8 @@ class SnapshotStore: ObservableObject {
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOSnapshot.List? {
-        guard let file else { return nil }
-        return try await snapshotClient?.fetchList(.init(fileID: file.id, page: page, size: size, sortOrder: .desc))
+        guard let fileID else { return nil }
+        return try await snapshotClient?.fetchList(.init(fileID: fileID, page: page, size: size, sortOrder: .desc))
     }
 
     func fetchList(replace: Bool = false) {

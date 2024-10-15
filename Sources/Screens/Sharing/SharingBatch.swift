@@ -13,10 +13,10 @@ struct SharingBatch: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
-    private let files: [VOFile.Entity]
+    private let fileIDs: [String]
 
-    init(_ files: [VOFile.Entity], workspaceStore: WorkspaceStore) {
-        self.files = files
+    init(_ files: [String], workspaceStore: WorkspaceStore) {
+        fileIDs = files
         self.workspaceStore = workspaceStore
     }
 
@@ -25,7 +25,7 @@ struct SharingBatch: View {
             Tab("Users", systemImage: "person", value: Tag.users) {
                 NavigationStack {
                     SharingUserPermission(
-                        files: files,
+                        fileIDs: fileIDs,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore,
                         enableCancel: true
@@ -35,7 +35,7 @@ struct SharingBatch: View {
             Tab("Groups", systemImage: "person.2", value: Tag.groups) {
                 NavigationStack {
                     SharingGroupPermission(
-                        files: files,
+                        fileIDs: fileIDs,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore,
                         enableCancel: true

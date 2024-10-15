@@ -35,10 +35,13 @@ struct OrganizationList: View {
                                 }
                             }
                         }
+                        .navigationTitle("Organizations")
+                        .searchable(text: $searchText)
+                        .onChange(of: organizationStore.searchText) {
+                            organizationStore.searchPublisher.send($1)
+                        }
                     }
                 }
-                .navigationTitle("Organizations")
-                .searchable(text: $searchText)
                 .refreshable {
                     organizationStore.fetchList(replace: true)
                 }
@@ -53,9 +56,6 @@ struct OrganizationList: View {
                 }
                 .sheet(isPresented: $showNew) {
                     OrganizationCreate(organizationStore: organizationStore)
-                }
-                .onChange(of: organizationStore.searchText) {
-                    organizationStore.searchPublisher.send($1)
                 }
             } else {
                 ProgressView()
