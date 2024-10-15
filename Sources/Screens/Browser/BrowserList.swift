@@ -9,19 +9,19 @@ struct BrowserList: View {
     @State private var tappedItem: VOFile.Entity?
     @State private var showError = false
     @State private var searchText = ""
-    private let id: String
+    private let fileID: String
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
     private let onDismiss: (() -> Void)?
 
     init(
-        _ id: String,
+        _ fileID: String,
         workspaceStore: WorkspaceStore,
         confirmLabelText: String?,
         onCompletion: ((String) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
-        self.id = id
+        self.fileID = fileID
         self.workspaceStore = workspaceStore
         self.confirmLabelText = confirmLabelText
         self.onCompletion = onCompletion
@@ -31,7 +31,7 @@ struct BrowserList: View {
     var body: some View {
         VStack {
             if let entities = browserStore.entities {
-                VStack {
+                Group {
                     if entities.count == 0 {
                         Text("There are no items.")
                     } else {
@@ -65,9 +65,6 @@ struct BrowserList: View {
                         .onChange(of: browserStore.searchText) {
                             browserStore.searchPublisher.send($1)
                         }
-                        .refreshable {
-                            browserStore.fetchList(replace: true)
-                        }
                         .navigationDestination(item: $tappedItem) {
                             Viewer($0)
                         }
@@ -78,6 +75,9 @@ struct BrowserList: View {
                         )
                     }
                 }
+                .refreshable {
+                    browserStore.fetchList(replace: true)
+                }
             } else {
                 ProgressView()
             }
@@ -85,10 +85,10 @@ struct BrowserList: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(confirmLabelText ?? "Done") {
-                    onCompletion?(id)
+                    onCompletion?(fileID)
                 }
             }
-            if let workspace = workspaceStore.current, id == workspace.rootID {
+            if let workspace = workspaceStore.current, fileID == workspace.rootID {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         onDismiss?()
@@ -97,7 +97,7 @@ struct BrowserList: View {
             }
         }
         .onAppear {
-            browserStore.id = id
+            browserStore.fileID = fileID
             if let token = tokenStore.token {
                 assignTokensToStores(token)
                 startTimers()

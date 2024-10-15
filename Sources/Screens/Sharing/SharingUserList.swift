@@ -6,10 +6,10 @@ struct SharingUserList: View {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
-    private let file: VOFile.Entity
+    private let fileID: String
 
-    init(_ file: VOFile.Entity, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
-        self.file = file
+    init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
+        self.fileID = fileID
         self.sharingStore = sharingStore
         self.workspaceStore = workspaceStore
     }
@@ -23,7 +23,7 @@ struct SharingUserList: View {
                     List(userPermissions, id: \.id) { userPermission in
                         NavigationLink {
                             SharingUserPermission(
-                                files: [file],
+                                fileIDs: [fileID],
                                 sharingStore: sharingStore,
                                 workspaceStore: workspaceStore,
                                 predefinedUser: userPermission.user,

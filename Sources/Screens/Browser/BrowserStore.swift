@@ -5,7 +5,6 @@ import VoltaserveCore
 class BrowserStore: ObservableObject {
     @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
-    @Published var id: String?
     @Published var current: VOFile.Entity?
     @Published var query: VOFile.Query?
     @Published var showError = false
@@ -16,6 +15,7 @@ class BrowserStore: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var fileClient: VOFile?
+    var fileID: String?
     let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
@@ -44,10 +44,10 @@ class BrowserStore: ObservableObject {
     }
 
     func fetch() {
-        guard let id else { return }
+        guard let fileID else { return }
         var file: VOFile.Entity?
         withErrorHandling {
-            file = try await self.fetch(id)
+            file = try await self.fetch(fileID)
             return true
         } success: {
             self.current = file
@@ -63,7 +63,7 @@ class BrowserStore: ObservableObject {
     }
 
     func fetchList(replace: Bool = false) {
-        guard let id else { return }
+        guard let fileID else { return }
 
         if isLoading { return }
         isLoading = true
@@ -74,7 +74,7 @@ class BrowserStore: ObservableObject {
         withErrorHandling {
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(id, page: nextPage)
+            list = try await self.fetchList(fileID, page: nextPage)
             return true
         } success: {
             self.list = list

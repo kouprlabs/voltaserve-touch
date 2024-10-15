@@ -6,10 +6,10 @@ struct SnapshotList: View {
     @StateObject private var snapshotStore = SnapshotStore()
     @Environment(\.dismiss) private var dismiss
     @State private var showError = false
-    private let file: VOFile.Entity?
+    private let fileID: String
 
-    init(file: VOFile.Entity) {
-        self.file = file
+    init(fileID: String) {
+        self.fileID = fileID
     }
 
     var body: some View {
@@ -59,7 +59,7 @@ struct SnapshotList: View {
             message: snapshotStore.errorMessage
         )
         .onAppear {
-            snapshotStore.file = file
+            snapshotStore.fileID = fileID
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()

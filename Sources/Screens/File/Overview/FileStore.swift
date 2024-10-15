@@ -105,8 +105,8 @@ class FileStore: ObservableObject {
 
     func fetch() {
         guard let current else { return }
-
         var file: VOFile.Entity?
+
         withErrorHandling {
             file = try await self.fetch(current.id)
             return true

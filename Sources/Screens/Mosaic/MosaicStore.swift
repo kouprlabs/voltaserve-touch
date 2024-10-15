@@ -22,16 +22,15 @@ class MosaicStore: ObservableObject {
         }
     }
 
-    func fetchInfo(_ id: String) async throws -> VOMosaic.Info? {
-        try await mosaicClient?.fetchInfo(id)
+    func fetchInfo() async throws -> VOMosaic.Info? {
+        guard let fileID else { return nil }
+        return try await mosaicClient?.fetchInfo(fileID)
     }
 
     func fetchInfo() {
-        guard let fileID else { return }
         var info: VOMosaic.Info?
-
         withErrorHandling {
-            info = try await self.fetchInfo(fileID)
+            info = try await self.fetchInfo()
             return true
         } success: {
             self.info = info
@@ -42,13 +41,13 @@ class MosaicStore: ObservableObject {
         }
     }
 
-    func create(_: String) async throws {
+    func create() async throws {
         try await Fake.serverCall { continuation in
             continuation.resume()
         }
     }
 
-    func delete(_: String) async throws {
+    func delete() async throws {
         try await Fake.serverCall { continuation in
             continuation.resume()
         }
@@ -57,13 +56,11 @@ class MosaicStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let fileID = self.fileID {
-                Task {
-                    let info = try await self.fetchInfo(fileID)
-                    if let info {
-                        DispatchQueue.main.async {
-                            self.info = info
-                        }
+            Task {
+                let info = try await self.fetchInfo()
+                if let info {
+                    DispatchQueue.main.async {
+                        self.info = info
                     }
                 }
             }

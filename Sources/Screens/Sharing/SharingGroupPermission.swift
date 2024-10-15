@@ -13,14 +13,14 @@ struct SharingGroupPermission: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
-    private let files: [VOFile.Entity]
+    private let fileIDs: [String]
     private let predefinedGroup: VOGroup.Entity?
     private let defaultPermission: VOPermission.Value?
     private let enableCancel: Bool
     private let enableRevoke: Bool
 
     init(
-        files: [VOFile.Entity],
+        fileIDs: [String],
         sharingStore: SharingStore,
         workspaceStore: WorkspaceStore,
         predefinedGroup: VOGroup.Entity? = nil,
@@ -28,7 +28,7 @@ struct SharingGroupPermission: View {
         enableCancel: Bool = false,
         enableRevoke: Bool = false
     ) {
-        self.files = files
+        self.fileIDs = fileIDs
         self.sharingStore = sharingStore
         self.workspaceStore = workspaceStore
         self.predefinedGroup = predefinedGroup
@@ -66,7 +66,7 @@ struct SharingGroupPermission: View {
                 }
                 .disabled(isProcessing)
             }
-            if enableRevoke, files.count == 1 {
+            if enableRevoke, fileIDs.count == 1 {
                 Section {
                     Button(role: .destructive) {
                         showRevoke = true
@@ -130,8 +130,8 @@ struct SharingGroupPermission: View {
         guard let group, let permission else { return }
         isGranting = true
         withErrorHandling {
-            for file in files {
-                try await sharingStore.grantGroupPermission(id: file.id, groupID: group.id, permission: permission)
+            for fileID in fileIDs {
+                try await sharingStore.grantGroupPermission(id: fileID, groupID: group.id, permission: permission)
             }
             return true
         } success: {
@@ -146,10 +146,10 @@ struct SharingGroupPermission: View {
     }
 
     private func performRevoke() {
-        guard let group, files.count == 1, let file = files.first else { return }
+        guard let group, fileIDs.count == 1, let fileID = fileIDs.first else { return }
         isRevoking = true
         withErrorHandling {
-            try await sharingStore.revokeGroupPermission(id: file.id, groupID: group.id)
+            try await sharingStore.revokeGroupPermission(id: fileID, groupID: group.id)
             return true
         } success: {
             dismiss()

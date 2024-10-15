@@ -12,10 +12,10 @@ struct SharingOverview: View {
     @State private var permission: VOPermission.Value?
     @State private var userPermissionCount = 0
     @State private var groupPermissionCount = 0
-    private let file: VOFile.Entity
+    private let fileID: String
 
-    init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
-        self.file = file
+    init(_ fileID: String, workspaceStore: WorkspaceStore) {
+        self.fileID = fileID
         self.workspaceStore = workspaceStore
     }
 
@@ -24,7 +24,7 @@ struct SharingOverview: View {
             TabView(selection: $selection) {
                 Tab("Users", systemImage: "person", value: Tag.users) {
                     SharingUserList(
-                        file,
+                        fileID,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore
                     )
@@ -32,7 +32,7 @@ struct SharingOverview: View {
                 .badge(userPermissionCount)
                 Tab("Groups", systemImage: "person.2", value: Tag.groups) {
                     SharingGroupList(
-                        file,
+                        fileID,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore
                     )
@@ -46,13 +46,13 @@ struct SharingOverview: View {
                     NavigationLink {
                         if selection == .users {
                             SharingUserPermission(
-                                files: [file],
+                                fileIDs: [fileID],
                                 sharingStore: sharingStore,
                                 workspaceStore: workspaceStore
                             )
                         } else if selection == .groups {
                             SharingGroupPermission(
-                                files: [file],
+                                fileIDs: [fileID],
                                 sharingStore: sharingStore,
                                 workspaceStore: workspaceStore
                             )
@@ -68,7 +68,7 @@ struct SharingOverview: View {
                 }
             }
             .onAppear {
-                sharingStore.file = file
+                sharingStore.fileID = fileID
                 if let token = tokenStore.token {
                     assignTokenToStores(token)
                     startTimers()

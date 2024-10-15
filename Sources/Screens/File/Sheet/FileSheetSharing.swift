@@ -14,18 +14,18 @@ struct FileSheetSharing: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $showSharing) {
-                if let file {
-                    SharingOverview(file, workspaceStore: workspaceStore)
+                if let fileID {
+                    SharingOverview(fileID, workspaceStore: workspaceStore)
                 } else if fileStore.selection.count > 1 {
-                    SharingBatch(fileStore.selectionFiles, workspaceStore: workspaceStore)
+                    SharingBatch(Array(fileStore.selection), workspaceStore: workspaceStore)
                 }
             }
             .sync($fileStore.showSharing, with: $showSharing)
     }
 
-    private var file: VOFile.Entity? {
-        if fileStore.selection.count == 1, let file = fileStore.selectionFiles.first {
-            return file
+    private var fileID: String? {
+        if fileStore.selection.count == 1, let fileID = fileStore.selection.first {
+            return fileID
         }
         return nil
     }

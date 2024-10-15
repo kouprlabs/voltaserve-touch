@@ -41,16 +41,16 @@ struct OrganizationSelector: View {
                                 }
                             }
                         }
+                        .searchable(text: $searchText)
+                        .onChange(of: organizationStore.searchText) {
+                            organizationStore.searchPublisher.send($1)
+                        }
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Select Organization")
-                .searchable(text: $searchText)
                 .refreshable {
                     organizationStore.fetchList(replace: true)
-                }
-                .onChange(of: organizationStore.searchText) {
-                    organizationStore.searchPublisher.send($1)
                 }
             } else {
                 ProgressView()

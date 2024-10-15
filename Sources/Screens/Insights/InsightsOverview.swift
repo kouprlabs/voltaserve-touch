@@ -1,20 +1,24 @@
 import SwiftUI
+import VoltaserveCore
 
 struct InsightsOverview: View {
     @State private var selection: Tag = .chart
+    private let file: VOFile.Entity
+
+    init(_ file: VOFile.Entity) {
+        self.file = file
+    }
 
     var body: some View {
-        NavigationStack {
-            TabView(selection: $selection) {
-                Tab("Chart", systemImage: "chart.pie", value: Tag.chart) {
-                    Text("Chart")
-                }
-                Tab("Entities", systemImage: "circle.grid.2x2", value: Tag.entities) {
-                    Text("Entities")
-                }
-                Tab("Settings", systemImage: "gear", value: Tag.settings) {
-                    Text("Settings")
-                }
+        TabView(selection: $selection) {
+            Tab("Chart", systemImage: "chart.pie", value: Tag.chart) {
+                InsightsChart(file.id)
+            }
+            Tab("Entities", systemImage: "circle.grid.2x2", value: Tag.entities) {
+                InsightsEntityList(file.id)
+            }
+            Tab("Settings", systemImage: "gear", value: Tag.settings) {
+                InsightsSettings(file)
             }
         }
     }

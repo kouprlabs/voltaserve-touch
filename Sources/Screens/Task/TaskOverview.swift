@@ -6,6 +6,8 @@ struct TaskOverview: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showDismissConfirmation = false
     @State private var showError = false
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
     @State private var isDismissing = false
     private let task: VOTask.Entity
 
@@ -78,9 +80,9 @@ struct TaskOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            taskStore.errorTitle = "Error: Dismissing Task"
-            taskStore.errorMessage = message
-            taskStore.showError = true
+            errorTitle = "Error: Dismissing Task"
+            errorMessage = message
+            showError = true
         } anyways: {
             isDismissing = false
         }

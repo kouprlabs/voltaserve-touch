@@ -11,7 +11,7 @@ class SharingStore: ObservableObject {
     @Published var errorMessage: String?
     private var timer: Timer?
     private var fileClient: VOFile?
-    var file: VOFile.Entity?
+    var fileID: String?
 
     var token: VOToken.Value? {
         didSet {
@@ -25,8 +25,8 @@ class SharingStore: ObservableObject {
     }
 
     func fetch() async throws -> VOFile.Entity? {
-        guard let file else { return nil }
-        return try await fileClient?.fetch(file.id)
+        guard let fileID else { return nil }
+        return try await fileClient?.fetch(fileID)
     }
 
     func fetchUserPermissions(_ id: String) async throws -> [VOFile.UserPermission]? {
@@ -34,11 +34,12 @@ class SharingStore: ObservableObject {
     }
 
     func fetchUserPermissions() {
-        guard let file else { return }
+        guard let fileID else { return }
         isLoading = true
         var userPermissions: [VOFile.UserPermission]?
+
         withErrorHandling {
-            userPermissions = try await self.fetchUserPermissions(file.id)
+            userPermissions = try await self.fetchUserPermissions(fileID)
             return true
         } success: {
             self.userPermissions = userPermissions
@@ -56,11 +57,12 @@ class SharingStore: ObservableObject {
     }
 
     func fetchGroupPermissions() {
-        guard let file else { return }
+        guard let fileID else { return }
         isLoading = true
         var groupPermissions: [VOFile.GroupPermission]?
+
         withErrorHandling {
-            groupPermissions = try await self.fetchGroupPermissions(file.id)
+            groupPermissions = try await self.fetchGroupPermissions(fileID)
             return true
         } success: {
             self.groupPermissions = groupPermissions
@@ -84,7 +86,7 @@ class SharingStore: ObservableObject {
     }
 
     func revokeUserPermission(id _: String, userID _: String) async throws {
-        guard file != nil else { return }
+        guard fileID != nil else { return }
         try await Fake.serverCall { continuation in
             continuation.resume()
         }
@@ -109,10 +111,10 @@ class SharingStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            guard let file = self.file else { return }
+            guard let fileID = self.fileID else { return }
             if self.userPermissions != nil {
                 Task {
-                    let values = try await self.fetchUserPermissions(file.id)
+                    let values = try await self.fetchUserPermissions(fileID)
                     if let values {
                         DispatchQueue.main.async {
                             self.userPermissions = values
@@ -122,7 +124,7 @@ class SharingStore: ObservableObject {
             }
             if self.groupPermissions != nil {
                 Task {
-                    let values = try await self.fetchGroupPermissions(file.id)
+                    let values = try await self.fetchGroupPermissions(fileID)
                     if let values {
                         DispatchQueue.main.async {
                             self.groupPermissions = values

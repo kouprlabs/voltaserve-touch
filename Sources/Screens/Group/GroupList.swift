@@ -35,10 +35,13 @@ struct GroupList: View {
                                 }
                             }
                         }
+                        .searchable(text: $searchText)
+                        .onChange(of: groupStore.searchText) {
+                            groupStore.searchPublisher.send($1)
+                        }
                     }
                 }
                 .navigationTitle("Groups")
-                .searchable(text: $searchText)
                 .refreshable {
                     groupStore.fetchList(replace: true)
                 }
@@ -53,9 +56,6 @@ struct GroupList: View {
                 }
                 .sheet(isPresented: $showNew) {
                     GroupCreate(groupStore: groupStore)
-                }
-                .onChange(of: groupStore.searchText) {
-                    groupStore.searchPublisher.send($1)
                 }
             } else {
                 ProgressView()

@@ -14,7 +14,10 @@ struct FileSheetInsights: ViewModifier {
             .sheet(isPresented: $showInsights) {
                 if let file {
                     if let snapshot = file.snapshot, snapshot.hasEntities() {
-                    } else {}
+                        InsightsOverview(file)
+                    } else {
+                        InsightsCreate(file.id)
+                    }
                 }
             }
             .sync($fileStore.showInsights, with: $showInsights)
