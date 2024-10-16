@@ -64,7 +64,7 @@ struct FileUpload: View {
             dispatchGroup.enter()
             Task {
                 do {
-                    try await fileStore.upload(url, workspaceID: workspace.id)
+                    _ = try await fileStore.upload(url, workspaceID: workspace.id)
                     dispatchGroup.leave()
                 } catch {
                     failedCount += 1

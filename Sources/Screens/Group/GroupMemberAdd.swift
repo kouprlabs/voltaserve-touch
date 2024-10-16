@@ -66,7 +66,7 @@ struct GroupMemberAdd: View {
         isSaving = true
 
         withErrorHandling {
-            try await groupStore.addMember(user.id)
+            try await groupStore.addMember(userID: user.id)
             return true
         } success: {
             dismiss()

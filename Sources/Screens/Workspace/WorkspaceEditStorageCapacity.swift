@@ -49,12 +49,11 @@ struct WorkspaceEditStorageCapacity: View {
     }
 
     private func performSave() {
-        guard let current = workspaceStore.current else { return }
         guard let value else { return }
         isSaving = true
 
         withErrorHandling {
-            try await workspaceStore.patchStorageCapacity(current.id, storageCapacity: value)
+            _ = try await workspaceStore.patchStorageCapacity(storageCapacity: value)
             return true
         } success: {
             dismiss()

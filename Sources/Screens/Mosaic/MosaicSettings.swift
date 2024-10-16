@@ -126,7 +126,7 @@ struct MosaicSettings: View {
     private func performCreate() {
         isCreating = true
         withErrorHandling {
-            try await mosaicStore.create()
+            _ = try await mosaicStore.create()
             return true
         } success: {
             dismiss()
@@ -142,7 +142,7 @@ struct MosaicSettings: View {
     private func performDelete() {
         isDeleting = true
         withErrorHandling {
-            try await mosaicStore.delete()
+            _ = try await mosaicStore.delete()
             return true
         } success: {
             dismiss()

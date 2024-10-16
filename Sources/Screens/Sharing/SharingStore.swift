@@ -75,37 +75,20 @@ class SharingStore: ObservableObject {
         }
     }
 
-    func grantUserPermission(id _: String, userID _: String, permission: VOPermission.Value) async throws {
-        try await Fake.serverCall { continuation in
-            if permission == .owner {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func grantUserPermission(ids: [String], userID: String, permission: VOPermission.Value) async throws {
+        try await fileClient?.grantUserPermission(.init(ids: ids, userID: userID, permission: permission))
     }
 
-    func revokeUserPermission(id _: String, userID _: String) async throws {
-        guard fileID != nil else { return }
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func revokeUserPermission(id: String, userID: String) async throws {
+        try await fileClient?.revokeUserPermission(.init(ids: [id], userID: userID))
     }
 
-    func grantGroupPermission(id _: String, groupID _: String, permission: VOPermission.Value) async throws {
-        try await Fake.serverCall { continuation in
-            if permission == .owner {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func grantGroupPermission(ids: [String], groupID: String, permission: VOPermission.Value) async throws {
+        try await fileClient?.grantGroupPermission(.init(ids: ids, groupID: groupID, permission: permission))
     }
 
-    func revokeGroupPermission(id _: String, groupID _: String) async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func revokeGroupPermission(id: String, groupID: String) async throws {
+        try await fileClient?.revokeGroupPermission(.init(ids: [id], groupID: groupID))
     }
 
     func startTimer() {

@@ -41,9 +41,8 @@ struct AccountEditPassword: View {
 
     private func performSave() {
         isSaving = true
-
         withErrorHandling {
-            try await accountStore.updatePassword(current: currentValue, new: newValue)
+            _ = try await accountStore.updatePassword(current: currentValue, new: newValue)
             return true
         } success: {
             dismiss()

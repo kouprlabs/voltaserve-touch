@@ -6,9 +6,11 @@ struct AccountSettings: View {
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
+    @State private var showDeleteNotice = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    @State private var password = ""
     @State private var isDeleting = false
     private let onDelete: (() -> Void)?
 
@@ -42,13 +44,22 @@ struct AccountSettings: View {
                             HStack {
                                 Text("Email")
                                 Spacer()
-                                Text(user.email)
+                                Text(user.pendingEmail ?? user.email)
                                     .lineLimit(1)
                                     .truncationMode(.middle)
                                     .foregroundStyle(.secondary)
                             }
                         }
                         .disabled(isDeleting)
+                        if user.pendingEmail != nil {
+                            HStack(spacing: VOMetrics.spacingXs) {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .foregroundStyle(Color.yellow400)
+                                Text("Please check your inbox to confirm your email.")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .font(.footnote)
+                        }
                         NavigationLink(destination: AccountEditPassword(accountStore: accountStore)) {
                             HStack {
                                 Text("Password")
@@ -58,9 +69,15 @@ struct AccountSettings: View {
                         }
                         .disabled(isDeleting)
                     }
-                    Section(header: VOSectionHeader("Advanced")) {
+                    Section(header: VOSectionHeader("Delete Account")) {
+                        SecureField("Type your password to confirm", text: $password)
+                            .disabled(isDeleting)
                         Button(role: .destructive) {
-                            showDeleteConfirmation = true
+                            if password.isEmpty {
+                                showDeleteNotice = true
+                            } else {
+                                showDeleteConfirmation = true
+                            }
                         } label: {
                             HStack {
                                 Text("Delete Account")
@@ -77,6 +94,11 @@ struct AccountSettings: View {
                             }
                         } message: {
                             Text("Are you sure want to delete your account?")
+                        }
+                        .alert("Missing Password Confirmation", isPresented: $showDeleteNotice) {
+                            Button("OK") {}
+                        } message: {
+                            Text("You need to enter your password to confirm the account deletion.")
                         }
                     }
                 }
@@ -110,7 +132,7 @@ struct AccountSettings: View {
     private func performDelete() {
         isDeleting = true
         withErrorHandling {
-            try await accountStore.deleteAccount()
+            try await accountStore.deleteAccount(password: password)
             return true
         } success: {
             dismiss()

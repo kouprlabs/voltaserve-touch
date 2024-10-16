@@ -41,16 +41,14 @@ class MosaicStore: ObservableObject {
         }
     }
 
-    func create() async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func create() async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await mosaicClient?.create(fileID)
     }
 
-    func delete() async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func delete() async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await mosaicClient?.delete(fileID)
     }
 
     func startTimer() {

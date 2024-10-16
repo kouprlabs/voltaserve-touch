@@ -41,19 +41,7 @@ class GroupStore: ObservableObject {
     }
 
     func create(name: String, organization: VOOrganization.Entity) async throws -> VOGroup.Entity? {
-        try await Fake.serverCall { (continuation: CheckedContinuation<VOGroup.Entity?, any Error>) in
-            if name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume(returning: VOGroup.Entity(
-                    id: UUID().uuidString,
-                    name: name,
-                    organization: organization,
-                    permission: .owner,
-                    createTime: Date().ISO8601Format()
-                ))
-            }
-        }
+        try await groupClient?.create(.init(name: name, organizationID: organization.id))
     }
 
     func fetch(_ id: String) async throws -> VOGroup.Entity? {
@@ -107,37 +95,19 @@ class GroupStore: ObservableObject {
         }
     }
 
-    func patchName(_: String, options _: VOGroup.PatchNameOptions) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func patchName(name: String) async throws -> VOGroup.Entity? {
+        guard let current else { return nil }
+        return try await groupClient?.patchName(current.id, options: .init(name: name))
     }
 
-    func delete(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func delete() async throws {
+        guard let current else { return }
+        try await groupClient?.delete(current.id)
     }
 
-    func addMember(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func addMember(userID: String) async throws {
+        guard let current else { return }
+        try await groupClient?.addMember(current.id, options: .init(userID: userID))
     }
 
     func append(_ newEntities: [VOGroup.Entity]) {

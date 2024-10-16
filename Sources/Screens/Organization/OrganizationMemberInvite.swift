@@ -72,7 +72,7 @@ struct OrganizationMemberInvite: View {
         isSending = true
 
         withErrorHandling {
-            try await invitationStore.create(organizationID: organization.id, emails: emails)
+            _ = try await invitationStore.create(organizationID: organization.id, emails: emails)
             return true
         } success: {
             dismiss()

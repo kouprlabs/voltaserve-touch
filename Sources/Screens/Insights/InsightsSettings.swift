@@ -122,7 +122,7 @@ struct InsightsSettings: View {
     private func performPatch() {
         isPatching = true
         withErrorHandling {
-            try await insightsStore.patch()
+            _ = try await insightsStore.patch()
             return true
         } success: {
             dismiss()
@@ -138,7 +138,7 @@ struct InsightsSettings: View {
     private func performDelete() {
         isDeleting = true
         withErrorHandling {
-            try await insightsStore.delete()
+            _ = try await insightsStore.delete()
             return true
         } success: {
             dismiss()

@@ -39,18 +39,7 @@ class OrganizationStore: ObservableObject {
     }
 
     func create(name: String) async throws -> VOOrganization.Entity? {
-        try await Fake.serverCall { (continuation: CheckedContinuation<VOOrganization.Entity, any Error>) in
-            if name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume(returning: VOOrganization.Entity(
-                    id: UUID().uuidString,
-                    name: name,
-                    permission: .owner,
-                    createTime: Date().ISO8601Format()
-                ))
-            }
-        }
+        try await organizationClient?.create(.init(name: name))
     }
 
     func fetch(_ id: String) async throws -> VOOrganization.Entity? {
@@ -91,26 +80,14 @@ class OrganizationStore: ObservableObject {
         }
     }
 
-    func patchName(_: String, name _: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func patchName(name: String) async throws -> VOOrganization.Entity? {
+        guard let current else { return nil }
+        return try await organizationClient?.patchName(current.id, options: .init(name: name))
     }
 
-    func delete(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func delete() async throws {
+        guard let current else { return }
+        try await organizationClient?.delete(current.id)
     }
 
     func append(_ newEntities: [VOOrganization.Entity]) {

@@ -95,7 +95,7 @@ struct InsightsCreate: View {
         guard let language else { return }
         isCreating = true
         withErrorHandling {
-            try await insightsStore.create(languageID: language.id)
+            _ = try await insightsStore.create(languageID: language.id)
             return true
         } success: {
             dismiss()

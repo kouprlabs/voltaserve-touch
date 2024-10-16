@@ -72,48 +72,20 @@ class AccountStore: ObservableObject {
         }
     }
 
-    func updateEmail(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let identityUser = self.identityUser,
-               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func updateEmail(_ email: String) async throws -> VOIdentityUser.Entity? {
+        try await identityUserClient?.updateEmailRequest(.init(email: email))
     }
 
-    func updateFullName(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let identityUser = self.identityUser,
-               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func updateFullName(_ fullName: String) async throws -> VOIdentityUser.Entity? {
+        try await identityUserClient?.updateFullName(.init(fullName: fullName))
     }
 
-    func updatePassword(current _: String, new _: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let identityUser = self.identityUser,
-               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func updatePassword(current: String, new: String) async throws -> VOIdentityUser.Entity? {
+        try await identityUserClient?.updatePassword(.init(currentPassword: current, newPassword: new))
     }
 
-    func deleteAccount() async throws {
-        try await Fake.serverCall { continuation in
-            if let identityUser = self.identityUser,
-               identityUser.fullName.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func deleteAccount(password: String) async throws {
+        try await identityUserClient?.delete(.init(password: password))
     }
 
     func startTimer() {

@@ -61,16 +61,12 @@ class TaskStore: ObservableObject {
         }
     }
 
-    func dismiss() async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func dismiss() async throws -> VOTask.DismissAllResult? {
+        try await taskClient?.dismiss()
     }
 
-    func dismiss(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func dismiss(_ id: String) async throws {
+        try await taskClient?.dismiss(id)
     }
 
     func append(_ newEntities: [VOTask.Entity]) {

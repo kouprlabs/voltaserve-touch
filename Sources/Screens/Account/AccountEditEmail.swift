@@ -38,11 +38,11 @@ struct AccountEditEmail: View {
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
-                value = identityUser.email
+                value = identityUser.pendingEmail ?? identityUser.email
             }
             .onChange(of: accountStore.identityUser) { _, newUser in
                 if let newUser {
-                    value = newUser.email
+                    value = newUser.pendingEmail ?? newUser.email
                 }
             }
         } else {
@@ -56,16 +56,15 @@ struct AccountEditEmail: View {
 
     private func isValid() -> Bool {
         if let identityUser = accountStore.identityUser {
-            return !normalizedValue.isEmpty && normalizedValue != identityUser.email
+            return !normalizedValue.isEmpty && normalizedValue != (identityUser.pendingEmail ?? identityUser.email)
         }
         return false
     }
 
     private func performSave() {
         isSaving = true
-
         withErrorHandling {
-            try await accountStore.updateEmail(normalizedValue)
+            _ = try await accountStore.updateEmail(normalizedValue)
             return true
         } success: {
             dismiss()

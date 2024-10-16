@@ -43,22 +43,19 @@ class InsightsStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func create(languageID _: String) async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func create(languageID: String) async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await insightsClient?.create(fileID, options: .init(languageID: languageID))
     }
 
-    func patch() async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func patch() async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await insightsClient?.patch(fileID)
     }
 
-    func delete() async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func delete() async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await insightsClient?.delete(fileID)
     }
 
     func fetchLanguages() async throws -> [VOInsights.Language]? {

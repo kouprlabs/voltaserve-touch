@@ -66,11 +66,9 @@ struct OrganizationSettings: View {
     }
 
     private func performDelete() {
-        guard let current = organizationStore.current else { return }
         isDeleting = true
-
         withErrorHandling {
-            try await organizationStore.delete(current.id)
+            try await organizationStore.delete()
             return true
         } success: {
             dismiss()
