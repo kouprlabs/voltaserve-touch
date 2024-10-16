@@ -51,6 +51,9 @@ struct FileActions: ViewModifier {
                        let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst())) {
                         UIApplication.shared.open(url)
                     }
+                },
+                onInfo: {
+                    fileStore.showInfo = true
                 }
             )
     }

@@ -1,7 +1,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingPermissionBadge: View {
+struct PermissionBadge: View {
     var permission: VOPermission.Value
 
     init(_ permission: VOPermission.Value) {
@@ -32,8 +32,8 @@ struct SharingPermissionBadge: View {
 
 #Preview {
     VStack {
-        SharingPermissionBadge(.viewer)
-        SharingPermissionBadge(.editor)
-        SharingPermissionBadge(.owner)
+        PermissionBadge(.viewer)
+        PermissionBadge(.editor)
+        PermissionBadge(.owner)
     }
 }
