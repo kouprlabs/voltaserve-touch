@@ -20,22 +20,36 @@ struct SnapshotOverview: View {
 
     var body: some View {
         Form {
-            Section(header: VOSectionHeader("Create Time")) {
-                Text(snapshot.createTime)
-            }
-            Section(header: VOSectionHeader("Version")) {
-                Text("\(snapshot.version)")
+            Section(header: VOSectionHeader("Properties")) {
+                if let createTime = snapshot.createTime.date?.pretty {
+                    HStack {
+                        Text("Create Time")
+                        Spacer()
+                        Text(createTime)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                HStack {
+                    Text("Version")
+                    Spacer()
+                    Text("\(snapshot.version)")
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Text("Status")
+                    Spacer()
+                    SnapshotStatus(snapshot.status)
+                }
             }
             if snapshot.hasFeatures() {
                 Section(header: VOSectionHeader("Features")) {
                     SnapshotFeatures(snapshot)
                 }
             }
-            Section(header: VOSectionHeader("Status")) {
-                SnapshotStatus(snapshot.status)
-            }
             if !snapshot.isActive {
-                Section {
+                Section(header: VOSectionHeader("Actions")) {
                     Button {
                         showActivateConfirmation = true
                     } label: {

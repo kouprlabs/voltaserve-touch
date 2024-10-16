@@ -18,24 +18,47 @@ struct TaskOverview: View {
 
     var body: some View {
         Form {
-            if let object = task.payload?.object {
-                Section(header: VOSectionHeader("Payload")) {
-                    Text(object)
+            Section(header: VOSectionHeader("Properties")) {
+                if let object = task.payload?.object {
+                    NavigationLink(destination: TaskPayload(task)) {
+                        HStack {
+                            Text("Payload")
+                            Spacer()
+                            Text(object)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
-            }
-            Section(header: VOSectionHeader("Name")) {
-                Text(task.name)
-            }
-            Section(header: VOSectionHeader("Status")) {
-                TaskStatusBadge(task.status)
-            }
-            if task.status == .error, let error = task.error {
-                Section(header: VOSectionHeader("Error")) {
-                    Text(error)
+                NavigationLink(destination: TaskName(task)) {
+                    HStack {
+                        Text("Name")
+                        Spacer()
+                        Text(task.name)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                HStack {
+                    Text("Status")
+                    Spacer()
+                    TaskStatusBadge(task.status)
+                }
+                if task.status == .error, let error = task.error {
+                    NavigationLink(destination: TaskError(task)) {
+                        Text("Error")
+                        Spacer()
+                        Text(error)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             if task.status == .error {
-                Section {
+                Section(header: VOSectionHeader("Actions")) {
                     Button(role: .destructive) {
                         showDismissConfirmation = true
                     } label: {
