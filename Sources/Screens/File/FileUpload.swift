@@ -64,7 +64,11 @@ struct FileUpload: View {
             dispatchGroup.enter()
             Task {
                 do {
+                    if !url.startAccessingSecurityScopedResource() {
+                        throw FileAccessError.permissionError
+                    }
                     _ = try await fileStore.upload(url, workspaceID: workspace.id)
+                    url.stopAccessingSecurityScopedResource()
                     dispatchGroup.leave()
                 } catch {
                     failedCount += 1
@@ -93,5 +97,9 @@ struct FileUpload: View {
         case full
         case partial
         case unknown
+    }
+
+    private enum FileAccessError: Error {
+        case permissionError
     }
 }
