@@ -15,6 +15,7 @@ struct FileContextMenu: ViewModifier {
     var onMove: (() -> Void)?
     var onCopy: (() -> Void)?
     var onOpen: (() -> Void)?
+    var onInfo: (() -> Void)?
 
     init(
         _ file: VOFile.Entity,
@@ -29,7 +30,8 @@ struct FileContextMenu: ViewModifier {
         onRename: (() -> Void)? = nil,
         onMove: (() -> Void)? = nil,
         onCopy: (() -> Void)? = nil,
-        onOpen: (() -> Void)? = nil
+        onOpen: (() -> Void)? = nil,
+        onInfo: (() -> Void)? = nil
     ) {
         self.file = file
         self.fileStore = fileStore
@@ -44,6 +46,7 @@ struct FileContextMenu: ViewModifier {
         self.onMove = onMove
         self.onCopy = onCopy
         self.onOpen = onOpen
+        self.onInfo = onInfo
     }
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
@@ -148,6 +151,15 @@ struct FileContextMenu: ViewModifier {
                         Label("Copy", systemImage: "document.on.document")
                     }
                 }
+                if fileStore.isInfoAuthorized(file) {
+                    Divider()
+                    Button {
+                        updateSelection()
+                        onInfo?()
+                    } label: {
+                        Label("Info", systemImage: "info.circle")
+                    }
+                }
             }
     }
 
@@ -170,7 +182,8 @@ extension View {
         onRename: (() -> Void)? = nil,
         onMove: (() -> Void)? = nil,
         onCopy: (() -> Void)? = nil,
-        onOpen: (() -> Void)? = nil
+        onOpen: (() -> Void)? = nil,
+        onInfo: (() -> Void)? = nil
     ) -> some View {
         modifier(FileContextMenu(
             file,
@@ -185,7 +198,8 @@ extension View {
             onRename: onRename,
             onMove: onMove,
             onCopy: onCopy,
-            onOpen: onOpen
+            onOpen: onOpen,
+            onInfo: onInfo
         ))
     }
 }

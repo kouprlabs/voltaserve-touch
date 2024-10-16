@@ -8,6 +8,8 @@ class FileStore: ObservableObject {
     @Published var entities: [VOFile.Entity]?
     @Published var current: VOFile.Entity?
     @Published var taskCount: Int?
+    @Published var storageUsage: VOStorage.Usage?
+    @Published var itemCount: Int?
     @Published var query: VOFile.Query?
 
     @Published var selection = Set<String>() {
@@ -32,6 +34,7 @@ class FileStore: ObservableObject {
     @Published var showTasks = false
     @Published var showMosaic = false
     @Published var showInsights = false
+    @Published var showInfo = false
     @Published var viewMode: ViewMode = .grid
     @Published var searchText = ""
     @Published var isLoading = false
@@ -42,6 +45,7 @@ class FileStore: ObservableObject {
     private var timer: Timer?
     private var fileClient: VOFile?
     private var taskClient: VOTask?
+    private var storageClient: VOStorage?
     let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
@@ -51,7 +55,11 @@ class FileStore: ObservableObject {
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
-                taskClient = VOTask(
+                taskClient = .init(
+                    baseURL: Config.production.apiURL,
+                    accessToken: token.accessToken
+                )
+                storageClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -168,6 +176,44 @@ class FileStore: ObservableObject {
             self.taskCount = taskCount
         } failure: { message in
             self.errorTitle = "Error: Fetching Task Count"
+            self.errorMessage = message
+            self.showError = true
+        }
+    }
+
+    func fetchStorageUsage() async throws -> VOStorage.Usage? {
+        guard let current else { return nil }
+        return try await storageClient?.fetchFileUsage(current.id)
+    }
+
+    func fetchStorageUsage() {
+        var storageUsage: VOStorage.Usage?
+        withErrorHandling {
+            storageUsage = try await self.fetchStorageUsage()
+            return true
+        } success: {
+            self.storageUsage = storageUsage
+        } failure: { message in
+            self.errorTitle = "Error: Fetching File Storage Usage"
+            self.errorMessage = message
+            self.showError = true
+        }
+    }
+
+    func fetchItemCount() async throws -> Int? {
+        guard let current else { return nil }
+        return try await fileClient?.fetchCount(current.id)
+    }
+
+    func fetchItemCount() {
+        var itemCount: Int?
+        withErrorHandling {
+            itemCount = try await self.fetchItemCount()
+            return true
+        } success: {
+            self.itemCount = itemCount
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Item Count"
             self.errorMessage = message
             self.showError = true
         }
@@ -448,6 +494,10 @@ class FileStore: ObservableObject {
 
     func isRenameAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.editor)
+    }
+
+    func isInfoAuthorized(_ file: VOFile.Entity) -> Bool {
+        file.permission.ge(.viewer)
     }
 
     func isToolsAuthorized(_ file: VOFile.Entity) -> Bool {

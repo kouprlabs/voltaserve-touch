@@ -24,6 +24,7 @@ struct FileSheets: ViewModifier {
             .fileSheetSnapshots(fileStore: fileStore)
             .fileSheetDelete(fileStore: fileStore)
             .fileSheetTasks(fileStore: fileStore)
+            .fileSheetInfo(fileStore: fileStore)
     }
 }
 
