@@ -73,11 +73,15 @@ struct WorkspaceCreate: View {
     }
 
     private func performCreate() {
-        guard let organization else { return }
+        guard let organization, let storageCapacity else { return }
         isProcessing = true
 
         withErrorHandling {
-            _ = try await workspaceStore.create(name: normalizedName, organization: organization)
+            _ = try await workspaceStore.create(
+                name: normalizedName,
+                organization: organization,
+                storageCapacity: storageCapacity
+            )
             return true
         } success: {
             dismiss()

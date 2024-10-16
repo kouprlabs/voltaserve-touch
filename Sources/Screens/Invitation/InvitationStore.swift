@@ -25,14 +25,8 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    func create(organizationID _: String, emails: [String]) async throws {
-        try await Fake.serverCall { continuation in
-            if !emails.isEmpty, emails[0].lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func create(organizationID: String, emails: [String]) async throws -> [VOInvitation.Entity]? {
+        try await invitationClient?.create(.init(organizationID: organizationID, emails: emails))
     }
 
     func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInvitation.List? {
@@ -91,16 +85,12 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    func accept(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func accept(_ id: String) async throws {
+        try await invitationClient?.accept(id)
     }
 
-    func decline(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            continuation.resume()
-        }
+    func decline(_ id: String) async throws {
+        try await invitationClient?.decline(id)
     }
 
     func append(_ newEntities: [VOInvitation.Entity]) {

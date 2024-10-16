@@ -54,9 +54,8 @@ struct AccountEditFullName: View {
 
     private func performSave() {
         isSaving = true
-
         withErrorHandling {
-            try await accountStore.updateFullName(normalizedValue)
+            _ = try await accountStore.updateFullName(normalizedValue)
             return true
         } success: {
             dismiss()

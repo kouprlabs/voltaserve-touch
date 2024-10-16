@@ -65,11 +65,9 @@ struct GroupSettings: View {
     }
 
     private func performDelete() {
-        guard let current = groupStore.current else { return }
         isDeleting = true
-
         withErrorHandling {
-            try await groupStore.delete(current.id)
+            try await groupStore.delete()
             return true
         } success: {
             dismiss()

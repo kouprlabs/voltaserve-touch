@@ -113,7 +113,7 @@ struct TaskList: View {
     private func performDismissAll() {
         isDismissingAll = true
         withErrorHandling {
-            try await taskStore.dismiss()
+            _ = try await taskStore.dismiss()
             return true
         } success: {
             taskStore.fetchList(replace: true)

@@ -75,7 +75,7 @@ struct MosaicCreate: View {
     private func performCreate() {
         isCreating = true
         withErrorHandling {
-            try await mosaicStore.create()
+            _ = try await mosaicStore.create()
             return true
         } success: {
             dismiss()

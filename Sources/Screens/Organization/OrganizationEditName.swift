@@ -53,11 +53,9 @@ struct OrganizationEditName: View {
     }
 
     private func performSave() {
-        guard let current = organizationStore.current else { return }
         isSaving = true
-
         withErrorHandling {
-            try await organizationStore.patchName(current.id, name: nornalizedValue)
+            _ = try await organizationStore.patchName(name: nornalizedValue)
             return true
         } success: {
             dismiss()

@@ -51,22 +51,16 @@ class WorkspaceStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func create(name: String, organization: VOOrganization.Entity) async throws -> VOWorkspace.Entity {
-        try await Fake.serverCall { (continuation: CheckedContinuation<VOWorkspace.Entity, any Error>) in
-            if name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume(returning: VOWorkspace.Entity(
-                    id: UUID().uuidString,
-                    name: name,
-                    permission: .owner,
-                    storageCapacity: 1,
-                    rootID: UUID().uuidString,
-                    organization: organization,
-                    createTime: Date().ISO8601Format()
-                ))
-            }
-        }
+    func create(
+        name: String,
+        organization: VOOrganization.Entity,
+        storageCapacity: Int
+    ) async throws -> VOWorkspace.Entity? {
+        try await workspaceClient?.create(.init(
+            name: name,
+            organizationID: organization.id,
+            storageCapacity: storageCapacity
+        ))
     }
 
     func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
@@ -132,37 +126,22 @@ class WorkspaceStore: ObservableObject {
         try await storageClient?.fetchWorkspaceUsage(id)
     }
 
-    func patchName(_: String, name _: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func patchName(name: String) async throws -> VOWorkspace.Entity? {
+        guard let current else { return nil }
+        return try await workspaceClient?.patchName(current.id, options: .init(name: name))
     }
 
-    func patchStorageCapacity(_: String, storageCapacity _: Int) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func patchStorageCapacity(storageCapacity: Int) async throws -> VOWorkspace.Entity? {
+        guard let current else { return nil }
+        return try await workspaceClient?.patchStorageCapacity(
+            current.id,
+            options: .init(storageCapacity: storageCapacity)
+        )
     }
 
-    func delete(_: String) async throws {
-        try await Fake.serverCall { continuation in
-            if let current = self.current,
-               current.name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func delete() async throws {
+        guard let current else { return }
+        try await workspaceClient?.delete(current.id)
     }
 
     func append(_ newEntities: [VOWorkspace.Entity]) {

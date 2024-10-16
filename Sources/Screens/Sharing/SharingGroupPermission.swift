@@ -130,9 +130,7 @@ struct SharingGroupPermission: View {
         guard let group, let permission else { return }
         isGranting = true
         withErrorHandling {
-            for fileID in fileIDs {
-                try await sharingStore.grantGroupPermission(id: fileID, groupID: group.id, permission: permission)
-            }
+            try await sharingStore.grantGroupPermission(ids: fileIDs, groupID: group.id, permission: permission)
             return true
         } success: {
             dismiss()

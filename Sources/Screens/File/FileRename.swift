@@ -81,7 +81,7 @@ struct FileRename: View {
         isSaving = true
 
         withErrorHandling {
-            try await fileStore.patchName(file.id, name: normalizedValue)
+            _ = try await fileStore.patchName(file.id, name: normalizedValue)
             return true
         } success: {
             dismiss()

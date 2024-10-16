@@ -115,11 +115,9 @@ struct WorkspaceSettings: View {
     }
 
     private func performDelete() {
-        guard let current = workspaceStore.current else { return }
         isDeleting = true
-
         withErrorHandling {
-            try await workspaceStore.delete(current.id)
+            try await workspaceStore.delete()
             return true
         } success: {
             dismiss()

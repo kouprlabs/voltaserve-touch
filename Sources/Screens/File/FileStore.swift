@@ -90,21 +90,7 @@ class FileStore: ObservableObject {
     }
 
     func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
-        try await Fake.serverCall { (continuation: CheckedContinuation<VOFile.Entity, any Error>) in
-            if name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume(returning: VOFile.Entity(
-                    id: UUID().uuidString,
-                    workspaceID: workspaceID,
-                    name: name,
-                    type: .folder,
-                    parentID: parentID,
-                    permission: .owner,
-                    createTime: Date().ISO8601Format()
-                ))
-            }
-        }
+        try await fileClient?.createFolder(.init(workspaceID: workspaceID, parentID: parentID, name: name))
     }
 
     func fetch(_ id: String) async throws -> VOFile.Entity? {
@@ -219,92 +205,31 @@ class FileStore: ObservableObject {
         }
     }
 
-    func patchName(_: String, name: String) async throws {
-        try await Fake.serverCall { continuation in
-            if name.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
-        }
+    func patchName(_ id: String, name: String) async throws -> VOFile.Entity? {
+        try await fileClient?.patchName(id, options: .init(name: name))
     }
 
-    func copy(_ ids: [String], to _: String) async throws -> VOFile.CopyResult {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<VOFile.CopyResult, any Error>) in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                if ids.count == 2 {
-                    continuation.resume(returning: VOFile.CopyResult(
-                        new: [],
-                        succeeded: [],
-                        failed: ids
-                    ))
-                } else if ids.count == 3 {
-                    continuation.resume(returning: VOFile.CopyResult(
-                        new: [ids[1], ids[2]],
-                        succeeded: [ids[1], ids[2]],
-                        failed: [ids[0]]
-                    ))
-                } else {
-                    continuation.resume(returning: VOFile.CopyResult(
-                        new: ids,
-                        succeeded: ids,
-                        failed: []
-                    ))
-                }
-            }
-        }
+    func copy(_ ids: [String], to targetID: String) async throws -> VOFile.CopyResult? {
+        try await fileClient?.copy(.init(sourceIDs: ids, targetID: targetID))
     }
 
-    func move(_ ids: [String], to _: String) async throws -> VOFile.MoveResult {
-        try await Fake.serverCall { (continuation: CheckedContinuation<VOFile.MoveResult, any Error>) in
-            if ids.count == 2 {
-                continuation.resume(returning: VOFile.MoveResult(
-                    succeeded: [],
-                    failed: ids
-                ))
-            } else if ids.count == 3 {
-                continuation.resume(returning: VOFile.MoveResult(
-                    succeeded: [ids[1], ids[2]],
-                    failed: [ids[0]]
-                ))
-            } else {
-                continuation.resume(returning: VOFile.MoveResult(
-                    succeeded: ids,
-                    failed: []
-                ))
-            }
-        }
+    func move(_ ids: [String], to targetID: String) async throws -> VOFile.MoveResult? {
+        try await fileClient?.move(.init(sourceIDs: ids, targetID: targetID))
     }
 
-    func delete(_ ids: [String]) async throws -> VOFile.DeleteResult {
-        try await Fake.serverCall { continuation in
-            if ids.count == 2 {
-                continuation.resume(returning: VOFile.DeleteResult(
-                    succeeded: [],
-                    failed: ids
-                ))
-            } else if ids.count == 3 {
-                continuation.resume(returning: VOFile.DeleteResult(
-                    succeeded: [ids[1], ids[2]],
-                    failed: [ids[0]]
-                ))
-            } else {
-                continuation.resume(returning: VOFile.DeleteResult(
-                    succeeded: ids,
-                    failed: []
-                ))
-            }
-        }
+    func delete(_ ids: [String]) async throws -> VOFile.DeleteResult? {
+        try await fileClient?.delete(.init(ids: ids))
     }
 
-    func upload(_ url: URL, workspaceID _: String) async throws {
-        try await Fake.serverCall { continuation in
-            if url.lastPathComponent.lowercasedAndTrimmed().starts(with: "error") {
-                continuation.resume(throwing: Fake.serverError)
-            } else {
-                continuation.resume()
-            }
+    func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
+        if let data = try? Data(contentsOf: url) {
+            return try await fileClient?.createFile(.init(
+                workspaceID: workspaceID,
+                name: url.lastPathComponent,
+                data: data
+            ))
         }
+        return nil
     }
 
     func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
