@@ -47,6 +47,13 @@ struct InsightsChart: View {
                 .refreshable {
                     insightsStore.fetchEntityNext(replace: true)
                 }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") {
+                            dismiss()
+                        }
+                    }
+                }
             } else {
                 ProgressView()
             }
