@@ -48,6 +48,11 @@ struct GroupList: View {
                             Image(systemName: "plus")
                         }
                     }
+                    ToolbarItem(placement: .topBarLeading) {
+                        if groupStore.isLoading {
+                            ProgressView()
+                        }
+                    }
                 }
                 .sheet(isPresented: $showCreate) {
                     GroupCreate(groupStore: groupStore) { newGroup in

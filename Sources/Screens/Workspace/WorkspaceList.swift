@@ -63,6 +63,11 @@ struct WorkspaceList: View {
                             Image(systemName: "plus")
                         }
                     }
+                    ToolbarItem(placement: .topBarLeading) {
+                        if workspaceStore.isLoading {
+                            ProgressView()
+                        }
+                    }
                 }
                 .sheet(isPresented: $showCreate) {
                     WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in

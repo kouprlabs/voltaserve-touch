@@ -38,6 +38,9 @@ struct TaskList: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Tasks")
+                .refreshable {
+                    taskStore.fetchNext(replace: true)
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         if isDismissingAll {
@@ -51,6 +54,11 @@ struct TaskList: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") {
                             dismiss()
+                        }
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        if taskStore.isLoading {
+                            ProgressView()
                         }
                     }
                 }

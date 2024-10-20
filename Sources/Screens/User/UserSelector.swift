@@ -50,17 +50,24 @@ struct UserSelector: View {
                 .refreshable {
                     userStore.fetchNext(replace: true)
                 }
-                .voErrorAlert(
-                    isPresented: $showError,
-                    title: userStore.errorTitle,
-                    message: userStore.errorMessage
-                )
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        if userStore.isLoading {
+                            ProgressView()
+                        }
+                    }
+                }
             } else {
                 ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Select User")
+        .voErrorAlert(
+            isPresented: $showError,
+            title: userStore.errorTitle,
+            message: userStore.errorMessage
+        )
         .onAppear {
             if let groupID {
                 userStore.groupID = groupID

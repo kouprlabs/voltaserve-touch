@@ -9,6 +9,7 @@ class UserStore: ObservableObject {
     @Published var errorTitle: String?
     @Published var errorMessage: String?
     @Published var searchText = ""
+    @Published var isLoading = false
     private var list: VOUser.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -77,6 +78,8 @@ class UserStore: ObservableObject {
     }
 
     func fetchNext(replace: Bool = false) {
+        guard !isLoading else { return }
+
         var nextPage = -1
         var list: VOUser.List?
 
@@ -97,6 +100,8 @@ class UserStore: ObservableObject {
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
             return true
+        } before: {
+            self.isLoading = true
         } success: {
             self.list = list
             if let list {
@@ -110,6 +115,8 @@ class UserStore: ObservableObject {
             self.errorTitle = "Error: Fetching Users"
             self.errorMessage = message
             self.showError = true
+        } anyways: {
+            self.isLoading = false
         }
     }
 
@@ -188,6 +195,6 @@ class UserStore: ObservableObject {
     // MARK: - Constants
 
     private enum Constants {
-        static let pageSize = 10
+        static let pageSize = 50
     }
 }

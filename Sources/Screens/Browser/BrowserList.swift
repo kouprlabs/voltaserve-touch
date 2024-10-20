@@ -88,6 +88,11 @@ struct BrowserList: View {
                     }
                 }
             }
+            ToolbarItem(placement: .topBarLeading) {
+                if browserStore.isLoading {
+                    ProgressView()
+                }
+            }
         }
         .onAppear {
             browserStore.fileID = fileID

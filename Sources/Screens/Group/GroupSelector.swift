@@ -58,6 +58,13 @@ struct GroupSelector: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Select Group")
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if groupStore.isLoading {
+                    ProgressView()
+                }
+            }
+        }
         .onAppear {
             groupStore.organizationID = organizationID
             if let token = tokenStore.token {

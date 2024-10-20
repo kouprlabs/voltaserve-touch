@@ -30,6 +30,11 @@ struct FileToolbar: ViewModifier {
                 ToolbarItem(placement: .topBarLeading) {
                     uploadMenu
                 }
+                ToolbarItem(placement: .topBarLeading) {
+                    if fileStore.isLoading {
+                        ProgressView()
+                    }
+                }
             }
     }
 

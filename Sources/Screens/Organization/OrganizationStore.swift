@@ -10,6 +10,7 @@ class OrganizationStore: ObservableObject {
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
+    @Published var isLoading = false
     private var list: VOOrganization.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -52,6 +53,8 @@ class OrganizationStore: ObservableObject {
     }
 
     func fetchNext(replace: Bool = false) {
+        guard !isLoading else { return }
+
         var nextPage = -1
         var list: VOOrganization.List?
 
@@ -72,6 +75,8 @@ class OrganizationStore: ObservableObject {
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
             return true
+        } before: {
+            self.isLoading = true
         } success: {
             self.list = list
             if let list {
@@ -85,6 +90,8 @@ class OrganizationStore: ObservableObject {
             self.errorTitle = "Error: Fetching Organizations"
             self.errorMessage = message
             self.showError = true
+        } anyways: {
+            self.isLoading = false
         }
     }
 
@@ -188,6 +195,6 @@ class OrganizationStore: ObservableObject {
     // MARK: - Constants
 
     private enum Constants {
-        static let pageSize = 10
+        static let pageSize = 50
     }
 }

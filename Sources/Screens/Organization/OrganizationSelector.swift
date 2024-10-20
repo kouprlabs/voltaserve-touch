@@ -45,6 +45,13 @@ struct OrganizationSelector: View {
                 .refreshable {
                     organizationStore.fetchNext(replace: true)
                 }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        if organizationStore.isLoading {
+                            ProgressView()
+                        }
+                    }
+                }
             } else {
                 ProgressView()
             }

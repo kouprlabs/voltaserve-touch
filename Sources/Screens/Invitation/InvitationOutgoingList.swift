@@ -38,6 +38,9 @@ struct InvitationOutgoingList: View {
                         }
                     }
                 }
+                .refreshable {
+                    invitationStore.fetchNext(replace: true)
+                }
             } else {
                 ProgressView()
             }
@@ -49,6 +52,11 @@ struct InvitationOutgoingList: View {
                     showCreate = true
                 } label: {
                     Image(systemName: "plus")
+                }
+            }
+            ToolbarItem(placement: .topBarLeading) {
+                if invitationStore.isLoading {
+                    ProgressView()
                 }
             }
         }

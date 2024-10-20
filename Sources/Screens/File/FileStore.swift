@@ -38,6 +38,7 @@ class FileStore: ObservableObject {
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
+    @Published var isLoading = false
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -119,6 +120,7 @@ class FileStore: ObservableObject {
 
     func fetchNext(replace: Bool = false) {
         guard let current else { return }
+        guard !isLoading else { return }
 
         var nextPage = -1
         var list: VOFile.List?
@@ -141,6 +143,8 @@ class FileStore: ObservableObject {
             nextPage = self.nextPage()
             list = try await self.fetchList(current.id, page: nextPage)
             return true
+        } before: {
+            self.isLoading = true
         } success: {
             self.list = list
             if let list {
@@ -154,6 +158,8 @@ class FileStore: ObservableObject {
             self.errorTitle = "Error: Fetching Files"
             self.errorMessage = message
             self.showError = true
+        } anyways: {
+            self.isLoading = false
         }
     }
 
@@ -500,7 +506,7 @@ class FileStore: ObservableObject {
     // MARK: - Constants
 
     private enum Constants {
-        static let pageSize = 10
+        static let pageSize = 50
         static let userDefaultViewModeKey = "com.voltaserve.files.viewMode"
     }
 }

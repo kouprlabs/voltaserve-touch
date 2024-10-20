@@ -237,6 +237,6 @@ class InsightsStore: ObservableObject {
     // MARK: - Constants
 
     private enum Constants {
-        static let pageSize = 10
+        static let pageSize = 50
     }
 }
