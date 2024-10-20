@@ -9,12 +9,14 @@ struct WorkspaceList: View {
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
     @State private var showAccount = false
-    @State private var showNew = false
+    @State private var showCreate = false
+    @State private var showOverview = false
     @State private var showWorkspaceError = false
     @State private var showAccountError = false
     @State private var showInvitationError = false
     @State private var showTaskError = false
     @State private var searchText = ""
+    @State private var newWorkspace: VOWorkspace.Entity?
 
     var body: some View {
         NavigationStack {
@@ -34,13 +36,6 @@ struct WorkspaceList: View {
                                         }
                                 }
                             }
-                            if workspaceStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: workspaceStore.searchText) {
@@ -49,7 +44,7 @@ struct WorkspaceList: View {
                     }
                 }
                 .refreshable {
-                    workspaceStore.fetchList(replace: true)
+                    workspaceStore.fetchNext(replace: true)
                 }
                 .navigationTitle("Home")
                 .toolbar {
@@ -63,17 +58,25 @@ struct WorkspaceList: View {
                     }
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
-                            showNew = true
+                            showCreate = true
                         } label: {
                             Image(systemName: "plus")
                         }
                     }
                 }
-                .sheet(isPresented: $showNew) {
-                    WorkspaceCreate(workspaceStore: workspaceStore)
+                .sheet(isPresented: $showCreate) {
+                    WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in
+                        self.newWorkspace = newWorkspace
+                        showOverview = true
+                    }
                 }
                 .sheet(isPresented: $showAccount) {
                     AccountOverview()
+                }
+                .navigationDestination(isPresented: $showOverview) {
+                    if let newWorkspace {
+                        WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
+                    }
                 }
             } else {
                 ProgressView()
@@ -113,7 +116,7 @@ struct WorkspaceList: View {
         }
         .onChange(of: workspaceStore.query) {
             workspaceStore.clear()
-            workspaceStore.fetchList()
+            workspaceStore.fetchNext()
         }
         .sync($workspaceStore.searchText, with: $searchText)
         .sync($workspaceStore.showError, with: $showWorkspaceError)
@@ -148,7 +151,7 @@ struct WorkspaceList: View {
     }
 
     private func fetchData() {
-        workspaceStore.fetchList(replace: true)
+        workspaceStore.fetchNext(replace: true)
         accountStore.fetchUser()
         invitationStore.fetchIncomingCount()
     }
@@ -172,8 +175,8 @@ struct WorkspaceList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if workspaceStore.isLast(id) {
-            workspaceStore.fetchList()
+        if workspaceStore.isEntityThreshold(id) {
+            workspaceStore.fetchNext()
         }
     }
 }

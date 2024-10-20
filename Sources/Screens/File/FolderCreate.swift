@@ -59,6 +59,9 @@ struct FolderCreate: View {
                 workspaceID: workspaceId,
                 parentID: parentID
             )
+            if fileStore.isLastPage() {
+                fileStore.fetchNext()
+            }
             return true
         } success: {
             dismiss()

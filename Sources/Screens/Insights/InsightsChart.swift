@@ -45,7 +45,7 @@ struct InsightsChart: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Insights")
                 .refreshable {
-                    insightsStore.fetchEntityList(replace: true)
+                    insightsStore.fetchEntityNext(replace: true)
                 }
             } else {
                 ProgressView()
@@ -76,7 +76,7 @@ struct InsightsChart: View {
     }
 
     private func fetchData() {
-        insightsStore.fetchEntityList(replace: true)
+        insightsStore.fetchEntityNext(replace: true)
     }
 
     private func startTimers() {

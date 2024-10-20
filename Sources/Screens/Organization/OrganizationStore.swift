@@ -3,15 +3,14 @@ import Foundation
 import VoltaserveCore
 
 class OrganizationStore: ObservableObject {
-    @Published var list: VOOrganization.List?
     @Published var entities: [VOOrganization.Entity]?
     @Published var current: VOOrganization.Entity?
     @Published var query: String?
     @Published var searchText = ""
-    @Published var isLoading = false
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
+    private var list: VOOrganization.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var organizationClient: VOOrganization?
@@ -38,26 +37,37 @@ class OrganizationStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func create(name: String) async throws -> VOOrganization.Entity? {
-        try await organizationClient?.create(.init(name: name))
-    }
+    // MARK: - Fetch
 
-    func fetch(_ id: String) async throws -> VOOrganization.Entity? {
+    private func fetch(_ id: String) async throws -> VOOrganization.Entity? {
         try await organizationClient?.fetch(id)
     }
 
-    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
+    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOOrganization.Probe? {
+        try await organizationClient?.fetchProbe(.init(query: query, size: size))
+    }
+
+    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
         try await organizationClient?.fetchList(.init(query: query, page: page, size: size))
     }
 
-    func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
+    func fetchNext(replace: Bool = false) {
         var nextPage = -1
         var list: VOOrganization.List?
 
         withErrorHandling {
+            if let list = self.list {
+                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                if let probe {
+                    self.list = .init(
+                        data: list.data,
+                        totalPages: probe.totalPages,
+                        totalElements: probe.totalElements,
+                        page: list.page,
+                        size: list.size
+                    )
+                }
+            }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
@@ -75,20 +85,25 @@ class OrganizationStore: ObservableObject {
             self.errorTitle = "Error: Fetching Organizations"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
 
-    func patchName(name: String) async throws -> VOOrganization.Entity? {
-        guard let current else { return nil }
-        return try await organizationClient?.patchName(current.id, options: .init(name: name))
+    // MARK: - Update
+
+    func create(name: String) async throws -> VOOrganization.Entity? {
+        try await organizationClient?.create(.init(name: name))
+    }
+
+    func patchName(_ id: String, name: String) async throws -> VOOrganization.Entity? {
+        try await organizationClient?.patchName(id, options: .init(name: name))
     }
 
     func delete() async throws {
         guard let current else { return }
         try await organizationClient?.delete(current.id)
     }
+
+    // MARK: - Entities
 
     func append(_ newEntities: [VOOrganization.Entity]) {
         if entities == nil {
@@ -103,6 +118,8 @@ class OrganizationStore: ObservableObject {
         entities = nil
         list = nil
     }
+
+    // MARK: - Paging
 
     func nextPage() -> Int {
         var page = 1
@@ -120,9 +137,20 @@ class OrganizationStore: ObservableObject {
         nextPage() != -1
     }
 
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.id
+    func isEntityThreshold(_ id: String) -> Bool {
+        if let entities {
+            let threashold = Constants.pageSize / 2
+            if entities.count >= threashold,
+               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                return true
+            } else {
+                return id == entities.last?.id
+            }
+        }
+        return false
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }
@@ -156,6 +184,8 @@ class OrganizationStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+
+    // MARK: - Constants
 
     private enum Constants {
         static let pageSize = 10

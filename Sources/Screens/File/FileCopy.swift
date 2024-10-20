@@ -55,9 +55,11 @@ struct FileCopy: View {
 
     private func performCopy() {
         var result: VOFile.CopyResult?
-        withErrorHandling {
+        withErrorHandling(delaySeconds: 1) {
             result = try await fileStore.copy(Array(fileStore.selection), to: destinationID)
-            errorSeverity = .full
+            if fileStore.isLastPage() {
+                fileStore.fetchNext()
+            }
             if let result {
                 if result.failed.isEmpty {
                     return true
@@ -65,6 +67,8 @@ struct FileCopy: View {
                     errorMessage = "Failed to copy \(result.failed.count) item(s)."
                     if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
+                    } else if result.failed.count == fileStore.selection.count {
+                        errorSeverity = .full
                     }
                     showError = true
                 }

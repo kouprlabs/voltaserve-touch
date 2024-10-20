@@ -43,7 +43,14 @@ struct WorkspaceSettings: View {
                         .disabled(isDeleting)
                     }
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: WorkspaceEditName(workspaceStore: workspaceStore)) {
+                        NavigationLink {
+                            WorkspaceEditName(workspaceStore: workspaceStore) { updatedWorkspace in
+                                workspaceStore.current = updatedWorkspace
+                                if let index = workspaceStore.entities?.firstIndex(where: { $0.id == updatedWorkspace.id }) {
+                                    workspaceStore.entities?[index] = updatedWorkspace
+                                }
+                            }
+                        } label: {
                             HStack {
                                 Text("Name")
                                 Spacer()
@@ -96,31 +103,25 @@ struct WorkspaceSettings: View {
     }
 
     private func onAppearOnChange() {
-        guard let current = workspaceStore.current else { return }
-        fetchStorageUsage(current.id)
+        fetchData()
     }
 
-    private func fetchStorageUsage(_ id: String) {
-        var usage: VOStorage.Usage?
-        withErrorHandling {
-            usage = try await workspaceStore.fetchStorageUsage(id)
-            return true
-        } success: {
-            workspaceStore.storageUsage = usage
-        } failure: { message in
-            errorTitle = "Error: Fetching Storage Usage"
-            errorMessage = message
-            showError = true
-        }
+    private func fetchData() {
+        workspaceStore.fetchStorageUsage()
     }
 
     private func performDelete() {
         isDeleting = true
+        let current = workspaceStore.current
+
         withErrorHandling {
             try await workspaceStore.delete()
             return true
         } success: {
             dismiss()
+            if let current {
+                reflectDeleteInStore(current.id)
+            }
             onCompletion?()
         } failure: { message in
             errorTitle = "Error: Deleting Workspace"
@@ -129,5 +130,9 @@ struct WorkspaceSettings: View {
         } anyways: {
             isDeleting = false
         }
+    }
+
+    private func reflectDeleteInStore(_ id: String) {
+        workspaceStore.entities?.removeAll(where: { $0.id == id })
     }
 }

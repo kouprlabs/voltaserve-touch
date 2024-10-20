@@ -3,23 +3,25 @@ import VoltaserveCore
 
 struct FileRename: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @ObservedObject private var fileStore: FileStore
+    @StateObject private var fileStore = FileStore()
     @Environment(\.dismiss) private var dismiss
     @State private var isSaving = false
     @State private var value = ""
     @State private var errorTitle: String?
     @State private var errorMessage: String?
     @State private var showError = false
-    @State var file: VOFile.Entity?
+    private let file: VOFile.Entity
+    private let onCompletion: ((VOFile.Entity) -> Void)?
 
-    init(fileStore: FileStore) {
-        self.fileStore = fileStore
+    init(_ file: VOFile.Entity, onCompletion: ((VOFile.Entity) -> Void)? = nil) {
+        self.file = file
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
         NavigationView {
             VStack {
-                if file != nil {
+                if !value.isEmpty {
                     Form {
                         TextField("Name", text: $value)
                             .disabled(isSaving)
@@ -50,41 +52,67 @@ struct FileRename: View {
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
-                fetch()
+                fileStore.current = file
+                if let token = tokenStore.token {
+                    assignTokenToStores(token)
+                    startTimers()
+                    onAppearOrChange()
+                }
             }
-            .onChange(of: file) { _, newFile in
-                if let newFile {
-                    value = newFile.name
+            .onDisappear {
+                stopTimers()
+            }
+            .onChange(of: tokenStore.token) { _, newToken in
+                if let newToken {
+                    assignTokenToStores(newToken)
+                    onAppearOrChange()
+                }
+            }
+            .onChange(of: fileStore.current) { _, file in
+                if let file {
+                    value = file.name
                 }
             }
         }
+    }
+
+    private func onAppearOrChange() {
+        fetchData()
+    }
+
+    private func fetchData() {
+        fileStore.fetch()
+    }
+
+    private func startTimers() {
+        fileStore.startTimer()
+    }
+
+    private func stopTimers() {
+        fileStore.stopTimer()
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        fileStore.token = token
     }
 
     private var normalizedValue: String {
         value.trimmingCharacters(in: .whitespaces)
     }
 
-    private func fetch() {
-        guard let id = fileStore.selection.first else { return }
-        withErrorHandling {
-            file = try await fileStore.fetch(id)
-            return true
-        } failure: { message in
-            errorTitle = "Error: Fetching File"
-            errorMessage = message
-            showError = true
-        }
-    }
-
     private func performRename() {
-        guard let file else { return }
+        guard let file = fileStore.current else { return }
         isSaving = true
+        var updatedFile: VOFile.Entity?
 
         withErrorHandling {
-            _ = try await fileStore.patchName(file.id, name: normalizedValue)
+            updatedFile = try await fileStore.patchName(file.id, name: normalizedValue)
             return true
         } success: {
             dismiss()
+            if let onCompletion, let updatedFile {
+                onCompletion(updatedFile)
+            }
         } failure: { message in
             errorTitle = "Error: Renaming File"
             errorMessage = message
@@ -95,7 +123,7 @@ struct FileRename: View {
     }
 
     private func isValid() -> Bool {
-        if let file {
+        if let file = fileStore.current {
             return !normalizedValue.isEmpty && normalizedValue != file.name
         }
         return false

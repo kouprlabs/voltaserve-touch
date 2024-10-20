@@ -33,7 +33,7 @@ class AccountStore: ObservableObject {
         self.identityUser = identityUser
     }
 
-    func fetchUser() async throws -> VOIdentityUser.Entity? {
+    private func fetchUser() async throws -> VOIdentityUser.Entity? {
         try await identityUserClient?.fetch()
     }
 
@@ -54,7 +54,7 @@ class AccountStore: ObservableObject {
         }
     }
 
-    func fetchAccountStorageUsage() async throws -> VOStorage.Usage? {
+    private func fetchAccountStorageUsage() async throws -> VOStorage.Usage? {
         try await storageClient?.fetchAccountUsage()
     }
 

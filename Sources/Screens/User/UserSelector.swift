@@ -40,13 +40,6 @@ struct UserSelector: View {
                                         }
                                 }
                             }
-                            if userStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: userStore.searchText) {
@@ -55,7 +48,7 @@ struct UserSelector: View {
                     }
                 }
                 .refreshable {
-                    userStore.fetchList(replace: true)
+                    userStore.fetchNext(replace: true)
                 }
                 .voErrorAlert(
                     isPresented: $showError,
@@ -91,7 +84,7 @@ struct UserSelector: View {
         }
         .onChange(of: userStore.query) {
             userStore.clear()
-            userStore.fetchList()
+            userStore.fetchNext()
         }
         .sync($userStore.searchText, with: $searchText)
         .sync($userStore.showError, with: $showError)
@@ -102,7 +95,7 @@ struct UserSelector: View {
     }
 
     private func fetchData() {
-        userStore.fetchList(replace: true)
+        userStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -118,8 +111,8 @@ struct UserSelector: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if userStore.isLast(id) {
-            userStore.fetchList()
+        if userStore.isEntityThreshold(id) {
+            userStore.fetchNext()
         }
     }
 }

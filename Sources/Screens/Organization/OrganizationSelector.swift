@@ -33,13 +33,6 @@ struct OrganizationSelector: View {
                                         }
                                 }
                             }
-                            if organizationStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: organizationStore.searchText) {
@@ -50,7 +43,7 @@ struct OrganizationSelector: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Select Organization")
                 .refreshable {
-                    organizationStore.fetchList(replace: true)
+                    organizationStore.fetchNext(replace: true)
                 }
             } else {
                 ProgressView()
@@ -80,7 +73,7 @@ struct OrganizationSelector: View {
         }
         .onChange(of: organizationStore.query) {
             organizationStore.clear()
-            organizationStore.fetchList()
+            organizationStore.fetchNext()
         }
         .sync($organizationStore.showError, with: $showError)
         .sync($organizationStore.searchText, with: $searchText)
@@ -91,7 +84,7 @@ struct OrganizationSelector: View {
     }
 
     private func fetchData() {
-        organizationStore.fetchList(replace: true)
+        organizationStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -107,8 +100,8 @@ struct OrganizationSelector: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if organizationStore.isLast(id) {
-            organizationStore.fetchList()
+        if organizationStore.isEntityThreshold(id) {
+            organizationStore.fetchNext()
         }
     }
 }

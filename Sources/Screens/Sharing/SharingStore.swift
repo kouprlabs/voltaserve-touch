@@ -5,7 +5,6 @@ import VoltaserveCore
 class SharingStore: ObservableObject {
     @Published var userPermissions: [VOFile.UserPermission]?
     @Published var groupPermissions: [VOFile.GroupPermission]?
-    @Published var isLoading = false
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
@@ -24,18 +23,19 @@ class SharingStore: ObservableObject {
         }
     }
 
-    func fetch() async throws -> VOFile.Entity? {
+    // MARK: - Fetch
+
+    private func fetch() async throws -> VOFile.Entity? {
         guard let fileID else { return nil }
         return try await fileClient?.fetch(fileID)
     }
 
-    func fetchUserPermissions(_ id: String) async throws -> [VOFile.UserPermission]? {
+    private func fetchUserPermissions(_ id: String) async throws -> [VOFile.UserPermission]? {
         try await fileClient?.fetchUserPermissions(id)
     }
 
     func fetchUserPermissions() {
         guard let fileID else { return }
-        isLoading = true
         var userPermissions: [VOFile.UserPermission]?
 
         withErrorHandling {
@@ -47,18 +47,15 @@ class SharingStore: ObservableObject {
             self.errorTitle = "Error: Fetching User Permissions"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
 
-    func fetchGroupPermissions(_ id: String) async throws -> [VOFile.GroupPermission]? {
+    private func fetchGroupPermissions(_ id: String) async throws -> [VOFile.GroupPermission]? {
         try await fileClient?.fetchGroupPermissions(id)
     }
 
     func fetchGroupPermissions() {
         guard let fileID else { return }
-        isLoading = true
         var groupPermissions: [VOFile.GroupPermission]?
 
         withErrorHandling {
@@ -70,10 +67,10 @@ class SharingStore: ObservableObject {
             self.errorTitle = "Error: Fetching Group Permissions"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
+
+    // MARK: - Update
 
     func grantUserPermission(ids: [String], userID: String, permission: VOPermission.Value) async throws {
         try await fileClient?.grantUserPermission(.init(ids: ids, userID: userID, permission: permission))
@@ -90,6 +87,8 @@ class SharingStore: ObservableObject {
     func revokeGroupPermission(id: String, groupID: String) async throws {
         try await fileClient?.revokeGroupPermission(.init(ids: [id], groupID: groupID))
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }

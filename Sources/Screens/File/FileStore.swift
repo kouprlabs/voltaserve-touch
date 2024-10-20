@@ -4,14 +4,12 @@ import VoltaserveCore
 
 // swiftlint:disable:next type_body_length
 class FileStore: ObservableObject {
-    @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
     @Published var current: VOFile.Entity?
     @Published var taskCount: Int?
     @Published var storageUsage: VOStorage.Usage?
     @Published var itemCount: Int?
     @Published var query: VOFile.Query?
-
     @Published var selection = Set<String>() {
         willSet {
             objectWillChange.send()
@@ -25,7 +23,7 @@ class FileStore: ObservableObject {
     @Published var showBrowserForCopy = false
     @Published var showUploadDocumentPicker = false
     @Published var showDownloadDocumentPicker = false
-    @Published var showNewFolder = false
+    @Published var showCreateFolder = false
     @Published var showUpload = false
     @Published var showMove = false
     @Published var showCopy = false
@@ -37,10 +35,10 @@ class FileStore: ObservableObject {
     @Published var showInfo = false
     @Published var viewMode: ViewMode = .grid
     @Published var searchText = ""
-    @Published var isLoading = false
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
+    private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var fileClient: VOFile?
@@ -89,11 +87,9 @@ class FileStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
-        try await fileClient?.createFolder(.init(workspaceID: workspaceID, parentID: parentID, name: name))
-    }
+    // MARK: - Fetch
 
-    func fetch(_ id: String) async throws -> VOFile.Entity? {
+    private func fetch(_ id: String) async throws -> VOFile.Entity? {
         try await fileClient?.fetch(id)
     }
 
@@ -113,20 +109,34 @@ class FileStore: ObservableObject {
         }
     }
 
-    func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
+    private func fetchProbe(_ id: String, size: Int = Constants.pageSize) async throws -> VOFile.Probe? {
+        try await fileClient?.fetchProbe(id, options: .init(size: size))
+    }
+
+    private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
         try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size))
     }
 
-    func fetchList(replace: Bool = false) {
+    func fetchNext(replace: Bool = false) {
         guard let current else { return }
-
-        if isLoading { return }
-        isLoading = true
 
         var nextPage = -1
         var list: VOFile.List?
 
         withErrorHandling {
+            if let list = self.list {
+                let probe = try await self.fetchProbe(current.id, size: Constants.pageSize)
+                if let probe {
+                    self.list = .init(
+                        data: list.data,
+                        totalPages: probe.totalPages,
+                        totalElements: probe.totalElements,
+                        page: list.page,
+                        size: list.size,
+                        query: list.query
+                    )
+                }
+            }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(current.id, page: nextPage)
@@ -144,12 +154,10 @@ class FileStore: ObservableObject {
             self.errorTitle = "Error: Fetching Files"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
 
-    func fetchTaskCount() async throws -> Int? {
+    private func fetchTaskCount() async throws -> Int? {
         try await taskClient?.fetchCount()
     }
 
@@ -167,7 +175,7 @@ class FileStore: ObservableObject {
         }
     }
 
-    func fetchStorageUsage() async throws -> VOStorage.Usage? {
+    private func fetchStorageUsage() async throws -> VOStorage.Usage? {
         guard let current else { return nil }
         return try await storageClient?.fetchFileUsage(current.id)
     }
@@ -186,7 +194,7 @@ class FileStore: ObservableObject {
         }
     }
 
-    func fetchItemCount() async throws -> Int? {
+    private func fetchItemCount() async throws -> Int? {
         guard let current else { return nil }
         return try await fileClient?.fetchCount(current.id)
     }
@@ -203,6 +211,12 @@ class FileStore: ObservableObject {
             self.errorMessage = message
             self.showError = true
         }
+    }
+
+    // MARK: - Update
+
+    func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
+        try await fileClient?.createFolder(.init(workspaceID: workspaceID, parentID: parentID, name: name))
     }
 
     func patchName(_ id: String, name: String) async throws -> VOFile.Entity? {
@@ -222,15 +236,19 @@ class FileStore: ObservableObject {
     }
 
     func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
+        guard let current else { return nil }
         if let data = try? Data(contentsOf: url) {
             return try await fileClient?.createFile(.init(
                 workspaceID: workspaceID,
+                parentID: current.id,
                 name: url.lastPathComponent,
                 data: data
             ))
         }
         return nil
     }
+
+    // MARK: - URL
 
     func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
         fileClient?.urlForThumbnail(id, fileExtension: fileExtension)
@@ -243,6 +261,8 @@ class FileStore: ObservableObject {
     func urlForOriginal(_ id: String, fileExtension: String) -> URL? {
         fileClient?.urlForOriginal(id, fileExtension: fileExtension)
     }
+
+    // MARK: - Entities
 
     func append(_ newEntities: [VOFile.Entity]) {
         if entities == nil {
@@ -257,6 +277,8 @@ class FileStore: ObservableObject {
         entities = nil
         list = nil
     }
+
+    // MARK: - Paging
 
     func nextPage() -> Int {
         var page = 1
@@ -274,14 +296,31 @@ class FileStore: ObservableObject {
         nextPage() != -1
     }
 
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.id
+    func isEntityThreshold(_ id: String) -> Bool {
+        if let entities {
+            let threashold = Constants.pageSize / 2
+            if entities.count >= threashold,
+               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                return true
+            } else {
+                return id == entities.last?.id
+            }
+        }
+        return false
     }
+
+    func isLastPage() -> Bool {
+        if let list {
+            return list.page == list.totalPages
+        }
+        return false
+    }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.isLoading { return }
             if let current = self.current {
                 Task {
                     var size = Constants.pageSize
@@ -319,6 +358,8 @@ class FileStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+
+    // MARK: - Misc
 
     func isOwnerInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
@@ -455,6 +496,8 @@ class FileStore: ObservableObject {
         case list
         case grid
     }
+
+    // MARK: - Constants
 
     private enum Constants {
         static let pageSize = 10

@@ -22,7 +22,14 @@ struct GroupSettings: View {
             if let group = groupStore.current {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: GroupEditName(groupStore: groupStore)) {
+                        NavigationLink {
+                            GroupEditName(groupStore: groupStore) { updatedGroup in
+                                groupStore.current = updatedGroup
+                                if let index = groupStore.entities?.firstIndex(where: { $0.id == updatedGroup.id }) {
+                                    groupStore.entities?[index] = updatedGroup
+                                }
+                            }
+                        } label: {
                             HStack {
                                 Text("Name")
                                 Spacer()
@@ -66,11 +73,16 @@ struct GroupSettings: View {
 
     private func performDelete() {
         isDeleting = true
+        let current = groupStore.current
+
         withErrorHandling {
             try await groupStore.delete()
             return true
         } success: {
             dismiss()
+            if let current {
+                reflectDeleteInStore(current.id)
+            }
             onCompletion?()
         } failure: { message in
             errorTitle = "Error: Deleting Group"
@@ -79,5 +91,9 @@ struct GroupSettings: View {
         } anyways: {
             isDeleting = false
         }
+    }
+
+    private func reflectDeleteInStore(_ id: String) {
+        groupStore.entities?.removeAll(where: { $0.id == id })
     }
 }

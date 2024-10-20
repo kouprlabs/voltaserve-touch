@@ -65,7 +65,7 @@ struct FileToolbar: ViewModifier {
                 Label("Upload Files", systemImage: "icloud.and.arrow.up")
             }
             Button {
-                fileStore.showNewFolder = true
+                fileStore.showCreateFolder = true
             } label: {
                 Label("New Folder", systemImage: "folder.badge.plus")
             }

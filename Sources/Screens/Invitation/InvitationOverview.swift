@@ -162,7 +162,7 @@ struct InvitationOverview: View {
     private func performDelete() {
         isDeleting = true
         withErrorHandling {
-            try await invitationStore.decline(invitation.id)
+            try await invitationStore.delete(invitation.id)
             return true
         } success: {
             dismiss()

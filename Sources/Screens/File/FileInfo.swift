@@ -16,13 +16,20 @@ struct FileInfo: View {
         NavigationView {
             Form {
                 Section(header: VOSectionHeader("Properties")) {
-                    HStack {
-                        Text("Name")
-                        Spacer()
-                        Text(file.name)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                            .foregroundStyle(.secondary)
+                    NavigationLink {
+                        Form {
+                            Text(file.name)
+                        }
+                        .navigationTitle(file.name)
+                    } label: {
+                        HStack {
+                            Text("Name")
+                            Spacer()
+                            Text(file.name)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     HStack {
                         Text("Type")

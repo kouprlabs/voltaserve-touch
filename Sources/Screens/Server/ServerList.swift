@@ -4,7 +4,7 @@ import SwiftUI
 struct ServerList: View {
     @Environment(\.modelContext) private var context
     @Query private var servers: [Server]
-    @State private var showNew = false
+    @State private var showCreate = false
 
     var body: some View {
         List(servers, id: \.id) { server in

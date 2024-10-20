@@ -68,6 +68,9 @@ struct FileUpload: View {
                         throw FileAccessError.permissionError
                     }
                     _ = try await fileStore.upload(url, workspaceID: workspace.id)
+                    if fileStore.isLastPage() {
+                        fileStore.fetchNext()
+                    }
                     url.stopAccessingSecurityScopedResource()
                     dispatchGroup.leave()
                 } catch {

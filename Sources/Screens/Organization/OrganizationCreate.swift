@@ -9,9 +9,11 @@ struct OrganizationCreate: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
-    init(organizationStore: OrganizationStore) {
+    init(organizationStore: OrganizationStore, onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
         self.organizationStore = organizationStore
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -49,11 +51,16 @@ struct OrganizationCreate: View {
 
     private func performCreate() {
         isProcessing = true
+        var organization: VOOrganization.Entity?
+
         withErrorHandling {
-            _ = try await organizationStore.create(name: normalizedName)
+            organization = try await organizationStore.create(name: normalizedName)
             return true
         } success: {
             dismiss()
+            if let onCompletion, let organization {
+                onCompletion(organization)
+            }
         } failure: { message in
             errorTitle = "Error: Creating Organization"
             errorMessage = message

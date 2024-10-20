@@ -3,7 +3,6 @@ import Foundation
 import VoltaserveCore
 
 class WorkspaceStore: ObservableObject {
-    @Published var list: VOWorkspace.List?
     @Published var entities: [VOWorkspace.Entity]?
     @Published var current: VOWorkspace.Entity?
     @Published var root: VOFile.Entity?
@@ -14,7 +13,7 @@ class WorkspaceStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var selection: String?
     @Published var searchText = ""
-    @Published var isLoading = false
+    private var list: VOWorkspace.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var workspaceClient: VOWorkspace?
@@ -51,34 +50,37 @@ class WorkspaceStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func create(
-        name: String,
-        organization: VOOrganization.Entity,
-        storageCapacity: Int
-    ) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.create(.init(
-            name: name,
-            organizationID: organization.id,
-            storageCapacity: storageCapacity
-        ))
-    }
+    // MARK: - Fetch
 
-    func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
+    private func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
         try await workspaceClient?.fetch(id)
     }
 
-    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
+    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOWorkspace.Probe? {
+        try await workspaceClient?.fetchProbe(.init(query: query, size: size))
+    }
+
+    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
         try await workspaceClient?.fetchList(.init(query: query, page: page, size: size))
     }
 
-    func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
+    func fetchNext(replace: Bool = false) {
         var nextPage = -1
         var list: VOWorkspace.List?
 
         withErrorHandling {
+            if let list = self.list {
+                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                if let probe {
+                    self.list = .init(
+                        data: list.data,
+                        totalPages: probe.totalPages,
+                        totalElements: probe.totalElements,
+                        page: list.page,
+                        size: list.size
+                    )
+                }
+            }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
@@ -96,12 +98,10 @@ class WorkspaceStore: ObservableObject {
             self.errorTitle = "Error: Fetching Workspaces"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
 
-    func fetchFile(_ id: String) async throws -> VOFile.Entity? {
+    private func fetchFile(_ id: String) async throws -> VOFile.Entity? {
         try await fileClient?.fetch(id)
     }
 
@@ -122,13 +122,42 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    func fetchStorageUsage(_ id: String) async throws -> VOStorage.Usage? {
+    private func fetchStorageUsage(_ id: String) async throws -> VOStorage.Usage? {
         try await storageClient?.fetchWorkspaceUsage(id)
     }
 
-    func patchName(name: String) async throws -> VOWorkspace.Entity? {
-        guard let current else { return nil }
-        return try await workspaceClient?.patchName(current.id, options: .init(name: name))
+    func fetchStorageUsage() {
+        guard let current else { return }
+        var usage: VOStorage.Usage?
+
+        withErrorHandling {
+            usage = try await self.fetchStorageUsage(current.id)
+            return true
+        } success: {
+            self.storageUsage = usage
+        } failure: { message in
+            self.errorTitle = "Error: Fetching Storage Usage"
+            self.errorMessage = message
+            self.showError = true
+        }
+    }
+
+    // MARK: - Update
+
+    func create(
+        name: String,
+        organization: VOOrganization.Entity,
+        storageCapacity: Int
+    ) async throws -> VOWorkspace.Entity? {
+        try await workspaceClient?.create(.init(
+            name: name,
+            organizationID: organization.id,
+            storageCapacity: storageCapacity
+        ))
+    }
+
+    func patchName(_ id: String, name: String) async throws -> VOWorkspace.Entity? {
+        try await workspaceClient?.patchName(id, options: .init(name: name))
     }
 
     func patchStorageCapacity(storageCapacity: Int) async throws -> VOWorkspace.Entity? {
@@ -144,6 +173,8 @@ class WorkspaceStore: ObservableObject {
         try await workspaceClient?.delete(current.id)
     }
 
+    // MARK: - Entities
+
     func append(_ newEntities: [VOWorkspace.Entity]) {
         if entities == nil {
             entities = []
@@ -157,6 +188,8 @@ class WorkspaceStore: ObservableObject {
         entities = nil
         list = nil
     }
+
+    // MARK: - Paging
 
     func nextPage() -> Int {
         var page = 1
@@ -174,9 +207,20 @@ class WorkspaceStore: ObservableObject {
         nextPage() != -1
     }
 
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.id
+    func isEntityThreshold(_ id: String) -> Bool {
+        if let entities {
+            let threashold = Constants.pageSize / 2
+            if entities.count >= threashold,
+               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                return true
+            } else {
+                return id == entities.last?.id
+            }
+        }
+        return false
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }
@@ -218,6 +262,8 @@ class WorkspaceStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+
+    // MARK: - Constants
 
     private enum Constants {
         static let pageSize = 10

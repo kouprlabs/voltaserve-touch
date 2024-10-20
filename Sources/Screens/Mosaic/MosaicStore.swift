@@ -22,7 +22,7 @@ class MosaicStore: ObservableObject {
         }
     }
 
-    func fetchInfo() async throws -> VOMosaic.Info? {
+    private func fetchInfo() async throws -> VOMosaic.Info? {
         guard let fileID else { return nil }
         return try await mosaicClient?.fetchInfo(fileID)
     }

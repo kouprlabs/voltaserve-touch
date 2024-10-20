@@ -3,7 +3,6 @@ import Foundation
 import VoltaserveCore
 
 class InsightsStore: ObservableObject {
-    @Published var list: VOInsights.EntityList?
     @Published var entities: [VOInsights.Entity]?
     @Published var languages: [VOInsights.Language]?
     @Published var info: VOInsights.Info?
@@ -12,7 +11,7 @@ class InsightsStore: ObservableObject {
     @Published var errorTitle: String?
     @Published var errorMessage: String?
     @Published var searchText = ""
-    @Published var isLoading = false
+    private var list: VOInsights.EntityList?
     private var cancellables: Set<AnyCancellable> = []
     private var timer: Timer?
     private var insightsClient: VOInsights?
@@ -43,22 +42,9 @@ class InsightsStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func create(languageID: String) async throws -> VOTask.Entity? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.create(fileID, options: .init(languageID: languageID))
-    }
+    // MARK: - Fetch
 
-    func patch() async throws -> VOTask.Entity? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.patch(fileID)
-    }
-
-    func delete() async throws -> VOTask.Entity? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.delete(fileID)
-    }
-
-    func fetchLanguages() async throws -> [VOInsights.Language]? {
+    private func fetchLanguages() async throws -> [VOInsights.Language]? {
         try await insightsClient?.fetchLanguages()
     }
 
@@ -76,7 +62,7 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    func fetchInfo() async throws -> VOInsights.Info? {
+    private func fetchInfo() async throws -> VOInsights.Info? {
         guard let fileID else { return nil }
         return try await insightsClient?.fetchInfo(fileID)
     }
@@ -95,22 +81,50 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    func fetchEntityList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInsights.EntityList? {
+    private func fetchEntityProbe(size: Int = Constants.pageSize) async throws -> VOInsights.EntityProbe? {
         guard let fileID else { return nil }
-        return try await insightsClient?.fetchEntityList(
+        return try await insightsClient?.fetchEntityProbe(
             fileID,
-            options: .init(query: query, page: page, size: pageSize ?? size, sortBy: .frequency, sortOrder: .desc)
+            options: .init(
+                query: query,
+                size: pageSize ?? size,
+                sortBy: .frequency,
+                sortOrder: .desc
+            )
         )
     }
 
-    func fetchEntityList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
+    private func fetchEntityList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInsights.EntityList? {
+        guard let fileID else { return nil }
+        return try await insightsClient?.fetchEntityList(
+            fileID,
+            options: .init(
+                query: query,
+                page: page,
+                size: pageSize ?? size,
+                sortBy: .frequency,
+                sortOrder: .desc
+            )
+        )
+    }
 
+    func fetchEntityNext(replace: Bool = false) {
         var nextPage = -1
         var list: VOInsights.EntityList?
 
         withErrorHandling {
+            if let list = self.list {
+                let probe = try await self.fetchEntityProbe(size: Constants.pageSize)
+                if let probe {
+                    self.list = .init(
+                        data: list.data,
+                        totalPages: probe.totalPages,
+                        totalElements: probe.totalElements,
+                        page: list.page,
+                        size: list.size
+                    )
+                }
+            }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchEntityList(page: nextPage)
@@ -128,10 +142,27 @@ class InsightsStore: ObservableObject {
             self.errorTitle = "Error: Fetching Insights Entities"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
+
+    // MARK: - Update
+
+    func create(languageID: String) async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await insightsClient?.create(fileID, options: .init(languageID: languageID))
+    }
+
+    func patch() async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await insightsClient?.patch(fileID)
+    }
+
+    func delete() async throws -> VOTask.Entity? {
+        guard let fileID else { return nil }
+        return try await insightsClient?.delete(fileID)
+    }
+
+    // MARK: - Entities
 
     func append(_ newEntities: [VOInsights.Entity]) {
         if entities == nil {
@@ -146,6 +177,8 @@ class InsightsStore: ObservableObject {
         entities = nil
         list = nil
     }
+
+    // MARK: - Paging
 
     func nextPage() -> Int {
         var page = 1
@@ -163,9 +196,20 @@ class InsightsStore: ObservableObject {
         nextPage() != -1
     }
 
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.text
+    func isEntityThreshold(_ id: String) -> Bool {
+        if let entities {
+            let threashold = Constants.pageSize / 2
+            if entities.count >= threashold,
+               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                return true
+            } else {
+                return id == entities.last?.id
+            }
+        }
+        return false
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }
@@ -189,6 +233,8 @@ class InsightsStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+
+    // MARK: - Constants
 
     private enum Constants {
         static let pageSize = 10

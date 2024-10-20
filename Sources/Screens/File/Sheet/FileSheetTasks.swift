@@ -11,7 +11,7 @@ struct FileSheetTasks: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $showTasks) {
-                TaskList()
+                TaskList(fileStore: fileStore)
             }
             .sync($fileStore.showTasks, with: $showTasks)
     }

@@ -9,9 +9,11 @@ struct GroupEditName: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    private let onCompletion: ((VOGroup.Entity) -> Void)?
 
-    init(groupStore: GroupStore) {
+    init(groupStore: GroupStore, onCompletion: ((VOGroup.Entity) -> Void)? = nil) {
         self.groupStore = groupStore
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -53,12 +55,18 @@ struct GroupEditName: View {
     }
 
     private func performSave() {
+        guard let current = groupStore.current else { return }
         isSaving = true
+        var updatedGroup: VOGroup.Entity?
+
         withErrorHandling {
-            _ = try await groupStore.patchName(name: value)
+            updatedGroup = try await groupStore.patchName(current.id, name: value)
             return true
         } success: {
             dismiss()
+            if let onCompletion, let updatedGroup {
+                onCompletion(updatedGroup)
+            }
         } failure: { message in
             errorTitle = "Error: Saving Name"
             errorMessage = message
