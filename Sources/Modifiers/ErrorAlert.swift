@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct VOErrorAlert: ViewModifier {
+    @EnvironmentObject private var tokenStore: TokenStore
     private let isPresented: Binding<Bool>
     private let title: String?
     private let message: String?
@@ -14,7 +15,10 @@ struct VOErrorAlert: ViewModifier {
     func body(content: Content) -> some View {
         content
             .alert(title ?? "Error", isPresented: isPresented) {
-                Button("OK") {}
+                Button("Sign Out", role: .destructive) {
+                    tokenStore.token = nil
+                    tokenStore.deleteFromKeychain()
+                }
             } message: {
                 Text(message ?? "Unexpected error occurred.")
             }

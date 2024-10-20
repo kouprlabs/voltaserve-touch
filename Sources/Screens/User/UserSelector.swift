@@ -52,7 +52,7 @@ struct UserSelector: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        if userStore.isLoading {
+                        if userStore.isLoading, userStore.entities != nil {
                             ProgressView()
                         }
                     }

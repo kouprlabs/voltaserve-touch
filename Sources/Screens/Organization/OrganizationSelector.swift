@@ -47,7 +47,7 @@ struct OrganizationSelector: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        if organizationStore.isLoading {
+                        if organizationStore.isLoading, organizationStore.entities != nil {
                             ProgressView()
                         }
                     }

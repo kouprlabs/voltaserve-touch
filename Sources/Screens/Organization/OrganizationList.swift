@@ -49,7 +49,7 @@ struct OrganizationList: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        if organizationStore.isLoading {
+                        if organizationStore.isLoading, organizationStore.entities != nil {
                             ProgressView()
                         }
                     }

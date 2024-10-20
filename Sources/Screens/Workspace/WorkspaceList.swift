@@ -43,10 +43,10 @@ struct WorkspaceList: View {
                         }
                     }
                 }
+                .navigationTitle("Home")
                 .refreshable {
                     workspaceStore.fetchNext(replace: true)
                 }
-                .navigationTitle("Home")
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         if UIDevice.current.userInterfaceIdiom == .phone {
@@ -64,7 +64,7 @@ struct WorkspaceList: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        if workspaceStore.isLoading {
+                        if workspaceStore.isLoading, workspaceStore.entities != nil {
                             ProgressView()
                         }
                     }
