@@ -10,6 +10,7 @@ class BrowserStore: ObservableObject {
     @Published var errorTitle: String?
     @Published var errorMessage: String?
     @Published var searchText = ""
+    @Published var isLoading = false
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -47,6 +48,7 @@ class BrowserStore: ObservableObject {
     func fetch() {
         guard let fileID else { return }
         var file: VOFile.Entity?
+
         withErrorHandling {
             file = try await self.fetch(fileID)
             return true
@@ -69,6 +71,7 @@ class BrowserStore: ObservableObject {
 
     func fetchNext(replace: Bool = false) {
         guard let fileID else { return }
+        guard !isLoading else { return }
 
         var nextPage = -1
         var list: VOFile.List?
@@ -91,6 +94,8 @@ class BrowserStore: ObservableObject {
             nextPage = self.nextPage()
             list = try await self.fetchList(fileID, page: nextPage)
             return true
+        } before: {
+            self.isLoading = true
         } success: {
             self.list = list
             if let list {
@@ -104,6 +109,8 @@ class BrowserStore: ObservableObject {
             self.errorTitle = "Error: Fetching Files"
             self.errorMessage = message
             self.showError = true
+        } anyways: {
+            self.isLoading = false
         }
     }
 
@@ -194,6 +201,6 @@ class BrowserStore: ObservableObject {
     // MARK: - Constants
 
     private enum Constants {
-        static let pageSize = 10
+        static let pageSize = 50
     }
 }

@@ -7,6 +7,7 @@ class SnapshotStore: ObservableObject {
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
+    @Published var isLoading = false
     private var list: VOSnapshot.List?
     private var timer: Timer?
     private var snapshotClient: VOSnapshot?
@@ -40,6 +41,8 @@ class SnapshotStore: ObservableObject {
     }
 
     func fetchNext(replace: Bool = false) {
+        guard !isLoading else { return }
+
         var nextPage = -1
         var list: VOSnapshot.List?
 
@@ -60,6 +63,8 @@ class SnapshotStore: ObservableObject {
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
             return true
+        } before: {
+            self.isLoading = true
         } success: {
             self.list = list
             if let list {
@@ -73,6 +78,8 @@ class SnapshotStore: ObservableObject {
             self.errorTitle = "Error: Fetching Snapshots"
             self.errorMessage = message
             self.showError = true
+        } anyways: {
+            self.isLoading = false
         }
     }
 
@@ -161,6 +168,6 @@ class SnapshotStore: ObservableObject {
     // MARK: - Constants
 
     private enum Constants {
-        static let pageSize: Int = 10
+        static let pageSize: Int = 50
     }
 }

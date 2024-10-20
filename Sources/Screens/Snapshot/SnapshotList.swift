@@ -35,10 +35,18 @@ struct SnapshotList: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Snapshots")
+                .refreshable {
+                    snapshotStore.fetchNext(replace: true)
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") {
                             dismiss()
+                        }
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        if snapshotStore.isLoading {
+                            ProgressView()
                         }
                     }
                 }

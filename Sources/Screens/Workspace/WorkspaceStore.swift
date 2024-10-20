@@ -13,6 +13,7 @@ class WorkspaceStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var selection: String?
     @Published var searchText = ""
+    @Published var isLoading = false
     private var list: VOWorkspace.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -65,6 +66,8 @@ class WorkspaceStore: ObservableObject {
     }
 
     func fetchNext(replace: Bool = false) {
+        guard !isLoading else { return }
+
         var nextPage = -1
         var list: VOWorkspace.List?
 
@@ -85,6 +88,8 @@ class WorkspaceStore: ObservableObject {
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
             return true
+        } before: {
+            self.isLoading = true
         } success: {
             self.list = list
             if let list {
@@ -98,6 +103,8 @@ class WorkspaceStore: ObservableObject {
             self.errorTitle = "Error: Fetching Workspaces"
             self.errorMessage = message
             self.showError = true
+        } anyways: {
+            self.isLoading = false
         }
     }
 
@@ -266,6 +273,6 @@ class WorkspaceStore: ObservableObject {
     // MARK: - Constants
 
     private enum Constants {
-        static let pageSize = 10
+        static let pageSize = 50
     }
 }

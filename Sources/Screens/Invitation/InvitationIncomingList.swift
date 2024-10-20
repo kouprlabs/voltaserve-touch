@@ -8,27 +8,32 @@ struct InvitationIncomingList: View {
     @State private var invitation: VOInvitation.Entity?
 
     var body: some View {
-        Group {
+        VStack {
             if let entities = invitationStore.entities {
-                if entities.isEmpty {
-                    Text("There are no invitations.")
-                } else {
-                    List {
-                        ForEach(entities, id: \.id) { invitation in
-                            NavigationLink {
-                                InvitationOverview(
-                                    invitation,
-                                    invitationStore: invitationStore,
-                                    isAcceptableDeclinable: true
-                                )
-                            } label: {
-                                InvitationIncomingRow(invitation)
-                                    .onAppear {
-                                        onListItemAppear(invitation.id)
-                                    }
+                Group {
+                    if entities.isEmpty {
+                        Text("There are no invitations.")
+                    } else {
+                        List {
+                            ForEach(entities, id: \.id) { invitation in
+                                NavigationLink {
+                                    InvitationOverview(
+                                        invitation,
+                                        invitationStore: invitationStore,
+                                        isAcceptableDeclinable: true
+                                    )
+                                } label: {
+                                    InvitationIncomingRow(invitation)
+                                        .onAppear {
+                                            onListItemAppear(invitation.id)
+                                        }
+                                }
                             }
                         }
                     }
+                }
+                .refreshable {
+                    invitationStore.fetchNext(replace: true)
                 }
             } else {
                 ProgressView()
@@ -36,6 +41,13 @@ struct InvitationIncomingList: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Invitations")
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if invitationStore.isLoading {
+                    ProgressView()
+                }
+            }
+        }
         .onAppear {
             if let token = tokenStore.token {
                 assignTokenToStores(token)

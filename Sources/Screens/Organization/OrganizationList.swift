@@ -48,6 +48,11 @@ struct OrganizationList: View {
                             Image(systemName: "plus")
                         }
                     }
+                    ToolbarItem(placement: .topBarLeading) {
+                        if organizationStore.isLoading {
+                            ProgressView()
+                        }
+                    }
                 }
                 .sheet(isPresented: $showCreate) {
                     OrganizationCreate(organizationStore: organizationStore) { newOrganization in
