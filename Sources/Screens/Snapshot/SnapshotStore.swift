@@ -3,12 +3,11 @@ import Foundation
 import VoltaserveCore
 
 class SnapshotStore: ObservableObject {
-    @Published var list: VOSnapshot.List?
     @Published var entities: [VOSnapshot.Entity]?
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
-    @Published var isLoading = false
+    private var list: VOSnapshot.List?
     private var timer: Timer?
     private var snapshotClient: VOSnapshot?
     var fileID: String?
@@ -24,23 +23,39 @@ class SnapshotStore: ObservableObject {
         }
     }
 
-    func fetch(id: String) async throws -> VOSnapshot.Entity? {
+    // MARK: - Fetch
+
+    private func fetch(id: String) async throws -> VOSnapshot.Entity? {
         try await snapshotClient?.fetch(id)
     }
 
-    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOSnapshot.List? {
+    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOSnapshot.Probe? {
+        guard let fileID else { return nil }
+        return try await snapshotClient?.fetchProbe(.init(fileID: fileID, size: size, sortOrder: .desc))
+    }
+
+    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOSnapshot.List? {
         guard let fileID else { return nil }
         return try await snapshotClient?.fetchList(.init(fileID: fileID, page: page, size: size, sortOrder: .desc))
     }
 
-    func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
+    func fetchNext(replace: Bool = false) {
         var nextPage = -1
         var list: VOSnapshot.List?
 
         withErrorHandling {
+            if let list = self.list {
+                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                if let probe {
+                    self.list = .init(
+                        data: list.data,
+                        totalPages: probe.totalPages,
+                        totalElements: probe.totalElements,
+                        page: list.page,
+                        size: list.size
+                    )
+                }
+            }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
@@ -58,10 +73,10 @@ class SnapshotStore: ObservableObject {
             self.errorTitle = "Error: Fetching Snapshots"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
+
+    // MARK: - Update
 
     func activate(_ id: String) async throws {
         try await snapshotClient?.activate(id)
@@ -70,6 +85,8 @@ class SnapshotStore: ObservableObject {
     func detach(_ id: String) async throws {
         try await snapshotClient?.detach(id)
     }
+
+    // MARK: - Entities
 
     func append(_ newEntities: [VOSnapshot.Entity]) {
         if entities == nil {
@@ -84,6 +101,8 @@ class SnapshotStore: ObservableObject {
         entities = nil
         list = nil
     }
+
+    // MARK: - Paging
 
     func nextPage() -> Int {
         var page = 1
@@ -101,9 +120,20 @@ class SnapshotStore: ObservableObject {
         nextPage() != -1
     }
 
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.id
+    func isEntityThreshold(_ id: String) -> Bool {
+        if let entities {
+            let threashold = Constants.pageSize / 2
+            if entities.count >= threashold,
+               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                return true
+            } else {
+                return id == entities.last?.id
+            }
+        }
+        return false
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }
@@ -127,6 +157,8 @@ class SnapshotStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+
+    // MARK: - Constants
 
     private enum Constants {
         static let pageSize: Int = 10

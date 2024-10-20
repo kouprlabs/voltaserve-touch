@@ -37,13 +37,6 @@ struct GroupSelector: View {
                                         }
                                 }
                             }
-                            if groupStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: groupStore.searchText) {
@@ -52,7 +45,7 @@ struct GroupSelector: View {
                     }
                 }
                 .refreshable {
-                    groupStore.fetchList(replace: true)
+                    groupStore.fetchNext(replace: true)
                 }
                 .voErrorAlert(
                     isPresented: $showError,
@@ -69,6 +62,7 @@ struct GroupSelector: View {
             groupStore.organizationID = organizationID
             if let token = tokenStore.token {
                 assignTokenToStores(token)
+                startTimers()
                 onAppearOrChange()
             }
         }
@@ -78,13 +72,12 @@ struct GroupSelector: View {
         .onChange(of: tokenStore.token) { _, newToken in
             if let newToken {
                 assignTokenToStores(newToken)
-                startTimers()
                 onAppearOrChange()
             }
         }
         .onChange(of: groupStore.query) {
             groupStore.clear()
-            groupStore.fetchList()
+            groupStore.fetchNext()
         }
         .sync($groupStore.showError, with: $showError)
         .sync($groupStore.searchText, with: $searchText)
@@ -95,13 +88,13 @@ struct GroupSelector: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if groupStore.isLast(id) {
-            groupStore.fetchList()
+        if groupStore.isEntityThreshold(id) {
+            groupStore.fetchNext()
         }
     }
 
     private func fetchData() {
-        groupStore.fetchList(replace: true)
+        groupStore.fetchNext(replace: true)
     }
 
     private func startTimers() {

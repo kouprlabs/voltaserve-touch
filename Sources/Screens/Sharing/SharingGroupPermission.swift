@@ -39,7 +39,7 @@ struct SharingGroupPermission: View {
 
     var body: some View {
         Form {
-            Section {
+            Section(header: VOSectionHeader("Group Permission")) {
                 NavigationLink {
                     if let workspace = workspaceStore.current {
                         GroupSelector(organizationID: workspace.organization.id) { group in
@@ -67,7 +67,7 @@ struct SharingGroupPermission: View {
                 .disabled(isProcessing)
             }
             if enableRevoke, fileIDs.count == 1 {
-                Section {
+                Section(header: VOSectionHeader("Actions")) {
                     Button(role: .destructive) {
                         showRevoke = true
                     } label: {

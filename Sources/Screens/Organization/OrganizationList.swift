@@ -5,9 +5,11 @@ import VoltaserveCore
 struct OrganizationList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var organizationStore = OrganizationStore()
-    @State private var showNew = false
+    @State private var showCreate = false
+    @State private var showOverview = false
     @State private var showError = false
     @State private var searchText = ""
+    @State private var newOrganization: VOOrganization.Entity?
 
     var body: some View {
         NavigationStack {
@@ -27,13 +29,6 @@ struct OrganizationList: View {
                                         }
                                 }
                             }
-                            if organizationStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .navigationTitle("Organizations")
                         .searchable(text: $searchText)
@@ -43,19 +38,27 @@ struct OrganizationList: View {
                     }
                 }
                 .refreshable {
-                    organizationStore.fetchList(replace: true)
+                    organizationStore.fetchNext(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
-                            showNew = true
+                            showCreate = true
                         } label: {
                             Image(systemName: "plus")
                         }
                     }
                 }
-                .sheet(isPresented: $showNew) {
-                    OrganizationCreate(organizationStore: organizationStore)
+                .sheet(isPresented: $showCreate) {
+                    OrganizationCreate(organizationStore: organizationStore) { newOrganization in
+                        self.newOrganization = newOrganization
+                        showOverview = true
+                    }
+                }
+                .navigationDestination(isPresented: $showOverview) {
+                    if let newOrganization {
+                        OrganizationOverview(newOrganization, organizationStore: organizationStore)
+                    }
                 }
             } else {
                 ProgressView()
@@ -84,7 +87,7 @@ struct OrganizationList: View {
         }
         .onChange(of: organizationStore.query) {
             organizationStore.clear()
-            organizationStore.fetchList()
+            organizationStore.fetchNext()
         }
         .sync($organizationStore.searchText, with: $searchText)
         .sync($organizationStore.showError, with: $showError)
@@ -95,7 +98,7 @@ struct OrganizationList: View {
     }
 
     private func fetchData() {
-        organizationStore.fetchList(replace: true)
+        organizationStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -111,8 +114,8 @@ struct OrganizationList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if organizationStore.isLast(id) {
-            organizationStore.fetchList()
+        if organizationStore.isEntityThreshold(id) {
+            organizationStore.fetchNext()
         }
     }
 }

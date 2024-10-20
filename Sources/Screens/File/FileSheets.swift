@@ -17,7 +17,7 @@ struct FileSheets: ViewModifier {
             .fileSheetDownload(fileStore: fileStore)
             .fileSheetUpload(fileStore: fileStore, workspaceStore: workspaceStore)
             .fileSheetSharing(fileStore: fileStore, workspaceStore: workspaceStore)
-            .fileSheetNewFolder(fileStore: fileStore, workspaceStore: workspaceStore)
+            .fileSheetCreateFolder(fileStore: fileStore, workspaceStore: workspaceStore)
             .fileSheetMosaic(fileStore: fileStore)
             .fileSheetInsights(fileStore: fileStore)
             .fileSheetRename(fileStore: fileStore)

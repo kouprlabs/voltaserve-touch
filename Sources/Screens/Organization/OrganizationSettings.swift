@@ -22,7 +22,14 @@ struct OrganizationSettings: View {
             if let organization = organizationStore.current {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: OrganizationEditName(organizationStore: organizationStore)) {
+                        NavigationLink {
+                            OrganizationEditName(organizationStore: organizationStore) { updatedOranization in
+                                organizationStore.current = updatedOranization
+                                if let index = organizationStore.entities?.firstIndex(where: { $0.id == updatedOranization.id }) {
+                                    organizationStore.entities?[index] = updatedOranization
+                                }
+                            }
+                        } label: {
                             HStack {
                                 Text("Name")
                                 Spacer()
@@ -67,11 +74,16 @@ struct OrganizationSettings: View {
 
     private func performDelete() {
         isDeleting = true
+        let current = organizationStore.current
+
         withErrorHandling {
             try await organizationStore.delete()
             return true
         } success: {
             dismiss()
+            if let current {
+                reflectDeleteInStore(current.id)
+            }
             onCompletion?()
         } failure: { message in
             errorTitle = "Error: Deleting Organization"
@@ -80,5 +92,9 @@ struct OrganizationSettings: View {
         } anyways: {
             isDeleting = false
         }
+    }
+
+    private func reflectDeleteInStore(_ id: String) {
+        organizationStore.entities?.removeAll(where: { $0.id == id })
     }
 }

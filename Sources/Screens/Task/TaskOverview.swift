@@ -3,6 +3,7 @@ import VoltaserveCore
 
 struct TaskOverview: View {
     @ObservedObject private var taskStore: TaskStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var showDismissConfirmation = false
     @State private var showError = false
@@ -11,16 +12,22 @@ struct TaskOverview: View {
     @State private var isDismissing = false
     private let task: VOTask.Entity
 
-    init(_ task: VOTask.Entity, taskStore: TaskStore) {
+    init(_ task: VOTask.Entity, taskStore: TaskStore, fileStore: FileStore) {
         self.task = task
         self.taskStore = taskStore
+        self.fileStore = fileStore
     }
 
     var body: some View {
         Form {
             Section(header: VOSectionHeader("Properties")) {
                 if let object = task.payload?.object {
-                    NavigationLink(destination: TaskPayload(task)) {
+                    NavigationLink {
+                        Form {
+                            Text(object)
+                        }
+                        .navigationTitle("Payload")
+                    } label: {
                         HStack {
                             Text("Payload")
                             Spacer()
@@ -31,7 +38,12 @@ struct TaskOverview: View {
                         }
                     }
                 }
-                NavigationLink(destination: TaskName(task)) {
+                NavigationLink {
+                    Form {
+                        Text(task.name)
+                    }
+                    .navigationTitle("Name")
+                } label: {
                     HStack {
                         Text("Name")
                         Spacer()
@@ -47,7 +59,12 @@ struct TaskOverview: View {
                     TaskStatusBadge(task.status)
                 }
                 if task.status == .error, let error = task.error {
-                    NavigationLink(destination: TaskError(task)) {
+                    NavigationLink {
+                        Form {
+                            Text(error)
+                        }
+                        .navigationTitle("Error")
+                    } label: {
                         Text("Error")
                         Spacer()
                         Text(error)
@@ -99,6 +116,7 @@ struct TaskOverview: View {
         isDismissing = true
         withErrorHandling {
             try await taskStore.dismiss(task.id)
+            fileStore.fetchTaskCount()
             return true
         } success: {
             dismiss()

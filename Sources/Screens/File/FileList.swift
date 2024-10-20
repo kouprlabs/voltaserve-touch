@@ -41,13 +41,6 @@ struct FileList: View {
                         }
                     }
                 }
-                if fileStore.isLoading {
-                    HStack {
-                        Spacer()
-                        ProgressView()
-                        Spacer()
-                    }
-                }
             }
             .listStyle(.inset)
             .navigationDestination(item: $tappedItem) {
@@ -58,8 +51,8 @@ struct FileList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if fileStore.isLast(id) {
-            fileStore.fetchList()
+        if fileStore.isEntityThreshold(id) {
+            fileStore.fetchNext()
         }
     }
 }

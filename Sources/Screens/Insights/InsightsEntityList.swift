@@ -27,13 +27,6 @@ struct InsightsEntityList: View {
                                         onListItemAppear(entity.text)
                                     }
                             }
-                            if insightsStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: insightsStore.searchText) {
@@ -44,7 +37,7 @@ struct InsightsEntityList: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Insights")
                 .refreshable {
-                    insightsStore.fetchEntityList(replace: true)
+                    insightsStore.fetchEntityNext(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -81,7 +74,7 @@ struct InsightsEntityList: View {
         }
         .onChange(of: insightsStore.query) {
             insightsStore.clear()
-            insightsStore.fetchEntityList()
+            insightsStore.fetchEntityNext()
         }
         .sync($insightsStore.searchText, with: $searchText)
         .sync($insightsStore.showError, with: $showError)
@@ -92,7 +85,7 @@ struct InsightsEntityList: View {
     }
 
     private func fetchData() {
-        insightsStore.fetchEntityList(replace: true)
+        insightsStore.fetchEntityNext(replace: true)
     }
 
     private func startTimers() {
@@ -108,8 +101,8 @@ struct InsightsEntityList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if insightsStore.isLast(id) {
-            insightsStore.fetchEntityList()
+        if insightsStore.isEntityThreshold(id) {
+            insightsStore.fetchEntityNext()
         }
     }
 }

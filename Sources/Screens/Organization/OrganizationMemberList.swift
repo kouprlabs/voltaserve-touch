@@ -34,16 +34,7 @@ struct OrganizationMemberList: View {
                     }
                 }
                 .refreshable {
-                    userStore.fetchList(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        NavigationLink {
-                            OrganizationMemberInvite(organizationStore: organizationStore)
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                    }
+                    userStore.fetchNext(replace: true)
                 }
                 .sheet(isPresented: $showInviteMembers) {
                     Text("Add Member")
@@ -80,7 +71,7 @@ struct OrganizationMemberList: View {
         }
         .onChange(of: userStore.query) {
             userStore.clear()
-            userStore.fetchList()
+            userStore.fetchNext()
         }
         .sync($userStore.searchText, with: $searchText)
         .sync($userStore.showError, with: $showError)
@@ -91,7 +82,7 @@ struct OrganizationMemberList: View {
     }
 
     private func fetchData() {
-        userStore.fetchList(replace: true)
+        userStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -107,8 +98,8 @@ struct OrganizationMemberList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if userStore.isLast(id) {
-            userStore.fetchList()
+        if userStore.isEntityThreshold(id) {
+            userStore.fetchNext()
         }
     }
 }

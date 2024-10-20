@@ -31,13 +31,6 @@ struct SnapshotList: View {
                                 }
                             }
                         }
-                        if snapshotStore.isLoading {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                Spacer()
-                            }
-                        }
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
@@ -83,7 +76,7 @@ struct SnapshotList: View {
     }
 
     private func fetchData() {
-        snapshotStore.fetchList(replace: true)
+        snapshotStore.fetchNext(replace: true)
     }
 
     private func assignTokenToStores(_ token: VOToken.Value) {
@@ -99,8 +92,8 @@ struct SnapshotList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if snapshotStore.isLast(id) {
-            snapshotStore.fetchList()
+        if snapshotStore.isEntityThreshold(id) {
+            snapshotStore.fetchNext()
         }
     }
 }

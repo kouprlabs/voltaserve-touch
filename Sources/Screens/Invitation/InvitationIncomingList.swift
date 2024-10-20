@@ -28,13 +28,6 @@ struct InvitationIncomingList: View {
                                     }
                             }
                         }
-                        if invitationStore.isLoading {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                Spacer()
-                            }
-                        }
                     }
                 }
             } else {
@@ -66,7 +59,7 @@ struct InvitationIncomingList: View {
     }
 
     private func fetchData() {
-        invitationStore.fetchList(replace: true)
+        invitationStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -82,8 +75,8 @@ struct InvitationIncomingList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if invitationStore.isLast(id) {
-            invitationStore.fetchList()
+        if invitationStore.isEntityThreshold(id) {
+            invitationStore.fetchNext()
         }
     }
 }

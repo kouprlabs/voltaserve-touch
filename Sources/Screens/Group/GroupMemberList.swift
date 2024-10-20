@@ -28,13 +28,6 @@ struct GroupMemberList: View {
                                         onListItemAppear(member.id)
                                     }
                             }
-                            if userStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: userStore.searchText) {
@@ -43,7 +36,7 @@ struct GroupMemberList: View {
                     }
                 }
                 .refreshable {
-                    userStore.fetchList(replace: true)
+                    userStore.fetchNext(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -89,7 +82,7 @@ struct GroupMemberList: View {
         }
         .onChange(of: userStore.query) {
             userStore.clear()
-            userStore.fetchList()
+            userStore.fetchNext()
         }
         .sync($userStore.searchText, with: $searchText)
         .sync($userStore.showError, with: $showError)
@@ -100,7 +93,7 @@ struct GroupMemberList: View {
     }
 
     private func fetchData() {
-        userStore.fetchList(replace: true)
+        userStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -116,8 +109,8 @@ struct GroupMemberList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if userStore.isLast(id) {
-            userStore.fetchList()
+        if userStore.isEntityThreshold(id) {
+            userStore.fetchNext()
         }
     }
 }

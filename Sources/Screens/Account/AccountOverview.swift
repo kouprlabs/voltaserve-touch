@@ -98,11 +98,13 @@ struct AccountOverview: View {
     private func fetchData() {
         accountStore.fetchUser()
         accountStore.fetchAccountStorageUsage()
+        invitationStore.fetchIncomingCount()
     }
 
     private func startTimers() {
         accountStore.startTimer()
         accountStore.startTimer()
+        invitationStore.startTimer()
     }
 
     private func stopTimers() {

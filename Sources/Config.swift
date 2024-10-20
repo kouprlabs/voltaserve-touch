@@ -12,8 +12,8 @@ struct Config {
             )
         } else {
             Config(
-                apiURL: "https://api.cloud.voltaserve.com/v2",
-                idpURL: "https://idp.cloud.voltaserve.com/v2"
+                apiURL: "https://api.cloud.voltaserve.com",
+                idpURL: "https://idp.cloud.voltaserve.com"
             )
         }
     }

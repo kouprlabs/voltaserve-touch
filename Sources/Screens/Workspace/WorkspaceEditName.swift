@@ -9,9 +9,11 @@ struct WorkspaceEditName: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    private let onCompletion: ((VOWorkspace.Entity) -> Void)?
 
-    init(workspaceStore: WorkspaceStore) {
+    init(workspaceStore: WorkspaceStore, onCompletion: ((VOWorkspace.Entity) -> Void)? = nil) {
         self.workspaceStore = workspaceStore
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -53,12 +55,18 @@ struct WorkspaceEditName: View {
     }
 
     private func performSave() {
+        guard let current = workspaceStore.current else { return }
         isSaving = true
+        var updatedWorkspace: VOWorkspace.Entity?
+
         withErrorHandling {
-            _ = try await workspaceStore.patchName(name: normalizedValue)
+            updatedWorkspace = try await workspaceStore.patchName(current.id, name: normalizedValue)
             return true
         } success: {
             dismiss()
+            if let onCompletion, let updatedWorkspace {
+                onCompletion(updatedWorkspace)
+            }
         } failure: { message in
             errorTitle = "Error: Saving Name"
             errorMessage = message

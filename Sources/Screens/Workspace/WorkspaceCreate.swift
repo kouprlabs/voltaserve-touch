@@ -11,9 +11,11 @@ struct WorkspaceCreate: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    private let onCompletion: ((VOWorkspace.Entity) -> Void)?
 
-    init(workspaceStore: WorkspaceStore) {
+    init(workspaceStore: WorkspaceStore, onCompletion: ((VOWorkspace.Entity) -> Void)? = nil) {
         self.workspaceStore = workspaceStore
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -75,9 +77,10 @@ struct WorkspaceCreate: View {
     private func performCreate() {
         guard let organization, let storageCapacity else { return }
         isProcessing = true
+        var workspace: VOWorkspace.Entity?
 
         withErrorHandling {
-            _ = try await workspaceStore.create(
+            workspace = try await workspaceStore.create(
                 name: normalizedName,
                 organization: organization,
                 storageCapacity: storageCapacity
@@ -85,6 +88,9 @@ struct WorkspaceCreate: View {
             return true
         } success: {
             dismiss()
+            if let onCompletion, let workspace {
+                onCompletion(workspace)
+            }
         } failure: { message in
             errorTitle = "Error: Creating Workspace"
             errorMessage = message

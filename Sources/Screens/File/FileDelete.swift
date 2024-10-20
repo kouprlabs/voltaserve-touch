@@ -53,16 +53,18 @@ struct FileDelete: View {
 
     private func performDelete() {
         var result: VOFile.DeleteResult?
-        withErrorHandling {
+        withErrorHandling(delaySeconds: 1) {
             result = try await fileStore.delete(Array(fileStore.selection))
-            errorSeverity = .full
             if let result {
+                reflectDeleteInStore(result)
                 if result.failed.isEmpty {
                     return true
                 } else {
                     errorMessage = "Failed to delete \(result.failed.count) item(s)."
                     if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
+                    } else if result.failed.count == fileStore.selection.count {
+                        errorSeverity = .full
                     }
                     showError = true
                 }
@@ -78,6 +80,12 @@ struct FileDelete: View {
         } anyways: {
             isProcessing = false
         }
+    }
+
+    private func reflectDeleteInStore(_ result: VOFile.DeleteResult) {
+        fileStore.entities?.removeAll(where: { entity in
+            result.succeeded.contains(where: { entity.id == $0 })
+        })
     }
 
     private enum ErrorSeverity {

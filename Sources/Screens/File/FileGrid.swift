@@ -59,19 +59,12 @@ struct FileGrid: View {
             .modifierIfPad {
                 $0.edgesIgnoringSafeArea(.bottom)
             }
-            if fileStore.isLoading {
-                HStack {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
-                }
-            }
         }
     }
 
     private func onListItemAppear(_ id: String) {
-        if fileStore.isLast(id) {
-            fileStore.fetchList()
+        if fileStore.isEntityThreshold(id) {
+            fileStore.fetchNext()
         }
     }
 }

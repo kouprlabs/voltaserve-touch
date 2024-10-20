@@ -55,16 +55,18 @@ struct FileMove: View {
 
     private func performMove() {
         var result: VOFile.MoveResult?
-        withErrorHandling {
+        withErrorHandling(delaySeconds: 1) {
             result = try await fileStore.move(Array(fileStore.selection), to: destinationID)
-            errorSeverity = .full
             if let result {
+                reflectMoveInStore(result)
                 if result.failed.isEmpty {
                     return true
                 } else {
                     errorMessage = "Failed to move \(result.failed.count) item(s)."
                     if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
+                    } else if result.failed.count == fileStore.selection.count {
+                        errorSeverity = .full
                     }
                     showError = true
                 }
@@ -80,6 +82,12 @@ struct FileMove: View {
         } anyways: {
             isProcessing = false
         }
+    }
+
+    private func reflectMoveInStore(_ result: VOFile.MoveResult) {
+        fileStore.entities?.removeAll(where: { entity in
+            result.succeeded.contains(where: { entity.id == $0 })
+        })
     }
 
     private enum ErrorSeverity {

@@ -5,9 +5,11 @@ import VoltaserveCore
 struct GroupList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var groupStore = GroupStore()
-    @State private var showNew = false
+    @State private var showCreate = false
+    @State private var showOverview = false
     @State private var showError = false
     @State private var searchText = ""
+    @State private var newGroup: VOGroup.Entity?
 
     var body: some View {
         NavigationStack {
@@ -27,13 +29,6 @@ struct GroupList: View {
                                         }
                                 }
                             }
-                            if groupStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: groupStore.searchText) {
@@ -43,19 +38,27 @@ struct GroupList: View {
                 }
                 .navigationTitle("Groups")
                 .refreshable {
-                    groupStore.fetchList(replace: true)
+                    groupStore.fetchNext(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
-                            showNew = true
+                            showCreate = true
                         } label: {
                             Image(systemName: "plus")
                         }
                     }
                 }
-                .sheet(isPresented: $showNew) {
-                    GroupCreate(groupStore: groupStore)
+                .sheet(isPresented: $showCreate) {
+                    GroupCreate(groupStore: groupStore) { newGroup in
+                        self.newGroup = newGroup
+                        showOverview = true
+                    }
+                }
+                .navigationDestination(isPresented: $showOverview) {
+                    if let newGroup {
+                        GroupOverview(newGroup, groupStore: groupStore)
+                    }
                 }
             } else {
                 ProgressView()
@@ -84,7 +87,7 @@ struct GroupList: View {
         }
         .onChange(of: groupStore.query) {
             groupStore.clear()
-            groupStore.fetchList()
+            groupStore.fetchNext()
         }
         .sync($groupStore.searchText, with: $searchText)
         .sync($groupStore.showError, with: $showError)
@@ -95,7 +98,7 @@ struct GroupList: View {
     }
 
     private func fetchData() {
-        groupStore.fetchList(replace: true)
+        groupStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -111,8 +114,8 @@ struct GroupList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if groupStore.isLast(id) {
-            groupStore.fetchList()
+        if groupStore.isEntityThreshold(id) {
+            groupStore.fetchNext()
         }
     }
 }

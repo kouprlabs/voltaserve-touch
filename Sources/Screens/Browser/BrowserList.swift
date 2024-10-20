@@ -52,13 +52,6 @@ struct BrowserList: View {
                                     onListItemAppear(file.id)
                                 }
                             }
-                            if browserStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
                         }
                         .listStyle(.inset)
                         .searchable(text: $searchText)
@@ -76,7 +69,7 @@ struct BrowserList: View {
                     }
                 }
                 .refreshable {
-                    browserStore.fetchList(replace: true)
+                    browserStore.fetchNext(replace: true)
                 }
             } else {
                 ProgressView()
@@ -115,7 +108,7 @@ struct BrowserList: View {
         }
         .onChange(of: browserStore.query) {
             browserStore.clear()
-            browserStore.fetchList()
+            browserStore.fetchNext()
         }
         .sync($browserStore.searchText, with: $searchText)
         .sync($browserStore.showError, with: $showError)
@@ -127,7 +120,7 @@ struct BrowserList: View {
 
     private func fetchData() {
         browserStore.fetch()
-        browserStore.fetchList(replace: true)
+        browserStore.fetchNext(replace: true)
     }
 
     private func startTimers() {
@@ -143,8 +136,8 @@ struct BrowserList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if browserStore.isLast(id) {
-            browserStore.fetchList()
+        if browserStore.isEntityThreshold(id) {
+            browserStore.fetchNext()
         }
     }
 }

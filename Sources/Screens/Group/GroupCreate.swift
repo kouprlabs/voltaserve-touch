@@ -10,9 +10,11 @@ struct GroupCreate: View {
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+    private var onCompletion: ((VOGroup.Entity?) -> Void)?
 
-    init(groupStore: GroupStore) {
+    init(groupStore: GroupStore, onCompletion: ((VOGroup.Entity?) -> Void)? = nil) {
         self.groupStore = groupStore
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -68,12 +70,16 @@ struct GroupCreate: View {
     private func performCreate() {
         guard let organization else { return }
         isProcessing = true
+        var group: VOGroup.Entity?
 
         withErrorHandling {
-            _ = try await groupStore.create(name: normalizedName, organization: organization)
+            group = try await groupStore.create(name: normalizedName, organization: organization)
             return true
         } success: {
             dismiss()
+            if let onCompletion, let group {
+                onCompletion(group)
+            }
         } failure: { message in
             errorTitle = "Error: Crearing Group"
             errorMessage = message

@@ -3,7 +3,6 @@ import Foundation
 import VoltaserveCore
 
 class BrowserStore: ObservableObject {
-    @Published var list: VOFile.List?
     @Published var entities: [VOFile.Entity]?
     @Published var current: VOFile.Entity?
     @Published var query: VOFile.Query?
@@ -11,7 +10,7 @@ class BrowserStore: ObservableObject {
     @Published var errorTitle: String?
     @Published var errorMessage: String?
     @Published var searchText = ""
-    @Published var isLoading = false
+    private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var fileClient: VOFile?
@@ -39,7 +38,9 @@ class BrowserStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func fetch(_ id: String) async throws -> VOFile.Entity? {
+    // MARK: - Fetch
+
+    private func fetch(_ id: String) async throws -> VOFile.Entity? {
         try await fileClient?.fetch(id)
     }
 
@@ -58,20 +59,34 @@ class BrowserStore: ObservableObject {
         }
     }
 
-    func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
+    private func fetchProbe(_ id: String, size: Int = Constants.pageSize) async throws -> VOFile.Probe? {
+        try await fileClient?.fetchProbe(id, options: .init(query: query, size: size, type: .folder))
+    }
+
+    private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
         try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size, type: .folder))
     }
 
-    func fetchList(replace: Bool = false) {
+    func fetchNext(replace: Bool = false) {
         guard let fileID else { return }
-
-        if isLoading { return }
-        isLoading = true
 
         var nextPage = -1
         var list: VOFile.List?
 
         withErrorHandling {
+            if let list = self.list {
+                let probe = try await self.fetchProbe(fileID, size: Constants.pageSize)
+                if let probe {
+                    self.list = .init(
+                        data: list.data,
+                        totalPages: probe.totalPages,
+                        totalElements: probe.totalElements,
+                        page: list.page,
+                        size: list.size,
+                        query: list.query
+                    )
+                }
+            }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(fileID, page: nextPage)
@@ -89,10 +104,10 @@ class BrowserStore: ObservableObject {
             self.errorTitle = "Error: Fetching Files"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
+
+    // MARK: - Entities
 
     func append(_ newEntities: [VOFile.Entity]) {
         if entities == nil {
@@ -107,6 +122,8 @@ class BrowserStore: ObservableObject {
         entities = nil
         list = nil
     }
+
+    // MARK: - Paging
 
     func nextPage() -> Int {
         var page = 1
@@ -124,9 +141,20 @@ class BrowserStore: ObservableObject {
         nextPage() != -1
     }
 
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.id
+    func isEntityThreshold(_ id: String) -> Bool {
+        if let entities {
+            let threashold = Constants.pageSize / 2
+            if entities.count >= threashold,
+               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                return true
+            } else {
+                return id == entities.last?.id
+            }
+        }
+        return false
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }
@@ -162,6 +190,8 @@ class BrowserStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+
+    // MARK: - Constants
 
     private enum Constants {
         static let pageSize = 10

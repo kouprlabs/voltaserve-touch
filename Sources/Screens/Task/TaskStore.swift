@@ -3,12 +3,11 @@ import Foundation
 import VoltaserveCore
 
 class TaskStore: ObservableObject {
-    @Published var list: VOTask.List?
     @Published var entities: [VOTask.Entity]?
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
-    @Published var isLoading = false
+    private var list: VOTask.List?
     private var timer: Timer?
     private var taskClient: VOTask?
 
@@ -23,22 +22,37 @@ class TaskStore: ObservableObject {
         }
     }
 
-    func fetch(id: String) async throws -> VOTask.Entity? {
+    // MARK: - Fetch
+
+    private func fetch(id: String) async throws -> VOTask.Entity? {
         try await taskClient?.fetch(id)
     }
 
-    func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOTask.List? {
+    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOTask.Probe? {
+        try await taskClient?.fetchProbe(.init(size: size))
+    }
+
+    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOTask.List? {
         try await taskClient?.fetchList(.init(page: page, size: size))
     }
 
-    func fetchList(replace: Bool = false) {
-        if isLoading { return }
-        isLoading = true
-
+    func fetchNext(replace: Bool = false) {
         var nextPage = -1
         var list: VOTask.List?
 
         withErrorHandling {
+            if let list = self.list {
+                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                if let probe {
+                    self.list = .init(
+                        data: list.data,
+                        totalPages: probe.totalPages,
+                        totalElements: probe.totalElements,
+                        page: list.page,
+                        size: list.size
+                    )
+                }
+            }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(page: nextPage)
@@ -56,10 +70,10 @@ class TaskStore: ObservableObject {
             self.errorTitle = "Error: Fetching Tasks"
             self.errorMessage = message
             self.showError = true
-        } anyways: {
-            self.isLoading = false
         }
     }
+
+    // MARK: - Update
 
     func dismiss() async throws -> VOTask.DismissAllResult? {
         try await taskClient?.dismiss()
@@ -68,6 +82,8 @@ class TaskStore: ObservableObject {
     func dismiss(_ id: String) async throws {
         try await taskClient?.dismiss(id)
     }
+
+    // MARK: - Entities
 
     func append(_ newEntities: [VOTask.Entity]) {
         if entities == nil {
@@ -82,6 +98,8 @@ class TaskStore: ObservableObject {
         entities = nil
         list = nil
     }
+
+    // MARK: - Paging
 
     func nextPage() -> Int {
         var page = 1
@@ -99,9 +117,20 @@ class TaskStore: ObservableObject {
         nextPage() != -1
     }
 
-    func isLast(_ id: String) -> Bool {
-        id == entities?.last?.id
+    func isEntityThreshold(_ id: String) -> Bool {
+        if let entities {
+            let threashold = Constants.pageSize / 2
+            if entities.count >= threashold,
+               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                return true
+            } else {
+                return id == entities.last?.id
+            }
+        }
+        return false
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }
@@ -125,6 +154,8 @@ class TaskStore: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+
+    // MARK: - Constants
 
     private enum Constants {
         static let pageSize: Int = 10

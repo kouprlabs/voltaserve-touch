@@ -3,12 +3,17 @@ import VoltaserveCore
 
 struct TaskList: View {
     @EnvironmentObject private var tokenStore: TokenStore
+    @ObservedObject private var fileStore: FileStore
     @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
     @State private var isDismissingAll = false
     @State private var showError = false
     @State private var errorTitle: String?
     @State private var errorMessage: String?
+
+    init(fileStore: FileStore) {
+        self.fileStore = fileStore
+    }
 
     var body: some View {
         NavigationStack {
@@ -20,19 +25,12 @@ struct TaskList: View {
                         List {
                             ForEach(entities, id: \.id) { task in
                                 NavigationLink {
-                                    TaskOverview(task, taskStore: taskStore)
+                                    TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
                                 } label: {
                                     TaskRow(task)
                                         .onAppear {
                                             onListItemAppear(task.id)
                                         }
-                                }
-                            }
-                            if taskStore.isLoading {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
                                 }
                             }
                         }
@@ -89,7 +87,7 @@ struct TaskList: View {
     }
 
     private func fetchData() {
-        taskStore.fetchList(replace: true)
+        taskStore.fetchNext(replace: true)
     }
 
     private func assignTokenToStores(_ token: VOToken.Value) {
@@ -105,18 +103,23 @@ struct TaskList: View {
     }
 
     private func onListItemAppear(_ id: String) {
-        if taskStore.isLast(id) {
-            taskStore.fetchList()
+        if taskStore.isEntityThreshold(id) {
+            taskStore.fetchNext()
         }
     }
 
     private func performDismissAll() {
         isDismissingAll = true
         withErrorHandling {
-            _ = try await taskStore.dismiss()
+            let result = try await taskStore.dismiss()
+            if let result {
+                if !result.succeeded.isEmpty {
+                    fileStore.fetchTaskCount()
+                }
+            }
             return true
         } success: {
-            taskStore.fetchList(replace: true)
+            taskStore.fetchNext(replace: true)
             dismiss()
         } failure: { message in
             errorTitle = "Error: Dismissing All Tasks"

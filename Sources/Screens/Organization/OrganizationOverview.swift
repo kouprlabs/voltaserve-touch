@@ -25,7 +25,7 @@ struct OrganizationOverview: View {
                             Label("Members", systemImage: "person.2")
                         }
                         NavigationLink {
-                            InvitationOutgoingList()
+                            InvitationOutgoingList(organization.id)
                         } label: {
                             Label("Invitations", systemImage: "paperplane")
                         }

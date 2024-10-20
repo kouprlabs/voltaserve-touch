@@ -39,7 +39,7 @@ struct SharingUserPermission: View {
 
     var body: some View {
         Form {
-            Section {
+            Section(header: VOSectionHeader("User Permission")) {
                 NavigationLink {
                     if let workspace = workspaceStore.current {
                         UserSelector(organizationID: workspace.organization.id) { user in
@@ -70,7 +70,7 @@ struct SharingUserPermission: View {
                 .disabled(isProcessing)
             }
             if enableRevoke, fileIDs.count == 1 {
-                Section {
+                Section(header: VOSectionHeader("Actions")) {
                     Button(role: .destructive) {
                         showRevoke = true
                     } label: {
