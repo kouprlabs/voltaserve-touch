@@ -55,7 +55,7 @@ struct InvitationOutgoingList: View {
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
-                if invitationStore.isLoading {
+                if invitationStore.isLoading, invitationStore.entities != nil {
                     ProgressView()
                 }
             }

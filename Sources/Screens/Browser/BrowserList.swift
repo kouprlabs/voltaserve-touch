@@ -89,7 +89,7 @@ struct BrowserList: View {
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
-                if browserStore.isLoading {
+                if browserStore.isLoading, browserStore.entities != nil {
                     ProgressView()
                 }
             }

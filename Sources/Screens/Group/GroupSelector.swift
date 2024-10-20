@@ -60,7 +60,7 @@ struct GroupSelector: View {
         .navigationTitle("Select Group")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                if groupStore.isLoading {
+                if groupStore.isLoading, groupStore.entities != nil {
                     ProgressView()
                 }
             }

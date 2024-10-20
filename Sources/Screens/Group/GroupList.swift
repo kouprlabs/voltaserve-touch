@@ -49,7 +49,7 @@ struct GroupList: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        if groupStore.isLoading {
+                        if groupStore.isLoading, groupStore.entities != nil {
                             ProgressView()
                         }
                     }

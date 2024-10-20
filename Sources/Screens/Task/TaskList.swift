@@ -57,7 +57,7 @@ struct TaskList: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        if taskStore.isLoading {
+                        if taskStore.isLoading, taskStore.entities != nil {
                             ProgressView()
                         }
                     }

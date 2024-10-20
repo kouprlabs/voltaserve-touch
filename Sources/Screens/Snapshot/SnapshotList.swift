@@ -45,7 +45,7 @@ struct SnapshotList: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        if snapshotStore.isLoading {
+                        if snapshotStore.isLoading, snapshotStore.entities != nil {
                             ProgressView()
                         }
                     }
