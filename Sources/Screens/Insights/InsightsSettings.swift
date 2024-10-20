@@ -44,7 +44,7 @@ struct InsightsSettings: View {
                                 Button {
                                     performDelete()
                                 } label: {
-                                    VOButtonLabel("Delete Mosaic", systemImage: "trash", isLoading: isDeleting)
+                                    VOButtonLabel("Delete Insights", systemImage: "trash", isLoading: isDeleting)
                                 }
                                 .voButton(color: .red400, isDisabled: isProcessing || !canDelete)
                             }
