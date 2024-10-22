@@ -22,10 +22,16 @@ struct OrganizationMemberList: View {
                         Text("There are no items.")
                     } else {
                         List(entities, id: \.id) { member in
-                            UserRow(member)
-                                .onAppear {
-                                    onListItemAppear(member.id)
-                                }
+                            UserRow(
+                                member,
+                                pictureURL: userStore.urlForPicture(
+                                    member.id,
+                                    fileExtension: member.picture?.fileExtension
+                                )
+                            )
+                            .onAppear {
+                                onListItemAppear(member.id)
+                            }
                         }
                         .searchable(text: $searchText)
                         .onChange(of: userStore.searchText) {

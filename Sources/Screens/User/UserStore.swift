@@ -17,6 +17,7 @@ class UserStore: ObservableObject {
     let searchPublisher = PassthroughSubject<String, Never>()
     var organizationID: String?
     var groupID: String?
+    var invitationID: String?
 
     var token: VOToken.Value? {
         didSet {
@@ -37,6 +38,21 @@ class UserStore: ObservableObject {
                 self.query = $0
             }
             .store(in: &cancellables)
+    }
+
+    // MARK: - URLs
+
+    func urlForPicture(_ id: String, fileExtension: String? = nil) -> URL? {
+        if let fileExtension {
+            return userClient?.urlForPicture(
+                id,
+                fileExtension: fileExtension,
+                organizationID: organizationID,
+                groupID: groupID,
+                invitationID: invitationID
+            )
+        }
+        return nil
     }
 
     // MARK: - Fetch

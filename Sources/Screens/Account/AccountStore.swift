@@ -33,9 +33,20 @@ class AccountStore: ObservableObject {
         self.identityUser = identityUser
     }
 
+    // MARK: - URLs
+
+    func urlForUserPicture(_ id: String, fileExtension: String? = nil) -> URL? {
+        if let fileExtension {
+            return identityUserClient?.urlForPicture(id, fileExtension: fileExtension)
+        }
+        return nil
+    }
+
     private func fetchUser() async throws -> VOIdentityUser.Entity? {
         try await identityUserClient?.fetch()
     }
+
+    // MARK: - Fetch
 
     func fetchUser() {
         var user: VOIdentityUser.Entity?
@@ -72,6 +83,8 @@ class AccountStore: ObservableObject {
         }
     }
 
+    // MARK: - Update
+
     func updateEmail(_ email: String) async throws -> VOIdentityUser.Entity? {
         try await identityUserClient?.updateEmailRequest(.init(email: email))
     }
@@ -87,6 +100,8 @@ class AccountStore: ObservableObject {
     func deleteAccount(password: String) async throws {
         try await identityUserClient?.delete(.init(password: password))
     }
+
+    // MARK: - Timer
 
     func startTimer() {
         guard timer == nil else { return }

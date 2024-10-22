@@ -2,8 +2,10 @@ import SwiftUI
 import VoltaserveCore
 
 struct SharingUserList: View {
+    @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
+    @StateObject private var userStore = UserStore()
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
     private let fileID: String
@@ -31,7 +33,13 @@ struct SharingUserList: View {
                                 enableRevoke: true
                             )
                         } label: {
-                            SharingUserRow(userPermission)
+                            SharingUserRow(
+                                userPermission,
+                                userPictureURL: userStore.urlForPicture(
+                                    userPermission.user.id,
+                                    fileExtension: userPermission.user.picture?.fileExtension
+                                )
+                            )
                         }
                     }
                 }
@@ -39,5 +47,22 @@ struct SharingUserList: View {
                 ProgressView()
             }
         }
+        .onAppear {
+            if let workspace = workspaceStore.current {
+                userStore.organizationID = workspace.organization.id
+            }
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+            }
+        }
+        .onChange(of: tokenStore.token) { _, newToken in
+            if let newToken {
+                assignTokenToStores(newToken)
+            }
+        }
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        userStore.token = token
     }
 }
