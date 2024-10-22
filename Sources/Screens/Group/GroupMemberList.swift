@@ -23,10 +23,16 @@ struct GroupMemberList: View {
                     } else {
                         List {
                             ForEach(entities, id: \.id) { member in
-                                UserRow(member)
-                                    .onAppear {
-                                        onListItemAppear(member.id)
-                                    }
+                                UserRow(
+                                    member,
+                                    pictureURL: userStore.urlForPicture(
+                                        member.id,
+                                        fileExtension: member.picture?.fileExtension
+                                    )
+                                )
+                                .onAppear {
+                                    onListItemAppear(member.id)
+                                }
                             }
                         }
                         .searchable(text: $searchText)

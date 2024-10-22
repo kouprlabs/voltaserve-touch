@@ -4,9 +4,11 @@ import VoltaserveCore
 struct SharingUserRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let userPermission: VOFile.UserPermission
+    private let userPictureURL: URL?
 
-    init(_ userPermission: VOFile.UserPermission) {
+    init(_ userPermission: VOFile.UserPermission, userPictureURL: URL? = nil) {
         self.userPermission = userPermission
+        self.userPictureURL = userPictureURL
     }
 
     var body: some View {
@@ -14,7 +16,7 @@ struct SharingUserRow: View {
             VOAvatar(
                 name: userPermission.user.fullName,
                 size: VOMetrics.avatarSize,
-                base64Image: userPermission.user.picture
+                url: userPictureURL
             )
             VStack(alignment: .leading) {
                 Text(userPermission.user.fullName)

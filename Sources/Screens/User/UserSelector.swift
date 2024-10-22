@@ -34,10 +34,16 @@ struct UserSelector: View {
                                     dismiss()
                                     onCompletion?(user)
                                 } label: {
-                                    UserRow(user)
-                                        .onAppear {
-                                            onListItemAppear(user.id)
-                                        }
+                                    UserRow(
+                                        user,
+                                        pictureURL: userStore.urlForPicture(
+                                            user.id,
+                                            fileExtension: user.picture?.fileExtension
+                                        )
+                                    )
+                                    .onAppear {
+                                        onListItemAppear(user.id)
+                                    }
                                 }
                             }
                         }

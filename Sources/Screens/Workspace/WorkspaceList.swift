@@ -134,8 +134,15 @@ struct WorkspaceList: View {
             Button {
                 showAccount.toggle()
             } label: {
-                if let user = accountStore.identityUser, let picture = user.picture {
-                    VOAvatar(name: user.fullName, size: 30, base64Image: picture)
+                if let user = accountStore.identityUser {
+                    VOAvatar(
+                        name: user.fullName,
+                        size: 30,
+                        url: accountStore.urlForUserPicture(
+                            user.id,
+                            fileExtension: user.picture?.fileExtension
+                        )
+                    )
                 } else {
                     Image(systemName: "person.crop.circle")
                         .resizable()

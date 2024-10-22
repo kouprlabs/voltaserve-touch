@@ -16,8 +16,15 @@ struct AccountOverview: View {
                     accountStore.storageUsage == nil {
                     ProgressView()
                 } else if let user = accountStore.identityUser {
-                    VOAvatar(name: user.fullName, size: 100, base64Image: user.picture)
-                        .padding()
+                    VOAvatar(
+                        name: user.fullName,
+                        size: 100,
+                        url: accountStore.urlForUserPicture(
+                            user.id,
+                            fileExtension: user.picture?.fileExtension
+                        )
+                    )
+                    .padding()
                     Form {
                         Section(header: VOSectionHeader("Storage Usage")) {
                             VStack(alignment: .leading) {

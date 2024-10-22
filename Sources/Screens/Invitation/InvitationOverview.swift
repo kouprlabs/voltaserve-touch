@@ -2,7 +2,9 @@ import SwiftUI
 import VoltaserveCore
 
 struct InvitationOverview: View {
+    @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var invitationStore: InvitationStore
+    @StateObject private var userStore = UserStore()
     @Environment(\.dismiss) private var dismiss
     @State private var showError = false
     @State private var errorTitle: String?
@@ -32,7 +34,13 @@ struct InvitationOverview: View {
         Form {
             if let owner = invitation.owner {
                 Section(header: VOSectionHeader("Sender")) {
-                    UserRow(owner)
+                    UserRow(
+                        owner,
+                        pictureURL: userStore.urlForPicture(
+                            owner.id,
+                            fileExtension: owner.picture?.fileExtension
+                        )
+                    )
                     HStack {
                         Text("When")
                         Spacer()
@@ -121,10 +129,25 @@ struct InvitationOverview: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(invitation.id)")
         .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .onAppear {
+            userStore.invitationID = invitation.id
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+            }
+        }
+        .onChange(of: tokenStore.token) { _, newToken in
+            if let newToken {
+                assignTokenToStores(newToken)
+            }
+        }
     }
 
     private var isProcessing: Bool {
         isAccepting || isDeclining || isDeleting
+    }
+
+    private func assignTokenToStores(_ token: VOToken.Value) {
+        userStore.token = token
     }
 
     private func performAccept() {
