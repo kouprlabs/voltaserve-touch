@@ -21,6 +21,9 @@ struct SnapshotRow: View {
                 }
                 HStack {
                     ColorBadge("v\(snapshot.version)", color: .gray400, style: .outline)
+                    if let size = snapshot.original.size {
+                        ColorBadge(size.prettyBytes(), color: .gray400, style: .outline)
+                    }
                     if snapshot.hasFeatures() {
                         SnapshotFeatures(snapshot)
                     }

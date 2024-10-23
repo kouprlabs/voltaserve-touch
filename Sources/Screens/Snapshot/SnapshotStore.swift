@@ -37,7 +37,7 @@ class SnapshotStore: ObservableObject {
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOSnapshot.List? {
         guard let fileID else { return nil }
-        return try await snapshotClient?.fetchList(.init(fileID: fileID, page: page, size: size, sortOrder: .desc))
+        return try await snapshotClient?.fetchList(.init(fileID: fileID, page: page, size: size, sortBy: .version, sortOrder: .desc))
     }
 
     func fetchNext(replace: Bool = false) {
