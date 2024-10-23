@@ -37,6 +37,13 @@ struct SnapshotOverview: View {
                     Text("\(snapshot.version)")
                         .foregroundStyle(.secondary)
                 }
+                if let size = snapshot.original.size {
+                    HStack {
+                        Text("Size")
+                        Spacer()
+                        Text(size.prettyBytes())
+                    }
+                }
                 HStack {
                     Text("Status")
                     Spacer()
