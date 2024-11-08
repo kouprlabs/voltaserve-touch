@@ -45,21 +45,21 @@ class ViewerMosaicStore: ObservableObject {
         allocateGridForZoomLevel(zoomLevel)
     }
 
-    func loadImageForCell(_ id: String, row: Int, col: Int) {
-        guard busy[row][col] == false else { return }
-        busy[row][col] = true
+    func loadImageForCell(_ id: String, row: Int, column: Int) {
+        guard busy[row][column] == false else { return }
+        busy[row][column] = true
         if let zoomLevel, let info {
             Task {
                 let data = try await mosaicClient?.fetchData(
                     id,
                     zoomLevel: zoomLevel,
-                    forCellAtRow: row, col: col,
+                    forCellAtRow: row, column: column,
                     fileExtension: String(info.metadata.fileExtension.dropFirst())
                 )
                 if let data {
-                    self.busy[row][col] = false
+                    self.busy[row][column] = false
                     DispatchQueue.main.async {
-                        self.grid[row][col] = UIImage(data: data)
+                        self.grid[row][column] = UIImage(data: data)
                     }
                 }
             }

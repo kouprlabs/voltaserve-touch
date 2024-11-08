@@ -54,7 +54,7 @@ struct ViewerMosaic: View {
                                                 y: position.y + dragOffset.height
                                             )
                                             .onAppear {
-                                                viewerMosaicStore.loadImageForCell(file.id, row: row, col: col)
+                                                viewerMosaicStore.loadImageForCell(file.id, row: row, column: col)
                                             }
                                     }
                                 }
