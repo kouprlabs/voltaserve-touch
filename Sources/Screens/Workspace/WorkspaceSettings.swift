@@ -56,7 +56,9 @@ struct WorkspaceSettings: View {
                         NavigationLink {
                             WorkspaceEditName(workspaceStore: workspaceStore) { updatedWorkspace in
                                 workspaceStore.current = updatedWorkspace
-                                if let index = workspaceStore.entities?.firstIndex(where: { $0.id == updatedWorkspace.id }) {
+                                if let index = workspaceStore.entities?.firstIndex(where: {
+                                    $0.id == updatedWorkspace.id
+                                }) {
                                     workspaceStore.entities?[index] = updatedWorkspace
                                 }
                             }

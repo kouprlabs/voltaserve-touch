@@ -35,7 +35,9 @@ struct OrganizationSettings: View {
                         NavigationLink {
                             OrganizationEditName(organizationStore: organizationStore) { updatedOranization in
                                 organizationStore.current = updatedOranization
-                                if let index = organizationStore.entities?.firstIndex(where: { $0.id == updatedOranization.id }) {
+                                if let index = organizationStore.entities?.firstIndex(where: {
+                                    $0.id == updatedOranization.id
+                                }) {
                                     organizationStore.entities?[index] = updatedOranization
                                 }
                             }
