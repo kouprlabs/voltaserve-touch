@@ -116,7 +116,16 @@ struct AccountSettings: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Settings")
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorAlert(
+            isPresented: $showError,
+            title: errorTitle,
+            message: errorMessage
+        )
+        .voErrorAlert(
+            isPresented: $accountStore.showError,
+            title: accountStore.errorTitle,
+            message: accountStore.errorMessage
+        )
         .onAppear {
             accountStore.tokenStore = tokenStore
             if tokenStore.token != nil {
@@ -128,7 +137,6 @@ struct AccountSettings: View {
                 onAppearOrChange()
             }
         }
-        .sync($accountStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {
