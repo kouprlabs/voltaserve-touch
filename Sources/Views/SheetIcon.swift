@@ -20,7 +20,7 @@ struct VOSheetErrorIcon: View {
     }
 }
 
-struct SheetWarningIcon: View {
+struct VOSheetWarningIcon: View {
     var body: some View {
         Image(systemName: "exclamationmark.triangle.fill")
             .resizable()
@@ -33,6 +33,6 @@ struct SheetWarningIcon: View {
 #Preview {
     VStack {
         VOSheetErrorIcon()
-        SheetWarningIcon()
+        VOSheetWarningIcon()
     }
 }

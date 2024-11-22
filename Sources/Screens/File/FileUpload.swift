@@ -46,7 +46,7 @@ struct FileUpload: View {
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             } else if showError, errorSeverity == .partial {
-                SheetWarningIcon()
+                VOSheetWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }

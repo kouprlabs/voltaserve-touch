@@ -23,7 +23,7 @@ struct InsightsEntityRow: View {
             Text(entity.text)
                 .lineLimit(1)
                 .truncationMode(.tail)
-            ColorBadge("\(entity.frequency)", color: .gray300, style: .fill)
+            VOColorBadge("\(entity.frequency)", color: .gray300, style: .fill)
         }
     }
 }

@@ -34,7 +34,7 @@ struct SharingGroupRow: View {
                     .truncationMode(.tail)
             }
             Spacer()
-            PermissionBadge(groupPermission.permission)
+            VOPermissionBadge(groupPermission.permission)
         }
     }
 }
