@@ -17,7 +17,6 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
     @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var browserStore = BrowserStore()
     @State private var tappedItem: VOFile.Entity?
-    @State private var showError = false
     private let folderID: String
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
