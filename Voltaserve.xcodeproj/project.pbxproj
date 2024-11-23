@@ -211,7 +211,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		644C38B42C8F3744008E8F0F /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
 		644C38B72C8F3744008E8F0F /* Infrastructure */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (644C38DA2C8F3744008E8F0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Infrastructure; sourceTree = "<group>"; };
-		64C0F65F2CF26AE8007049E7 /* Protocol */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Protocol; sourceTree = "<group>"; };
+		64C0F65F2CF26AE8007049E7 /* Protocols */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Protocols; sourceTree = "<group>"; };
 		64DA01D12C98766E0063A4CB /* Design */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Design; sourceTree = "<group>"; };
 		64DA46312CF1A7AA00D57366 /* Library */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Library; sourceTree = "<group>"; };
 		64E4C9B52C92495000395C9D /* Screens */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64E4CA1B2C92496100395C9D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Screens; sourceTree = "<group>"; };
@@ -257,7 +257,7 @@
 		649066E02C5E35AD00BA3CCD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				64C0F65F2CF26AE8007049E7 /* Protocol */,
+				64C0F65F2CF26AE8007049E7 /* Protocols */,
 				64DA46312CF1A7AA00D57366 /* Library */,
 				64E4C9B52C92495000395C9D /* Screens */,
 				64DA01D12C98766E0063A4CB /* Design */,
@@ -306,7 +306,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				644C38B42C8F3744008E8F0F /* Helpers */,
-				64C0F65F2CF26AE8007049E7 /* Protocol */,
+				64C0F65F2CF26AE8007049E7 /* Protocols */,
 				64DA01D12C98766E0063A4CB /* Design */,
 				64DA46312CF1A7AA00D57366 /* Library */,
 			);

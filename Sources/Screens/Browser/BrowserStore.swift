@@ -14,18 +14,18 @@ import VoltaserveCore
 
 class BrowserStore: ObservableObject {
     @Published var entities: [VOFile.Entity]?
-    @Published var current: VOFile.Entity?
+    @Published var entitiesIsLoading: Bool = false
+    @Published var entitiesError: String?
+    @Published var folder: VOFile.Entity?
+    @Published var folderIsLoading: Bool = false
+    @Published var folderError: String?
     @Published var query: VOFile.Query?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
     @Published var searchText = ""
-    @Published var isLoading = false
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var fileClient: VOFile?
-    var fileID: String?
+    var folderID: String?
     let searchPublisher = PassthroughSubject<String, Never>()
 
     var token: VOToken.Value? {
@@ -51,23 +51,24 @@ class BrowserStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch(_ id: String) async throws -> VOFile.Entity? {
-        try await fileClient?.fetch(id)
+    private func fetchFolder() async throws -> VOFile.Entity? {
+        guard let folderID else { return nil }
+        return try await fileClient?.fetch(folderID)
     }
 
-    func fetch() {
-        guard let fileID else { return }
-        var file: VOFile.Entity?
-
+    func fetchFolder() {
+        var folder: VOFile.Entity?
         withErrorHandling {
-            file = try await self.fetch(fileID)
+            folder = try await self.fetchFolder()
             return true
+        } before: {
+            self.folderIsLoading = true
         } success: {
-            self.current = file
+            self.folder = folder
         } failure: { message in
-            self.errorTitle = "Error: Fetching File"
-            self.errorMessage = message
-            self.showError = true
+            self.folderError = message
+        } anyways: {
+            self.folderIsLoading = false
         }
     }
 
@@ -80,15 +81,15 @@ class BrowserStore: ObservableObject {
     }
 
     func fetchNextPage(replace: Bool = false) {
-        guard let fileID else { return }
-        guard !isLoading else { return }
+        guard let folderID else { return }
+        guard !entitiesIsLoading else { return }
 
         var nextPage = -1
         var list: VOFile.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(fileID, size: Constants.pageSize)
+                let probe = try await self.fetchProbe(folderID, size: Constants.pageSize)
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -102,10 +103,10 @@ class BrowserStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(fileID, page: nextPage)
+            list = try await self.fetchList(folderID, page: nextPage)
             return true
         } before: {
-            self.isLoading = true
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -116,11 +117,9 @@ class BrowserStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Files"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
         } anyways: {
-            self.isLoading = false
+            self.entitiesIsLoading = false
         }
     }
 
@@ -176,7 +175,7 @@ class BrowserStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let current = self.current {
+            if let current = self.folder {
                 Task {
                     var size = Constants.pageSize
                     if let list = self.list {
@@ -190,12 +189,12 @@ class BrowserStore: ObservableObject {
                     }
                 }
             }
-            if let current = self.current {
+            if let current = self.folder {
                 Task {
-                    let file = try await self.fetch(current.id)
+                    let file = try await self.fetchFolder()
                     if let file {
                         DispatchQueue.main.async {
-                            self.current = file
+                            self.folder = file
                         }
                     }
                 }
