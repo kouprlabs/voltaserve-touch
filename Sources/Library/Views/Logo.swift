@@ -14,7 +14,7 @@ struct VOLogo: View {
     @Environment(\.colorScheme) private var colorScheme
     private let isGlossy: Bool
     private let size: CGSize
-    
+
     init(isGlossy: Bool = false, size: CGSize) {
         self.isGlossy = isGlossy
         self.size = size
