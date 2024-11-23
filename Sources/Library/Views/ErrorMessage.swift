@@ -11,7 +11,7 @@
 import SwiftUI
 
 struct VOErrorMessage: View {
-    let message: String?
+    private let message: String?
 
     init() {
         message = nil

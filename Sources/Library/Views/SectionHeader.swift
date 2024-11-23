@@ -11,7 +11,7 @@
 import SwiftUI
 
 struct VOSectionHeader: View {
-    var text: String
+    private let text: String
 
     init(_ text: String) {
         self.text = text

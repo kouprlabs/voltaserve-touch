@@ -11,11 +11,11 @@
 import SwiftUI
 
 struct VOAvatar: View {
-    var name: String
-    var size: CGFloat
-    var url: URL?
+    private let name: String
+    private let size: CGFloat
+    private let url: URL?
 
-    public init(name: String, size: CGFloat, url: URL? = nil) {
+    init(name: String, size: CGFloat, url: URL? = nil) {
         self.name = name
         self.size = size
         self.url = url

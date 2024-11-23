@@ -11,9 +11,9 @@
 import SwiftUI
 
 struct VOColorBadge: View {
-    var text: String
-    var color: Color
-    var style: Style
+    private let text: String
+    private let color: Color
+    private let style: Style
 
     init(_ text: String, color: Color, style: Style) {
         self.text = text
