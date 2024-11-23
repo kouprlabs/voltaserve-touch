@@ -52,7 +52,7 @@ struct GroupMemberList: View {
                     }
                 }
                 .refreshable {
-                    userStore.fetchNext(replace: true)
+                    userStore.fetchNextPage(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -98,7 +98,7 @@ struct GroupMemberList: View {
         }
         .onChange(of: userStore.query) {
             userStore.clear()
-            userStore.fetchNext()
+            userStore.fetchNextPage()
         }
         .sync($userStore.searchText, with: $searchText)
         .sync($userStore.showError, with: $showError)
@@ -109,7 +109,7 @@ struct GroupMemberList: View {
     }
 
     private func fetchData() {
-        userStore.fetchNext(replace: true)
+        userStore.fetchNextPage(replace: true)
     }
 
     private func startTimers() {
@@ -126,7 +126,7 @@ struct GroupMemberList: View {
 
     private func onListItemAppear(_ id: String) {
         if userStore.isEntityThreshold(id) {
-            userStore.fetchNext()
+            userStore.fetchNextPage()
         }
     }
 }

@@ -76,7 +76,7 @@ class WorkspaceStore: ObservableObject {
         try await workspaceClient?.fetchList(.init(query: query, page: page, size: size))
     }
 
-    func fetchNext(replace: Bool = false) {
+    func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1

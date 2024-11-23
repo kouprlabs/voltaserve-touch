@@ -56,7 +56,7 @@ struct WorkspaceList: View {
                     }
                     .navigationTitle("Home")
                     .refreshable {
-                        workspaceStore.fetchNext(replace: true)
+                        workspaceStore.fetchNextPage(replace: true)
                     }
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
@@ -116,7 +116,7 @@ struct WorkspaceList: View {
         }
         .onChange(of: workspaceStore.query) {
             workspaceStore.clear()
-            workspaceStore.fetchNext()
+            workspaceStore.fetchNextPage()
         }
         .sync($workspaceStore.searchText, with: $searchText)
     }
@@ -167,7 +167,7 @@ struct WorkspaceList: View {
     }
 
     private func fetchData() {
-        workspaceStore.fetchNext(replace: true)
+        workspaceStore.fetchNextPage(replace: true)
         accountStore.fetchIdentityUser()
         invitationStore.fetchIncomingCount()
     }
@@ -192,7 +192,7 @@ struct WorkspaceList: View {
 
     private func onListItemAppear(_ id: String) {
         if workspaceStore.isEntityThreshold(id) {
-            workspaceStore.fetchNext()
+            workspaceStore.fetchNextPage()
         }
     }
 }

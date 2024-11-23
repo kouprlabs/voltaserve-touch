@@ -42,7 +42,7 @@ struct FileOverview: View {
                 }
                 .searchable(text: $searchText)
                 .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
-                .refreshable { fileStore.fetchNext(replace: true) }
+                .refreshable { fileStore.fetchNextPage(replace: true) }
             } else {
                 ProgressView()
             }
@@ -74,7 +74,7 @@ struct FileOverview: View {
         }
         .onChange(of: fileStore.query) {
             fileStore.clear()
-            fileStore.fetchNext(replace: true)
+            fileStore.fetchNextPage(replace: true)
         }
         .sync($fileStore.searchText, with: $searchText)
         .sync($fileStore.showError, with: $showError)
@@ -86,7 +86,7 @@ struct FileOverview: View {
 
     private func fetchData() {
         fileStore.fetch()
-        fileStore.fetchNext(replace: true)
+        fileStore.fetchNextPage(replace: true)
         fileStore.fetchTaskCount()
     }
 

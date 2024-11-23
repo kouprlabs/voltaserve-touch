@@ -64,7 +64,7 @@ struct UserSelector: View {
                     }
                 }
                 .refreshable {
-                    userStore.fetchNext(replace: true)
+                    userStore.fetchNextPage(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -107,7 +107,7 @@ struct UserSelector: View {
         }
         .onChange(of: userStore.query) {
             userStore.clear()
-            userStore.fetchNext()
+            userStore.fetchNextPage()
         }
         .sync($userStore.searchText, with: $searchText)
         .sync($userStore.showError, with: $showError)
@@ -118,7 +118,7 @@ struct UserSelector: View {
     }
 
     private func fetchData() {
-        userStore.fetchNext(replace: true)
+        userStore.fetchNextPage(replace: true)
     }
 
     private func startTimers() {
@@ -135,7 +135,7 @@ struct UserSelector: View {
 
     private func onListItemAppear(_ id: String) {
         if userStore.isEntityThreshold(id) {
-            userStore.fetchNext()
+            userStore.fetchNextPage()
         }
     }
 }

@@ -62,7 +62,7 @@ class OrganizationStore: ObservableObject {
         try await organizationClient?.fetchList(.init(query: query, page: page, size: size))
     }
 
-    func fetchNext(replace: Bool = false) {
+    func fetchNextPage(replace: Bool = false) {
         guard !isLoading else { return }
 
         var nextPage = -1

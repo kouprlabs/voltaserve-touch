@@ -74,7 +74,7 @@ struct FileGrid: View {
 
     private func onListItemAppear(_ id: String) {
         if fileStore.isEntityThreshold(id) {
-            fileStore.fetchNext()
+            fileStore.fetchNextPage()
         }
     }
 }

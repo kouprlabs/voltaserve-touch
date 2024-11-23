@@ -55,7 +55,7 @@ struct InsightsChart: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Insights")
                 .refreshable {
-                    insightsStore.fetchEntityNext(replace: true)
+                    insightsStore.fetchEntityNextPage(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -93,7 +93,7 @@ struct InsightsChart: View {
     }
 
     private func fetchData() {
-        insightsStore.fetchEntityNext(replace: true)
+        insightsStore.fetchEntityNextPage(replace: true)
     }
 
     private func startTimers() {

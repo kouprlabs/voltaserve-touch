@@ -118,7 +118,7 @@ class InsightsStore: ObservableObject {
         )
     }
 
-    func fetchEntityNext(replace: Bool = false) {
+    func fetchEntityNextPage(replace: Bool = false) {
         var nextPage = -1
         var list: VOInsights.EntityList?
 

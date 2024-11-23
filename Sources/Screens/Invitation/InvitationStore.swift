@@ -53,7 +53,7 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    func fetchNext(replace: Bool = false) {
+    func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1

@@ -70,7 +70,7 @@ struct FolderCreate: View {
                 parentID: parentID
             )
             if fileStore.isLastPage() {
-                fileStore.fetchNext()
+                fileStore.fetchNextPage()
             }
             return true
         } success: {

@@ -55,7 +55,7 @@ struct GroupSelector: View {
                     }
                 }
                 .refreshable {
-                    groupStore.fetchNext(replace: true)
+                    groupStore.fetchNextPage(replace: true)
                 }
                 .voErrorAlert(
                     isPresented: $showError,
@@ -94,7 +94,7 @@ struct GroupSelector: View {
         }
         .onChange(of: groupStore.query) {
             groupStore.clear()
-            groupStore.fetchNext()
+            groupStore.fetchNextPage()
         }
         .sync($groupStore.showError, with: $showError)
         .sync($groupStore.searchText, with: $searchText)
@@ -106,12 +106,12 @@ struct GroupSelector: View {
 
     private func onListItemAppear(_ id: String) {
         if groupStore.isEntityThreshold(id) {
-            groupStore.fetchNext()
+            groupStore.fetchNextPage()
         }
     }
 
     private func fetchData() {
-        groupStore.fetchNext(replace: true)
+        groupStore.fetchNextPage(replace: true)
     }
 
     private func startTimers() {

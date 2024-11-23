@@ -49,7 +49,7 @@ struct TaskList: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Tasks")
                 .refreshable {
-                    taskStore.fetchNext(replace: true)
+                    taskStore.fetchNextPage(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -105,7 +105,7 @@ struct TaskList: View {
     }
 
     private func fetchData() {
-        taskStore.fetchNext(replace: true)
+        taskStore.fetchNextPage(replace: true)
     }
 
     private func assignTokenToStores(_ token: VOToken.Value) {
@@ -122,7 +122,7 @@ struct TaskList: View {
 
     private func onListItemAppear(_ id: String) {
         if taskStore.isEntityThreshold(id) {
-            taskStore.fetchNext()
+            taskStore.fetchNextPage()
         }
     }
 
@@ -137,7 +137,7 @@ struct TaskList: View {
             }
             return true
         } success: {
-            taskStore.fetchNext(replace: true)
+            taskStore.fetchNextPage(replace: true)
             dismiss()
         } failure: { message in
             errorTitle = "Error: Dismissing All Tasks"
