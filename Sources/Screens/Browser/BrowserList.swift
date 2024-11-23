@@ -12,26 +12,25 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct BrowserList: View {
+struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var browserStore = BrowserStore()
     @State private var tappedItem: VOFile.Entity?
     @State private var showError = false
-    @State private var searchText = ""
-    private let fileID: String
+    private let folderID: String
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
     private let onDismiss: (() -> Void)?
 
     init(
-        _ fileID: String,
+        _ folderID: String,
         workspaceStore: WorkspaceStore,
         confirmLabelText: String?,
         onCompletion: ((String) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
-        self.fileID = fileID
+        self.folderID = folderID
         self.workspaceStore = workspaceStore
         self.confirmLabelText = confirmLabelText
         self.onCompletion = onCompletion
@@ -40,58 +39,57 @@ struct BrowserList: View {
 
     var body: some View {
         VStack {
-            if let entities = browserStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no items.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { file in
-                                NavigationLink {
-                                    BrowserList(
-                                        file.id,
-                                        workspaceStore: workspaceStore,
-                                        confirmLabelText: confirmLabelText,
-                                        onCompletion: onCompletion
-                                    )
-                                    .navigationTitle(file.name)
-                                } label: {
-                                    FileRow(file)
-                                }
-                                .onAppear {
-                                    onListItemAppear(file.id)
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = browserStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no items.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { file in
+                                    NavigationLink {
+                                        BrowserList(
+                                            file.id,
+                                            workspaceStore: workspaceStore,
+                                            confirmLabelText: confirmLabelText,
+                                            onCompletion: onCompletion
+                                        )
+                                        .navigationTitle(file.name)
+                                    } label: {
+                                        FileRow(file)
+                                    }
+                                    .onAppear {
+                                        onListItemAppear(file.id)
+                                    }
                                 }
                             }
+                            .listStyle(.inset)
+                            .searchable(text: $browserStore.searchText)
+                            .onChange(of: browserStore.searchText) {
+                                browserStore.searchPublisher.send($1)
+                            }
+                            .navigationDestination(item: $tappedItem) {
+                                Viewer($0)
+                            }
                         }
-                        .listStyle(.inset)
-                        .searchable(text: $searchText)
-                        .onChange(of: browserStore.searchText) {
-                            browserStore.searchPublisher.send($1)
-                        }
-                        .navigationDestination(item: $tappedItem) {
-                            Viewer($0)
-                        }
-                        .voErrorAlert(
-                            isPresented: $showError,
-                            title: browserStore.errorTitle,
-                            message: browserStore.errorMessage
-                        )
+                    }
+                    .refreshable {
+                        browserStore.fetchNextPage(replace: true)
                     }
                 }
-                .refreshable {
-                    browserStore.fetchNextPage(replace: true)
-                }
-            } else {
-                ProgressView()
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(confirmLabelText ?? "Done") {
-                    onCompletion?(fileID)
+                    onCompletion?(folderID)
                 }
             }
-            if let workspace = workspaceStore.current, fileID == workspace.rootID {
+            if let workspace = workspaceStore.current, folderID == workspace.rootID {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         onDismiss?()
@@ -99,15 +97,15 @@ struct BrowserList: View {
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
-                if browserStore.isLoading, browserStore.entities != nil {
+                if browserStore.entitiesIsLoading {
                     ProgressView()
                 }
             }
         }
         .onAppear {
-            browserStore.fileID = fileID
+            browserStore.folderID = folderID
             if let token = tokenStore.token {
-                assignTokensToStores(token)
+                assignTokenToStores(token)
                 startTimers()
                 onAppearOrChange()
             }
@@ -117,7 +115,7 @@ struct BrowserList: View {
         }
         .onChange(of: tokenStore.token) { _, newToken in
             if let newToken {
-                assignTokensToStores(newToken)
+                assignTokenToStores(newToken)
                 onAppearOrChange()
             }
         }
@@ -125,32 +123,48 @@ struct BrowserList: View {
             browserStore.clear()
             browserStore.fetchNextPage()
         }
-        .sync($browserStore.searchText, with: $searchText)
-        .sync($browserStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        workspaceStore.entities == nil && browserStore.folderIsLoading
+    }
+
+    var error: String? {
+        workspaceStore.entitiesError ?? browserStore.folderError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
-        browserStore.fetch()
+    func fetchData() {
+        browserStore.fetchFolder()
         browserStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         browserStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         browserStore.stopTimer()
     }
 
-    private func assignTokensToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         browserStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if browserStore.isEntityThreshold(id) {
             browserStore.fetchNextPage()
         }
