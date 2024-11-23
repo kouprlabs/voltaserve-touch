@@ -11,15 +11,12 @@
 import SwiftUI
 import VoltaserveCore
 
-struct AccountSettings: View {
+struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showDeleteConfirmation = false
-    @State private var showDeleteNotice = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
+    @State private var deleteConfirmationIsPresented = false
+    @State private var deleteNoticeIsPresented = false
     @State private var password = ""
     @State private var isDeleting = false
     private let onDelete: (() -> Void)?
@@ -31,17 +28,18 @@ struct AccountSettings: View {
 
     var body: some View {
         VStack {
-            if accountStore.identityUser == nil ||
-                accountStore.storageUsage == nil {
+            if isLoading {
                 ProgressView()
-            } else if let user = accountStore.identityUser {
+            } else if let error {
+                VOErrorMessage(error)
+            } else if let identityUser = accountStore.identityUser {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink(destination: AccountEditFullName(accountStore: accountStore)) {
                             HStack {
                                 Text("Full name")
                                 Spacer()
-                                Text(user.fullName)
+                                Text(identityUser.fullName)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
@@ -54,14 +52,14 @@ struct AccountSettings: View {
                             HStack {
                                 Text("Email")
                                 Spacer()
-                                Text(user.pendingEmail ?? user.email)
+                                Text(identityUser.pendingEmail ?? identityUser.email)
                                     .lineLimit(1)
                                     .truncationMode(.middle)
                                     .foregroundStyle(.secondary)
                             }
                         }
                         .disabled(isDeleting)
-                        if user.pendingEmail != nil {
+                        if identityUser.pendingEmail != nil {
                             HStack(spacing: VOMetrics.spacingXs) {
                                 Image(systemName: "exclamationmark.triangle")
                                     .foregroundStyle(Color.yellow400)
@@ -84,30 +82,25 @@ struct AccountSettings: View {
                             .disabled(isDeleting)
                         Button(role: .destructive) {
                             if password.isEmpty {
-                                showDeleteNotice = true
+                                deleteNoticeIsPresented = true
                             } else {
-                                showDeleteConfirmation = true
+                                deleteConfirmationIsPresented = true
                             }
                         } label: {
-                            HStack {
-                                Text("Delete Account")
-                                if isDeleting {
-                                    Spacer()
-                                    ProgressView()
-                                }
-                            }
+                            VOFormButtonLabel("Delete Account", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
-                        .confirmationDialog("Delete Account", isPresented: $showDeleteConfirmation) {
+                        .confirmationDialog("Delete Account", isPresented: $deleteConfirmationIsPresented) {
                             Button("Delete Permanently", role: .destructive) {
                                 performDelete()
                             }
                         } message: {
                             Text("Are you sure want to delete your account?")
                         }
-                        .alert("Missing Password Confirmation", isPresented: $showDeleteNotice) {
-                            Button("OK") {}
-                        } message: {
+                        .confirmationDialog(
+                            "Missing Password Confirmation",
+                            isPresented: $deleteNoticeIsPresented
+                        ) {} message: {
                             Text("You need to enter your password to confirm the account deletion.")
                         }
                     }
@@ -116,16 +109,7 @@ struct AccountSettings: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Settings")
-        .voErrorAlert(
-            isPresented: $showError,
-            title: errorTitle,
-            message: errorMessage
-        )
-        .voErrorAlert(
-            isPresented: $accountStore.showError,
-            title: accountStore.errorTitle,
-            message: accountStore.errorMessage
-        )
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             accountStore.tokenStore = tokenStore
             if tokenStore.token != nil {
@@ -139,14 +123,6 @@ struct AccountSettings: View {
         }
     }
 
-    private func onAppearOrChange() {
-        fetchData()
-    }
-
-    private func fetchData() {
-        accountStore.fetchUser()
-    }
-
     private func performDelete() {
         isDeleting = true
         withErrorHandling {
@@ -156,11 +132,35 @@ struct AccountSettings: View {
             dismiss()
             onDelete?()
         } failure: { message in
-            errorTitle = "Error: Deleting Account"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeleting = false
         }
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented = false
+    @State var errorMessage: String?
+
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        accountStore.identityUserIsLoading
+    }
+
+    var error: String? {
+        accountStore.identityUserError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
+        fetchData()
+    }
+
+    func fetchData() {
+        accountStore.fetchIdentityUser()
     }
 }

@@ -53,7 +53,7 @@ struct InvitationIncomingList: View {
         .navigationTitle("Invitations")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                if invitationStore.isLoading, invitationStore.entities != nil {
+                if invitationStore.entitiesIsLoading, invitationStore.entities != nil {
                     ProgressView()
                 }
             }

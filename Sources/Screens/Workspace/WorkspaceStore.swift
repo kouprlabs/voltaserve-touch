@@ -14,16 +14,17 @@ import VoltaserveCore
 
 class WorkspaceStore: ObservableObject {
     @Published var entities: [VOWorkspace.Entity]?
+    @Published var entitiesIsLoading: Bool = false
+    @Published var entitiesError: String?
     @Published var current: VOWorkspace.Entity?
     @Published var root: VOFile.Entity?
+    @Published var rootIsLoading: Bool = false
+    @Published var rootError: String?
     @Published var storageUsage: VOStorage.Usage?
+    @Published var storageUsageIsLoading: Bool = false
+    @Published var storageUsageError: String?
     @Published var query: String?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
-    @Published var selection: String?
     @Published var searchText = ""
-    @Published var isLoading = false
     private var list: VOWorkspace.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -76,7 +77,7 @@ class WorkspaceStore: ObservableObject {
     }
 
     func fetchNext(replace: Bool = false) {
-        guard !isLoading else { return }
+        guard !entitiesIsLoading else { return }
 
         var nextPage = -1
         var list: VOWorkspace.List?
@@ -99,7 +100,7 @@ class WorkspaceStore: ObservableObject {
             list = try await self.fetchList(page: nextPage)
             return true
         } before: {
-            self.isLoading = true
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -110,32 +111,30 @@ class WorkspaceStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Workspaces"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
         } anyways: {
-            self.isLoading = false
+            self.entitiesIsLoading = false
         }
     }
 
-    private func fetchFile(_ id: String) async throws -> VOFile.Entity? {
-        try await fileClient?.fetch(id)
+    private func fetchRoot() async throws -> VOFile.Entity? {
+        guard let current else { return nil }
+        return try await fileClient?.fetch(current.rootID)
     }
 
     func fetchRoot() {
-        guard let current else { return }
-
         var root: VOFile.Entity?
-
         withErrorHandling {
-            root = try await self.fetchFile(current.rootID)
+            root = try await self.fetchRoot()
             return true
+        } before: {
+            self.rootIsLoading = true
         } success: {
             self.root = root
         } failure: { message in
-            self.errorTitle = "Error: Fetching Workspace Root"
-            self.errorMessage = message
-            self.showError = true
+            self.rootError = message
+        } anyways: {
+            self.rootIsLoading = false
         }
     }
 
@@ -145,17 +144,20 @@ class WorkspaceStore: ObservableObject {
 
     func fetchStorageUsage() {
         guard let current else { return }
-        var usage: VOStorage.Usage?
+
+        var storageUsage: VOStorage.Usage?
 
         withErrorHandling {
-            usage = try await self.fetchStorageUsage(current.id)
+            storageUsage = try await self.fetchStorageUsage(current.id)
             return true
+        } before: {
+            self.storageUsageIsLoading = true
         } success: {
-            self.storageUsage = usage
+            self.storageUsage = storageUsage
         } failure: { message in
-            self.errorTitle = "Error: Fetching Storage Usage"
-            self.errorMessage = message
-            self.showError = true
+            self.storageUsageError = message
+        } anyways: {
+            self.storageUsageIsLoading = false
         }
     }
 
@@ -264,7 +266,7 @@ class WorkspaceStore: ObservableObject {
                     }
                 }
                 Task {
-                    let root = try await self.fetchFile(current.rootID)
+                    let root = try await self.fetchRoot()
                     if let root {
                         DispatchQueue.main.async {
                             self.root = root

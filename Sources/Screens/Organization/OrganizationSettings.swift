@@ -57,13 +57,7 @@ struct OrganizationSettings: View {
                         Button(role: .destructive) {
                             showDeleteConfirmation = true
                         } label: {
-                            HStack {
-                                Text("Delete Organization")
-                                if isDeleting {
-                                    Spacer()
-                                    ProgressView()
-                                }
-                            }
+                            VOFormButtonLabel("Delete Organization", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
                         .confirmationDialog("Delete Organization", isPresented: $showDeleteConfirmation) {

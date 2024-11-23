@@ -11,15 +11,12 @@
 import SwiftUI
 import VoltaserveCore
 
-struct AccountEditPassword: View {
+struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var currentValue = ""
     @State private var newValue = ""
     @State private var isSaving = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
 
     init(accountStore: AccountStore) {
         self.accountStore = accountStore
@@ -46,7 +43,7 @@ struct AccountEditPassword: View {
                 }
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performSave() {
@@ -57,15 +54,21 @@ struct AccountEditPassword: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Saving Password"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isSaving = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         !currentValue.isEmpty && !newValue.isEmpty
     }
 }

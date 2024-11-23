@@ -78,13 +78,7 @@ struct WorkspaceSettings: View {
                         Button(role: .destructive) {
                             showDeleteConfirmation = true
                         } label: {
-                            HStack {
-                                Text("Delete Workspace")
-                                if isDeleting {
-                                    Spacer()
-                                    ProgressView()
-                                }
-                            }
+                            VOFormButtonLabel("Delete Workspace", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
                         .confirmationDialog("Delete Workspace", isPresented: $showDeleteConfirmation) {

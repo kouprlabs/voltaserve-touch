@@ -13,10 +13,11 @@ import VoltaserveCore
 
 class AccountStore: ObservableObject {
     @Published var identityUser: VOIdentityUser.Entity?
+    @Published var identityUserError: String?
+    @Published var identityUserIsLoading: Bool = false
     @Published var storageUsage: VOStorage.Usage?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
+    @Published var storageUsageError: String?
+    @Published var storageUsageIsLoading: Bool = false
     private var timer: Timer?
     private var accountClient: VOAccount?
     private var identityUserClient: VOIdentityUser?
@@ -52,26 +53,28 @@ class AccountStore: ObservableObject {
         return nil
     }
 
-    private func fetchUser() async throws -> VOIdentityUser.Entity? {
+    private func fetchIdentityUser() async throws -> VOIdentityUser.Entity? {
         try await identityUserClient?.fetch()
     }
 
     // MARK: - Fetch
 
-    func fetchUser() {
-        var user: VOIdentityUser.Entity?
+    func fetchIdentityUser() {
+        var identityUser: VOIdentityUser.Entity?
         withErrorHandling {
-            user = try await self.fetchUser()
+            identityUser = try await self.fetchIdentityUser()
             return true
+        } before: {
+            self.identityUserIsLoading = true
         } success: {
-            self.identityUser = user
+            self.identityUser = identityUser
         } failure: { message in
-            self.errorTitle = "Error: Fetching User"
-            self.errorMessage = message
-            self.showError = true
-        } invalidCreditentials: {
+            self.identityUserError = message
+        } invalidCredentials: {
             self.tokenStore?.token = nil
             self.tokenStore?.deleteFromKeychain()
+        } anyways: {
+            self.identityUserIsLoading = false
         }
     }
 
@@ -80,16 +83,18 @@ class AccountStore: ObservableObject {
     }
 
     func fetchAccountStorageUsage() {
-        var usage: VOStorage.Usage?
+        var storageUsage: VOStorage.Usage?
         withErrorHandling {
-            usage = try await self.fetchAccountStorageUsage()
+            storageUsage = try await self.fetchAccountStorageUsage()
             return true
+        } before: {
+            self.storageUsageIsLoading = true
         } success: {
-            self.storageUsage = usage
+            self.storageUsage = storageUsage
         } failure: { message in
-            self.errorTitle = "Error: Fetching Storage Usage"
-            self.errorMessage = message
-            self.showError = true
+            self.storageUsageError = message
+        } anyways: {
+            self.storageUsageIsLoading = false
         }
     }
 
@@ -118,7 +123,7 @@ class AccountStore: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.identityUser != nil {
                 Task {
-                    let user = try await self.fetchUser()
+                    let user = try await self.fetchIdentityUser()
                     if let user {
                         DispatchQueue.main.async {
                             self.identityUser = user
