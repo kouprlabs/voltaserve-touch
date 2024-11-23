@@ -18,17 +18,6 @@ struct VOErrorIcon: View {
     }
 }
 
-struct VOWarningIcon: View {
-    var body: some View {
-        Image(systemName: "exclamationmark.triangle")
-            .font(.largeTitle)
-            .foregroundStyle(Color.yellow400)
-    }
-}
-
 #Preview {
-    VStack {
-        VOErrorIcon()
-        VOWarningIcon()
-    }
+    VOErrorIcon()
 }

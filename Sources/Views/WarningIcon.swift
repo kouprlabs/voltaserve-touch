@@ -10,14 +10,6 @@
 
 import SwiftUI
 
-struct VOErrorIcon: View {
-    var body: some View {
-        Image(systemName: "xmark.circle")
-            .font(.largeTitle)
-            .foregroundStyle(Color.red500)
-    }
-}
-
 struct VOWarningIcon: View {
     var body: some View {
         Image(systemName: "exclamationmark.triangle")
@@ -27,8 +19,5 @@ struct VOWarningIcon: View {
 }
 
 #Preview {
-    VStack {
-        VOErrorIcon()
-        VOWarningIcon()
-    }
+    VOWarningIcon()
 }

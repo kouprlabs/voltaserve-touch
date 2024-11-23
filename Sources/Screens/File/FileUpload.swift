@@ -34,7 +34,7 @@ struct FileUpload: View {
                 VOSheetProgressView()
                 Text("Uploading \(urls.count) item(s).")
             } else if showError, errorSeverity == .full {
-                VOSheetErrorIcon()
+                VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -46,7 +46,7 @@ struct FileUpload: View {
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             } else if showError, errorSeverity == .partial {
-                VOSheetWarningIcon()
+                VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }

@@ -33,7 +33,7 @@ struct FileDownload: View {
                 VOSheetProgressView()
                 Text("Downloading \(fileStore.selectionFiles.count) item(s).")
             } else if showError, errorSeverity == .full {
-                VOSheetErrorIcon()
+                VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -45,7 +45,7 @@ struct FileDownload: View {
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             } else if showError, errorSeverity == .partial {
-                VOSheetWarningIcon()
+                VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }

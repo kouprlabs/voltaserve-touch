@@ -70,13 +70,16 @@
 				Avatar.swift,
 				ButtonLabel.swift,
 				ColorBadge.swift,
+				ErrorIcon.swift,
+				ErrorMessage.swift,
 				Logo.swift,
 				NumberBadge.swift,
 				PermissionBadge.swift,
 				SectionHeader.swift,
-				SheetIcon.swift,
 				SheetProgressView.swift,
 				StoragePicker.swift,
+				WarningIcon.swift,
+				WarningMessage.swift,
 			);
 			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;
 		};

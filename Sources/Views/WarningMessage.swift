@@ -17,7 +17,7 @@ struct VOWarningMessage: View {
         message = nil
     }
     
-    init(message: String?) {
+    init(_ message: String?) {
         self.message = message
     }
     
@@ -26,7 +26,7 @@ struct VOWarningMessage: View {
             VOWarningIcon()
             if let message {
                 Text(message)
-                    .foregroundStyle(Color.yellow400)
+                    .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
         }
@@ -34,10 +34,9 @@ struct VOWarningMessage: View {
 }
 
 #Preview {
-    VStack(spacing: 100) {
-        VOWarningMessage()
-        VOWarningMessage(message: "Lorem ipsum dolor sit amet")
-        VOWarningMessage(message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+    VStack(spacing: VOMetrics.spacing2Xl) {
+        VOWarningMessage("Lorem ipsum dolor sit amet.")
+        VOWarningMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
     }
     .padding()
 }

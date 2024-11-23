@@ -71,7 +71,7 @@ struct VOAvatar: View {
 }
 
 #Preview {
-    VStack(spacing: VOMetrics.spacing) {
+    VStack(spacing: VOMetrics.spacing2Xl) {
         VOAvatar(name: "Bruce Wayne", size: 100)
         VOAvatar(name: "你好世界!!!", size: 100)
         VOAvatar(name: "مرحبا بالجميع", size: 100)

@@ -26,7 +26,7 @@ struct VOErrorMessage: View {
             VOErrorIcon()
             if let message {
                 Text(message)
-                    .foregroundStyle(Color.red500)
+                    .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
         }
@@ -34,9 +34,8 @@ struct VOErrorMessage: View {
 }
 
 #Preview {
-    VStack(spacing: 100) {
-        VOErrorMessage()
-        VOErrorMessage("Lorem ipsum dolor sit amet")
+    VStack(spacing: VOMetrics.spacing2Xl) {
+        VOErrorMessage("Lorem ipsum dolor sit amet.")
         VOErrorMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
     }
     .padding()

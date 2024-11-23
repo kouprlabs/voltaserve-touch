@@ -32,7 +32,7 @@ struct FileMove: View {
                 VOSheetProgressView()
                 Text("Moving \(fileStore.selection.count) item(s).")
             } else if showError, errorSeverity == .full {
-                VOSheetErrorIcon()
+                VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -44,7 +44,7 @@ struct FileMove: View {
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             } else if showError, errorSeverity == .partial {
-                VOSheetWarningIcon()
+                VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
