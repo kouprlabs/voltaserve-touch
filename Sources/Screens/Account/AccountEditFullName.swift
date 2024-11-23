@@ -11,50 +11,51 @@
 import SwiftUI
 import VoltaserveCore
 
-struct AccountEditFullName: View {
+struct AccountEditFullName: View, LoadStateProvider, FormValidatable, ErrorPresentable {
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
     @State private var isSaving = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
 
     init(accountStore: AccountStore) {
         self.accountStore = accountStore
     }
 
     var body: some View {
-        if let user = accountStore.identityUser {
-            Form {
-                TextField("Full Name", text: $value)
-                    .disabled(isSaving)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Change Full Name")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if isSaving {
-                        ProgressView()
-                    } else {
-                        Button("Save") {
-                            performSave()
+        if isLoading {
+            ProgressView()
+        } else if let error {
+            VOErrorMessage(error)
+        } else {
+            if let identityUser = accountStore.identityUser {
+                Form {
+                    TextField("Full Name", text: $value)
+                        .disabled(isSaving)
+                }
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("Change Full Name")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        if isSaving {
+                            ProgressView()
+                        } else {
+                            Button("Save") {
+                                performSave()
+                            }
+                            .disabled(!isValid())
                         }
-                        .disabled(!isValid())
+                    }
+                }
+                .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
+                .onAppear {
+                    value = identityUser.fullName
+                }
+                .onChange(of: accountStore.identityUser) { _, newUser in
+                    if let newUser {
+                        value = newUser.fullName
                     }
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
-            .onAppear {
-                value = user.fullName
-            }
-            .onChange(of: accountStore.identityUser) { _, newUser in
-                if let newUser {
-                    value = newUser.fullName
-                }
-            }
-        } else {
-            ProgressView()
         }
     }
 
@@ -70,15 +71,31 @@ struct AccountEditFullName: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Saving Full Name"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isSaving = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented = false
+    @State var errorMessage: String?
+
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        accountStore.identityUserIsLoading
+    }
+
+    var error: String? {
+        accountStore.identityUserError
+    }
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         if let identityUser = accountStore.identityUser {
             return !normalizedValue.isEmpty && normalizedValue != identityUser.fullName
         }

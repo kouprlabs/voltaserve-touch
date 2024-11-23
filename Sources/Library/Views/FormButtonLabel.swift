@@ -10,18 +10,31 @@
 
 import SwiftUI
 
-struct VOSectionHeader: View {
+struct VOFormButtonLabel: View {
     private let text: String
+    private let isLoading: Bool
 
-    init(_ text: String) {
+    init(_ text: String, isLoading: Bool = false) {
         self.text = text
+        self.isLoading = isLoading
     }
 
     var body: some View {
-        Text(text).font(.custom(VOMetrics.bodyFontFamily, size: 13))
+        HStack {
+            Text(text)
+            if isLoading {
+                Spacer()
+                ProgressView()
+            }
+        }
     }
 }
 
 #Preview {
-    VOSectionHeader("Lorem ipsum")
+    Form {
+        Button {} label: {
+            VOFormButtonLabel("Lorem Ipsum", isLoading: true)
+        }
+        .disabled(true)
+    }
 }

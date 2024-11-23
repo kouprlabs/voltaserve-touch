@@ -55,13 +55,7 @@ struct GroupSettings: View {
                         Button(role: .destructive) {
                             showDeleteConfirmation = true
                         } label: {
-                            HStack {
-                                Text("Delete Group")
-                                if isDeleting {
-                                    Spacer()
-                                    ProgressView()
-                                }
-                            }
+                            VOFormButtonLabel("Delete Group", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
                         .confirmationDialog("Delete Group", isPresented: $showDeleteConfirmation) {

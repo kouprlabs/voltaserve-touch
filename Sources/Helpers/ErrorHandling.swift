@@ -16,7 +16,7 @@ func withErrorHandling(
     before: (() -> Void)? = nil,
     success: (() -> Void)? = nil,
     failure: @escaping (String) -> Void,
-    invalidCreditentials: (() -> Void)? = nil,
+    invalidCredentials: (() -> Void)? = nil,
     anyways: (() -> Void)? = nil
 ) {
     if let before {
@@ -39,7 +39,7 @@ func withErrorHandling(
         } catch let error as VOErrorResponse {
             DispatchQueue.main.async {
                 if error.code == .invalidCredentials {
-                    invalidCreditentials?()
+                    invalidCredentials?()
                 } else {
                     failure(error.userMessage)
                 }
@@ -60,7 +60,7 @@ func withErrorHandling(
     before: (() -> Void)? = nil,
     success: (() -> Void)? = nil,
     failure: @escaping (String) -> Void,
-    invalidCreditentials: (() -> Void)? = nil,
+    invalidCredentials: (() -> Void)? = nil,
     anyways: (() -> Void)? = nil
 ) {
     Timer.scheduledTimer(withTimeInterval: delaySeconds, repeats: false) { _ in
@@ -69,7 +69,7 @@ func withErrorHandling(
             before: before,
             success: success,
             failure: failure,
-            invalidCreditentials: invalidCreditentials,
+            invalidCredentials: invalidCredentials,
             anyways: anyways
         )
     }

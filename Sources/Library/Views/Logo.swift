@@ -11,9 +11,14 @@
 import SwiftUI
 
 struct VOLogo: View {
-    @Environment(\.colorScheme) var colorScheme
-    var isGlossy = false
-    var size: CGSize
+    @Environment(\.colorScheme) private var colorScheme
+    private let isGlossy: Bool
+    private let size: CGSize
+
+    init(isGlossy: Bool = false, size: CGSize) {
+        self.isGlossy = isGlossy
+        self.size = size
+    }
 
     var body: some View {
         if colorScheme == .dark {

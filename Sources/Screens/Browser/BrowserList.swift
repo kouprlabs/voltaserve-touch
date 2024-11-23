@@ -79,7 +79,7 @@ struct BrowserList: View {
                     }
                 }
                 .refreshable {
-                    browserStore.fetchNext(replace: true)
+                    browserStore.fetchNextPage(replace: true)
                 }
             } else {
                 ProgressView()
@@ -123,7 +123,7 @@ struct BrowserList: View {
         }
         .onChange(of: browserStore.query) {
             browserStore.clear()
-            browserStore.fetchNext()
+            browserStore.fetchNextPage()
         }
         .sync($browserStore.searchText, with: $searchText)
         .sync($browserStore.showError, with: $showError)
@@ -135,7 +135,7 @@ struct BrowserList: View {
 
     private func fetchData() {
         browserStore.fetch()
-        browserStore.fetchNext(replace: true)
+        browserStore.fetchNextPage(replace: true)
     }
 
     private func startTimers() {
@@ -152,7 +152,7 @@ struct BrowserList: View {
 
     private func onListItemAppear(_ id: String) {
         if browserStore.isEntityThreshold(id) {
-            browserStore.fetchNext()
+            browserStore.fetchNextPage()
         }
     }
 }

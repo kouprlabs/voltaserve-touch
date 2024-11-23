@@ -43,7 +43,7 @@ struct InvitationIncomingList: View {
                     }
                 }
                 .refreshable {
-                    invitationStore.fetchNext(replace: true)
+                    invitationStore.fetchNextPage(replace: true)
                 }
             } else {
                 ProgressView()
@@ -53,7 +53,7 @@ struct InvitationIncomingList: View {
         .navigationTitle("Invitations")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                if invitationStore.isLoading, invitationStore.entities != nil {
+                if invitationStore.entitiesIsLoading, invitationStore.entities != nil {
                     ProgressView()
                 }
             }
@@ -81,7 +81,7 @@ struct InvitationIncomingList: View {
     }
 
     private func fetchData() {
-        invitationStore.fetchNext(replace: true)
+        invitationStore.fetchNextPage(replace: true)
     }
 
     private func startTimers() {
@@ -98,7 +98,7 @@ struct InvitationIncomingList: View {
 
     private func onListItemAppear(_ id: String) {
         if invitationStore.isEntityThreshold(id) {
-            invitationStore.fetchNext()
+            invitationStore.fetchNextPage()
         }
     }
 }

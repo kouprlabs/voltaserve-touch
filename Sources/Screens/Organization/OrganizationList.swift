@@ -48,7 +48,7 @@ struct OrganizationList: View {
                     }
                 }
                 .refreshable {
-                    organizationStore.fetchNext(replace: true)
+                    organizationStore.fetchNextPage(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -102,7 +102,7 @@ struct OrganizationList: View {
         }
         .onChange(of: organizationStore.query) {
             organizationStore.clear()
-            organizationStore.fetchNext()
+            organizationStore.fetchNextPage()
         }
         .sync($organizationStore.searchText, with: $searchText)
         .sync($organizationStore.showError, with: $showError)
@@ -113,7 +113,7 @@ struct OrganizationList: View {
     }
 
     private func fetchData() {
-        organizationStore.fetchNext(replace: true)
+        organizationStore.fetchNextPage(replace: true)
     }
 
     private func startTimers() {
@@ -130,7 +130,7 @@ struct OrganizationList: View {
 
     private func onListItemAppear(_ id: String) {
         if organizationStore.isEntityThreshold(id) {
-            organizationStore.fetchNext()
+            organizationStore.fetchNextPage()
         }
     }
 }

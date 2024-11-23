@@ -68,7 +68,7 @@ struct FileCopy: View {
         withErrorHandling(delaySeconds: 1) {
             result = try await fileStore.copy(Array(fileStore.selection), to: destinationID)
             if fileStore.isLastPage() {
-                fileStore.fetchNext()
+                fileStore.fetchNextPage()
             }
             if let result {
                 if result.failed.isEmpty {

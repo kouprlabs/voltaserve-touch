@@ -50,7 +50,7 @@ struct OrganizationMemberList: View {
                     }
                 }
                 .refreshable {
-                    userStore.fetchNext(replace: true)
+                    userStore.fetchNextPage(replace: true)
                 }
                 .sheet(isPresented: $showInviteMembers) {
                     Text("Add Member")
@@ -87,7 +87,7 @@ struct OrganizationMemberList: View {
         }
         .onChange(of: userStore.query) {
             userStore.clear()
-            userStore.fetchNext()
+            userStore.fetchNextPage()
         }
         .sync($userStore.searchText, with: $searchText)
         .sync($userStore.showError, with: $showError)
@@ -98,7 +98,7 @@ struct OrganizationMemberList: View {
     }
 
     private func fetchData() {
-        userStore.fetchNext(replace: true)
+        userStore.fetchNextPage(replace: true)
     }
 
     private func startTimers() {
@@ -115,7 +115,7 @@ struct OrganizationMemberList: View {
 
     private func onListItemAppear(_ id: String) {
         if userStore.isEntityThreshold(id) {
-            userStore.fetchNext()
+            userStore.fetchNextPage()
         }
     }
 }

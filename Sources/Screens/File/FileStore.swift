@@ -128,7 +128,7 @@ class FileStore: ObservableObject {
         try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size))
     }
 
-    func fetchNext(replace: Bool = false) {
+    func fetchNextPage(replace: Bool = false) {
         guard let current else { return }
         guard !isLoading else { return }
 

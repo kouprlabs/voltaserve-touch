@@ -8,20 +8,9 @@
 // by the GNU Affero General Public License v3.0 only, included in the file
 // AGPL-3.0-only in the root of this repository.
 
-import SwiftUI
+import Foundation
 
-struct VOSectionHeader: View {
-    private let text: String
-
-    init(_ text: String) {
-        self.text = text
-    }
-
-    var body: some View {
-        Text(text).font(.custom(VOMetrics.bodyFontFamily, size: 13))
-    }
-}
-
-#Preview {
-    VOSectionHeader("Lorem ipsum")
+protocol ViewDataProvider: LoadStateProvider {
+    func onAppearOrChange()
+    func fetchData()
 }

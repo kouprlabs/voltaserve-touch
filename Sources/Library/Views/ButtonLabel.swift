@@ -11,10 +11,10 @@
 import SwiftUI
 
 struct VOButtonLabel: View {
-    var text: String
-    var systemImage: String?
-    var isLoading: Bool
-    var progressViewTint: Color
+    private let text: String
+    private let systemImage: String?
+    private let isLoading: Bool
+    private let progressViewTint: Color
 
     init(_ text: String, systemImage: String? = nil, isLoading: Bool = false, progressViewTint: Color = .primary) {
         self.text = text

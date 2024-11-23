@@ -12,7 +12,7 @@ import SwiftUI
 import VoltaserveCore
 
 struct VOPermissionBadge: View {
-    var permission: VOPermission.Value
+    private let permission: VOPermission.Value
 
     init(_ permission: VOPermission.Value) {
         self.permission = permission

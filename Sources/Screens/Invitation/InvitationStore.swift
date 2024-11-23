@@ -14,11 +14,11 @@ import VoltaserveCore
 
 class InvitationStore: ObservableObject {
     @Published var entities: [VOInvitation.Entity]?
+    @Published var entitiesError: String?
+    @Published var entitiesIsLoading: Bool = false
     @Published var incomingCount: Int?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
-    @Published var isLoading = false
+    @Published var incomingCountError: String?
+    @Published var incomingCountIsLoading: Bool = false
     private var list: VOInvitation.List?
     private var timer: Timer?
     private var invitationClient: VOInvitation?
@@ -53,8 +53,8 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    func fetchNext(replace: Bool = false) {
-        guard !isLoading else { return }
+    func fetchNextPage(replace: Bool = false) {
+        guard !entitiesIsLoading else { return }
 
         var nextPage = -1
         var list: VOInvitation.List?
@@ -77,7 +77,7 @@ class InvitationStore: ObservableObject {
             list = try await self.fetchList(page: nextPage)
             return true
         } before: {
-            self.isLoading = true
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -88,11 +88,9 @@ class InvitationStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Invitations"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
         } anyways: {
-            self.isLoading = false
+            self.entitiesIsLoading = false
         }
     }
 
@@ -101,16 +99,18 @@ class InvitationStore: ObservableObject {
     }
 
     func fetchIncomingCount() {
-        var count: Int?
+        var incomingCount: Int?
         withErrorHandling {
-            count = try await self.fetchIncomingCount()
+            incomingCount = try await self.fetchIncomingCount()
             return true
+        } before: {
+            self.incomingCountIsLoading = true
         } success: {
-            self.incomingCount = count
+            self.incomingCount = incomingCount
         } failure: { message in
-            self.errorTitle = "Error: Fetching Invitation Incoming Count"
-            self.errorMessage = message
-            self.showError = true
+            self.incomingCountError = message
+        } anyways: {
+            self.incomingCountIsLoading = false
         }
     }
 

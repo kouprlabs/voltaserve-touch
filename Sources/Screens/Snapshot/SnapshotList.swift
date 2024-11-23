@@ -46,7 +46,7 @@ struct SnapshotList: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Snapshots")
                 .refreshable {
-                    snapshotStore.fetchNext(replace: true)
+                    snapshotStore.fetchNextPage(replace: true)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -94,7 +94,7 @@ struct SnapshotList: View {
     }
 
     private func fetchData() {
-        snapshotStore.fetchNext(replace: true)
+        snapshotStore.fetchNextPage(replace: true)
     }
 
     private func assignTokenToStores(_ token: VOToken.Value) {
@@ -111,7 +111,7 @@ struct SnapshotList: View {
 
     private func onListItemAppear(_ id: String) {
         if snapshotStore.isEntityThreshold(id) {
-            snapshotStore.fetchNext()
+            snapshotStore.fetchNextPage()
         }
     }
 }

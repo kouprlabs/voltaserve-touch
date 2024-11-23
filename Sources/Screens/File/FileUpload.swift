@@ -79,7 +79,7 @@ struct FileUpload: View {
                     }
                     _ = try await fileStore.upload(url, workspaceID: workspace.id)
                     if fileStore.isLastPage() {
-                        fileStore.fetchNext()
+                        fileStore.fetchNextPage()
                     }
                     url.stopAccessingSecurityScopedResource()
                     dispatchGroup.leave()

@@ -47,7 +47,7 @@ class TaskStore: ObservableObject {
         try await taskClient?.fetchList(.init(page: page, size: size))
     }
 
-    func fetchNext(replace: Bool = false) {
+    func fetchNextPage(replace: Bool = false) {
         guard !isLoading else { return }
 
         var nextPage = -1
