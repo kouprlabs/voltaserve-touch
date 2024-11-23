@@ -10,29 +10,25 @@
 
 import SwiftUI
 
-struct VOSheetErrorIcon: View {
+struct VOErrorIcon: View {
     var body: some View {
-        Image(systemName: "xmark.circle.fill")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 30, height: 30)
+        Image(systemName: "xmark.circle")
+            .font(.largeTitle)
             .foregroundStyle(Color.red500)
     }
 }
 
-struct VOSheetWarningIcon: View {
+struct VOWarningIcon: View {
     var body: some View {
-        Image(systemName: "exclamationmark.triangle.fill")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 30, height: 30)
-            .foregroundStyle(Color.yellow300)
+        Image(systemName: "exclamationmark.triangle")
+            .font(.largeTitle)
+            .foregroundStyle(Color.yellow400)
     }
 }
 
 #Preview {
     VStack {
-        VOSheetErrorIcon()
-        VOSheetWarningIcon()
+        VOErrorIcon()
+        VOWarningIcon()
     }
 }
