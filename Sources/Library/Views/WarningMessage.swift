@@ -10,24 +10,24 @@
 
 import SwiftUI
 
-struct VOErrorMessage: View {
+struct VOWarningMessage: View {
     let message: String?
-    
-    init () {
+
+    init() {
         message = nil
     }
-    
+
     init(_ message: String?) {
         self.message = message
     }
-    
+
     var body: some View {
         VStack(spacing: VOMetrics.spacingXs) {
-            VOErrorIcon()
+            VOWarningIcon()
             if let message {
                 Text(message)
                     .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
             }
         }
     }
@@ -35,8 +35,9 @@ struct VOErrorMessage: View {
 
 #Preview {
     VStack(spacing: VOMetrics.spacing2Xl) {
-        VOErrorMessage("Lorem ipsum dolor sit amet.")
-        VOErrorMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        VOWarningMessage("Lorem ipsum dolor sit amet.")
+        // swiftlint:disable:next line_length
+        VOWarningMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
     }
     .padding()
 }

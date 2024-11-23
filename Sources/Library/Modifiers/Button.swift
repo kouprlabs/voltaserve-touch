@@ -92,7 +92,7 @@ extension View {
         }
         .voPrimaryButton(width: 60)
         Button {} label: {
-            VOButtonLabel("Lorem Ipsum")
+            VOButtonLabel("Lorem Ipsum", isLoading: true)
         }
         .voSecondaryButton(colorScheme: colorScheme, width: 200)
         Button {} label: {
