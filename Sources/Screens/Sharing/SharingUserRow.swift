@@ -40,7 +40,7 @@ struct SharingUserRow: View {
                     .truncationMode(.middle)
             }
             Spacer()
-            PermissionBadge(userPermission.permission)
+            VOPermissionBadge(userPermission.permission)
         }
     }
 }

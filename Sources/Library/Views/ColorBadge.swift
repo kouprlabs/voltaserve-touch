@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-struct ColorBadge: View {
+struct VOColorBadge: View {
     var text: String
     var color: Color
     var style: Style
@@ -52,11 +52,11 @@ struct ColorBadge: View {
 
 #Preview {
     VStack {
-        ColorBadge("Red", color: .red400, style: .fill)
-        ColorBadge("Purple", color: .purple400, style: .fill)
-        ColorBadge("Green", color: .green400, style: .fill)
-        ColorBadge("Red", color: .red400, style: .outline)
-        ColorBadge("Purple", color: .purple400, style: .outline)
-        ColorBadge("Green", color: .green400, style: .outline)
+        VOColorBadge("Red", color: .red400, style: .fill)
+        VOColorBadge("Purple", color: .purple400, style: .fill)
+        VOColorBadge("Green", color: .green400, style: .fill)
+        VOColorBadge("Red", color: .red400, style: .outline)
+        VOColorBadge("Purple", color: .purple400, style: .outline)
+        VOColorBadge("Green", color: .green400, style: .outline)
     }
 }

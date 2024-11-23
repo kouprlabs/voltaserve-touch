@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct PermissionBadge: View {
+struct VOPermissionBadge: View {
     var permission: VOPermission.Value
 
     init(_ permission: VOPermission.Value) {
@@ -19,7 +19,7 @@ struct PermissionBadge: View {
     }
 
     var body: some View {
-        ColorBadge(text(), color: Constants.background, style: .fill)
+        VOColorBadge(text(), color: Constants.background, style: .fill)
     }
 
     func text() -> String {
@@ -42,8 +42,8 @@ struct PermissionBadge: View {
 
 #Preview {
     VStack {
-        PermissionBadge(.viewer)
-        PermissionBadge(.editor)
-        PermissionBadge(.owner)
+        VOPermissionBadge(.viewer)
+        VOPermissionBadge(.editor)
+        VOPermissionBadge(.owner)
     }
 }

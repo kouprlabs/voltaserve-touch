@@ -51,13 +51,13 @@ struct FileInfo: View {
                         HStack {
                             Text("Extension")
                             Spacer()
-                            ColorBadge(fileExtension, color: .gray300, style: .fill)
+                            VOColorBadge(fileExtension, color: .gray300, style: .fill)
                         }
                     }
                     HStack {
                         Text("Permission")
                         Spacer()
-                        PermissionBadge(file.permission)
+                        VOPermissionBadge(file.permission)
                     }
                 }
                 if let image = file.snapshot?.original.image {

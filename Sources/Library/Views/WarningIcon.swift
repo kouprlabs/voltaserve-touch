@@ -9,21 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InsightsEntityRow: View {
-    private let entity: VOInsights.Entity
-
-    init(_ entity: VOInsights.Entity) {
-        self.entity = entity
-    }
-
+struct VOWarningIcon: View {
     var body: some View {
-        HStack(spacing: VOMetrics.spacing) {
-            Text(entity.text)
-                .lineLimit(1)
-                .truncationMode(.tail)
-            VOColorBadge("\(entity.frequency)", color: .gray300, style: .fill)
-        }
+        Image(systemName: "exclamationmark.triangle")
+            .font(.title)
+            .foregroundStyle(Color.yellow400)
     }
+}
+
+#Preview {
+    VOWarningIcon()
 }

@@ -30,9 +30,9 @@ struct SnapshotRow: View {
                     Text(date.pretty)
                 }
                 HStack {
-                    ColorBadge("v\(snapshot.version)", color: .gray400, style: .outline)
+                    VOColorBadge("v\(snapshot.version)", color: .gray400, style: .outline)
                     if let size = snapshot.original.size {
-                        ColorBadge(size.prettyBytes(), color: .gray400, style: .outline)
+                        VOColorBadge(size.prettyBytes(), color: .gray400, style: .outline)
                     }
                     if snapshot.hasFeatures() {
                         SnapshotFeatures(snapshot)

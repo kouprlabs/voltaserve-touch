@@ -32,7 +32,7 @@ struct FileCopy: View {
                 VOSheetProgressView()
                 Text("Copying \(fileStore.selection.count) item(s).")
             } else if showError, errorSeverity == .full {
-                VOSheetErrorIcon()
+                VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -44,7 +44,7 @@ struct FileCopy: View {
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             } else if showError, errorSeverity == .partial {
-                SheetWarningIcon()
+                VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }

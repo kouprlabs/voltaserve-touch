@@ -21,10 +21,10 @@ struct SnapshotFeatures: View {
     var body: some View {
         HStack {
             if snapshot.entities != nil {
-                ColorBadge("Insights", color: .gray400, style: .outline)
+                VOColorBadge("Insights", color: .gray400, style: .outline)
             }
             if snapshot.mosaic != nil {
-                ColorBadge("Mosaic", color: .gray400, style: .outline)
+                VOColorBadge("Mosaic", color: .gray400, style: .outline)
             }
         }
     }

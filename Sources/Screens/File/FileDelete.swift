@@ -30,7 +30,7 @@ struct FileDelete: View {
                 VOSheetProgressView()
                 Text("Deleting \(fileStore.selection.count) item(s).")
             } else if showError, errorSeverity == .full {
-                VOSheetErrorIcon()
+                VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
@@ -42,7 +42,7 @@ struct FileDelete: View {
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
             } else if showError, errorSeverity == .partial {
-                SheetWarningIcon()
+                VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
                 }
