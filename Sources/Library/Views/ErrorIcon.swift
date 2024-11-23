@@ -13,7 +13,7 @@ import SwiftUI
 struct VOErrorIcon: View {
     var body: some View {
         Image(systemName: "xmark.circle")
-            .font(.largeTitle)
+            .font(.title)
             .foregroundStyle(Color.red500)
     }
 }
