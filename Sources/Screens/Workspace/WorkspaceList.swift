@@ -144,13 +144,13 @@ struct WorkspaceList: View {
             Button {
                 showAccount.toggle()
             } label: {
-                if let user = accountStore.identityUser {
+                if let identityUser = accountStore.identityUser {
                     VOAvatar(
-                        name: user.fullName,
+                        name: identityUser.fullName,
                         size: 30,
                         url: accountStore.urlForUserPicture(
-                            user.id,
-                            fileExtension: user.picture?.fileExtension
+                            identityUser.id,
+                            fileExtension: identityUser.picture?.fileExtension
                         )
                     )
                 } else {
