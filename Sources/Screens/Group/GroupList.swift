@@ -12,7 +12,7 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct GroupList: View {
+struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var groupStore = GroupStore()
     @State private var createIsPresented = false
@@ -22,60 +22,64 @@ struct GroupList: View {
 
     var body: some View {
         NavigationStack {
-            if let entities = groupStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no groups.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { group in
-                                NavigationLink {
-                                    GroupOverview(group, groupStore: groupStore)
-                                } label: {
-                                    GroupRow(group)
-                                        .onAppear {
-                                            onListItemAppear(group.id)
-                                        }
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = groupStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no groups.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { group in
+                                    NavigationLink {
+                                        GroupOverview(group, groupStore: groupStore)
+                                    } label: {
+                                        GroupRow(group)
+                                            .onAppear {
+                                                onListItemAppear(group.id)
+                                            }
+                                    }
                                 }
                             }
-                        }
-                        .searchable(text: $groupStore.searchText)
-                        .onChange(of: groupStore.searchText) {
-                            groupStore.searchPublisher.send($1)
-                        }
-                    }
-                }
-                .navigationTitle("Groups")
-                .refreshable {
-                    groupStore.fetchNextPage(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            createIsPresented = true
-                        } label: {
-                            Image(systemName: "plus")
+                            .searchable(text: $groupStore.searchText)
+                            .onChange(of: groupStore.searchText) {
+                                groupStore.searchPublisher.send($1)
+                            }
                         }
                     }
-                    ToolbarItem(placement: .topBarLeading) {
-                        if groupStore.entitiesIsLoading {
-                            ProgressView()
+                    .navigationTitle("Groups")
+                    .refreshable {
+                        groupStore.fetchNextPage(replace: true)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button {
+                                createIsPresented = true
+                            } label: {
+                                Image(systemName: "plus")
+                            }
+                        }
+                        ToolbarItem(placement: .topBarLeading) {
+                            if groupStore.entitiesIsLoading {
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $createIsPresented) {
+                        GroupCreate(groupStore: groupStore) { newGroup in
+                            self.newGroup = newGroup
+                            overviewIsPresented = true
+                        }
+                    }
+                    .navigationDestination(isPresented: $overviewIsPresented) {
+                        if let newGroup {
+                            GroupOverview(newGroup, groupStore: groupStore)
                         }
                     }
                 }
-                .sheet(isPresented: $createIsPresented) {
-                    GroupCreate(groupStore: groupStore) { newGroup in
-                        self.newGroup = newGroup
-                        overviewIsPresented = true
-                    }
-                }
-                .navigationDestination(isPresented: $overviewIsPresented) {
-                    if let newGroup {
-                        GroupOverview(newGroup, groupStore: groupStore)
-                    }
-                }
-            } else {
-                ProgressView()
             }
         }
         .onAppear {
@@ -100,27 +104,45 @@ struct GroupList: View {
         }
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        groupStore.entities == nil
+    }
+
+    var error: String? {
+        groupStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         groupStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         groupStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         groupStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         groupStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if groupStore.isEntityThreshold(id) {
             groupStore.fetchNextPage()
         }

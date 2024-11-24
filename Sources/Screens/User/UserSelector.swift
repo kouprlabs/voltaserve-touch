@@ -11,12 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct UserSelector: View {
+struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var userStore = UserStore()
     @Environment(\.dismiss) private var dismiss
     @State private var searchText = ""
-    @State private var showError = false
     private let onCompletion: ((VOUser.Entity) -> Void)?
     private let groupID: String?
     private let organizationID: String?
@@ -33,57 +32,56 @@ struct UserSelector: View {
 
     var body: some View {
         VStack {
-            if let entities = userStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no users.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { user in
-                                Button {
-                                    dismiss()
-                                    onCompletion?(user)
-                                } label: {
-                                    UserRow(
-                                        user,
-                                        pictureURL: userStore.urlForPicture(
-                                            user.id,
-                                            fileExtension: user.picture?.fileExtension
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = userStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no users.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { user in
+                                    Button {
+                                        dismiss()
+                                        onCompletion?(user)
+                                    } label: {
+                                        UserRow(
+                                            user,
+                                            pictureURL: userStore.urlForPicture(
+                                                user.id,
+                                                fileExtension: user.picture?.fileExtension
+                                            )
                                         )
-                                    )
-                                    .onAppear {
-                                        onListItemAppear(user.id)
+                                        .onAppear {
+                                            onListItemAppear(user.id)
+                                        }
                                     }
                                 }
                             }
+                            .searchable(text: $userStore.searchText)
+                            .onChange(of: userStore.searchText) {
+                                userStore.searchPublisher.send($1)
+                            }
                         }
-                        .searchable(text: $searchText)
-                        .onChange(of: userStore.searchText) {
-                            userStore.searchPublisher.send($1)
+                    }
+                    .refreshable {
+                        userStore.fetchNextPage(replace: true)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            if userStore.entitiesIsLoading {
+                                ProgressView()
+                            }
                         }
                     }
                 }
-                .refreshable {
-                    userStore.fetchNextPage(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        if userStore.isLoading, userStore.entities != nil {
-                            ProgressView()
-                        }
-                    }
-                }
-            } else {
-                ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Select User")
-        .voErrorAlert(
-            isPresented: $showError,
-            title: userStore.errorTitle,
-            message: userStore.errorMessage
-        )
         .onAppear {
             if let groupID {
                 userStore.groupID = groupID
@@ -109,31 +107,47 @@ struct UserSelector: View {
             userStore.clear()
             userStore.fetchNextPage()
         }
-        .sync($userStore.searchText, with: $searchText)
-        .sync($userStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        userStore.entities == nil
+    }
+
+    var error: String? {
+        userStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         userStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         userStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         userStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         userStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if userStore.isEntityThreshold(id) {
             userStore.fetchNextPage()
         }

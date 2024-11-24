@@ -11,12 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileRename: View,
-    ViewDataProvider,
-    LoadStateProvider,
-    TimerLifecycle,
-    TokenDistributing,
-    FormValidatable,
+struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, FormValidatable,
     ErrorPresentable
 {
     @EnvironmentObject private var tokenStore: TokenStore

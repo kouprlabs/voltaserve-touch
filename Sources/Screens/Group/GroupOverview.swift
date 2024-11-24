@@ -43,8 +43,6 @@ struct GroupOverview: View {
                         }
                     }
                 }
-            } else {
-                ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
