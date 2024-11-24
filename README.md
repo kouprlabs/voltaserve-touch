@@ -7,7 +7,6 @@ Watch the [demo video](https://youtu.be/RpHp0OEa_o8?feature=shared).
 Prerequisites:
 
 - Install [Xcode](https://developer.apple.com/xcode/).
-- Install [SwiftFormat](https://github.com/nicklockwood/SwiftFormat).
 - Install [SwiftLint](https://github.com/realm/SwiftLint).
 
 Format code:
