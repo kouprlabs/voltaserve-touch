@@ -11,7 +11,13 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, FormValidatable, ErrorPresentable {
+struct FileRename: View,
+    ViewDataProvider,
+    LoadStateProvider,
+    TimerLifecycle,
+    TokenDistributing,
+    FormValidatable,
+    ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var fileStore = FileStore()
     @Environment(\.dismiss) private var dismiss
