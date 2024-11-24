@@ -22,11 +22,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set Up swiftlint
-        run: brew install swiftlint
+      # - name: Set Up swiftlint
+      #   run: brew install swiftlint
 
-      - name: Lint Using swiftlint
-        run: swiftlint lint --strict .
+      - name: Lint Using SwiftLint
+        uses: norio-nomura/action-swiftlint@3.2.1
+        with:
+          args: --strict
 
   format:
     runs-on: macos-latest
