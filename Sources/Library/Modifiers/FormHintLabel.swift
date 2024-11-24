@@ -28,7 +28,8 @@ extension View {
 }
 
 #Preview {
-    Button {} label: {
+    Button {
+    } label: {
         Text("Lorem ipsum")
             .voFormHintLabel()
     }

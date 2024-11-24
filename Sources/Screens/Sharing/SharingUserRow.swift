@@ -46,15 +46,16 @@ struct SharingUserRow: View {
 }
 
 #Preview {
-    SharingUserRow(.init(
-        id: UUID().uuidString,
-        user: VOUser.Entity(
+    SharingUserRow(
+        .init(
             id: UUID().uuidString,
-            username: "brucelee@example.com",
-            email: "brucelee@example.com",
-            fullName: "Bruce Lee",
-            createTime: Date().ISO8601Format()
-        ),
-        permission: .editor
-    ))
+            user: VOUser.Entity(
+                id: UUID().uuidString,
+                username: "brucelee@example.com",
+                email: "brucelee@example.com",
+                fullName: "Bruce Lee",
+                createTime: Date().ISO8601Format()
+            ),
+            permission: .editor
+        ))
 }

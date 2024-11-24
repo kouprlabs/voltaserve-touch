@@ -57,8 +57,9 @@ struct FileActions: ViewModifier {
                 },
                 onOpen: {
                     if let snapshot = file.snapshot,
-                       let fileExtension = snapshot.original.fileExtension,
-                       let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst())) {
+                        let fileExtension = snapshot.original.fileExtension,
+                        let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst()))
+                    {
                         UIApplication.shared.open(url)
                     }
                 },

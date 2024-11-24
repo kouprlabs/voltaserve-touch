@@ -89,7 +89,9 @@ struct ServerOverview: View {
     private func performActivate() {
         isActivating = true
         Task {
-            servers.filter { $0.id != server.id }.forEach { $0.isActive = false }
+            for server in servers.filter({ $0.id != server.id }) {
+                server.isActive = false
+            }
             servers.first(where: { $0.id == server.id })?.isActive = true
             try? context.save()
 
@@ -121,12 +123,13 @@ struct ServerOverview: View {
 }
 
 #Preview {
-    ServerOverview(Server(
-        id: UUID().uuidString,
-        name: "Local",
-        apiURL: "http://localhost:8080",
-        idpURL: "http://localhost:8081",
-        isCloud: false,
-        isActive: true
-    ))
+    ServerOverview(
+        Server(
+            id: UUID().uuidString,
+            name: "Local",
+            apiURL: "http://localhost:8080",
+            idpURL: "http://localhost:8081",
+            isCloud: false,
+            isActive: true
+        ))
 }

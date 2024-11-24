@@ -109,18 +109,14 @@ struct InsightsSettings: View {
 
     private var canCreate: Bool {
         if let info = insightsStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) &&
-                info.isOutdated &&
-                file.permission.ge(.editor)
+            return !(file.snapshot?.task?.isPending ?? false) && info.isOutdated && file.permission.ge(.editor)
         }
         return false
     }
 
     private var canDelete: Bool {
         if let info = insightsStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) &&
-                !info.isOutdated &&
-                file.permission.ge(.owner)
+            return !(file.snapshot?.task?.isPending ?? false) && !info.isOutdated && file.permission.ge(.owner)
         }
         return false
     }

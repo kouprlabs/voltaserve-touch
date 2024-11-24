@@ -23,10 +23,11 @@ struct ViewerImage: View {
     var body: some View {
         VStack {
             if file.type == .file,
-               let snapshot = file.snapshot, snapshot.mosaic == nil,
-               let download = snapshot.preview,
-               let fileExtension = download.fileExtension, fileExtension.isImage(),
-               let url = viewerImageStore.url {
+                let snapshot = file.snapshot, snapshot.mosaic == nil,
+                let download = snapshot.preview,
+                let fileExtension = download.fileExtension, fileExtension.isImage(),
+                let url = viewerImageStore.url
+            {
                 ViewerImageWebView(url: url)
                     .edgesIgnoringSafeArea(.horizontal)
             }

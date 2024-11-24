@@ -46,11 +46,12 @@ struct UserRow: View {
 }
 
 #Preview {
-    UserRow(VOUser.Entity(
-        id: UUID().uuidString,
-        username: "brucelee@example.com",
-        email: "brucelee@example.com",
-        fullName: "Bruce Lee",
-        createTime: Date().ISO8601Format()
-    ))
+    UserRow(
+        VOUser.Entity(
+            id: UUID().uuidString,
+            username: "brucelee@example.com",
+            email: "brucelee@example.com",
+            fullName: "Bruce Lee",
+            createTime: Date().ISO8601Format()
+        ))
 }

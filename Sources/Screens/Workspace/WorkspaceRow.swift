@@ -38,18 +38,19 @@ struct WorkspaceRow: View {
 }
 
 #Preview {
-    WorkspaceRow(.init(
-        id: UUID().uuidString,
-        name: "My Workspace",
-        permission: .owner,
-        storageCapacity: 100_000_000,
-        rootID: UUID().uuidString,
-        organization: .init(
+    WorkspaceRow(
+        .init(
             id: UUID().uuidString,
-            name: "My Organization",
+            name: "My Workspace",
             permission: .owner,
+            storageCapacity: 100_000_000,
+            rootID: UUID().uuidString,
+            organization: .init(
+                id: UUID().uuidString,
+                name: "My Organization",
+                permission: .owner,
+                createTime: Date().description
+            ),
             createTime: Date().description
-        ),
-        createTime: Date().description
-    ))
+        ))
 }

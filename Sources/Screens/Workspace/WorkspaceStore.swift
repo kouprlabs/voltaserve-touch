@@ -168,11 +168,12 @@ class WorkspaceStore: ObservableObject {
         organization: VOOrganization.Entity,
         storageCapacity: Int
     ) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.create(.init(
-            name: name,
-            organizationID: organization.id,
-            storageCapacity: storageCapacity
-        ))
+        try await workspaceClient?.create(
+            .init(
+                name: name,
+                organizationID: organization.id,
+                storageCapacity: storageCapacity
+            ))
     }
 
     func patchName(_ id: String, name: String) async throws -> VOWorkspace.Entity? {
@@ -230,7 +231,8 @@ class WorkspaceStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

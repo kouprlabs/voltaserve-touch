@@ -195,21 +195,22 @@ extension View {
         onOpen: (() -> Void)? = nil,
         onInfo: (() -> Void)? = nil
     ) -> some View {
-        modifier(FileContextMenu(
-            file,
-            fileStore: fileStore,
-            onInsights: onInsights,
-            onMosaic: onMosaic,
-            onSharing: onSharing,
-            onSnapshots: onSnapshots,
-            onUpload: onUpload,
-            onDownload: onDownload,
-            onDelete: onDelete,
-            onRename: onRename,
-            onMove: onMove,
-            onCopy: onCopy,
-            onOpen: onOpen,
-            onInfo: onInfo
-        ))
+        modifier(
+            FileContextMenu(
+                file,
+                fileStore: fileStore,
+                onInsights: onInsights,
+                onMosaic: onMosaic,
+                onSharing: onSharing,
+                onSnapshots: onSnapshots,
+                onUpload: onUpload,
+                onDownload: onDownload,
+                onDelete: onDelete,
+                onRename: onRename,
+                onMove: onMove,
+                onCopy: onCopy,
+                onOpen: onOpen,
+                onInfo: onInfo
+            ))
     }
 }

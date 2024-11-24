@@ -74,55 +74,60 @@ struct TaskRow: View {
         Form {
             List {
                 NavigationLink(destination: Color.clear) {
-                    TaskRow(.init(
-                        id: UUID().uuidString,
-                        name: "Measuring image dimensions.",
-                        isIndeterminate: true,
-                        userID: UUID().uuidString,
-                        status: .running,
-                        payload: VOTask.Payload(object: "human-freedom-index-2022.pdf")
-                    ))
+                    TaskRow(
+                        .init(
+                            id: UUID().uuidString,
+                            name: "Measuring image dimensions.",
+                            isIndeterminate: true,
+                            userID: UUID().uuidString,
+                            status: .running,
+                            payload: VOTask.Payload(object: "human-freedom-index-2022.pdf")
+                        ))
                 }
                 NavigationLink(destination: Color.clear) {
-                    TaskRow(.init(
-                        id: UUID().uuidString,
-                        name: "Waiting.",
-                        isIndeterminate: true,
-                        userID: UUID().uuidString,
-                        status: .waiting,
-                        payload: VOTask.Payload(object: "Kubernetes-Patterns-2nd-Edition.pdf")
-                    ))
+                    TaskRow(
+                        .init(
+                            id: UUID().uuidString,
+                            name: "Waiting.",
+                            isIndeterminate: true,
+                            userID: UUID().uuidString,
+                            status: .waiting,
+                            payload: VOTask.Payload(object: "Kubernetes-Patterns-2nd-Edition.pdf")
+                        ))
                 }
                 NavigationLink(destination: Color.clear) {
-                    TaskRow(.init(
-                        id: UUID().uuidString,
-                        name: "Creating thumbnail.",
-                        isIndeterminate: true,
-                        userID: UUID().uuidString,
-                        status: .success,
-                        payload: VOTask.Payload(object: "In_the_Conservatory.tiff")
-                    ))
+                    TaskRow(
+                        .init(
+                            id: UUID().uuidString,
+                            name: "Creating thumbnail.",
+                            isIndeterminate: true,
+                            userID: UUID().uuidString,
+                            status: .success,
+                            payload: VOTask.Payload(object: "In_the_Conservatory.tiff")
+                        ))
                 }
                 NavigationLink(destination: Color.clear) {
-                    TaskRow(.init(
-                        id: UUID().uuidString,
-                        name: "Deleting.",
-                        error: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                        isIndeterminate: true,
-                        userID: UUID().uuidString,
-                        status: .error,
-                        payload: VOTask.Payload(object: "Choose-an-automation-tool-ebook-Red-Hat-Developer.pdf")
-                    ))
+                    TaskRow(
+                        .init(
+                            id: UUID().uuidString,
+                            name: "Deleting.",
+                            error: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                            isIndeterminate: true,
+                            userID: UUID().uuidString,
+                            status: .error,
+                            payload: VOTask.Payload(object: "Choose-an-automation-tool-ebook-Red-Hat-Developer.pdf")
+                        ))
                 }
                 NavigationLink(destination: Color.clear) {
-                    TaskRow(.init(
-                        id: UUID().uuidString,
-                        name: "Lorem ipsum dolor sit amet.",
-                        percentage: 50,
-                        isIndeterminate: false,
-                        userID: UUID().uuidString,
-                        status: .running
-                    ))
+                    TaskRow(
+                        .init(
+                            id: UUID().uuidString,
+                            name: "Lorem ipsum dolor sit amet.",
+                            percentage: 50,
+                            isIndeterminate: false,
+                            userID: UUID().uuidString,
+                            status: .running
+                        ))
                 }
             }
         }

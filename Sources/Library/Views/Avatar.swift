@@ -51,7 +51,7 @@ struct VOAvatar: View {
         }
 
         var color = ""
-        for index in 0 ..< 3 {
+        for index in 0..<3 {
             let value = (hash >> (index * 8)) & 0xFF
             color += String(format: "%02x", value)
         }

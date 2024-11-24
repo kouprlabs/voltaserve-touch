@@ -38,7 +38,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
             sceneView.topAnchor.constraint(equalTo: containerView.topAnchor),
             sceneView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             sceneView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            sceneView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+            sceneView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
 
         let spinner = UIActivityIndicatorView(style: .large)
@@ -47,7 +47,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
         spinner.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             spinner.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            spinner.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+            spinner.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
         ])
 
         context.coordinator.spinner = spinner
