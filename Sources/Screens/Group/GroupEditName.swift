@@ -81,12 +81,12 @@ struct GroupEditName: View, FormValidatable, ErrorPresentable {
             isSaving = false
         }
     }
-    
+
     // MARK: - ErrorPresentable
-    
+
     @State var errorIsPresented: Bool = false
     @State var errorMessage: String?
-    
+
     // MARK: - FormValidatable
 
     func isValid() -> Bool {
