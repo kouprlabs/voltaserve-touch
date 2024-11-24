@@ -18,7 +18,6 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
     @StateObject private var fileStore = FileStore()
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var searchText = ""
-    @State private var showError = false
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
@@ -76,17 +75,17 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
             fileStore.fetchNextPage(replace: true)
         }
     }
-    
+
     // MARK: - LoadStateProvider
-    
+
     var isLoading: Bool {
         fileStore.entities == nil || fileStore.fileIsLoading || fileStore.taskCountIsLoading
     }
-    
+
     var error: String? {
         fileStore.entitiesError ?? fileStore.fileError ?? fileStore.taskCountError
     }
-    
+
     // MARK: - ViewDataProvider
 
     func onAppearOrChange() {
@@ -98,7 +97,7 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
         fileStore.fetchNextPage(replace: true)
         fileStore.fetchTaskCount()
     }
-    
+
     // MARK: - TimerLifecycle
 
     func startTimers() {
@@ -108,7 +107,7 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
     func stopTimers() {
         fileStore.stopTimer()
     }
-    
+
     // MARK: - TokenDistributing
 
     func assignTokenToStores(_ token: VOToken.Value) {

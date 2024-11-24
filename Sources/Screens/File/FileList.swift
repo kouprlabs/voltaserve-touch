@@ -57,7 +57,7 @@ struct FileList: View, ListItemScrollable {
             }
         }
     }
-    
+
     // MARK: - ListItemScrollable
 
     func onListItemAppear(_ id: String) {

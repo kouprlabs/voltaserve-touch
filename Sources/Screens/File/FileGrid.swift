@@ -71,7 +71,7 @@ struct FileGrid: View, ListItemScrollable {
             }
         }
     }
-    
+
     // MARK: - ListItemScrollable
 
     func onListItemAppear(_ id: String) {

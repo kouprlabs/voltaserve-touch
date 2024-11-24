@@ -162,17 +162,17 @@ struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
         case .folder: "Folder"
         }
     }
-    
+
     // MARK: - LoadStateProvider
-    
+
     var isLoading: Bool {
         fileStore.storageUsageIsLoading || fileStore.itemCountIsLoading
     }
-    
+
     var error: String? {
         fileStore.storageUsageError ?? fileStore.itemCountError
     }
-    
+
     // MARK: - ViewDataProvider
 
     func onAppearOrChange() {
@@ -185,7 +185,7 @@ struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
             fileStore.fetchItemCount()
         }
     }
-    
+
     // MARK: - TimerLifecycle
 
     func startTimers() {
@@ -195,7 +195,7 @@ struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
     func stopTimers() {
         fileStore.stopTimer()
     }
-    
+
     // MARK: - TokenDistributing
 
     func assignTokenToStores(_ token: VOToken.Value) {

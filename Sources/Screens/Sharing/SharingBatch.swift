@@ -67,9 +67,9 @@ struct SharingBatch: View, TokenDistributing {
         case users
         case groups
     }
-    
+
     // MARK: - TokenDistributing
-    
+
     func assignTokenToStores(_ token: VOToken.Value) {
         sharingStore.token = token
     }

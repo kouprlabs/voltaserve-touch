@@ -35,6 +35,7 @@ class FileStore: ObservableObject {
             objectWillChange.send()
         }
     }
+
     @Published var renameIsPresented = false
     @Published var deleteIsPresented = false
     @Published var downloadIsPresented = false
