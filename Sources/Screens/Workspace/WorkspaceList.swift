@@ -18,11 +18,10 @@ struct WorkspaceList: View {
     @StateObject private var accountStore = AccountStore()
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
-    @State private var showAccount = false
-    @State private var showCreate = false
-    @State private var showOverview = false
-    @State private var searchText = ""
-    @State private var newWorkspace: VOWorkspace.Entity?
+    @State private var accountIsPresented = false
+    @State private var createIsPresented = false
+    @State private var overviewIsPresented = false
+    @State private var newlyCreatedEntity: VOWorkspace.Entity?
 
     var body: some View {
         NavigationStack {
@@ -48,7 +47,7 @@ struct WorkspaceList: View {
                                     }
                                 }
                             }
-                            .searchable(text: $searchText)
+                            .searchable(text: $workspaceStore.searchText)
                             .onChange(of: workspaceStore.searchText) {
                                 workspaceStore.searchPublisher.send($1)
                             }
@@ -69,29 +68,29 @@ struct WorkspaceList: View {
                         }
                         ToolbarItem(placement: .topBarLeading) {
                             Button {
-                                showCreate = true
+                                createIsPresented = true
                             } label: {
                                 Image(systemName: "plus")
                             }
                         }
                         ToolbarItem(placement: .topBarLeading) {
-                            if workspaceStore.entitiesIsLoading, workspaceStore.entities != nil {
+                            if workspaceStore.entitiesIsLoading {
                                 ProgressView()
                             }
                         }
                     }
-                    .sheet(isPresented: $showCreate) {
-                        WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in
-                            self.newWorkspace = newWorkspace
-                            showOverview = true
+                    .sheet(isPresented: $createIsPresented) {
+                        WorkspaceCreate(workspaceStore: workspaceStore) { newlyCreatedEntity in
+                            self.newlyCreatedEntity = newlyCreatedEntity
+                            overviewIsPresented = true
                         }
                     }
-                    .sheet(isPresented: $showAccount) {
+                    .sheet(isPresented: $accountIsPresented) {
                         AccountOverview()
                     }
-                    .navigationDestination(isPresented: $showOverview) {
-                        if let newWorkspace {
-                            WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
+                    .navigationDestination(isPresented: $overviewIsPresented) {
+                        if let newlyCreatedEntity {
+                            WorkspaceOverview(newlyCreatedEntity, workspaceStore: workspaceStore)
                         }
                     }
                 }
@@ -118,7 +117,6 @@ struct WorkspaceList: View {
             workspaceStore.clear()
             workspaceStore.fetchNextPage()
         }
-        .sync($workspaceStore.searchText, with: $searchText)
     }
 
     private var isLoading: Bool {
@@ -136,7 +134,7 @@ struct WorkspaceList: View {
     private var accountButton: some View {
         ZStack {
             Button {
-                showAccount.toggle()
+                accountIsPresented.toggle()
             } label: {
                 if let identityUser = accountStore.identityUser {
                     VOAvatar(

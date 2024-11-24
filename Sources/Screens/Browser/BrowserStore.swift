@@ -189,12 +189,12 @@ class BrowserStore: ObservableObject {
                     }
                 }
             }
-            if let current = self.folder {
+            if self.folder != nil {
                 Task {
-                    let file = try await self.fetchFolder()
-                    if let file {
+                    let folder = try await self.fetchFolder()
+                    if let folder {
                         DispatchQueue.main.async {
-                            self.folder = file
+                            self.folder = folder
                         }
                     }
                 }

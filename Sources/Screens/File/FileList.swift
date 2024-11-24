@@ -11,10 +11,9 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileList: View {
+struct FileList: View, ListItemScrollable {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
-    @State private var selection = Set<String>()
     @State private var tappedItem: VOFile.Entity?
 
     init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
@@ -24,7 +23,7 @@ struct FileList: View {
 
     var body: some View {
         if let entities = fileStore.entities {
-            List(selection: $selection) {
+            List(selection: $fileStore.selection) {
                 ForEach(entities, id: \.id) { file in
                     if file.type == .file {
                         Button {
@@ -56,11 +55,12 @@ struct FileList: View {
             .navigationDestination(item: $tappedItem) {
                 Viewer($0)
             }
-            .sync($fileStore.selection, with: $selection)
         }
     }
+    
+    // MARK: - ListItemScrollable
 
-    private func onListItemAppear(_ id: String) {
+    func onListItemAppear(_ id: String) {
         if fileStore.isEntityThreshold(id) {
             fileStore.fetchNextPage()
         }

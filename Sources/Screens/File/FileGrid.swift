@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileGrid: View {
+struct FileGrid: View, ListItemScrollable {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var tappedItem: VOFile.Entity?
@@ -71,8 +71,10 @@ struct FileGrid: View {
             }
         }
     }
+    
+    // MARK: - ListItemScrollable
 
-    private func onListItemAppear(_ id: String) {
+    func onListItemAppear(_ id: String) {
         if fileStore.isEntityThreshold(id) {
             fileStore.fetchNextPage()
         }

@@ -13,7 +13,6 @@ import VoltaserveCore
 
 struct FileSheetInfo: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    @State private var showInfo = false
 
     init(fileStore: FileStore) {
         self.fileStore = fileStore
@@ -21,12 +20,11 @@ struct FileSheetInfo: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $showInfo) {
+            .sheet(isPresented: $fileStore.infoIsPresented) {
                 if let file {
                     FileInfo(file)
                 }
             }
-            .sync($fileStore.showInfo, with: $showInfo)
     }
 
     private var file: VOFile.Entity? {

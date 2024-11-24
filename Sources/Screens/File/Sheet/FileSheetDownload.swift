@@ -12,8 +12,6 @@ import SwiftUI
 
 struct FileSheetDownload: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    @State private var showPicker = false
-    @State private var showDownload = false
     @State private var pickerURLs: [URL]?
 
     init(fileStore: FileStore) {
@@ -22,15 +20,15 @@ struct FileSheetDownload: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $showDownload) {
+            .sheet(isPresented: $fileStore.downloadIsPresented) {
                 if !fileStore.selection.isEmpty {
                     FileDownload(fileStore: fileStore) { localURLs in
                         pickerURLs = localURLs
-                        fileStore.showDownloadDocumentPicker = true
+                        fileStore.downloadDocumentPickerIsPresented = true
                     }
                 }
             }
-            .sheet(isPresented: $showPicker, onDismiss: handleDismiss) {
+            .sheet(isPresented: $fileStore.downloadDocumentPickerIsPresented, onDismiss: handleDismiss) {
                 if let pickerURLs {
                     FileDownloadPicker(
                         sourceURLs: pickerURLs,
@@ -38,8 +36,6 @@ struct FileSheetDownload: ViewModifier {
                     )
                 }
             }
-            .sync($fileStore.showDownloadDocumentPicker, with: $showPicker)
-            .sync($fileStore.showDownload, with: $showDownload)
     }
 
     private func handleDismiss() {
@@ -53,7 +49,7 @@ struct FileSheetDownload: ViewModifier {
                 }
             }
         }
-        fileStore.showDownloadDocumentPicker = false
+        fileStore.downloadDocumentPickerIsPresented = false
     }
 }
 

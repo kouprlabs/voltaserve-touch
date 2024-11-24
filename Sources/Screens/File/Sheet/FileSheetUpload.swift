@@ -13,8 +13,6 @@ import SwiftUI
 struct FileSheetUpload: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
-    @State private var showPicker = false
-    @State private var showUpload = false
     @State private var pickerURLs: [URL]?
 
     init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
@@ -24,20 +22,18 @@ struct FileSheetUpload: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $showPicker) {
+            .sheet(isPresented: $fileStore.uploadDocumentPickerIsPresented) {
                 FileUploadPicker { urls in
                     pickerURLs = urls
-                    fileStore.showUploadDocumentPicker = false
-                    fileStore.showUpload = true
+                    fileStore.uploadDocumentPickerIsPresented = false
+                    fileStore.uploadIsPresented = true
                 }
             }
-            .sheet(isPresented: $showUpload) {
+            .sheet(isPresented: $fileStore.uploadIsPresented) {
                 if let pickerURLs {
                     FileUpload(pickerURLs, fileStore: fileStore, workspaceStore: workspaceStore)
                 }
             }
-            .sync($fileStore.showUploadDocumentPicker, with: $showPicker)
-            .sync($fileStore.showUpload, with: $showUpload)
     }
 }
 

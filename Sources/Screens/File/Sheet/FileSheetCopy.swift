@@ -13,8 +13,6 @@ import SwiftUI
 struct FileSheetCopy: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
-    @State private var showBrowser = false
-    @State private var showCopy = false
     @State private var destinationID: String?
 
     init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
@@ -24,25 +22,23 @@ struct FileSheetCopy: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $showBrowser) {
+            .sheet(isPresented: $fileStore.browserForCopyIsPresented) {
                 NavigationStack {
                     if let workspace = workspaceStore.current {
                         BrowserOverview(workspaceStore: workspaceStore, confirmLabelText: "Copy Here") { id in
                             destinationID = id
-                            fileStore.showCopy = true
+                            fileStore.copyIsPresented = true
                         }
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle(workspace.name)
                     }
                 }
             }
-            .sheet(isPresented: $showCopy) {
+            .sheet(isPresented: $fileStore.copyIsPresented) {
                 if let destinationID, !fileStore.selection.isEmpty {
                     FileCopy(fileStore: fileStore, to: destinationID)
                 }
             }
-            .sync($fileStore.showBrowserForCopy, with: $showBrowser)
-            .sync($fileStore.showCopy, with: $showCopy)
     }
 }
 

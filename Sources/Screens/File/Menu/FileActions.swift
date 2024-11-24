@@ -26,34 +26,34 @@ struct FileActions: ViewModifier {
                 file,
                 fileStore: fileStore,
                 onInsights: {
-                    fileStore.showInsights = true
+                    fileStore.insightsIsPresented = true
                 },
                 onMosaic: {
-                    fileStore.showMosaic = true
+                    fileStore.mosaicIsPresented = true
                 },
                 onSharing: {
-                    fileStore.showSharing = true
+                    fileStore.sharingIsPresented = true
                 },
                 onSnapshots: {
-                    fileStore.showSnapshots = true
+                    fileStore.snapshotsIsPresented = true
                 },
                 onUpload: {
-                    fileStore.showUploadDocumentPicker = true
+                    fileStore.uploadDocumentPickerIsPresented = true
                 },
                 onDownload: {
-                    fileStore.showDownload = true
+                    fileStore.downloadIsPresented = true
                 },
                 onDelete: {
-                    fileStore.showDelete = true
+                    fileStore.deleteIsPresented = true
                 },
                 onRename: {
-                    fileStore.showRename = true
+                    fileStore.renameIsPresented = true
                 },
                 onMove: {
-                    fileStore.showBrowserForMove = true
+                    fileStore.browserForMoveIsPresented = true
                 },
                 onCopy: {
-                    fileStore.showBrowserForCopy = true
+                    fileStore.browserForCopyIsPresented = true
                 },
                 onOpen: {
                     if let snapshot = file.snapshot,
@@ -63,7 +63,7 @@ struct FileActions: ViewModifier {
                     }
                 },
                 onInfo: {
-                    fileStore.showInfo = true
+                    fileStore.infoIsPresented = true
                 }
             )
     }

@@ -62,7 +62,7 @@ struct FileRename: View {
             }
             .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .onAppear {
-                fileStore.current = file
+                fileStore.file = file
                 if let token = tokenStore.token {
                     assignTokenToStores(token)
                     startTimers()
@@ -78,7 +78,7 @@ struct FileRename: View {
                     onAppearOrChange()
                 }
             }
-            .onChange(of: fileStore.current) { _, file in
+            .onChange(of: fileStore.file) { _, file in
                 if let file {
                     value = file.name
                 }
@@ -91,7 +91,7 @@ struct FileRename: View {
     }
 
     private func fetchData() {
-        fileStore.fetch()
+        fileStore.fetchFile()
     }
 
     private func startTimers() {
@@ -111,7 +111,7 @@ struct FileRename: View {
     }
 
     private func performRename() {
-        guard let file = fileStore.current else { return }
+        guard let file = fileStore.file else { return }
         isSaving = true
         var updatedFile: VOFile.Entity?
 
@@ -133,7 +133,7 @@ struct FileRename: View {
     }
 
     private func isValid() -> Bool {
-        if let file = fileStore.current {
+        if let file = fileStore.file {
             return !normalizedValue.isEmpty && normalizedValue != file.name
         }
         return false
