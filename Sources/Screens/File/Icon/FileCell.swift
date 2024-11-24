@@ -25,9 +25,10 @@ struct FileCell: View {
         VStack(spacing: VOMetrics.spacing) {
             if file.type == .file {
                 if let snapshot = file.snapshot,
-                   let thumbnail = snapshot.thumbnail,
-                   let fileExtension = thumbnail.fileExtension,
-                   let url = fileStore.urlForThumbnail(file.id, fileExtension: String(fileExtension.dropFirst())) {
+                    let thumbnail = snapshot.thumbnail,
+                    let fileExtension = thumbnail.fileExtension,
+                    let url = fileStore.urlForThumbnail(file.id, fileExtension: String(fileExtension.dropFirst()))
+                {
                     FileCellThumbnail(url: url, file: file, fileStore: fileStore) {
                         fileIcon
                     }

@@ -36,6 +36,7 @@ struct VOErrorMessage: View {
 #Preview {
     VStack(spacing: VOMetrics.spacing2Xl) {
         VOErrorMessage("Lorem ipsum dolor sit amet.")
+        // swift-format-ignore
         // swiftlint:disable:next line_length
         VOErrorMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
     }

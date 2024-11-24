@@ -11,7 +11,7 @@
 import SwiftUI
 
 extension Color {
-    /* Blue */
+    // Blue
     static let blue50 = Color(hex: "#E7EDFE")
     static let blue100 = Color(hex: "#BBCDFC")
     static let blue200 = Color(hex: "#8FACF9")
@@ -23,7 +23,7 @@ extension Color {
     static let blue800 = Color(hex: "#051E61")
     static let blue900 = Color(hex: "#020F31")
 
-    /* Gray */
+    // Gray
     static let gray50 = Color(hex: "#F7FAFC")
     static let gray100 = Color(hex: "#EDF2F7")
     static let gray200 = Color(hex: "#E2E8F0")
@@ -35,7 +35,7 @@ extension Color {
     static let gray800 = Color(hex: "#1A202C")
     static let gray900 = Color(hex: "#171923")
 
-    /* Red */
+    // Red
     static let red50 = Color(hex: "#FFF5F5")
     static let red100 = Color(hex: "#FED7D7")
     static let red200 = Color(hex: "#FEB2B2")
@@ -47,7 +47,7 @@ extension Color {
     static let red800 = Color(hex: "#822727")
     static let red900 = Color(hex: "#63171B")
 
-    /* Green */
+    // Green
     static let green50 = Color(hex: "#F0FFF4")
     static let green100 = Color(hex: "#C6F6D5")
     static let green200 = Color(hex: "#9AE6B4")
@@ -59,7 +59,7 @@ extension Color {
     static let green800 = Color(hex: "#22543D")
     static let green900 = Color(hex: "#1C4532")
 
-    /* Yellow */
+    // Yellow
     static let yellow50 = Color(hex: "#FFFFF0")
     static let yellow100 = Color(hex: "#FEFCBF")
     static let yellow200 = Color(hex: "#FAF089")
@@ -71,7 +71,7 @@ extension Color {
     static let yellow800 = Color(hex: "#744210")
     static let yellow900 = Color(hex: "#5F370E")
 
-    /* Teal */
+    // Teal
     static let teal50 = Color(hex: "#E6FFFA")
     static let teal100 = Color(hex: "#B2F5EA")
     static let teal200 = Color(hex: "#81E6D9")
@@ -83,7 +83,7 @@ extension Color {
     static let teal800 = Color(hex: "#234E52")
     static let teal900 = Color(hex: "#1D4044")
 
-    /* Purple */
+    // Purple
     static let purple50 = Color(hex: "#FAF5FF")
     static let purple100 = Color(hex: "#E9D8FD")
     static let purple200 = Color(hex: "#D6BCFA")

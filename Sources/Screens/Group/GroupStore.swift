@@ -58,33 +58,37 @@ class GroupStore: ObservableObject {
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOGroup.Probe? {
         if let organizationID {
-            try await groupClient?.fetchProbe(.init(
-                query: query,
-                organizationID: organizationID,
-                size: size
-            ))
+            try await groupClient?.fetchProbe(
+                .init(
+                    query: query,
+                    organizationID: organizationID,
+                    size: size
+                ))
         } else {
-            try await groupClient?.fetchProbe(.init(
-                query: query,
-                size: size
-            ))
+            try await groupClient?.fetchProbe(
+                .init(
+                    query: query,
+                    size: size
+                ))
         }
     }
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
         if let organizationID {
-            try await groupClient?.fetchList(.init(
-                query: query,
-                organizationID: organizationID,
-                page: page,
-                size: size
-            ))
+            try await groupClient?.fetchList(
+                .init(
+                    query: query,
+                    organizationID: organizationID,
+                    page: page,
+                    size: size
+                ))
         } else {
-            try await groupClient?.fetchList(.init(
-                query: query,
-                page: page,
-                size: size
-            ))
+            try await groupClient?.fetchList(
+                .init(
+                    query: query,
+                    page: page,
+                    size: size
+                ))
         }
     }
 
@@ -189,7 +193,8 @@ class GroupStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

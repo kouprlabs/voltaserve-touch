@@ -40,20 +40,21 @@ struct SharingGroupRow: View {
 }
 
 #Preview {
-    SharingGroupRow(.init(
-        id: UUID().uuidString,
-        group: .init(
+    SharingGroupRow(
+        .init(
             id: UUID().uuidString,
-            name: "My Group",
-            organization: .init(
+            group: .init(
                 id: UUID().uuidString,
-                name: "My Organization",
+                name: "My Group",
+                organization: .init(
+                    id: UUID().uuidString,
+                    name: "My Organization",
+                    permission: .owner,
+                    createTime: Date().ISO8601Format()
+                ),
                 permission: .owner,
                 createTime: Date().ISO8601Format()
             ),
-            permission: .owner,
-            createTime: Date().ISO8601Format()
-        ),
-        permission: .owner
-    ))
+            permission: .owner
+        ))
 }

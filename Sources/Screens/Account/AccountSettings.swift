@@ -100,7 +100,8 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
                         .confirmationDialog(
                             "Missing Password Confirmation",
                             isPresented: $deleteNoticeIsPresented
-                        ) {} message: {
+                        ) {
+                        } message: {
                             Text("You need to enter your password to confirm the account deletion.")
                         }
                     }

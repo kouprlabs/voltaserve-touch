@@ -69,36 +69,40 @@ class UserStore: ObservableObject {
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOUser.Probe? {
         if let organizationID {
-            return try await userClient?.fetchProbe(.init(
-                query: query,
-                organizationID: organizationID,
-                size: size
-            ))
+            return try await userClient?.fetchProbe(
+                .init(
+                    query: query,
+                    organizationID: organizationID,
+                    size: size
+                ))
         } else if let groupID {
-            return try await userClient?.fetchProbe(.init(
-                query: query,
-                groupID: groupID,
-                size: size
-            ))
+            return try await userClient?.fetchProbe(
+                .init(
+                    query: query,
+                    groupID: groupID,
+                    size: size
+                ))
         }
         return nil
     }
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
         if let organizationID {
-            return try await userClient?.fetchList(.init(
-                query: query,
-                organizationID: organizationID,
-                page: page,
-                size: size
-            ))
+            return try await userClient?.fetchList(
+                .init(
+                    query: query,
+                    organizationID: organizationID,
+                    page: page,
+                    size: size
+                ))
         } else if let groupID {
-            return try await userClient?.fetchList(.init(
-                query: query,
-                groupID: groupID,
-                page: page,
-                size: size
-            ))
+            return try await userClient?.fetchList(
+                .init(
+                    query: query,
+                    groupID: groupID,
+                    page: page,
+                    size: size
+                ))
         }
         return nil
     }
@@ -184,7 +188,8 @@ class UserStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

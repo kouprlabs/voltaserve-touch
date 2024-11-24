@@ -25,20 +25,23 @@ class TokenStore: ObservableObject {
     }
 
     func signIn(username: String, password: String) async throws -> VOToken.Value {
-        try await client.exchange(.init(
-            grantType: .password,
-            username: username,
-            password: password
-        ))
+        try await client.exchange(
+            .init(
+                grantType: .password,
+                username: username,
+                password: password
+            ))
     }
 
     func refreshTokenIfNecessary() async throws -> VOToken.Value? {
         guard token != nil else { return nil }
         if let token, token.isExpired {
-            if let newToken = try? await client.exchange(.init(
-                grantType: .refreshToken,
-                refreshToken: token.refreshToken
-            )) {
+            if let newToken = try? await client.exchange(
+                .init(
+                    grantType: .refreshToken,
+                    refreshToken: token.refreshToken
+                ))
+            {
                 return newToken
             }
         }

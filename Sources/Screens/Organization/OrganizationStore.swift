@@ -158,7 +158,8 @@ class OrganizationStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

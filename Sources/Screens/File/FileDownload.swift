@@ -77,8 +77,9 @@ struct FileDownload: View {
         urls.removeAll()
         for file in fileStore.selectionFiles {
             if let snapshot = file.snapshot,
-               let fileExtension = snapshot.original.fileExtension,
-               let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst())) {
+                let fileExtension = snapshot.original.fileExtension,
+                let url = fileStore.urlForOriginal(file.id, fileExtension: String(fileExtension.dropFirst()))
+            {
                 dispatchGroup.enter()
                 URLSession.shared.downloadTask(with: url) { localURL, _, error in
                     if let localURL, error == nil {

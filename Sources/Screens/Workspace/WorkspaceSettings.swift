@@ -34,6 +34,7 @@ struct WorkspaceSettings: View {
                     Section(header: VOSectionHeader("Storage")) {
                         VStack(alignment: .leading) {
                             if let storageUsage = workspaceStore.storageUsage {
+                                // swift-format-ignore
                                 // swiftlint:disable:next line_length
                                 Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
                                 ProgressView(value: Double(storageUsage.percentage) / 100.0)

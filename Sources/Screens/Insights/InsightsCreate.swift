@@ -33,6 +33,7 @@ struct InsightsCreate: View {
                 VStack {
                     VStack {
                         ScrollView {
+                            // swift-format-ignore
                             // swiftlint:disable:next line_length
                             Text("Select the language to use for collecting insights. During the process, text will be extracted using OCR (optical character recognition), and entities will be scanned using NER (named entity recognition).")
                         }

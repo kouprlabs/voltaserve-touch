@@ -265,12 +265,13 @@ class FileStore: ObservableObject {
     func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
         guard let file else { return nil }
         if let data = try? Data(contentsOf: url) {
-            return try await fileClient?.createFile(.init(
-                workspaceID: workspaceID,
-                parentID: file.id,
-                name: url.lastPathComponent,
-                data: data
-            ))
+            return try await fileClient?.createFile(
+                .init(
+                    workspaceID: workspaceID,
+                    parentID: file.id,
+                    name: url.lastPathComponent,
+                    data: data
+                ))
         }
         return nil
     }
@@ -327,7 +328,8 @@ class FileStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id
@@ -390,28 +392,32 @@ class FileStore: ObservableObject {
 
     func isOwnerInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
-        return entities
+        return
+            entities
             .filter { selection.contains($0.id) }
             .allSatisfy { $0.permission.ge(.owner) }
     }
 
     func isEditorInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
-        return entities
+        return
+            entities
             .filter { selection.contains($0.id) }
             .allSatisfy { $0.permission.ge(.editor) }
     }
 
     func isViewerInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
-        return entities
+        return
+            entities
             .filter { selection.contains($0.id) }
             .allSatisfy { $0.permission.ge(.viewer) }
     }
 
     func isFilesInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
-        return entities
+        return
+            entities
             .filter { selection.contains($0.id) }
             .allSatisfy { $0.type == .file }
     }
@@ -419,22 +425,16 @@ class FileStore: ObservableObject {
     func isInsightsAuthorized(_ file: VOFile.Entity) -> Bool {
         guard let snapshot = file.snapshot else { return false }
         guard let fileExtension = snapshot.original.fileExtension else { return false }
-        return file.type == .file &&
-            !(file.snapshot?.task?.isPending ?? false) &&
-            (fileExtension.isPDF() ||
-                fileExtension.isMicrosoftOffice() ||
-                fileExtension.isOpenOffice() ||
-                fileExtension.isImage()) &&
-            ((file.permission.ge(.viewer) && snapshot.entities != nil) ||
-                file.permission.ge(.editor))
+        return file.type == .file && !(file.snapshot?.task?.isPending ?? false)
+            && (fileExtension.isPDF() || fileExtension.isMicrosoftOffice() || fileExtension.isOpenOffice()
+                || fileExtension.isImage())
+            && ((file.permission.ge(.viewer) && snapshot.entities != nil) || file.permission.ge(.editor))
     }
 
     func isMosaicAuthorized(_ file: VOFile.Entity) -> Bool {
         guard let snapshot = file.snapshot else { return false }
         guard let fileExtension = snapshot.original.fileExtension else { return false }
-        return file.type == .file &&
-            !(snapshot.task?.isPending ?? false) &&
-            fileExtension.isImage()
+        return file.type == .file && !(snapshot.task?.isPending ?? false) && fileExtension.isImage()
     }
 
     func isSharingAuthorized(_ file: VOFile.Entity) -> Bool {
@@ -498,10 +498,8 @@ class FileStore: ObservableObject {
     }
 
     func isManagementAuthorized(_ file: VOFile.Entity) -> Bool {
-        isSharingAuthorized(file) ||
-            isSnapshotsAuthorized(file) ||
-            isUploadAuthorized(file) ||
-            isDownloadAuthorized(file)
+        isSharingAuthorized(file) || isSnapshotsAuthorized(file) || isUploadAuthorized(file)
+            || isDownloadAuthorized(file)
     }
 
     func isOpenAuthorized(_ file: VOFile.Entity) -> Bool {

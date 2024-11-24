@@ -41,6 +41,7 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                         Section(header: VOSectionHeader("Storage Usage")) {
                             VStack(alignment: .leading) {
                                 if let storageUsage = accountStore.storageUsage {
+                                    // swift-format-ignore
                                     // swiftlint:disable:next line_length
                                     Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
                                     ProgressView(value: Double(storageUsage.percentage) / 100.0)
@@ -48,10 +49,12 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                             }
                         }
                         Section {
-                            NavigationLink(destination: AccountSettings(accountStore: accountStore) {
-                                dismiss()
-                                performSignOut()
-                            }) {
+                            NavigationLink(
+                                destination: AccountSettings(accountStore: accountStore) {
+                                    dismiss()
+                                    performSignOut()
+                                }
+                            ) {
                                 Label("Settings", systemImage: "gear")
                             }
                             NavigationLink(destination: InvitationIncomingList()) {
@@ -110,15 +113,12 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        accountStore.identityUserIsLoading ||
-            accountStore.storageUsageIsLoading ||
-            invitationStore.incomingCountIsLoading
+        accountStore.identityUserIsLoading || accountStore.storageUsageIsLoading
+            || invitationStore.incomingCountIsLoading
     }
 
     var error: String? {
-        accountStore.identityUserError ??
-            accountStore.storageUsageError ??
-            invitationStore.incomingCountError
+        accountStore.identityUserError ?? accountStore.storageUsageError ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider
