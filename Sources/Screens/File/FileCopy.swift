@@ -16,7 +16,7 @@ struct FileCopy: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
-    @State private var showError = false
+    @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let destinationID: String
@@ -28,10 +28,10 @@ struct FileCopy: View {
 
     var body: some View {
         VStack {
-            if isProcessing, !showError {
+            if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
                 Text("Copying \(fileStore.selection.count) item(s).")
-            } else if showError, errorSeverity == .full {
+            } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
@@ -43,7 +43,7 @@ struct FileCopy: View {
                 }
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
-            } else if showError, errorSeverity == .partial {
+            } else if errorIsPresented, errorSeverity == .partial {
                 VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
@@ -80,17 +80,17 @@ struct FileCopy: View {
                     } else if result.failed.count == fileStore.selection.count {
                         errorSeverity = .full
                     }
-                    showError = true
+                    errorIsPresented = true
                 }
             }
             return false
         } success: {
-            showError = false
+            errorIsPresented = false
             dismiss()
         } failure: { _ in
             errorMessage = "Failed to copy \(fileStore.selection.count) item(s)."
             errorSeverity = .full
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isProcessing = false
         }

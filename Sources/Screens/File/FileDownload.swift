@@ -17,7 +17,7 @@ struct FileDownload: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var urls: [URL] = []
     @State private var isProcessing = true
-    @State private var showError = false
+    @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let onCompletion: (([URL]) -> Void)?
@@ -29,10 +29,10 @@ struct FileDownload: View {
 
     var body: some View {
         VStack {
-            if isProcessing, !showError {
+            if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
                 Text("Downloading \(fileStore.selectionFiles.count) item(s).")
-            } else if showError, errorSeverity == .full {
+            } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
@@ -44,7 +44,7 @@ struct FileDownload: View {
                 }
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
-            } else if showError, errorSeverity == .partial {
+            } else if errorIsPresented, errorSeverity == .partial {
                 VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
@@ -103,7 +103,7 @@ struct FileDownload: View {
         }
         dispatchGroup.notify(queue: .main) {
             if urls.count == fileStore.selection.count {
-                showError = false
+                errorIsPresented = false
                 isProcessing = false
                 onCompletion?(urls)
                 dismiss()
@@ -115,7 +115,7 @@ struct FileDownload: View {
                 } else {
                     errorSeverity = .full
                 }
-                showError = true
+                errorIsPresented = true
                 isProcessing = false
             }
         }

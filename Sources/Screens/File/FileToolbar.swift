@@ -41,7 +41,7 @@ struct FileToolbar: ViewModifier {
                     uploadMenu
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    if fileStore.isLoading, fileStore.entities != nil {
+                    if fileStore.entitiesIsLoading {
                         ProgressView()
                     }
                 }
@@ -59,7 +59,7 @@ struct FileToolbar: ViewModifier {
     private var tasksButton: some View {
         ZStack {
             Button {
-                fileStore.showTasks = true
+                fileStore.tasksIsPresented = true
             } label: {
                 Image(systemName: "square.3.layers.3d")
             }
@@ -75,12 +75,12 @@ struct FileToolbar: ViewModifier {
     private var uploadMenu: some View {
         Menu {
             Button {
-                fileStore.showUploadDocumentPicker = true
+                fileStore.uploadDocumentPickerIsPresented = true
             } label: {
                 Label("Upload Files", systemImage: "icloud.and.arrow.up")
             }
             Button {
-                fileStore.showCreateFolder = true
+                fileStore.createFolderIsPresented = true
             } label: {
                 Label("New Folder", systemImage: "folder.badge.plus")
             }
@@ -93,25 +93,25 @@ struct FileToolbar: ViewModifier {
         FileMenu(
             fileStore: fileStore,
             onSharing: {
-                fileStore.showSharing = true
+                fileStore.sharingIsPresented = true
             },
             onUpload: {
-                fileStore.showUploadDocumentPicker = true
+                fileStore.uploadDocumentPickerIsPresented = true
             },
             onDownload: {
-                fileStore.showDownload = true
+                fileStore.downloadIsPresented = true
             },
             onDelete: {
-                fileStore.showDelete = true
+                fileStore.deleteIsPresented = true
             },
             onRename: {
-                fileStore.showRename = true
+                fileStore.renameIsPresented = true
             },
             onMove: {
-                fileStore.showBrowserForMove = true
+                fileStore.browserForMoveIsPresented = true
             },
             onCopy: {
-                fileStore.showBrowserForCopy = true
+                fileStore.browserForCopyIsPresented = true
             }
         )
     }

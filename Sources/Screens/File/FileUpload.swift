@@ -17,7 +17,7 @@ struct FileUpload: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
-    @State private var showError = false
+    @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let urls: [URL]
@@ -30,10 +30,10 @@ struct FileUpload: View {
 
     var body: some View {
         VStack {
-            if isProcessing, !showError {
+            if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
                 Text("Uploading \(urls.count) item(s).")
-            } else if showError, errorSeverity == .full {
+            } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
                     Text(errorMessage)
@@ -45,7 +45,7 @@ struct FileUpload: View {
                 }
                 .voSecondaryButton(colorScheme: colorScheme)
                 .padding(.horizontal)
-            } else if showError, errorSeverity == .partial {
+            } else if errorIsPresented, errorSeverity == .partial {
                 VOWarningIcon()
                 if let errorMessage {
                     Text(errorMessage)
@@ -91,7 +91,7 @@ struct FileUpload: View {
         }
         dispatchGroup.notify(queue: .main) {
             if failedCount == 0 {
-                showError = false
+                errorIsPresented = false
                 dismiss()
             } else {
                 errorMessage = "Failed to upload \(failedCount) item(s)."
@@ -100,7 +100,7 @@ struct FileUpload: View {
                 } else if failedCount < urls.count {
                     errorSeverity = .partial
                 }
-                showError = true
+                errorIsPresented = true
             }
             isProcessing = false
         }

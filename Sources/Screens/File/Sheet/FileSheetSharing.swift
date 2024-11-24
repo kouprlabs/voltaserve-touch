@@ -14,7 +14,6 @@ import VoltaserveCore
 struct FileSheetSharing: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
-    @State private var showSharing = false
 
     init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
@@ -23,14 +22,13 @@ struct FileSheetSharing: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $showSharing) {
+            .sheet(isPresented: $fileStore.sharingIsPresented) {
                 if let fileID {
                     SharingOverview(fileID, workspaceStore: workspaceStore)
                 } else if fileStore.selection.count > 1 {
                     SharingBatch(Array(fileStore.selection), workspaceStore: workspaceStore)
                 }
             }
-            .sync($fileStore.showSharing, with: $showSharing)
     }
 
     private var fileID: String? {

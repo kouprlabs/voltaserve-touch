@@ -13,12 +13,11 @@ import SwiftUI
 import UIKit
 import VoltaserveCore
 
-struct FileOverview: View {
+struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var fileStore = FileStore()
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var searchText = ""
-    @State private var showError = false
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
@@ -28,34 +27,33 @@ struct FileOverview: View {
 
     var body: some View {
         VStack {
-            if let entities = fileStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no items.")
-                    } else {
-                        if fileStore.viewMode == .list {
-                            FileList(fileStore: fileStore, workspaceStore: workspaceStore)
-                        } else if fileStore.viewMode == .grid {
-                            FileGrid(fileStore: fileStore, workspaceStore: workspaceStore)
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = fileStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no items.")
+                        } else {
+                            if fileStore.viewMode == .list {
+                                FileList(fileStore: fileStore, workspaceStore: workspaceStore)
+                            } else if fileStore.viewMode == .grid {
+                                FileGrid(fileStore: fileStore, workspaceStore: workspaceStore)
+                            }
                         }
                     }
+                    .searchable(text: $searchText)
+                    .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
+                    .refreshable { fileStore.fetchNextPage(replace: true) }
                 }
-                .searchable(text: $searchText)
-                .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
-                .refreshable { fileStore.fetchNextPage(replace: true) }
-            } else {
-                ProgressView()
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: fileStore.errorTitle,
-            message: fileStore.errorMessage
-        )
         .fileSheets(fileStore: fileStore, workspaceStore: workspaceStore)
         .fileToolbar(fileStore: fileStore)
         .onAppear {
-            fileStore.current = file
+            fileStore.file = file
             fileStore.loadViewModeFromUserDefaults()
             if let token = tokenStore.token {
                 assignTokenToStores(token)
@@ -76,29 +74,43 @@ struct FileOverview: View {
             fileStore.clear()
             fileStore.fetchNextPage(replace: true)
         }
-        .sync($fileStore.searchText, with: $searchText)
-        .sync($fileStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        fileStore.entities == nil || fileStore.fileIsLoading || fileStore.taskCountIsLoading
+    }
+
+    var error: String? {
+        fileStore.entitiesError ?? fileStore.fileError ?? fileStore.taskCountError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
-        fileStore.fetch()
+    func fetchData() {
+        fileStore.fetchFile()
         fileStore.fetchNextPage(replace: true)
         fileStore.fetchTaskCount()
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         fileStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         fileStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         fileStore.token = token
     }
 }

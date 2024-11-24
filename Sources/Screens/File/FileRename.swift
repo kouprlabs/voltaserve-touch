@@ -11,15 +11,18 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FileRename: View {
+struct FileRename: View,
+    ViewDataProvider,
+    LoadStateProvider,
+    TimerLifecycle,
+    TokenDistributing,
+    FormValidatable,
+    ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var fileStore = FileStore()
     @Environment(\.dismiss) private var dismiss
     @State private var isSaving = false
     @State private var value = ""
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
-    @State private var showError = false
     private let file: VOFile.Entity
     private let onCompletion: ((VOFile.Entity) -> Void)?
 
@@ -31,14 +34,17 @@ struct FileRename: View {
     var body: some View {
         NavigationView {
             VStack {
-                if !value.isEmpty {
-                    Form {
-                        TextField("Name", text: $value)
-                            .disabled(isSaving)
-                    }
-
-                } else {
+                if isLoading {
                     ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if !value.isEmpty {
+                        Form {
+                            TextField("Name", text: $value)
+                                .disabled(isSaving)
+                        }
+                    }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -60,9 +66,9 @@ struct FileRename: View {
                     }
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
             .onAppear {
-                fileStore.current = file
+                fileStore.file = file
                 if let token = tokenStore.token {
                     assignTokenToStores(token)
                     startTimers()
@@ -78,7 +84,7 @@ struct FileRename: View {
                     onAppearOrChange()
                 }
             }
-            .onChange(of: fileStore.current) { _, file in
+            .onChange(of: fileStore.file) { _, file in
                 if let file {
                     value = file.name
                 }
@@ -86,32 +92,12 @@ struct FileRename: View {
         }
     }
 
-    private func onAppearOrChange() {
-        fetchData()
-    }
-
-    private func fetchData() {
-        fileStore.fetch()
-    }
-
-    private func startTimers() {
-        fileStore.startTimer()
-    }
-
-    private func stopTimers() {
-        fileStore.stopTimer()
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        fileStore.token = token
-    }
-
     private var normalizedValue: String {
         value.trimmingCharacters(in: .whitespaces)
     }
 
     private func performRename() {
-        guard let file = fileStore.current else { return }
+        guard let file = fileStore.file else { return }
         isSaving = true
         var updatedFile: VOFile.Entity?
 
@@ -124,16 +110,58 @@ struct FileRename: View {
                 onCompletion(updatedFile)
             }
         } failure: { message in
-            errorTitle = "Error: Renaming File"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isSaving = false
         }
     }
 
-    private func isValid() -> Bool {
-        if let file = fileStore.current {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        fileStore.fileIsLoading
+    }
+
+    var error: String? {
+        fileStore.fileError
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
+        fetchData()
+    }
+
+    func fetchData() {
+        fileStore.fetchFile()
+    }
+
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
+        fileStore.startTimer()
+    }
+
+    func stopTimers() {
+        fileStore.stopTimer()
+    }
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        fileStore.token = token
+    }
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
+        if let file = fileStore.file {
             return !normalizedValue.isEmpty && normalizedValue != file.name
         }
         return false

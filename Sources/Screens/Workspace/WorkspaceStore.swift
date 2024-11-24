@@ -16,13 +16,13 @@ class WorkspaceStore: ObservableObject {
     @Published var entities: [VOWorkspace.Entity]?
     @Published var entitiesIsLoading: Bool = false
     @Published var entitiesError: String?
-    @Published var current: VOWorkspace.Entity?
     @Published var root: VOFile.Entity?
     @Published var rootIsLoading: Bool = false
     @Published var rootError: String?
     @Published var storageUsage: VOStorage.Usage?
     @Published var storageUsageIsLoading: Bool = false
     @Published var storageUsageError: String?
+    @Published var current: VOWorkspace.Entity?
     @Published var query: String?
     @Published var searchText = ""
     private var list: VOWorkspace.List?

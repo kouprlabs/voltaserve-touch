@@ -12,7 +12,6 @@ import SwiftUI
 
 struct FileSheetTasks: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    @State private var showTasks = false
 
     init(fileStore: FileStore) {
         self.fileStore = fileStore
@@ -20,10 +19,9 @@ struct FileSheetTasks: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $showTasks) {
+            .sheet(isPresented: $fileStore.tasksIsPresented) {
                 TaskList(fileStore: fileStore)
             }
-            .sync($fileStore.showTasks, with: $showTasks)
     }
 }
 

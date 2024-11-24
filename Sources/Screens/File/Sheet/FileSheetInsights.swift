@@ -13,7 +13,6 @@ import VoltaserveCore
 
 struct FileSheetInsights: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    @State private var showInsights = false
 
     init(fileStore: FileStore) {
         self.fileStore = fileStore
@@ -21,7 +20,7 @@ struct FileSheetInsights: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $showInsights) {
+            .sheet(isPresented: $fileStore.insightsIsPresented) {
                 if let file {
                     if let snapshot = file.snapshot, snapshot.hasEntities() {
                         InsightsOverview(file)
@@ -30,7 +29,6 @@ struct FileSheetInsights: ViewModifier {
                     }
                 }
             }
-            .sync($fileStore.showInsights, with: $showInsights)
     }
 
     private var file: VOFile.Entity? {

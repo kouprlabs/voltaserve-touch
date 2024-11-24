@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct FolderCreate: View {
+struct FolderCreate: View, ErrorPresentable, FormValidatable {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     private let parentID: String
     private let workspaceId: String
 
@@ -53,7 +50,7 @@ struct FolderCreate: View {
                     }
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
     }
 
@@ -76,15 +73,21 @@ struct FolderCreate: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Creating Folder"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isProcessing = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         !normalizedName.isEmpty
     }
 }

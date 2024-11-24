@@ -11,7 +11,8 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingBatch: View {
+struct SharingBatch: View, TokenDistributing {
+    @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var sharingStore = SharingStore()
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
@@ -55,10 +56,21 @@ struct SharingBatch: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Sharing")
+        .onAppear {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+            }
+        }
     }
 
     enum Tag {
         case users
         case groups
+    }
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        sharingStore.token = token
     }
 }
