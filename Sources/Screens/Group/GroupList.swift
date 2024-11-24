@@ -15,9 +15,8 @@ import VoltaserveCore
 struct GroupList: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var groupStore = GroupStore()
-    @State private var showCreate = false
-    @State private var showOverview = false
-    @State private var showError = false
+    @State private var createIsPresented = false
+    @State private var overviewIsPresented = false
     @State private var searchText = ""
     @State private var newGroup: VOGroup.Entity?
 
@@ -40,7 +39,7 @@ struct GroupList: View {
                                 }
                             }
                         }
-                        .searchable(text: $searchText)
+                        .searchable(text: $groupStore.searchText)
                         .onChange(of: groupStore.searchText) {
                             groupStore.searchPublisher.send($1)
                         }
@@ -53,24 +52,24 @@ struct GroupList: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
-                            showCreate = true
+                            createIsPresented = true
                         } label: {
                             Image(systemName: "plus")
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        if groupStore.isLoading, groupStore.entities != nil {
+                        if groupStore.entitiesIsLoading {
                             ProgressView()
                         }
                     }
                 }
-                .sheet(isPresented: $showCreate) {
+                .sheet(isPresented: $createIsPresented) {
                     GroupCreate(groupStore: groupStore) { newGroup in
                         self.newGroup = newGroup
-                        showOverview = true
+                        overviewIsPresented = true
                     }
                 }
-                .navigationDestination(isPresented: $showOverview) {
+                .navigationDestination(isPresented: $overviewIsPresented) {
                     if let newGroup {
                         GroupOverview(newGroup, groupStore: groupStore)
                     }
@@ -79,11 +78,6 @@ struct GroupList: View {
                 ProgressView()
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: groupStore.errorTitle,
-            message: groupStore.errorMessage
-        )
         .onAppear {
             if let token = tokenStore.token {
                 assignTokenToStores(token)
@@ -104,8 +98,6 @@ struct GroupList: View {
             groupStore.clear()
             groupStore.fetchNextPage()
         }
-        .sync($groupStore.searchText, with: $searchText)
-        .sync($groupStore.showError, with: $showError)
     }
 
     private func onAppearOrChange() {

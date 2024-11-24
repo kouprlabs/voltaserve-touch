@@ -48,7 +48,7 @@ struct GroupSelector: View {
                                 }
                             }
                         }
-                        .searchable(text: $searchText)
+                        .searchable(text: $groupStore.searchText)
                         .onChange(of: groupStore.searchText) {
                             groupStore.searchPublisher.send($1)
                         }
@@ -57,11 +57,6 @@ struct GroupSelector: View {
                 .refreshable {
                     groupStore.fetchNextPage(replace: true)
                 }
-                .voErrorAlert(
-                    isPresented: $showError,
-                    title: groupStore.errorTitle,
-                    message: groupStore.errorMessage
-                )
             } else {
                 ProgressView()
             }
@@ -70,7 +65,7 @@ struct GroupSelector: View {
         .navigationTitle("Select Group")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                if groupStore.isLoading, groupStore.entities != nil {
+                if groupStore.entitiesIsLoading {
                     ProgressView()
                 }
             }
@@ -96,8 +91,6 @@ struct GroupSelector: View {
             groupStore.clear()
             groupStore.fetchNextPage()
         }
-        .sync($groupStore.showError, with: $showError)
-        .sync($groupStore.searchText, with: $searchText)
     }
 
     private func onAppearOrChange() {
