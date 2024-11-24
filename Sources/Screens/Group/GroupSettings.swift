@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct GroupSettings: View {
+struct GroupSettings: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showDeleteConfirmation = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
+    @State private var deleteConfirmationIsPresented = false
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
@@ -53,12 +50,12 @@ struct GroupSettings: View {
                     }
                     Section(header: VOSectionHeader("Advanced")) {
                         Button(role: .destructive) {
-                            showDeleteConfirmation = true
+                            deleteConfirmationIsPresented = true
                         } label: {
                             VOFormButtonLabel("Delete Group", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
-                        .confirmationDialog("Delete Group", isPresented: $showDeleteConfirmation) {
+                        .confirmationDialog("Delete Group", isPresented: $deleteConfirmationIsPresented) {
                             Button("Delete Permanently", role: .destructive) {
                                 performDelete()
                             }
@@ -67,9 +64,7 @@ struct GroupSettings: View {
                         }
                     }
                 }
-                .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
-            } else {
-                ProgressView()
+                .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
             }
         }
         .navigationTitle("Settings")
@@ -89,9 +84,8 @@ struct GroupSettings: View {
             }
             onCompletion?()
         } failure: { message in
-            errorTitle = "Error: Deleting Group"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeleting = false
         }
@@ -100,4 +94,9 @@ struct GroupSettings: View {
     private func reflectDeleteInStore(_ id: String) {
         groupStore.entities?.removeAll(where: { $0.id == id })
     }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
 }

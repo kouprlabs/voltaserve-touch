@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct GroupMemberAdd: View {
+struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var isSaving = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
 
     init(groupStore: GroupStore) {
         self.groupStore = groupStore
@@ -67,7 +64,7 @@ struct GroupMemberAdd: View {
                     }
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
     }
 
@@ -81,15 +78,21 @@ struct GroupMemberAdd: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Adding Member"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isSaving = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         user != nil
     }
 }

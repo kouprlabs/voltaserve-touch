@@ -11,15 +11,12 @@
 import SwiftUI
 import VoltaserveCore
 
-struct GroupCreate: View {
+struct GroupCreate: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
     @State private var organization: VOOrganization.Entity?
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     private var onCompletion: ((VOGroup.Entity?) -> Void)?
 
     init(groupStore: GroupStore, onCompletion: ((VOGroup.Entity?) -> Void)? = nil) {
@@ -69,7 +66,7 @@ struct GroupCreate: View {
                     }
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
     }
 
@@ -91,15 +88,21 @@ struct GroupCreate: View {
                 onCompletion(group)
             }
         } failure: { message in
-            errorTitle = "Error: Crearing Group"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isProcessing = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         !normalizedName.isEmpty && organization != nil
     }
 }

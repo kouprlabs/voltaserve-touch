@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct GroupEditName: View {
+struct GroupEditName: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
     @State private var isSaving = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     private let onCompletion: ((VOGroup.Entity) -> Void)?
 
     init(groupStore: GroupStore, onCompletion: ((VOGroup.Entity) -> Void)? = nil) {
@@ -46,7 +43,7 @@ struct GroupEditName: View {
                     }
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
             .onAppear {
                 value = current.name
             }
@@ -78,15 +75,21 @@ struct GroupEditName: View {
                 onCompletion(updatedGroup)
             }
         } failure: { message in
-            errorTitle = "Error: Saving Name"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isSaving = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         if let current = groupStore.current {
             return !normalizedValue.isEmpty && normalizedValue != current.name
         }

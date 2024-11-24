@@ -12,7 +12,9 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct OrganizationMemberList: View {
+struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var organizationStore: OrganizationStore
     @StateObject private var userStore = UserStore()
@@ -26,42 +28,41 @@ struct OrganizationMemberList: View {
 
     var body: some View {
         VStack {
-            if let entities = userStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no items.")
-                    } else {
-                        List(entities, id: \.id) { member in
-                            UserRow(
-                                member,
-                                pictureURL: userStore.urlForPicture(
-                                    member.id,
-                                    fileExtension: member.picture?.fileExtension
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = userStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no items.")
+                        } else {
+                            List(entities, id: \.id) { member in
+                                UserRow(
+                                    member,
+                                    pictureURL: userStore.urlForPicture(
+                                        member.id,
+                                        fileExtension: member.picture?.fileExtension
+                                    )
                                 )
-                            )
-                            .onAppear {
-                                onListItemAppear(member.id)
+                                .onAppear {
+                                    onListItemAppear(member.id)
+                                }
+                            }
+                            .searchable(text: $searchText)
+                            .onChange(of: userStore.searchText) {
+                                userStore.searchPublisher.send($1)
                             }
                         }
-                        .searchable(text: $searchText)
-                        .onChange(of: userStore.searchText) {
-                            userStore.searchPublisher.send($1)
-                        }
+                    }
+                    .refreshable {
+                        userStore.fetchNextPage(replace: true)
+                    }
+                    .sheet(isPresented: $showInviteMembers) {
+                        Text("Add Member")
                     }
                 }
-                .refreshable {
-                    userStore.fetchNextPage(replace: true)
-                }
-                .sheet(isPresented: $showInviteMembers) {
-                    Text("Add Member")
-                }
-                .voErrorAlert(
-                    isPresented: $showError,
-                    title: userStore.errorTitle,
-                    message: userStore.errorMessage
-                )
-            } else {
-                ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -89,31 +90,47 @@ struct OrganizationMemberList: View {
             userStore.clear()
             userStore.fetchNextPage()
         }
-        .sync($userStore.searchText, with: $searchText)
-        .sync($userStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        userStore.entities == nil
+    }
+
+    var error: String? {
+        userStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         userStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         userStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         userStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         userStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if userStore.isEntityThreshold(id) {
             userStore.fetchNextPage()
         }

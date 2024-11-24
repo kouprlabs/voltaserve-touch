@@ -12,13 +12,13 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct GroupMemberList: View {
+struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var groupStore: GroupStore
     @StateObject private var userStore = UserStore()
-    @State private var showAddMember = false
+    @State private var addMemberIsPresentable = false
     @State private var searchText = ""
-    @State private var showError = false
 
     init(groupStore: GroupStore) {
         self.groupStore = groupStore
@@ -26,53 +26,52 @@ struct GroupMemberList: View {
 
     var body: some View {
         VStack {
-            if let entities = userStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no items.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { member in
-                                UserRow(
-                                    member,
-                                    pictureURL: userStore.urlForPicture(
-                                        member.id,
-                                        fileExtension: member.picture?.fileExtension
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = userStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no items.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { member in
+                                    UserRow(
+                                        member,
+                                        pictureURL: userStore.urlForPicture(
+                                            member.id,
+                                            fileExtension: member.picture?.fileExtension
+                                        )
                                     )
-                                )
-                                .onAppear {
-                                    onListItemAppear(member.id)
+                                    .onAppear {
+                                        onListItemAppear(member.id)
+                                    }
                                 }
                             }
-                        }
-                        .searchable(text: $searchText)
-                        .onChange(of: userStore.searchText) {
-                            userStore.searchPublisher.send($1)
-                        }
-                    }
-                }
-                .refreshable {
-                    userStore.fetchNextPage(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            showAddMember = true
-                        } label: {
-                            Image(systemName: "plus")
+                            .searchable(text: $groupStore.searchText)
+                            .onChange(of: userStore.searchText) {
+                                userStore.searchPublisher.send($1)
+                            }
                         }
                     }
+                    .refreshable {
+                        userStore.fetchNextPage(replace: true)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button {
+                                addMemberIsPresentable = true
+                            } label: {
+                                Image(systemName: "plus")
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $addMemberIsPresentable) {
+                        GroupMemberAdd(groupStore: groupStore)
+                    }
                 }
-                .sheet(isPresented: $showAddMember) {
-                    GroupMemberAdd(groupStore: groupStore)
-                }
-                .voErrorAlert(
-                    isPresented: $showError,
-                    title: userStore.errorTitle,
-                    message: userStore.errorMessage
-                )
-            } else {
-                ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -100,31 +99,47 @@ struct GroupMemberList: View {
             userStore.clear()
             userStore.fetchNextPage()
         }
-        .sync($userStore.searchText, with: $searchText)
-        .sync($userStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        userStore.entities == nil
+    }
+
+    var error: String? {
+        userStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         userStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         userStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         userStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         userStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if userStore.isEntityThreshold(id) {
             userStore.fetchNextPage()
         }

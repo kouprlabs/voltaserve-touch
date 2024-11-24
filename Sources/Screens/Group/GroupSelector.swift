@@ -11,11 +11,10 @@
 import SwiftUI
 import VoltaserveCore
 
-struct GroupSelector: View {
+struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var groupStore = GroupStore()
     @Environment(\.dismiss) private var dismiss
-    @State private var showError = false
     @State private var searchText = ""
     private let onCompletion: ((VOGroup.Entity) -> Void)?
     private let organizationID: String?
@@ -30,47 +29,46 @@ struct GroupSelector: View {
 
     var body: some View {
         VStack {
-            if let entities = groupStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no groups.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { group in
-                                Button {
-                                    dismiss()
-                                    onCompletion?(group)
-                                } label: {
-                                    GroupRow(group)
-                                        .onAppear {
-                                            onListItemAppear(group.id)
-                                        }
+            if isLoading {
+
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = groupStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no groups.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { group in
+                                    Button {
+                                        dismiss()
+                                        onCompletion?(group)
+                                    } label: {
+                                        GroupRow(group)
+                                            .onAppear {
+                                                onListItemAppear(group.id)
+                                            }
+                                    }
                                 }
                             }
-                        }
-                        .searchable(text: $searchText)
-                        .onChange(of: groupStore.searchText) {
-                            groupStore.searchPublisher.send($1)
+                            .searchable(text: $groupStore.searchText)
+                            .onChange(of: groupStore.searchText) {
+                                groupStore.searchPublisher.send($1)
+                            }
                         }
                     }
+                    .refreshable {
+                        groupStore.fetchNextPage(replace: true)
+                    }
                 }
-                .refreshable {
-                    groupStore.fetchNextPage(replace: true)
-                }
-                .voErrorAlert(
-                    isPresented: $showError,
-                    title: groupStore.errorTitle,
-                    message: groupStore.errorMessage
-                )
-            } else {
-                ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Select Group")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                if groupStore.isLoading, groupStore.entities != nil {
+                if groupStore.entitiesIsLoading {
                     ProgressView()
                 }
             }
@@ -96,33 +94,49 @@ struct GroupSelector: View {
             groupStore.clear()
             groupStore.fetchNextPage()
         }
-        .sync($groupStore.showError, with: $showError)
-        .sync($groupStore.searchText, with: $searchText)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        groupStore.entities == nil
+    }
+
+    var error: String? {
+        groupStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func onListItemAppear(_ id: String) {
-        if groupStore.isEntityThreshold(id) {
-            groupStore.fetchNextPage()
-        }
-    }
-
-    private func fetchData() {
+    func fetchData() {
         groupStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         groupStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         groupStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         groupStore.token = token
+    }
+
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
+        if groupStore.isEntityThreshold(id) {
+            groupStore.fetchNextPage()
+        }
     }
 }

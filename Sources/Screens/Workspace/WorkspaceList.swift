@@ -21,7 +21,7 @@ struct WorkspaceList: View {
     @State private var accountIsPresented = false
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
-    @State private var newlyCreatedEntity: VOWorkspace.Entity?
+    @State private var newWorkspace: VOWorkspace.Entity?
 
     var body: some View {
         NavigationStack {
@@ -80,8 +80,8 @@ struct WorkspaceList: View {
                         }
                     }
                     .sheet(isPresented: $createIsPresented) {
-                        WorkspaceCreate(workspaceStore: workspaceStore) { newlyCreatedEntity in
-                            self.newlyCreatedEntity = newlyCreatedEntity
+                        WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in
+                            self.newWorkspace = newWorkspace
                             overviewIsPresented = true
                         }
                     }
@@ -89,8 +89,8 @@ struct WorkspaceList: View {
                         AccountOverview()
                     }
                     .navigationDestination(isPresented: $overviewIsPresented) {
-                        if let newlyCreatedEntity {
-                            WorkspaceOverview(newlyCreatedEntity, workspaceStore: workspaceStore)
+                        if let newWorkspace {
+                            WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
                         }
                     }
                 }

@@ -14,13 +14,11 @@ import VoltaserveCore
 
 class GroupStore: ObservableObject {
     @Published var entities: [VOGroup.Entity]?
+    @Published var entitiesIsLoading: Bool = false
+    @Published var entitiesError: String?
     @Published var current: VOGroup.Entity?
     @Published var query: String?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
     @Published var searchText = ""
-    @Published var isLoading = false
     private var list: VOGroup.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -51,10 +49,6 @@ class GroupStore: ObservableObject {
     }
 
     // MARK: - Fetch
-
-    private func fetch(_ id: String) async throws -> VOGroup.Entity? {
-        try await groupClient?.fetch(id)
-    }
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOGroup.Probe? {
         if let organizationID {
@@ -93,7 +87,7 @@ class GroupStore: ObservableObject {
     }
 
     func fetchNextPage(replace: Bool = false) {
-        guard !isLoading else { return }
+        guard !entitiesIsLoading else { return }
 
         var nextPage = -1
         var list: VOGroup.List?
@@ -116,7 +110,7 @@ class GroupStore: ObservableObject {
             list = try await self.fetchList(page: nextPage)
             return true
         } before: {
-            self.isLoading = true
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -127,11 +121,9 @@ class GroupStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Groups"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
         } anyways: {
-            self.isLoading = false
+            self.entitiesIsLoading = false
         }
     }
 
@@ -222,7 +214,7 @@ class GroupStore: ObservableObject {
             }
             if let current = self.current {
                 Task {
-                    let group = try await self.fetch(current.id)
+                    let group = try await self.groupClient?.fetch(current.id)
                     if let group {
                         DispatchQueue.main.async {
                             self.current = group
