@@ -14,9 +14,6 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - main
 
 jobs:
   lint:
@@ -42,5 +39,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Set Up swift-format
+        run: brew install swift-format
+
       - name: Lint Using swift-format
-        uses: feather-actions/run-swift-format@0.0.2
+        uses: Iron-Ham/swift-format-linter-action@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
