@@ -17,22 +17,12 @@ on:
 
 jobs:
   lint:
-    # runs-on: ubuntu-latest
-    # steps:
-    #   - name: Checkout Repository
-    #     uses: actions/checkout@v4
-
-    #   - name: Lint Using SwiftLint
-    #     uses: norio-nomura/action-swiftlint@3.2.1
-    #     with:
-    #       args: --strict
-
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set Up swiftlint
+      - name: Set Up SwiftLint
         run: brew install swiftlint
 
       - name: Lint Using SwiftLint
@@ -49,6 +39,3 @@ jobs:
 
       - name: Lint Using swift-format
         run: swift format lint -r .
-      #   uses: Iron-Ham/swift-format-linter-action@v5
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
