@@ -88,8 +88,9 @@ struct WorkspaceEditName: View {
 
     private func isValid() -> Bool {
         if let current = workspaceStore.current,
-           !normalizedValue.isEmpty,
-           normalizedValue != current.name {
+            !normalizedValue.isEmpty,
+            normalizedValue != current.name
+        {
             return true
         }
         return false

@@ -25,7 +25,9 @@ struct FileSheetCopy: ViewModifier {
             .sheet(isPresented: $fileStore.browserForCopyIsPresented) {
                 NavigationStack {
                     if let workspace = workspaceStore.current {
-                        BrowserOverview(workspaceStore: workspaceStore, confirmLabelText: "Copy Here") { id in
+                        BrowserOverview(
+                            workspaceStore: workspaceStore, confirmLabelText: "Copy Here"
+                        ) { id in
                             destinationID = id
                             fileStore.copyIsPresented = true
                         }

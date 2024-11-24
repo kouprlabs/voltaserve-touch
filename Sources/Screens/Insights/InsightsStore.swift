@@ -91,7 +91,9 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    private func fetchEntityProbe(size: Int = Constants.pageSize) async throws -> VOInsights.EntityProbe? {
+    private func fetchEntityProbe(size: Int = Constants.pageSize) async throws -> VOInsights
+        .EntityProbe?
+    {
         guard let fileID else { return nil }
         return try await insightsClient?.fetchEntityProbe(
             fileID,
@@ -104,7 +106,9 @@ class InsightsStore: ObservableObject {
         )
     }
 
-    private func fetchEntityList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInsights.EntityList? {
+    private func fetchEntityList(page: Int = 1, size: Int = Constants.pageSize) async throws
+        -> VOInsights.EntityList?
+    {
         guard let fileID else { return nil }
         return try await insightsClient?.fetchEntityList(
             fileID,
@@ -178,7 +182,8 @@ class InsightsStore: ObservableObject {
         if entities == nil {
             entities = []
         }
-        for newEntity in newEntities where !entities!.contains(where: { $0.text == newEntity.text }) {
+        for newEntity in newEntities where !entities!.contains(where: { $0.text == newEntity.text })
+        {
             entities!.append(newEntity)
         }
     }
@@ -210,7 +215,8 @@ class InsightsStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

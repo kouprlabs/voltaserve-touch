@@ -79,7 +79,8 @@ struct SnapshotOverview: View {
                         }
                     }
                     .disabled(isProcessing)
-                    .confirmationDialog("Activate Snapshot", isPresented: $showActivateConfirmation) {
+                    .confirmationDialog("Activate Snapshot", isPresented: $showActivateConfirmation)
+                    {
                         Button("Activate") {
                             performActivate()
                         }

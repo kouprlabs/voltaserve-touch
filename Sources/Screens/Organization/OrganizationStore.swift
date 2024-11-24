@@ -58,7 +58,9 @@ class OrganizationStore: ObservableObject {
         try await organizationClient?.fetchProbe(.init(query: query, size: size))
     }
 
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
+    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws
+        -> VOOrganization.List?
+    {
         try await organizationClient?.fetchList(.init(query: query, page: page, size: size))
     }
 
@@ -158,7 +160,8 @@ class OrganizationStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

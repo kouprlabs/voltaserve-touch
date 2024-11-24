@@ -23,7 +23,8 @@ struct VOColorBadge: View {
 
     var body: some View {
         if style == .fill {
-        } else if style == .outline {}
+        } else if style == .outline {
+        }
         Text(text)
             .font(.footnote)
             .padding(.horizontal)

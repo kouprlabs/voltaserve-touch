@@ -109,7 +109,8 @@ class AccountStore: ObservableObject {
     }
 
     func updatePassword(current: String, new: String) async throws -> VOIdentityUser.Entity? {
-        try await identityUserClient?.updatePassword(.init(currentPassword: current, newPassword: new))
+        try await identityUserClient?.updatePassword(
+            .init(currentPassword: current, newPassword: new))
     }
 
     func deleteAccount(password: String) async throws {

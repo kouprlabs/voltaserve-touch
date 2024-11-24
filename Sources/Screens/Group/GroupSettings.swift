@@ -35,7 +35,9 @@ struct GroupSettings: View {
                         NavigationLink {
                             GroupEditName(groupStore: groupStore) { updatedGroup in
                                 groupStore.current = updatedGroup
-                                if let index = groupStore.entities?.firstIndex(where: { $0.id == updatedGroup.id }) {
+                                if let index = groupStore.entities?.firstIndex(where: {
+                                    $0.id == updatedGroup.id
+                                }) {
                                     groupStore.entities?[index] = updatedGroup
                                 }
                             }

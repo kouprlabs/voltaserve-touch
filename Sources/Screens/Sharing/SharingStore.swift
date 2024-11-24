@@ -82,16 +82,22 @@ class SharingStore: ObservableObject {
 
     // MARK: - Update
 
-    func grantUserPermission(ids: [String], userID: String, permission: VOPermission.Value) async throws {
-        try await fileClient?.grantUserPermission(.init(ids: ids, userID: userID, permission: permission))
+    func grantUserPermission(ids: [String], userID: String, permission: VOPermission.Value)
+        async throws
+    {
+        try await fileClient?.grantUserPermission(
+            .init(ids: ids, userID: userID, permission: permission))
     }
 
     func revokeUserPermission(id: String, userID: String) async throws {
         try await fileClient?.revokeUserPermission(.init(ids: [id], userID: userID))
     }
 
-    func grantGroupPermission(ids: [String], groupID: String, permission: VOPermission.Value) async throws {
-        try await fileClient?.grantGroupPermission(.init(ids: ids, groupID: groupID, permission: permission))
+    func grantGroupPermission(ids: [String], groupID: String, permission: VOPermission.Value)
+        async throws
+    {
+        try await fileClient?.grantGroupPermission(
+            .init(ids: ids, groupID: groupID, permission: permission))
     }
 
     func revokeGroupPermission(id: String, groupID: String) async throws {

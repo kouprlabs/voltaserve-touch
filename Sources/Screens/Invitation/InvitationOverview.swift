@@ -126,7 +126,8 @@ struct InvitationOverview: View {
                         }
                     }
                     .disabled(isProcessing)
-                    .confirmationDialog("Decline Invitation", isPresented: $showDeclineConfirmation) {
+                    .confirmationDialog("Decline Invitation", isPresented: $showDeclineConfirmation)
+                    {
                         Button("Decline", role: .destructive) {
                             performDecline()
                         }

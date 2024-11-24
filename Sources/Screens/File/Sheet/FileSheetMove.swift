@@ -25,7 +25,9 @@ struct FileSheetMove: ViewModifier {
             .sheet(isPresented: $fileStore.browserForMoveIsPresented) {
                 if let workspace = workspaceStore.current {
                     NavigationStack {
-                        BrowserOverview(workspaceStore: workspaceStore, confirmLabelText: "Move Here") { id in
+                        BrowserOverview(
+                            workspaceStore: workspaceStore, confirmLabelText: "Move Here"
+                        ) { id in
                             destinationID = id
                             fileStore.moveIsPresented = true
                         }

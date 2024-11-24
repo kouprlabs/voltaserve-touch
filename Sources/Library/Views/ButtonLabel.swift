@@ -16,7 +16,10 @@ struct VOButtonLabel: View {
     private let isLoading: Bool
     private let progressViewTint: Color
 
-    init(_ text: String, systemImage: String? = nil, isLoading: Bool = false, progressViewTint: Color = .primary) {
+    init(
+        _ text: String, systemImage: String? = nil, isLoading: Bool = false,
+        progressViewTint: Color = .primary
+    ) {
         self.text = text
         self.systemImage = systemImage
         self.isLoading = isLoading

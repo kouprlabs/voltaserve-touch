@@ -34,7 +34,9 @@ struct InsightsCreate: View {
                     VStack {
                         ScrollView {
                             // swiftlint:disable:next line_length
-                            Text("Select the language to use for collecting insights. During the process, text will be extracted using OCR (optical character recognition), and entities will be scanned using NER (named entity recognition).")
+                            Text(
+                                "Select the language to use for collecting insights. During the process, text will be extracted using OCR (optical character recognition), and entities will be scanned using NER (named entity recognition)."
+                            )
                         }
                         Picker("Language", selection: $language) {
                             ForEach(languages, id: \.id) { language in

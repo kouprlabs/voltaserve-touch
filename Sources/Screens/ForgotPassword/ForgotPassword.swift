@@ -27,10 +27,12 @@ struct ForgotPassword: View {
                 VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
                 Text("Forgot Password")
                     .voHeading(fontSize: VOMetrics.headingFontSize)
-                Text("Please provide your account Email where we can send you the password recovery instructions.")
-                    .voFormHintText()
-                    .frame(width: VOMetrics.formWidth)
-                    .multilineTextAlignment(.center)
+                Text(
+                    "Please provide your account Email where we can send you the password recovery instructions."
+                )
+                .voFormHintText()
+                .frame(width: VOMetrics.formWidth)
+                .multilineTextAlignment(.center)
                 TextField("Email", text: $email)
                     .voTextField(width: VOMetrics.formWidth)
                     .textInputAutocapitalization(.never)

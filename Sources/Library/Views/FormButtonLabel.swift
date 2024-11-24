@@ -32,7 +32,8 @@ struct VOFormButtonLabel: View {
 
 #Preview {
     Form {
-        Button {} label: {
+        Button {
+        } label: {
             VOFormButtonLabel("Lorem Ipsum", isLoading: true)
         }
         .disabled(true)

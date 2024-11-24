@@ -31,7 +31,8 @@ struct OrganizationList: View {
                         List {
                             ForEach(entities, id: \.id) { organization in
                                 NavigationLink {
-                                    OrganizationOverview(organization, organizationStore: organizationStore)
+                                    OrganizationOverview(
+                                        organization, organizationStore: organizationStore)
                                 } label: {
                                     OrganizationRow(organization)
                                         .onAppear {

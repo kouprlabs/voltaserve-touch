@@ -60,14 +60,15 @@ struct ServerCreate: View {
     private func performSave() {
         isSaving = true
         Task {
-            context.insert(Server(
-                id: UUID().uuidString,
-                name: normalizedName,
-                apiURL: apiURL,
-                idpURL: idpURL,
-                isCloud: false,
-                isActive: false
-            ))
+            context.insert(
+                Server(
+                    id: UUID().uuidString,
+                    name: normalizedName,
+                    apiURL: apiURL,
+                    idpURL: idpURL,
+                    isCloud: false,
+                    isActive: false
+                ))
             try? context.save()
             DispatchQueue.main.async {
                 dismiss()

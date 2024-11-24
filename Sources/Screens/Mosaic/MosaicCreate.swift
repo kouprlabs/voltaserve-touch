@@ -32,7 +32,9 @@ struct MosaicCreate: View {
                 VStack {
                     ScrollView {
                         // swiftlint:disable:next line_length
-                        Text("Create a mosaic to enhance view performance of a large image by splitting it into smaller, manageable tiles. This makes browsing a high-resolution image faster and more efficient.")
+                        Text(
+                            "Create a mosaic to enhance view performance of a large image by splitting it into smaller, manageable tiles. This makes browsing a high-resolution image faster and more efficient."
+                        )
                     }
                     Button {
                         performCreate()

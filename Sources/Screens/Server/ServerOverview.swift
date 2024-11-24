@@ -121,12 +121,13 @@ struct ServerOverview: View {
 }
 
 #Preview {
-    ServerOverview(Server(
-        id: UUID().uuidString,
-        name: "Local",
-        apiURL: "http://localhost:8080",
-        idpURL: "http://localhost:8081",
-        isCloud: false,
-        isActive: true
-    ))
+    ServerOverview(
+        Server(
+            id: UUID().uuidString,
+            name: "Local",
+            apiURL: "http://localhost:8080",
+            idpURL: "http://localhost:8081",
+            isCloud: false,
+            isActive: true
+        ))
 }

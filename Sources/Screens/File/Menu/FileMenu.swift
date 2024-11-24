@@ -60,8 +60,9 @@ struct FileMenu: View {
                     Label("Download", systemImage: "square.and.arrow.down")
                 }
             }
-            if fileStore.isSharingAuthorized(fileStore.selection) ||
-                fileStore.isDownloadAuthorized(fileStore.selection) {
+            if fileStore.isSharingAuthorized(fileStore.selection)
+                || fileStore.isDownloadAuthorized(fileStore.selection)
+            {
                 Divider()
             }
             if fileStore.isDeleteAuthorized(fileStore.selection) {

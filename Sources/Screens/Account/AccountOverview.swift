@@ -11,7 +11,8 @@
 import SwiftUI
 import VoltaserveCore
 
-struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
+struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var accountStore = AccountStore()
     @StateObject private var invitationStore = InvitationStore()
@@ -42,23 +43,29 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                             VStack(alignment: .leading) {
                                 if let storageUsage = accountStore.storageUsage {
                                     // swiftlint:disable:next line_length
-                                    Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                                    Text(
+                                        "\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used"
+                                    )
                                     ProgressView(value: Double(storageUsage.percentage) / 100.0)
                                 }
                             }
                         }
                         Section {
-                            NavigationLink(destination: AccountSettings(accountStore: accountStore) {
-                                dismiss()
-                                performSignOut()
-                            }) {
+                            NavigationLink(
+                                destination: AccountSettings(accountStore: accountStore) {
+                                    dismiss()
+                                    performSignOut()
+                                }
+                            ) {
                                 Label("Settings", systemImage: "gear")
                             }
                             NavigationLink(destination: InvitationIncomingList()) {
                                 HStack {
                                     Label("Invitations", systemImage: "paperplane")
                                     Spacer()
-                                    if let incomingCount = invitationStore.incomingCount, incomingCount > 0 {
+                                    if let incomingCount = invitationStore.incomingCount,
+                                        incomingCount > 0
+                                    {
                                         VONumberBadge(incomingCount)
                                     }
                                 }
@@ -110,15 +117,13 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        accountStore.identityUserIsLoading ||
-            accountStore.storageUsageIsLoading ||
-            invitationStore.incomingCountIsLoading
+        accountStore.identityUserIsLoading || accountStore.storageUsageIsLoading
+            || invitationStore.incomingCountIsLoading
     }
 
     var error: String? {
-        accountStore.identityUserError ??
-            accountStore.storageUsageError ??
-            invitationStore.incomingCountError
+        accountStore.identityUserError ?? accountStore.storageUsageError
+            ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider

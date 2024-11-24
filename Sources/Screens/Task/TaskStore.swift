@@ -43,7 +43,9 @@ class TaskStore: ObservableObject {
         try await taskClient?.fetchProbe(.init(size: size))
     }
 
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOTask.List? {
+    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOTask
+        .List?
+    {
         try await taskClient?.fetchList(.init(page: page, size: size))
     }
 
@@ -138,7 +140,8 @@ class TaskStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

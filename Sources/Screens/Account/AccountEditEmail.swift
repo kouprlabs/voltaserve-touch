@@ -99,7 +99,8 @@ struct AccountEditEmail: View, LoadStateProvider, FormValidatable, ErrorPresenta
 
     func isValid() -> Bool {
         if let identityUser = accountStore.identityUser {
-            return !normalizedValue.isEmpty && normalizedValue != (identityUser.pendingEmail ?? identityUser.email)
+            return !normalizedValue.isEmpty
+                && normalizedValue != (identityUser.pendingEmail ?? identityUser.email)
         }
         return false
     }

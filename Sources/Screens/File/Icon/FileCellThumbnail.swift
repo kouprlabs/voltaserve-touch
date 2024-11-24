@@ -18,7 +18,10 @@ struct FileCellThumbnail<FallbackContent: View>: View {
     private let fallback: () -> FallbackContent
     private let file: VOFile.Entity
 
-    init(url: URL, file: VOFile.Entity, fileStore: FileStore, @ViewBuilder fallback: @escaping () -> FallbackContent) {
+    init(
+        url: URL, file: VOFile.Entity, fileStore: FileStore,
+        @ViewBuilder fallback: @escaping () -> FallbackContent
+    ) {
         self.url = url
         self.fallback = fallback
         self.file = file
@@ -31,7 +34,9 @@ struct FileCellThumbnail<FallbackContent: View>: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+                .contentShape(
+                    .contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
+                )
                 .fileActions(file, fileStore: fileStore)
                 .overlay {
                     RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
@@ -39,14 +44,18 @@ struct FileCellThumbnail<FallbackContent: View>: View {
                 }
                 .fileCellAdornments(file)
                 .overlay {
-                    if let fileExtension = file.snapshot?.original.fileExtension, fileExtension.isVideo() {
+                    if let fileExtension = file.snapshot?.original.fileExtension,
+                        fileExtension.isVideo()
+                    {
                         Image(systemName: "play.fill")
                             .foregroundStyle(.white)
                             .font(.largeTitle)
                             .opacity(0.5)
                     }
                 }
-                .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
+                .frame(
+                    maxWidth: FileCellMetrics.frameSize.width,
+                    maxHeight: FileCellMetrics.frameSize.height)
         } placeholder: {
             fallback()
         }

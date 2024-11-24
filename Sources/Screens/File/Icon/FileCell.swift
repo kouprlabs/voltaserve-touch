@@ -25,9 +25,11 @@ struct FileCell: View {
         VStack(spacing: VOMetrics.spacing) {
             if file.type == .file {
                 if let snapshot = file.snapshot,
-                   let thumbnail = snapshot.thumbnail,
-                   let fileExtension = thumbnail.fileExtension,
-                   let url = fileStore.urlForThumbnail(file.id, fileExtension: String(fileExtension.dropFirst())) {
+                    let thumbnail = snapshot.thumbnail,
+                    let fileExtension = thumbnail.fileExtension,
+                    let url = fileStore.urlForThumbnail(
+                        file.id, fileExtension: String(fileExtension.dropFirst()))
+                {
                     FileCellThumbnail(url: url, file: file, fileStore: fileStore) {
                         fileIcon
                     }
@@ -58,17 +60,22 @@ struct FileCell: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .fileCellAdornments(file)
-                    .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
+                    .frame(
+                        width: FileCellMetrics.iconSize.width,
+                        height: FileCellMetrics.iconSize.height)
             }
             .frame(
                 width: FileCellMetrics.iconSize.width + VOMetrics.spacingLg,
                 height: FileCellMetrics.iconSize.height + VOMetrics.spacing2Xl
             )
             .background(colorScheme == .light ? .white : .clear)
-            .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+            .contentShape(
+                .contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
+            )
             .fileActions(file, fileStore: fileStore)
         }
-        .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
+        .frame(
+            maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
     }
 
     private var folderIcon: some View {
@@ -78,16 +85,21 @@ struct FileCell: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .fileCellAdornments(file)
-                    .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
+                    .frame(
+                        width: FileCellMetrics.iconSize.width,
+                        height: FileCellMetrics.iconSize.height)
             }
             .frame(
                 width: FileCellMetrics.iconSize.width + VOMetrics.spacing2Xl,
                 height: FileCellMetrics.iconSize.height + VOMetrics.spacingLg
             )
             .background(colorScheme == .light ? .white : .clear)
-            .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+            .contentShape(
+                .contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
+            )
             .fileActions(file, fileStore: fileStore)
         }
-        .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
+        .frame(
+            maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
     }
 }

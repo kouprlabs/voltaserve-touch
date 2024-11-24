@@ -12,7 +12,9 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
+struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var browserStore = BrowserStore()

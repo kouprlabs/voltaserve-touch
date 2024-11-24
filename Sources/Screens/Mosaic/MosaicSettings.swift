@@ -38,9 +38,12 @@ struct MosaicSettings: View {
                                 Button {
                                     performCreate()
                                 } label: {
-                                    VOButtonLabel("Create Mosaic", systemImage: "bolt", isLoading: isCreating)
+                                    VOButtonLabel(
+                                        "Create Mosaic", systemImage: "bolt", isLoading: isCreating)
                                 }
-                                .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcesssing || !canCreate)
+                                .voSecondaryButton(
+                                    colorScheme: colorScheme,
+                                    isDisabled: isProcesssing || !canCreate)
                             }
                             .padding()
                         }
@@ -54,8 +57,10 @@ struct MosaicSettings: View {
                                 Button {
                                     performDelete()
                                 } label: {
-                                    VOButtonLabel("Delete Mosaic", systemImage: "trash", isLoading: isDeleting)
-                                        .foregroundStyle(Color.red400.textColor())
+                                    VOButtonLabel(
+                                        "Delete Mosaic", systemImage: "trash", isLoading: isDeleting
+                                    )
+                                    .foregroundStyle(Color.red400.textColor())
                                 }
                                 .voButton(color: .red400, isDisabled: isProcesssing || !canDelete)
                             }
@@ -113,18 +118,16 @@ struct MosaicSettings: View {
 
     private var canCreate: Bool {
         if let info = mosaicStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) &&
-                info.isOutdated &&
-                file.permission.ge(.editor)
+            return !(file.snapshot?.task?.isPending ?? false) && info.isOutdated
+                && file.permission.ge(.editor)
         }
         return false
     }
 
     private var canDelete: Bool {
         if let info = mosaicStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) &&
-                !info.isOutdated &&
-                file.permission.ge(.owner)
+            return !(file.snapshot?.task?.isPending ?? false) && !info.isOutdated
+                && file.permission.ge(.owner)
         }
         return false
     }

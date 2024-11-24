@@ -28,7 +28,9 @@ struct FileSheetDownload: ViewModifier {
                     }
                 }
             }
-            .sheet(isPresented: $fileStore.downloadDocumentPickerIsPresented, onDismiss: handleDismiss) {
+            .sheet(
+                isPresented: $fileStore.downloadDocumentPickerIsPresented, onDismiss: handleDismiss
+            ) {
                 if let pickerURLs {
                     FileDownloadPicker(
                         sourceURLs: pickerURLs,

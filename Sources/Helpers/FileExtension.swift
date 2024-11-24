@@ -18,7 +18,7 @@ extension String {
     func isImage() -> Bool {
         let imageExtensions = [
             ".xpm", ".png", ".jpg", ".jpeg", ".jp2", ".gif", ".webp",
-            ".tiff", ".tif", ".bmp", ".ico", ".heif", ".xcf", ".svg"
+            ".tiff", ".tif", ".bmp", ".ico", ".heif", ".xcf", ".svg",
         ]
         return imageExtensions.contains(self)
     }
@@ -72,7 +72,7 @@ extension String {
     func isVideo() -> Bool {
         let videoExtensions = [
             ".ogv", ".ogg", ".mpeg", ".mov", ".mqv", ".mp4", ".webm",
-            ".3gp", ".3g2", ".avi", ".flv", ".mkv", ".asf", ".m4v"
+            ".3gp", ".3g2", ".avi", ".flv", ".mkv", ".asf", ".m4v",
         ]
         return videoExtensions.contains(self)
     }
@@ -80,7 +80,7 @@ extension String {
     func isAudio() -> Bool {
         let audioExtensions = [
             ".oga", ".mp3", ".flac", ".midi", ".ape", ".mpc", ".amr",
-            ".wav", ".aiff", ".au", ".aac", "voc", ".m4a", ".qcp"
+            ".wav", ".aiff", ".au", ".aac", "voc", ".m4a", ".qcp",
         ]
         return audioExtensions.contains(self)
     }
@@ -98,7 +98,7 @@ extension String {
         let codeExtensions = [
             ".html", ".js", "jsx", ".ts", ".tsx", ".css", ".sass",
             ".scss", ".go", ".py", ".rb", ".java", ".c", ".h", ".cpp",
-            ".hpp", ".json", ".yml", ".yaml", ".toml", ".md"
+            ".hpp", ".json", ".yml", ".yaml", ".toml", ".md",
         ]
         return codeExtensions.contains(self)
     }

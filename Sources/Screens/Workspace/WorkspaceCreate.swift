@@ -111,9 +111,7 @@ struct WorkspaceCreate: View {
     }
 
     private func isValid() -> Bool {
-        !normalizedName.isEmpty &&
-            organization != nil &&
-            storageCapacity != nil &&
-            storageCapacity! > 0
+        !normalizedName.isEmpty && organization != nil && storageCapacity != nil
+            && storageCapacity! > 0
     }
 }

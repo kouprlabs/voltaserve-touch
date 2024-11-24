@@ -21,7 +21,9 @@ struct OrganizationEditName: View {
     @State private var errorMessage: String?
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
-    init(organizationStore: OrganizationStore, onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
+    init(
+        organizationStore: OrganizationStore, onCompletion: ((VOOrganization.Entity) -> Void)? = nil
+    ) {
         self.organizationStore = organizationStore
         self.onCompletion = onCompletion
     }
@@ -70,7 +72,8 @@ struct OrganizationEditName: View {
         var updatedOrganization: VOOrganization.Entity?
 
         withErrorHandling {
-            updatedOrganization = try await organizationStore.patchName(current.id, name: nornalizedValue)
+            updatedOrganization = try await organizationStore.patchName(
+                current.id, name: nornalizedValue)
             return true
         } success: {
             dismiss()

@@ -120,15 +120,13 @@ struct WorkspaceList: View {
     }
 
     private var isLoading: Bool {
-        workspaceStore.entities == nil ||
-            accountStore.identityUserIsLoading ||
-            invitationStore.incomingCountIsLoading
+        workspaceStore.entities == nil || accountStore.identityUserIsLoading
+            || invitationStore.incomingCountIsLoading
     }
 
     private var error: String? {
-        workspaceStore.entitiesError ??
-            accountStore.identityUserError ??
-            invitationStore.incomingCountError
+        workspaceStore.entitiesError ?? accountStore.identityUserError
+            ?? invitationStore.incomingCountError
     }
 
     private var accountButton: some View {

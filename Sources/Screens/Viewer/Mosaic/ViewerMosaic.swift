@@ -26,21 +26,25 @@ struct ViewerMosaic: View {
 
     var body: some View {
         if file.type == .file,
-           let snapshot = file.snapshot,
-           let download = snapshot.preview,
-           let fileExtension = download.fileExtension, fileExtension.isImage(), snapshot.mosaic != nil {
+            let snapshot = file.snapshot,
+            let download = snapshot.preview,
+            let fileExtension = download.fileExtension, fileExtension.isImage(),
+            snapshot.mosaic != nil
+        {
             GeometryReader { geometry in
                 let visibleRect = CGRect(
                     origin: CGPoint(x: -dragOffset.width, y: -dragOffset.height),
                     size: geometry.size
                 )
                 ZStack {
-                    if let zoomLevel = viewerMosaicStore.zoomLevel, !viewerMosaicStore.grid.isEmpty {
-                        ForEach(0 ..< zoomLevel.rows, id: \.self) { row in
-                            ForEach(0 ..< zoomLevel.cols, id: \.self) { col in
+                    if let zoomLevel = viewerMosaicStore.zoomLevel, !viewerMosaicStore.grid.isEmpty
+                    {
+                        ForEach(0..<zoomLevel.rows, id: \.self) { row in
+                            ForEach(0..<zoomLevel.cols, id: \.self) { col in
                                 let size = viewerMosaicStore.sizeForCell(row: row, col: col)
                                 let position = viewerMosaicStore.positionForCell(row: row, col: col)
-                                let frame = viewerMosaicStore.frameForCellAt(position: position, size: size)
+                                let frame = viewerMosaicStore.frameForCellAt(
+                                    position: position, size: size)
 
                                 // Check if the cell is within the visible bounds or the surrounding buffer
                                 if visibleRect.insetBy(
@@ -64,7 +68,8 @@ struct ViewerMosaic: View {
                                                 y: position.y + dragOffset.height
                                             )
                                             .onAppear {
-                                                viewerMosaicStore.loadImageForCell(file.id, row: row, column: col)
+                                                viewerMosaicStore.loadImageForCell(
+                                                    file.id, row: row, column: col)
                                             }
                                     }
                                 }
@@ -99,12 +104,14 @@ struct ViewerMosaic: View {
                         Menu {
                             if let zoomLevels = viewerMosaicStore.info?.metadata.zoomLevels {
                                 ForEach(zoomLevels, id: \.index) { zoomLevel in
-                                    Button(action: {
-                                        resetMosaicPosition()
-                                        viewerMosaicStore.selectZoomLevel(zoomLevel)
-                                    }, label: {
-                                        Text("\(Int(zoomLevel.scaleDownPercentage))%")
-                                    })
+                                    Button(
+                                        action: {
+                                            resetMosaicPosition()
+                                            viewerMosaicStore.selectZoomLevel(zoomLevel)
+                                        },
+                                        label: {
+                                            Text("\(Int(zoomLevel.scaleDownPercentage))%")
+                                        })
                                 }
                             }
                         } label: {

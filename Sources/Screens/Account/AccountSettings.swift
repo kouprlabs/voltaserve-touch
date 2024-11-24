@@ -35,7 +35,8 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
             } else if let identityUser = accountStore.identityUser {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink(destination: AccountEditFullName(accountStore: accountStore)) {
+                        NavigationLink(destination: AccountEditFullName(accountStore: accountStore))
+                        {
                             HStack {
                                 Text("Full name")
                                 Spacer()
@@ -68,7 +69,8 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
                             }
                             .font(.footnote)
                         }
-                        NavigationLink(destination: AccountEditPassword(accountStore: accountStore)) {
+                        NavigationLink(destination: AccountEditPassword(accountStore: accountStore))
+                        {
                             HStack {
                                 Text("Password")
                                 Spacer()
@@ -90,7 +92,9 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
                             VOFormButtonLabel("Delete Account", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
-                        .confirmationDialog("Delete Account", isPresented: $deleteConfirmationIsPresented) {
+                        .confirmationDialog(
+                            "Delete Account", isPresented: $deleteConfirmationIsPresented
+                        ) {
                             Button("Delete Permanently", role: .destructive) {
                                 performDelete()
                             }
@@ -100,7 +104,8 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
                         .confirmationDialog(
                             "Missing Password Confirmation",
                             isPresented: $deleteNoticeIsPresented
-                        ) {} message: {
+                        ) {
+                        } message: {
                             Text("You need to enter your password to confirm the account deletion.")
                         }
                     }

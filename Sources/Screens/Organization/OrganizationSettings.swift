@@ -33,7 +33,8 @@ struct OrganizationSettings: View {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink {
-                            OrganizationEditName(organizationStore: organizationStore) { updatedOranization in
+                            OrganizationEditName(organizationStore: organizationStore) {
+                                updatedOranization in
                                 organizationStore.current = updatedOranization
                                 if let index = organizationStore.entities?.firstIndex(where: {
                                     $0.id == updatedOranization.id
@@ -60,7 +61,9 @@ struct OrganizationSettings: View {
                             VOFormButtonLabel("Delete Organization", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
-                        .confirmationDialog("Delete Organization", isPresented: $showDeleteConfirmation) {
+                        .confirmationDialog(
+                            "Delete Organization", isPresented: $showDeleteConfirmation
+                        ) {
                             Button("Delete Permanently", role: .destructive) {
                                 performDelete()
                             }

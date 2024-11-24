@@ -38,7 +38,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
             sceneView.topAnchor.constraint(equalTo: containerView.topAnchor),
             sceneView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             sceneView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            sceneView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+            sceneView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
 
         let spinner = UIActivityIndicatorView(style: .large)
@@ -47,7 +47,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
         spinner.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             spinner.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            spinner.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+            spinner.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
         ])
 
         context.coordinator.spinner = spinner
@@ -137,7 +137,8 @@ struct Viewer3DRenderer: UIViewRepresentable {
                 defaultAnimation.animationPlayer.animation.usesSceneTimeBase = false
                 defaultAnimation.animationPlayer.animation.repeatCount = .greatestFiniteMagnitude
 
-                sceneView.scene?.rootNode.addAnimationPlayer(defaultAnimation.animationPlayer, forKey: nil)
+                sceneView.scene?.rootNode.addAnimationPlayer(
+                    defaultAnimation.animationPlayer, forKey: nil)
 
                 defaultAnimation.animationPlayer.play()
             }
@@ -169,7 +170,8 @@ struct Viewer3DRenderer: UIViewRepresentable {
             let adjustedExtent = maxExtent * scaleFactor
             let distance = adjustedExtent * 2.0
 
-            cameraNode.position = SCNVector3(center.x, center.y + extents.y / 2, center.z + distance)
+            cameraNode.position = SCNVector3(
+                center.x, center.y + extents.y / 2, center.z + distance)
 
             // Update the camera's look-at point on the main thread to ensure synchronization
             DispatchQueue.main.async {

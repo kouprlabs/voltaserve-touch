@@ -39,15 +39,19 @@ class InvitationStore: ObservableObject {
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOInvitation.Probe? {
         if let organizationID {
-            try await invitationClient?.fetchOutgoingProbe(.init(organizationID: organizationID, size: size))
+            try await invitationClient?.fetchOutgoingProbe(
+                .init(organizationID: organizationID, size: size))
         } else {
             try await invitationClient?.fetchIncomingProbe(.init(size: size))
         }
     }
 
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInvitation.List? {
+    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws
+        -> VOInvitation.List?
+    {
         if let organizationID {
-            try await invitationClient?.fetchOutgoingList(.init(organizationID: organizationID, page: page, size: size))
+            try await invitationClient?.fetchOutgoingList(
+                .init(organizationID: organizationID, page: page, size: size))
         } else {
             try await invitationClient?.fetchIncomingList(.init(page: page, size: size))
         }
@@ -118,7 +122,8 @@ class InvitationStore: ObservableObject {
 
     func create(emails: [String]) async throws -> [VOInvitation.Entity]? {
         guard let organizationID else { return nil }
-        return try await invitationClient?.create(.init(organizationID: organizationID, emails: emails))
+        return try await invitationClient?.create(
+            .init(organizationID: organizationID, emails: emails))
     }
 
     func accept(_ id: String) async throws {
@@ -171,7 +176,8 @@ class InvitationStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

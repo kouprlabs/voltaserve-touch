@@ -15,12 +15,18 @@ extension Color {
         let hex = hex.trimmingCharacters(in: .alphanumerics.inverted)
         var int = UInt64()
         Scanner(string: hex).scanHexInt64(&int)
-        let red, green, blue: Double
+        let red: Double
+        let green: Double
+        let blue: Double
         switch hex.count {
-        case 6: // RGB (24-bit)
-            (red, green, blue) = (Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF))
-        case 8: // ARGB (32-bit)
-            (red, green, blue) = (Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF))
+        case 6:  // RGB (24-bit)
+            (red, green, blue) = (
+                Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF)
+            )
+        case 8:  // ARGB (32-bit)
+            (red, green, blue) = (
+                Double((int >> 16) & 0xFF), Double((int >> 8) & 0xFF), Double(int & 0xFF)
+            )
         default:
             (red, green, blue) = (0, 0, 0)
         }

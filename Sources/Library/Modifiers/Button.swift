@@ -74,12 +74,15 @@ extension View {
         modifier(VOButton(color: .blue500, width: width, isDisabled: isDisabled))
     }
 
-    func voSecondaryButton(colorScheme: ColorScheme, width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
-        modifier(VOButton(
-            color: colorScheme == .dark ? .gray700 : .gray200,
-            width: width,
-            isDisabled: isDisabled
-        ))
+    func voSecondaryButton(
+        colorScheme: ColorScheme, width: CGFloat? = nil, isDisabled: Bool = false
+    ) -> some View {
+        modifier(
+            VOButton(
+                color: colorScheme == .dark ? .gray700 : .gray200,
+                width: width,
+                isDisabled: isDisabled
+            ))
     }
 }
 
@@ -87,15 +90,18 @@ extension View {
     @Previewable @Environment(\.colorScheme) var colorScheme
 
     VStack {
-        Button {} label: {
+        Button {
+        } label: {
             VOButtonLabel("Lorem Ipsum")
         }
         .voPrimaryButton(width: 60)
-        Button {} label: {
+        Button {
+        } label: {
             VOButtonLabel("Lorem Ipsum", isLoading: true)
         }
         .voSecondaryButton(colorScheme: colorScheme, width: 200)
-        Button {} label: {
+        Button {
+        } label: {
             VOButtonLabel("Dolor Sit Amet")
         }
         .voButton(color: .red300)

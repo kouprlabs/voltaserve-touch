@@ -72,12 +72,18 @@ class BrowserStore: ObservableObject {
         }
     }
 
-    private func fetchProbe(_ id: String, size: Int = Constants.pageSize) async throws -> VOFile.Probe? {
-        try await fileClient?.fetchProbe(id, options: .init(query: query, size: size, type: .folder))
+    private func fetchProbe(_ id: String, size: Int = Constants.pageSize) async throws -> VOFile
+        .Probe?
+    {
+        try await fileClient?.fetchProbe(
+            id, options: .init(query: query, size: size, type: .folder))
     }
 
-    private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size, type: .folder))
+    private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws
+        -> VOFile.List?
+    {
+        try await fileClient?.fetchList(
+            id, options: .init(query: query, page: page, size: size, type: .folder))
     }
 
     func fetchNextPage(replace: Bool = false) {
@@ -161,7 +167,8 @@ class BrowserStore: ObservableObject {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
-               entities.firstIndex(where: { $0.id == id }) == entities.count - threashold {
+                entities.firstIndex(where: { $0.id == id }) == entities.count - threashold
+            {
                 return true
             } else {
                 return id == entities.last?.id

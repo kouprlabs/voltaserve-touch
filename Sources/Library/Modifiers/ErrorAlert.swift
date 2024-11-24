@@ -36,7 +36,9 @@ struct VOErrorAlert: ViewModifier {
 }
 
 extension View {
-    func voErrorAlert(isPresented: Binding<Bool>, title: String? = nil, message: String? = nil) -> some View {
+    func voErrorAlert(isPresented: Binding<Bool>, title: String? = nil, message: String? = nil)
+        -> some View
+    {
         modifier(VOErrorAlert(isPresented: isPresented, title: title, message: message))
     }
 }

@@ -35,14 +35,19 @@ struct WorkspaceSettings: View {
                         VStack(alignment: .leading) {
                             if let storageUsage = workspaceStore.storageUsage {
                                 // swiftlint:disable:next line_length
-                                Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                                Text(
+                                    "\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used"
+                                )
                                 ProgressView(value: Double(storageUsage.percentage) / 100.0)
                             } else {
                                 Text("Calculating…")
                                 ProgressView()
                             }
                         }
-                        NavigationLink(destination: WorkspaceEditStorageCapacity(workspaceStore: workspaceStore)) {
+                        NavigationLink(
+                            destination: WorkspaceEditStorageCapacity(
+                                workspaceStore: workspaceStore)
+                        ) {
                             HStack {
                                 Text("Capacity")
                                 Spacer()
@@ -81,7 +86,9 @@ struct WorkspaceSettings: View {
                             VOFormButtonLabel("Delete Workspace", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
-                        .confirmationDialog("Delete Workspace", isPresented: $showDeleteConfirmation) {
+                        .confirmationDialog(
+                            "Delete Workspace", isPresented: $showDeleteConfirmation
+                        ) {
                             Button("Delete Permanently", role: .destructive) {
                                 performDelete()
                             }

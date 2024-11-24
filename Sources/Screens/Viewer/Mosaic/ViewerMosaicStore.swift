@@ -79,8 +79,8 @@ class ViewerMosaicStore: ObservableObject {
     func unloadImagesOutsideRect(_ visibleRect: CGRect, extraTilesToLoad: Int) {
         guard let zoomLevel else { return }
 
-        for row in 0 ..< zoomLevel.rows {
-            for col in 0 ..< zoomLevel.cols {
+        for row in 0..<zoomLevel.rows {
+            for col in 0..<zoomLevel.cols {
                 let size = sizeForCell(row: row, col: col)
                 let position = positionForCell(row: row, col: col)
                 let frame = frameForCellAt(position: position, size: size)

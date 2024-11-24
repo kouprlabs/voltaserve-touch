@@ -23,10 +23,11 @@ struct ViewerPDF: View {
     var body: some View {
         VStack {
             if file.type == .file,
-               let snapshot = file.snapshot,
-               let download = snapshot.preview,
-               let fileExtension = download.fileExtension, fileExtension.isPDF(),
-               let url = viewerPDFStore.url {
+                let snapshot = file.snapshot,
+                let download = snapshot.preview,
+                let fileExtension = download.fileExtension, fileExtension.isPDF(),
+                let url = viewerPDFStore.url
+            {
                 ViewerPDFWebView(url: url)
                     .edgesIgnoringSafeArea(.horizontal)
             }

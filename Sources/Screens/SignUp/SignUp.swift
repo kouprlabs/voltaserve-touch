@@ -50,7 +50,8 @@ struct SignUp: View {
                         PasswordHint("\(passwordRequirements.minLowercase) lowercase character.")
                         PasswordHint("\(passwordRequirements.minUppercase) uppercase character.")
                         PasswordHint("\(passwordRequirements.minNumbers) number.")
-                        PasswordHint("\(passwordRequirements.minSymbols) special character(s) (!#$%).")
+                        PasswordHint(
+                            "\(passwordRequirements.minSymbols) special character(s) (!#$%).")
                     }
                     .frame(width: VOMetrics.formWidth)
                     SecureField("Confirm password", text: $confirmPassword)

@@ -90,7 +90,9 @@ struct SharingGroupPermission: View {
                         }
                     }
                     .disabled(isRevoking)
-                    .confirmationDialog("Revoke Permission", isPresented: $showRevoke, titleVisibility: .visible) {
+                    .confirmationDialog(
+                        "Revoke Permission", isPresented: $showRevoke, titleVisibility: .visible
+                    ) {
                         Button("Revoke", role: .destructive) {
                             performRevoke()
                         }
@@ -140,7 +142,8 @@ struct SharingGroupPermission: View {
         guard let group, let permission else { return }
         isGranting = true
         withErrorHandling {
-            try await sharingStore.grantGroupPermission(ids: fileIDs, groupID: group.id, permission: permission)
+            try await sharingStore.grantGroupPermission(
+                ids: fileIDs, groupID: group.id, permission: permission)
             return true
         } success: {
             dismiss()

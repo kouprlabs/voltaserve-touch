@@ -104,7 +104,9 @@ struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
                             VStack(alignment: .leading) {
                                 if let storageUsage = fileStore.storageUsage {
                                     // swiftlint:disable:next line_length
-                                    Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                                    Text(
+                                        "\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used"
+                                    )
                                     ProgressView(value: Double(storageUsage.percentage) / 100.0)
                                 } else {
                                     Text("Calculating…")
