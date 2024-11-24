@@ -13,13 +13,17 @@ Prerequisites:
 Format code:
 
 ```shell
-swiftformat .
+swift format -i -r .
 ```
 
 Lint code:
 
 ```shell
-swiftlint .
+swift format lint -r .
+```
+
+```shell
+swiftlint lint --strict .
 ```
 
 ## Licensing
