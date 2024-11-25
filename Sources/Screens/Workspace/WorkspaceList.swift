@@ -171,7 +171,7 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
         invitationStore.fetchIncomingCount()
     }
 
-    // MARK: -
+    // MARK: - TimerLifecycle
 
     func startTimers() {
         workspaceStore.startTimer()
@@ -185,7 +185,7 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
         invitationStore.stopTimer()
     }
 
-    // MARK: - TimerLifecycle
+    // MARK: - TokenDistributing
 
     func assignTokenToStores(_ token: VOToken.Value) {
         workspaceStore.token = token
