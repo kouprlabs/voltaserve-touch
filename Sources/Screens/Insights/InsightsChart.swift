@@ -34,26 +34,36 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                         if entities.count < 5 {
                             Text("Not enough data to render the chart.")
                         } else {
-                            Chart(entities) { entity in
+                            Chart(Array(entities.enumerated()), id: \.element.id) { index, entity in
                                 SectorMark(
                                     angle: .value(
                                         Text(verbatim: entity.text),
                                         entity.frequency
                                     ),
-                                    innerRadius: .ratio(0.6),
-                                    angularInset: 5
+                                    innerRadius: .ratio(0.61),
+                                    angularInset: 4
                                 )
-                                .foregroundStyle(
-                                    by: .value(
-                                        Text(verbatim: entity.text),
-                                        entity.text
-                                    )
-                                )
+                                .cornerRadius(5)
+                                .foregroundStyle(colorForIndex(index))
+                                .annotation(position: .overlay) {
+                                    Text("\(entity.text) (\(entity.frequency))")
+                                        .font(.footnote)
+                                        .padding(.horizontal)
+                                        .frame(height: 20)
+                                        .background(Color(UIColor.systemBackground))
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(colorForIndex(index), lineWidth: 1)
+                                        }
+                                }
                             }
+                            .chartLegend(.hidden)
                             .modifierIfPad {
-                                $0.frame(maxWidth: 360, maxHeight: 360)
+                                $0.frame(maxWidth: 300, maxHeight: 300)
                             }
-                            .padding(VOMetrics.spacing2Xl)
+                            .padding(.horizontal, VOMetrics.spacing2Xl + VOMetrics.spacingLg)
+                            .padding(.vertical, VOMetrics.spacing)
                         }
                     }
                     .navigationBarTitleDisplayMode(.inline)
@@ -82,6 +92,17 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
         .onDisappear {
             insightsStore.clear()
             stopTimers()
+        }
+    }
+    
+    private func colorForIndex(_ index: Int) -> Color {
+        switch index {
+        case 0: return Color(hex: "#e8c1a0")
+        case 1: return Color(hex: "#f47560")
+        case 2: return Color(hex: "#f1e15b")
+        case 3: return Color(hex: "#e8a838")
+        case 4: return Color(hex: "#61cdbb")
+        default: return .clear
         }
     }
 

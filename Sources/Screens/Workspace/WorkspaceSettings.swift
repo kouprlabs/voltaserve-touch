@@ -93,21 +93,21 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
                             }
                         }
                     }
-                    .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-                    .onAppear {
-                        if tokenStore.token != nil {
-                            onAppearOrChange()
-                        }
-                    }
-                    .onChange(of: tokenStore.token) { _, newToken in
-                        if newToken != nil {
-                            onAppearOrChange()
-                        }
-                    }
                 }
             }
         }
         .navigationTitle("Settings")
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
+        .onAppear {
+            if tokenStore.token != nil {
+                onAppearOrChange()
+            }
+        }
+        .onChange(of: tokenStore.token) { _, newToken in
+            if newToken != nil {
+                onAppearOrChange()
+            }
+        }
     }
 
     private func performDelete() {
