@@ -12,11 +12,11 @@ import Charts
 import SwiftUI
 import VoltaserveCore
 
-struct InsightsChart: View {
+struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore(pageSize: Constants.pageSize)
     @Environment(\.dismiss) private var dismiss
-    @State private var showError = false
+    @Environment(\.colorScheme) private var colorScheme
     private let fileID: String
 
     init(_ fileID: String) {
@@ -25,54 +25,59 @@ struct InsightsChart: View {
 
     var body: some View {
         NavigationView {
-            if let entities = insightsStore.entities {
-                Group {
-                    if entities.count < 5 {
-                        Text("Not enough data to render the chart.")
-                    } else {
-                        Chart(entities) { entity in
-                            SectorMark(
-                                angle: .value(
-                                    Text(verbatim: entity.text),
-                                    entity.frequency
-                                ),
-                                innerRadius: .ratio(0.6),
-                                angularInset: 5
-                            )
-                            .foregroundStyle(
-                                by: .value(
-                                    Text(verbatim: entity.text),
-                                    entity.text
-                                )
-                            )
-                        }
-                        .modifierIfPad {
-                            $0.frame(maxWidth: 360, maxHeight: 360)
-                        }
-                        .padding(VOMetrics.spacing2Xl)
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Insights")
-                .refreshable {
-                    insightsStore.fetchEntityNextPage(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            dismiss()
-                        }
-                    }
-                }
-            } else {
+            if isLoading {
                 ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = insightsStore.entities {
+                    Group {
+                        if entities.count < 5 {
+                            Text("Not enough data to render the chart.")
+                        } else {
+                            Chart(entities) { entity in
+                                SectorMark(
+                                    angle: .value(
+                                        Text(verbatim: entity.text),
+                                        entity.frequency
+                                    ),
+                                    innerRadius: .ratio(0.65),
+                                    angularInset: 4
+                                )
+                                .cornerRadius(5)
+                                .foregroundStyle(sectorMarkColor)
+                                .annotation(position: .overlay) {
+                                    Text("\(entity.text) (\(entity.frequency))")
+                                        .font(.footnote)
+                                        .padding(.horizontal)
+                                        .frame(height: 20)
+                                        .background(Color(UIColor.systemBackground))
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(sectorMarkColor, lineWidth: 1)
+                                        }
+                                }
+                            }
+                            .chartLegend(.hidden)
+                            .frame(maxWidth: 300, maxHeight: 300)
+                        }
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle("Insights")
+                    .refreshable {
+                        insightsStore.fetchEntityNextPage(replace: true)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done") {
+                                dismiss()
+                            }
+                        }
+                    }
+                }
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: insightsStore.errorTitle,
-            message: insightsStore.errorMessage
-        )
         .onAppear {
             insightsStore.fileID = fileID
             if let token = tokenStore.token {
@@ -85,30 +90,49 @@ struct InsightsChart: View {
             insightsStore.clear()
             stopTimers()
         }
-        .sync($insightsStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
-        fetchData()
-    }
-
-    private func fetchData() {
-        insightsStore.fetchEntityNextPage(replace: true)
-    }
-
-    private func startTimers() {
-        insightsStore.startTimer()
-    }
-
-    private func stopTimers() {
-        insightsStore.stopTimer()
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        insightsStore.token = token
+    private var sectorMarkColor: Color {
+        colorScheme == .dark ? .gray500 : .gray200
     }
 
     private enum Constants {
         static let pageSize: Int = 5
+    }
+
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        insightsStore.entitiesIsLoadingFirstTime
+    }
+
+    var error: String? {
+        insightsStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
+        fetchData()
+    }
+
+    func fetchData() {
+        insightsStore.fetchEntityNextPage(replace: true)
+    }
+
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
+        insightsStore.startTimer()
+    }
+
+    func stopTimers() {
+        insightsStore.stopTimer()
+    }
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        insightsStore.token = token
     }
 }

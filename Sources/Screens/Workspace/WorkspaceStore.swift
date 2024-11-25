@@ -64,8 +64,9 @@ class WorkspaceStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.fetch(id)
+    private func fetch() async throws -> VOWorkspace.Entity? {
+        guard let current else { return nil }
+        return try await workspaceClient?.fetch(current.id)
     }
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOWorkspace.Probe? {
@@ -138,17 +139,15 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    private func fetchStorageUsage(_ id: String) async throws -> VOStorage.Usage? {
-        try await storageClient?.fetchWorkspaceUsage(id)
+    private func fetchStorageUsage() async throws -> VOStorage.Usage? {
+        guard let current else { return nil }
+        return try await storageClient?.fetchWorkspaceUsage(current.id)
     }
 
     func fetchStorageUsage() {
-        guard let current else { return }
-
         var storageUsage: VOStorage.Usage?
-
         withErrorHandling {
-            storageUsage = try await self.fetchStorageUsage(current.id)
+            storageUsage = try await self.fetchStorageUsage()
             return true
         } before: {
             self.storageUsageIsLoading = true
@@ -258,9 +257,9 @@ class WorkspaceStore: ObservableObject {
                     }
                 }
             }
-            if let current = self.current {
+            if self.current != nil {
                 Task {
-                    let workspace = try await self.fetch(current.id)
+                    let workspace = try await self.fetch()
                     if let workspace {
                         DispatchQueue.main.async {
                             self.current = workspace
@@ -272,6 +271,14 @@ class WorkspaceStore: ObservableObject {
                     if let root {
                         DispatchQueue.main.async {
                             self.root = root
+                        }
+                    }
+                }
+                Task {
+                    let storageUsage = try await self.fetchStorageUsage()
+                    if let storageUsage {
+                        DispatchQueue.main.async {
+                            self.storageUsage = storageUsage
                         }
                     }
                 }

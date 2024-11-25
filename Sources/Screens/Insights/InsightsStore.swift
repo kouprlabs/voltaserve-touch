@@ -14,12 +14,17 @@ import VoltaserveCore
 
 class InsightsStore: ObservableObject {
     @Published var entities: [VOInsights.Entity]?
+    @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published var entitiesError: String?
     @Published var languages: [VOInsights.Language]?
+    @Published var languagesIsLoading: Bool = false
+    var languagesIsLoadingFirstTime: Bool { languagesIsLoading && languages == nil }
+    @Published var languagesError: String?
     @Published var info: VOInsights.Info?
+    @Published var infoIsLoading: Bool = false
+    @Published var infoError: String?
     @Published var query: String?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
     private var list: VOInsights.EntityList?
     private var cancellables: Set<AnyCancellable> = []
     private var timer: Timer?
@@ -62,12 +67,14 @@ class InsightsStore: ObservableObject {
         withErrorHandling {
             languages = try await self.fetchLanguages()
             return true
+        } before: {
+            self.languagesIsLoading = true
         } success: {
             self.languages = languages
         } failure: { message in
-            self.errorTitle = "Error: Fetching Insights Languages"
-            self.errorMessage = message
-            self.showError = true
+            self.languagesError = message
+        } anyways: {
+            self.languagesIsLoading = false
         }
     }
 
@@ -81,12 +88,14 @@ class InsightsStore: ObservableObject {
         withErrorHandling {
             info = try await self.fetchInfo()
             return true
+        } before: {
+            self.infoIsLoading = true
         } success: {
             self.info = info
         } failure: { message in
-            self.errorTitle = "Error: Fetching Insights Info"
-            self.errorMessage = message
-            self.showError = true
+            self.infoError = message
+        } anyways: {
+            self.infoIsLoading = false
         }
     }
 
@@ -118,6 +127,8 @@ class InsightsStore: ObservableObject {
     }
 
     func fetchEntityNextPage(replace: Bool = false) {
+        guard !entitiesIsLoading else { return }
+
         var nextPage = -1
         var list: VOInsights.EntityList?
 
@@ -138,6 +149,8 @@ class InsightsStore: ObservableObject {
             nextPage = self.nextPage()
             list = try await self.fetchEntityList(page: nextPage)
             return true
+        } before: {
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -148,9 +161,9 @@ class InsightsStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Insights Entities"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
+        } anyways: {
+            self.entitiesIsLoading = false
         }
     }
 
