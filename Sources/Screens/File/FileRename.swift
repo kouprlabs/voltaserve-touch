@@ -62,28 +62,28 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
                     }
                 }
             }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-            .onAppear {
-                fileStore.file = file
-                if let token = tokenStore.token {
-                    assignTokenToStores(token)
-                    startTimers()
-                    onAppearOrChange()
-                }
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
+        .onAppear {
+            fileStore.file = file
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
+                onAppearOrChange()
             }
-            .onDisappear {
-                stopTimers()
+        }
+        .onDisappear {
+            stopTimers()
+        }
+        .onChange(of: tokenStore.token) { _, newToken in
+            if let newToken {
+                assignTokenToStores(newToken)
+                onAppearOrChange()
             }
-            .onChange(of: tokenStore.token) { _, newToken in
-                if let newToken {
-                    assignTokenToStores(newToken)
-                    onAppearOrChange()
-                }
-            }
-            .onChange(of: fileStore.file) { _, file in
-                if let file {
-                    value = file.name
-                }
+        }
+        .onChange(of: fileStore.file) { _, file in
+            if let file {
+                value = file.name
             }
         }
     }
