@@ -35,7 +35,7 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                         if entities.count < 5 {
                             Text("Not enough data to render the chart.")
                         } else {
-                            Chart(Array(entities.enumerated()), id: \.element.id) { index, entity in
+                            Chart(entities) { entity in
                                 SectorMark(
                                     angle: .value(
                                         Text(verbatim: entity.text),
