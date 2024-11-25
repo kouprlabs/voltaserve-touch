@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct OrganizationCreate: View {
+struct OrganizationCreate: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var isProcessing = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
     init(organizationStore: OrganizationStore, onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
@@ -51,7 +48,7 @@ struct OrganizationCreate: View {
                     }
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
     }
 
@@ -72,15 +69,21 @@ struct OrganizationCreate: View {
                 onCompletion(organization)
             }
         } failure: { message in
-            errorTitle = "Error: Creating Organization"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isProcessing = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         !normalizedName.isEmpty
     }
 }
