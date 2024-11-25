@@ -11,7 +11,9 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InsightsEntityList: View {
+struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore()
     @Environment(\.dismiss) private var dismiss
@@ -25,46 +27,45 @@ struct InsightsEntityList: View {
 
     var body: some View {
         NavigationView {
-            if let entities = insightsStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no entities.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.text) { entity in
-                                InsightsEntityRow(entity)
-                                    .onAppear {
-                                        onListItemAppear(entity.text)
-                                    }
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = insightsStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no entities.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.text) { entity in
+                                    InsightsEntityRow(entity)
+                                        .onAppear {
+                                            onListItemAppear(entity.text)
+                                        }
+                                }
+                            }
+                            .searchable(text: $searchText)
+                            .onChange(of: searchText) {
+                                insightsStore.searchPublisher.send($1)
                             }
                         }
-                        .searchable(text: $searchText)
-                        .onChange(of: searchText) {
-                            insightsStore.searchPublisher.send($1)
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle("Insights")
+                    .refreshable {
+                        insightsStore.fetchEntityNextPage(replace: true)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done") {
+                                dismiss()
+                            }
                         }
                     }
                 }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Insights")
-                .refreshable {
-                    insightsStore.fetchEntityNextPage(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            dismiss()
-                        }
-                    }
-                }
-            } else {
-                ProgressView()
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: insightsStore.errorTitle,
-            message: insightsStore.errorMessage
-        )
         .onAppear {
             insightsStore.fileID = fileID
             if let token = tokenStore.token {
@@ -86,30 +87,47 @@ struct InsightsEntityList: View {
             insightsStore.clear()
             insightsStore.fetchEntityNextPage()
         }
-        .sync($insightsStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        insightsStore.entitiesIsLoadingFirstTime
+    }
+
+    var error: String? {
+        insightsStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         insightsStore.fetchEntityNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         insightsStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         insightsStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         insightsStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if insightsStore.isEntityThreshold(id) {
             insightsStore.fetchEntityNextPage()
         }

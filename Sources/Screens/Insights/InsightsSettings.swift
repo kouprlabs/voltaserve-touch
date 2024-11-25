@@ -11,14 +11,12 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InsightsSettings: View {
+struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ErrorPresentable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore()
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     @State private var isPatching = false
     @State private var isDeleting = false
     private let file: VOFile.Entity
@@ -30,7 +28,11 @@ struct InsightsSettings: View {
     var body: some View {
         NavigationView {
             VStack {
-                if insightsStore.info != nil {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
                     VStack(spacing: VOMetrics.spacingLg) {
                         VStack {
                             VStack {
@@ -67,8 +69,6 @@ struct InsightsSettings: View {
                     }
                     .padding(.horizontal)
                     Spacer()
-                } else {
-                    ProgressView()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -82,11 +82,7 @@ struct InsightsSettings: View {
                 }
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: insightsStore.errorTitle,
-            message: insightsStore.errorMessage
-        )
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             insightsStore.fileID = file.id
             if let token = tokenStore.token {
@@ -104,7 +100,6 @@ struct InsightsSettings: View {
                 onAppearOrChange()
             }
         }
-        .sync($insightsStore.showError, with: $showError)
     }
 
     private var canCreate: Bool {
@@ -133,9 +128,8 @@ struct InsightsSettings: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Patching Insights"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isPatching = false
         }
@@ -149,33 +143,53 @@ struct InsightsSettings: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Deleting Insights"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeleting = false
         }
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        insightsStore.infoIsLoading
+    }
+
+    var error: String? {
+        insightsStore.infoError
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         if let snapshot = file.snapshot, snapshot.hasEntities() {
             insightsStore.fetchInfo()
         }
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         insightsStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         insightsStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         insightsStore.token = token
     }
 }
