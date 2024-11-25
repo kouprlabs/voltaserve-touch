@@ -25,7 +25,7 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
     }
 
     var body: some View {
-        Group {
+        VStack {
             if isLoading {
                 ProgressView()
             } else if let error {

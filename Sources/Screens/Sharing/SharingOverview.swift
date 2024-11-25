@@ -77,36 +77,36 @@ struct SharingOverview: View {
                     }
                 }
             }
-            .onAppear {
-                sharingStore.fileID = fileID
-                if let token = tokenStore.token {
-                    assignTokenToStores(token)
-                    startTimers()
-                    onAppearOrChange()
-                }
+        }
+        .onAppear {
+            sharingStore.fileID = fileID
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+                startTimers()
+                onAppearOrChange()
             }
-            .onDisappear {
-                stopTimers()
+        }
+        .onDisappear {
+            stopTimers()
+        }
+        .onChange(of: sharingStore.token) { _, newToken in
+            if let newToken {
+                assignTokenToStores(newToken)
+                onAppearOrChange()
             }
-            .onChange(of: sharingStore.token) { _, newToken in
-                if let newToken {
-                    assignTokenToStores(newToken)
-                    onAppearOrChange()
-                }
+        }
+        .onChange(of: sharingStore.userPermissions) { _, newUserPermissions in
+            if let newUserPermissions, newUserPermissions.count > 0 {
+                userPermissionCount = newUserPermissions.count
+            } else {
+                userPermissionCount = 0
             }
-            .onChange(of: sharingStore.userPermissions) { _, newUserPermissions in
-                if let newUserPermissions, newUserPermissions.count > 0 {
-                    userPermissionCount = newUserPermissions.count
-                } else {
-                    userPermissionCount = 0
-                }
-            }
-            .onChange(of: sharingStore.groupPermissions) { _, newGroupPermissions in
-                if let newGroupPermissions, newGroupPermissions.count > 0 {
-                    groupPermissionCount = newGroupPermissions.count
-                } else {
-                    groupPermissionCount = 0
-                }
+        }
+        .onChange(of: sharingStore.groupPermissions) { _, newGroupPermissions in
+            if let newGroupPermissions, newGroupPermissions.count > 0 {
+                groupPermissionCount = newGroupPermissions.count
+            } else {
+                groupPermissionCount = 0
             }
         }
     }
