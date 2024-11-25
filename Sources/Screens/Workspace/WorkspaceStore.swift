@@ -25,7 +25,6 @@ class WorkspaceStore: ObservableObject {
     @Published var storageUsageError: String?
     @Published var current: VOWorkspace.Entity?
     @Published var query: String?
-    @Published var searchText = ""
     private var list: VOWorkspace.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?

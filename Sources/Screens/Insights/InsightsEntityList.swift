@@ -39,7 +39,7 @@ struct InsightsEntityList: View {
                             }
                         }
                         .searchable(text: $searchText)
-                        .onChange(of: insightsStore.searchText) {
+                        .onChange(of: searchText) {
                             insightsStore.searchPublisher.send($1)
                         }
                     }
@@ -86,7 +86,6 @@ struct InsightsEntityList: View {
             insightsStore.clear()
             insightsStore.fetchEntityNextPage()
         }
-        .sync($insightsStore.searchText, with: $searchText)
         .sync($insightsStore.showError, with: $showError)
     }
 

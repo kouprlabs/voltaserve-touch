@@ -19,7 +19,6 @@ class GroupStore: ObservableObject {
     @Published var entitiesError: String?
     @Published var current: VOGroup.Entity?
     @Published var query: String?
-    @Published var searchText = ""
     private var list: VOGroup.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?

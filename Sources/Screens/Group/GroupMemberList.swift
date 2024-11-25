@@ -50,8 +50,8 @@ struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                                     }
                                 }
                             }
-                            .searchable(text: $groupStore.searchText)
-                            .onChange(of: userStore.searchText) {
+                            .searchable(text: $searchText)
+                            .onChange(of: searchText) {
                                 userStore.searchPublisher.send($1)
                             }
                         }

@@ -20,7 +20,6 @@ class InsightsStore: ObservableObject {
     @Published var showError = false
     @Published var errorTitle: String?
     @Published var errorMessage: String?
-    @Published var searchText = ""
     private var list: VOInsights.EntityList?
     private var cancellables: Set<AnyCancellable> = []
     private var timer: Timer?

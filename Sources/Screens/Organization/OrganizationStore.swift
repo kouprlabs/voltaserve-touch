@@ -14,13 +14,11 @@ import VoltaserveCore
 
 class OrganizationStore: ObservableObject {
     @Published var entities: [VOOrganization.Entity]?
+    @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published var entitiesError: String?
     @Published var current: VOOrganization.Entity?
     @Published var query: String?
-    @Published var searchText = ""
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
-    @Published var isLoading = false
     private var list: VOOrganization.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -63,7 +61,7 @@ class OrganizationStore: ObservableObject {
     }
 
     func fetchNextPage(replace: Bool = false) {
-        guard !isLoading else { return }
+        guard !entitiesIsLoading else { return }
 
         var nextPage = -1
         var list: VOOrganization.List?
@@ -86,7 +84,7 @@ class OrganizationStore: ObservableObject {
             list = try await self.fetchList(page: nextPage)
             return true
         } before: {
-            self.isLoading = true
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -97,11 +95,9 @@ class OrganizationStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Organizations"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
         } anyways: {
-            self.isLoading = false
+            self.entitiesIsLoading = false
         }
     }
 

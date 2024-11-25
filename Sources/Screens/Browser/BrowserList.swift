@@ -17,6 +17,7 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
     @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var browserStore = BrowserStore()
     @State private var tappedItem: VOFile.Entity?
+    @State private var searchText = ""
     private let folderID: String
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
@@ -67,8 +68,8 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
                                 }
                             }
                             .listStyle(.inset)
-                            .searchable(text: $browserStore.searchText)
-                            .onChange(of: browserStore.searchText) {
+                            .searchable(text: $searchText)
+                            .onChange(of: searchText) {
                                 browserStore.searchPublisher.send($1)
                             }
                             .navigationDestination(item: $tappedItem) {

@@ -18,7 +18,6 @@ class UserStore: ObservableObject {
     var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var entitiesError: String?
     @Published var query: String?
-    @Published var searchText = ""
     private var list: VOUser.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
