@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InsightsCreate: View {
+struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistributing, FormValidatable, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore()
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     @State private var isCreating = false
     @State private var language: VOInsights.Language?
     private let fileID: String
@@ -75,11 +72,7 @@ struct InsightsCreate: View {
                 ProgressView()
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: insightsStore.errorTitle,
-            message: insightsStore.errorMessage
-        )
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             insightsStore.fileID = fileID
             if let token = tokenStore.token {
@@ -99,39 +92,59 @@ struct InsightsCreate: View {
             }
         }
         .presentationDetents([.fraction(0.45)])
-        .sync($insightsStore.showError, with: $showError)
     }
 
     private func performCreate() {
         guard let language else { return }
-        isCreating = true
         withErrorHandling {
             _ = try await insightsStore.create(languageID: language.id)
             return true
+        } before: {
+            isCreating = true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Creating Insights"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isCreating = false
         }
     }
 
-    private func isValid() -> Bool {
-        language != nil
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        insightsStore.languagesIsLoadingFirstTime
     }
 
-    private func onAppearOrChange() {
+    var error: String? {
+        insightsStore.languagesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         insightsStore.fetchLanguages()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         insightsStore.token = token
+    }
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
+        language != nil
     }
 }
