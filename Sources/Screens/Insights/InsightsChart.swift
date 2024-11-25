@@ -91,7 +91,7 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
             stopTimers()
         }
     }
-    
+
     private var sectorMarkColor: Color {
         colorScheme == .dark ? .gray500 : .gray200
     }
