@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct WorkspaceSettings: View {
+struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showDeleteConfirmation = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
+    @State private var deleteConfirmationIsPresentable = false
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
@@ -29,92 +26,88 @@ struct WorkspaceSettings: View {
 
     var body: some View {
         Group {
-            if let current = workspaceStore.current {
-                Form {
-                    Section(header: VOSectionHeader("Storage")) {
-                        VStack(alignment: .leading) {
-                            if let storageUsage = workspaceStore.storageUsage {
-                                // swift-format-ignore
-                                // swiftlint:disable:next line_length
-                                Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
-                                ProgressView(value: Double(storageUsage.percentage) / 100.0)
-                            } else {
-                                Text("Calculating…")
-                                ProgressView()
-                            }
-                        }
-                        NavigationLink(destination: WorkspaceEditStorageCapacity(workspaceStore: workspaceStore)) {
-                            HStack {
-                                Text("Capacity")
-                                Spacer()
-                                Text("\(current.storageCapacity.prettyBytes())")
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .disabled(isDeleting)
-                    }
-                    Section(header: VOSectionHeader("Basics")) {
-                        NavigationLink {
-                            WorkspaceEditName(workspaceStore: workspaceStore) { updatedWorkspace in
-                                workspaceStore.current = updatedWorkspace
-                                if let index = workspaceStore.entities?.firstIndex(where: {
-                                    $0.id == updatedWorkspace.id
-                                }) {
-                                    workspaceStore.entities?[index] = updatedWorkspace
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let current = workspaceStore.current {
+                    Form {
+                        Section(header: VOSectionHeader("Storage")) {
+                            VStack(alignment: .leading) {
+                                if let storageUsage = workspaceStore.storageUsage {
+                                    // swift-format-ignore
+                                    // swiftlint:disable:next line_length
+                                    Text("\(storageUsage.bytes.prettyBytes()) of \(storageUsage.maxBytes.prettyBytes()) used")
+                                    ProgressView(value: Double(storageUsage.percentage) / 100.0)
+                                } else {
+                                    Text("Calculating…")
+                                    ProgressView()
                                 }
                             }
-                        } label: {
-                            HStack {
-                                Text("Name")
-                                Spacer()
-                                Text(current.name)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                    .foregroundStyle(.secondary)
+                            NavigationLink(destination: WorkspaceEditStorageCapacity(workspaceStore: workspaceStore)) {
+                                HStack {
+                                    Text("Capacity")
+                                    Spacer()
+                                    Text("\(current.storageCapacity.prettyBytes())")
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .disabled(isDeleting)
+                        }
+                        Section(header: VOSectionHeader("Basics")) {
+                            NavigationLink {
+                                WorkspaceEditName(workspaceStore: workspaceStore) { updatedWorkspace in
+                                    workspaceStore.current = updatedWorkspace
+                                    if let index = workspaceStore.entities?.firstIndex(where: {
+                                        $0.id == updatedWorkspace.id
+                                    }) {
+                                        workspaceStore.entities?[index] = updatedWorkspace
+                                    }
+                                }
+                            } label: {
+                                HStack {
+                                    Text("Name")
+                                    Spacer()
+                                    Text(current.name)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .disabled(isDeleting)
+                        }
+                        Section(header: VOSectionHeader("Advanced")) {
+                            Button(role: .destructive) {
+                                deleteConfirmationIsPresentable = true
+                            } label: {
+                                VOFormButtonLabel("Delete Workspace", isLoading: isDeleting)
+                            }
+                            .disabled(isDeleting)
+                            .confirmationDialog("Delete Workspace", isPresented: $deleteConfirmationIsPresentable) {
+                                Button("Delete Permanently", role: .destructive) {
+                                    performDelete()
+                                }
+                            } message: {
+                                Text("Are you sure you want to delete this workspace?")
                             }
                         }
-                        .disabled(isDeleting)
                     }
-                    Section(header: VOSectionHeader("Advanced")) {
-                        Button(role: .destructive) {
-                            showDeleteConfirmation = true
-                        } label: {
-                            VOFormButtonLabel("Delete Workspace", isLoading: isDeleting)
+                    .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
+                    .onAppear {
+                        if tokenStore.token != nil {
+                            onAppearOrChange()
                         }
-                        .disabled(isDeleting)
-                        .confirmationDialog("Delete Workspace", isPresented: $showDeleteConfirmation) {
-                            Button("Delete Permanently", role: .destructive) {
-                                performDelete()
-                            }
-                        } message: {
-                            Text("Are you sure you want to delete this workspace?")
+                    }
+                    .onChange(of: tokenStore.token) { _, newToken in
+                        if newToken != nil {
+                            onAppearOrChange()
                         }
                     }
                 }
-                .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
-                .onAppear {
-                    if tokenStore.token != nil {
-                        onAppearOnChange()
-                    }
-                }
-                .onChange(of: tokenStore.token) { _, newToken in
-                    if newToken != nil {
-                        onAppearOnChange()
-                    }
-                }
-            } else {
-                ProgressView()
             }
         }
         .navigationTitle("Settings")
-    }
-
-    private func onAppearOnChange() {
-        fetchData()
-    }
-
-    private func fetchData() {
-        workspaceStore.fetchStorageUsage()
     }
 
     private func performDelete() {
@@ -131,9 +124,8 @@ struct WorkspaceSettings: View {
             }
             onCompletion?()
         } failure: { message in
-            errorTitle = "Error: Deleting Workspace"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeleting = false
         }
@@ -141,5 +133,30 @@ struct WorkspaceSettings: View {
 
     private func reflectDeleteInStore(_ id: String) {
         workspaceStore.entities?.removeAll(where: { $0.id == id })
+    }
+
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        workspaceStore.storageUsageIsLoading
+    }
+
+    var error: String? {
+        workspaceStore.storageUsageError
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
+        fetchData()
+    }
+
+    func fetchData() {
+        workspaceStore.fetchStorageUsage()
     }
 }

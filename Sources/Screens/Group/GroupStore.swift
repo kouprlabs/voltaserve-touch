@@ -15,6 +15,7 @@ import VoltaserveCore
 class GroupStore: ObservableObject {
     @Published var entities: [VOGroup.Entity]?
     @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var entitiesError: String?
     @Published var current: VOGroup.Entity?
     @Published var query: String?

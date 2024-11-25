@@ -15,6 +15,7 @@ import VoltaserveCore
 class UserStore: ObservableObject {
     @Published var entities: [VOUser.Entity]?
     @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var entitiesError: String?
     @Published var query: String?
     @Published var searchText = ""

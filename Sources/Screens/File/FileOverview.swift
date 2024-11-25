@@ -79,7 +79,7 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        fileStore.entities == nil || fileStore.fileIsLoading || fileStore.taskCountIsLoading
+        fileStore.entitiesIsLoadingFirstTime || fileStore.fileIsLoading || fileStore.taskCountIsLoading
     }
 
     var error: String? {
