@@ -94,7 +94,7 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
             stopTimers()
         }
     }
-    
+
     private func colorForIndex(_ index: Int) -> Color {
         switch index {
         case 0: return Color(hex: "#e8c1a0")
