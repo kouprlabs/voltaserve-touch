@@ -12,16 +12,13 @@ import Foundation
 import SwiftUI
 import VoltaserveCore
 
-struct InvitationCreate: View {
+struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
     @State private var commaSeparated = ""
     @State private var emails: [String] = []
     @State private var isSending = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     private let organizationID: String
 
     init(_ organizationID: String) {
@@ -66,7 +63,7 @@ struct InvitationCreate: View {
                 }
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             invitationStore.organizationID = organizationID
             if let token = tokenStore.token {
@@ -78,10 +75,6 @@ struct InvitationCreate: View {
                 assignTokenToStores(newToken)
             }
         }
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        invitationStore.token = token
     }
 
     private func parseEmails() {
@@ -103,15 +96,27 @@ struct InvitationCreate: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Sending Invitation"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isSending = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         !emails.isEmpty
+    }
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        invitationStore.token = token
     }
 }
