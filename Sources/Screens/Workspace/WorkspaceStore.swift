@@ -15,6 +15,7 @@ import VoltaserveCore
 class WorkspaceStore: ObservableObject {
     @Published var entities: [VOWorkspace.Entity]?
     @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var entitiesError: String?
     @Published var root: VOFile.Entity?
     @Published var rootIsLoading: Bool = false

@@ -95,7 +95,7 @@ struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        userStore.entities == nil
+        userStore.entitiesIsLoadingFirstTime
     }
 
     var error: String? {

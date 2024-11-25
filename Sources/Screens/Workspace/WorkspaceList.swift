@@ -12,7 +12,7 @@ import Combine
 import SwiftUI
 import VoltaserveCore
 
-struct WorkspaceList: View {
+struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var workspaceStore = WorkspaceStore()
     @StateObject private var accountStore = AccountStore()
@@ -119,14 +119,6 @@ struct WorkspaceList: View {
         }
     }
 
-    private var isLoading: Bool {
-        workspaceStore.entities == nil || accountStore.identityUserIsLoading || invitationStore.incomingCountIsLoading
-    }
-
-    private var error: String? {
-        workspaceStore.entitiesError ?? accountStore.identityUserError ?? invitationStore.incomingCountError
-    }
-
     private var accountButton: some View {
         ZStack {
             Button {
@@ -156,35 +148,54 @@ struct WorkspaceList: View {
         }
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        workspaceStore.entitiesIsLoadingFirstTime || accountStore.identityUserIsLoading
+            || invitationStore.incomingCountIsLoading
+    }
+
+    var error: String? {
+        workspaceStore.entitiesError ?? accountStore.identityUserError ?? invitationStore.incomingCountError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         workspaceStore.fetchNextPage(replace: true)
         accountStore.fetchIdentityUser()
         invitationStore.fetchIncomingCount()
     }
 
-    private func startTimers() {
+    // MARK: -
+
+    func startTimers() {
         workspaceStore.startTimer()
         accountStore.startTimer()
         invitationStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         workspaceStore.stopTimer()
         accountStore.stopTimer()
         invitationStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TimerLifecycle
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         workspaceStore.token = token
         accountStore.token = token
         invitationStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if workspaceStore.isEntityThreshold(id) {
             workspaceStore.fetchNextPage()
         }

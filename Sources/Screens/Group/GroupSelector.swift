@@ -96,7 +96,7 @@ struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        groupStore.entities == nil
+        groupStore.entitiesIsLoadingFirstTime
     }
 
     var error: String? {

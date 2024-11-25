@@ -107,7 +107,7 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        groupStore.entities == nil
+        groupStore.entitiesIsLoadingFirstTime
     }
 
     var error: String? {

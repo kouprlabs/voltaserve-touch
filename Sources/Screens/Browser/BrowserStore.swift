@@ -15,6 +15,7 @@ import VoltaserveCore
 class BrowserStore: ObservableObject {
     @Published var entities: [VOFile.Entity]?
     @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var entitiesError: String?
     @Published var folder: VOFile.Entity?
     @Published var folderIsLoading: Bool = false

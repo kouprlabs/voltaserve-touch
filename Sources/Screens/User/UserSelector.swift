@@ -112,7 +112,7 @@ struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        userStore.entities == nil
+        userStore.entitiesIsLoadingFirstTime
     }
 
     var error: String? {

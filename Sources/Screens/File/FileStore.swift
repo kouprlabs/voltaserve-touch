@@ -16,6 +16,7 @@ import VoltaserveCore
 class FileStore: ObservableObject {
     @Published var entities: [VOFile.Entity]?
     @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var entitiesError: String?
     @Published var taskCount: Int?
     @Published var taskCountIsLoading: Bool = false

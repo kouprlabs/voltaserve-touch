@@ -16,6 +16,7 @@ class InvitationStore: ObservableObject {
     @Published var entities: [VOInvitation.Entity]?
     @Published var entitiesError: String?
     @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var incomingCount: Int?
     @Published var incomingCountError: String?
     @Published var incomingCountIsLoading: Bool = false

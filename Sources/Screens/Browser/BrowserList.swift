@@ -127,7 +127,7 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        workspaceStore.entities == nil && browserStore.folderIsLoading
+        workspaceStore.entitiesIsLoadingFirstTime && browserStore.folderIsLoading
     }
 
     var error: String? {
