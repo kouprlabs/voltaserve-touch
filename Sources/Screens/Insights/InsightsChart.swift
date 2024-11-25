@@ -16,6 +16,7 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore(pageSize: Constants.pageSize)
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     private let fileID: String
 
     init(_ fileID: String) {
@@ -40,11 +41,11 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                         Text(verbatim: entity.text),
                                         entity.frequency
                                     ),
-                                    innerRadius: .ratio(0.61),
+                                    innerRadius: .ratio(0.65),
                                     angularInset: 4
                                 )
                                 .cornerRadius(5)
-                                .foregroundStyle(colorForIndex(index))
+                                .foregroundStyle(sectorMarkColor)
                                 .annotation(position: .overlay) {
                                     Text("\(entity.text) (\(entity.frequency))")
                                         .font(.footnote)
@@ -54,16 +55,12 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
                                         .overlay {
                                             RoundedRectangle(cornerRadius: 10)
-                                                .stroke(colorForIndex(index), lineWidth: 1)
+                                                .stroke(sectorMarkColor, lineWidth: 1)
                                         }
                                 }
                             }
                             .chartLegend(.hidden)
-                            .modifierIfPad {
-                                $0.frame(maxWidth: 300, maxHeight: 300)
-                            }
-                            .padding(.horizontal, VOMetrics.spacing2Xl + VOMetrics.spacingLg)
-                            .padding(.vertical, VOMetrics.spacing)
+                            .frame(maxWidth: 300, maxHeight: 300)
                         }
                     }
                     .navigationBarTitleDisplayMode(.inline)
@@ -94,16 +91,9 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
             stopTimers()
         }
     }
-
-    private func colorForIndex(_ index: Int) -> Color {
-        switch index {
-        case 0: return Color(hex: "#e8c1a0")
-        case 1: return Color(hex: "#f47560")
-        case 2: return Color(hex: "#f1e15b")
-        case 3: return Color(hex: "#e8a838")
-        case 4: return Color(hex: "#61cdbb")
-        default: return .clear
-        }
+    
+    private var sectorMarkColor: Color {
+        colorScheme == .dark ? .gray500 : .gray200
     }
 
     private enum Constants {
