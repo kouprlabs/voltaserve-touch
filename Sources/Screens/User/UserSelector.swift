@@ -61,8 +61,8 @@ struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                                     }
                                 }
                             }
-                            .searchable(text: $userStore.searchText)
-                            .onChange(of: userStore.searchText) {
+                            .searchable(text: $searchText)
+                            .onChange(of: searchText) {
                                 userStore.searchPublisher.send($1)
                             }
                         }

@@ -48,8 +48,6 @@ struct OrganizationOverview: View {
                         }
                     }
                 }
-            } else {
-                ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

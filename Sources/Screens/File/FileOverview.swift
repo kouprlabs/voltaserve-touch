@@ -45,7 +45,9 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                         }
                     }
                     .searchable(text: $searchText)
-                    .onChange(of: fileStore.searchText) { fileStore.searchPublisher.send($1) }
+                    .onChange(of: searchText) {
+                        fileStore.searchPublisher.send($1)
+                    }
                     .refreshable { fileStore.fetchNextPage(replace: true) }
                 }
             }

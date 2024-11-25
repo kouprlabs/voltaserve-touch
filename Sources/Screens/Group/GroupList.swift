@@ -44,8 +44,8 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
                                     }
                                 }
                             }
-                            .searchable(text: $groupStore.searchText)
-                            .onChange(of: groupStore.searchText) {
+                            .searchable(text: $searchText)
+                            .onChange(of: searchText) {
                                 groupStore.searchPublisher.send($1)
                             }
                         }

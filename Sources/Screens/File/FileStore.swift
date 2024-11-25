@@ -55,7 +55,6 @@ class FileStore: ObservableObject {
     @Published var insightsIsPresented = false
     @Published var infoIsPresented = false
     @Published var viewMode: ViewMode = .grid
-    @Published var searchText = ""
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?

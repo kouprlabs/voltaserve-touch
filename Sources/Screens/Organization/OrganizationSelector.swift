@@ -11,12 +11,13 @@
 import SwiftUI
 import VoltaserveCore
 
-struct OrganizationSelector: View {
+struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @Environment(\.dismiss) private var dismiss
     @StateObject private var organizationStore = OrganizationStore()
     @State private var selection: String?
-    @State private var showError = false
     @State private var searchText = ""
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
@@ -45,7 +46,7 @@ struct OrganizationSelector: View {
                             }
                         }
                         .searchable(text: $searchText)
-                        .onChange(of: organizationStore.searchText) {
+                        .onChange(of: searchText) {
                             organizationStore.searchPublisher.send($1)
                         }
                     }
@@ -57,7 +58,7 @@ struct OrganizationSelector: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        if organizationStore.isLoading, organizationStore.entities != nil {
+                        if organizationStore.entitiesIsLoading {
                             ProgressView()
                         }
                     }
@@ -66,11 +67,6 @@ struct OrganizationSelector: View {
                 ProgressView()
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: organizationStore.errorTitle,
-            message: organizationStore.errorMessage
-        )
         .onAppear {
             organizationStore.clear()
             if let token = tokenStore.token {
@@ -92,31 +88,47 @@ struct OrganizationSelector: View {
             organizationStore.clear()
             organizationStore.fetchNextPage()
         }
-        .sync($organizationStore.showError, with: $showError)
-        .sync($organizationStore.searchText, with: $searchText)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        organizationStore.entitiesIsLoadingFirstTime
+    }
+
+    var error: String? {
+        organizationStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         organizationStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         organizationStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         organizationStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         organizationStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if organizationStore.isEntityThreshold(id) {
             organizationStore.fetchNextPage()
         }

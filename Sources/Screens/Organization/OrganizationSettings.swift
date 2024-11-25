@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct OrganizationSettings: View {
+struct OrganizationSettings: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showDeleteConfirmation = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
+    @State private var deleteConfirmationIsPresented = false
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
@@ -55,12 +52,12 @@ struct OrganizationSettings: View {
                     }
                     Section(header: VOSectionHeader("Advanced")) {
                         Button(role: .destructive) {
-                            showDeleteConfirmation = true
+                            deleteConfirmationIsPresented = true
                         } label: {
                             VOFormButtonLabel("Delete Organization", isLoading: isDeleting)
                         }
                         .disabled(isDeleting)
-                        .confirmationDialog("Delete Organization", isPresented: $showDeleteConfirmation) {
+                        .confirmationDialog("Delete Organization", isPresented: $deleteConfirmationIsPresented) {
                             Button("Delete Permanently", role: .destructive) {
                                 performDelete()
                             }
@@ -69,9 +66,7 @@ struct OrganizationSettings: View {
                         }
                     }
                 }
-                .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
-            } else {
-                ProgressView()
+                .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -92,9 +87,8 @@ struct OrganizationSettings: View {
             }
             onCompletion?()
         } failure: { message in
-            errorTitle = "Error: Deleting Organization"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeleting = false
         }
@@ -103,4 +97,9 @@ struct OrganizationSettings: View {
     private func reflectDeleteInStore(_ id: String) {
         organizationStore.entities?.removeAll(where: { $0.id == id })
     }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
 }

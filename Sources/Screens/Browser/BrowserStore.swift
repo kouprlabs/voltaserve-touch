@@ -21,7 +21,6 @@ class BrowserStore: ObservableObject {
     @Published var folderIsLoading: Bool = false
     @Published var folderError: String?
     @Published var query: VOFile.Query?
-    @Published var searchText = ""
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?

@@ -18,8 +18,6 @@ struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var organizationStore: OrganizationStore
     @StateObject private var userStore = UserStore()
-    @State private var showInviteMembers = false
-    @State private var showError = false
     @State private var searchText = ""
 
     init(organizationStore: OrganizationStore) {
@@ -51,16 +49,13 @@ struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
                                 }
                             }
                             .searchable(text: $searchText)
-                            .onChange(of: userStore.searchText) {
+                            .onChange(of: searchText) {
                                 userStore.searchPublisher.send($1)
                             }
                         }
                     }
                     .refreshable {
                         userStore.fetchNextPage(replace: true)
-                    }
-                    .sheet(isPresented: $showInviteMembers) {
-                        Text("Add Member")
                     }
                 }
             }

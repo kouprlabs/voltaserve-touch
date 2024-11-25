@@ -18,6 +18,7 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     @StateObject private var accountStore = AccountStore()
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
+    @State private var searchText = ""
     @State private var accountIsPresented = false
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
@@ -47,8 +48,8 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                     }
                                 }
                             }
-                            .searchable(text: $workspaceStore.searchText)
-                            .onChange(of: workspaceStore.searchText) {
+                            .searchable(text: $searchText)
+                            .onChange(of: searchText) {
                                 workspaceStore.searchPublisher.send($1)
                             }
                         }
