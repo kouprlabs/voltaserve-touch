@@ -11,16 +11,13 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InvitationOverview: View {
+struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var invitationStore: InvitationStore
     @StateObject private var userStore = UserStore()
     @Environment(\.dismiss) private var dismiss
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
-    @State private var showDeleteConfirmation = false
-    @State private var showDeclineConfirmation = false
+    @State private var deleteConfirmationIsPresented = false
+    @State private var declineConfirmationIsPresented = false
     @State private var isAccepting = false
     @State private var isDeclining = false
     @State private var isDeleting = false
@@ -82,7 +79,7 @@ struct InvitationOverview: View {
             Section {
                 if isDeletable {
                     Button(role: .destructive) {
-                        showDeleteConfirmation = true
+                        deleteConfirmationIsPresented = true
                     } label: {
                         HStack {
                             Text("Delete Invitation")
@@ -93,7 +90,7 @@ struct InvitationOverview: View {
                         }
                     }
                     .disabled(isProcessing)
-                    .confirmationDialog("Delete Invitation", isPresented: $showDeleteConfirmation) {
+                    .confirmationDialog("Delete Invitation", isPresented: $deleteConfirmationIsPresented) {
                         Button("Delete", role: .destructive) {
                             performDelete()
                         }
@@ -115,7 +112,7 @@ struct InvitationOverview: View {
                     }
                     .disabled(isProcessing)
                     Button(role: .destructive) {
-                        showDeclineConfirmation = true
+                        declineConfirmationIsPresented = true
                     } label: {
                         HStack {
                             Text("Decline Invitation")
@@ -126,7 +123,7 @@ struct InvitationOverview: View {
                         }
                     }
                     .disabled(isProcessing)
-                    .confirmationDialog("Decline Invitation", isPresented: $showDeclineConfirmation) {
+                    .confirmationDialog("Decline Invitation", isPresented: $declineConfirmationIsPresented) {
                         Button("Decline", role: .destructive) {
                             performDecline()
                         }
@@ -138,7 +135,7 @@ struct InvitationOverview: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(invitation.id)")
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             userStore.invitationID = invitation.id
             if let token = tokenStore.token {
@@ -156,10 +153,6 @@ struct InvitationOverview: View {
         isAccepting || isDeclining || isDeleting
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        userStore.token = token
-    }
-
     private func performAccept() {
         isAccepting = true
         withErrorHandling {
@@ -168,9 +161,8 @@ struct InvitationOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Accepting Invitation"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isAccepting = false
         }
@@ -184,9 +176,8 @@ struct InvitationOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Declining Invitation"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeclining = false
         }
@@ -200,11 +191,21 @@ struct InvitationOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Deleting Invitation"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeleting = false
         }
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        userStore.token = token
     }
 }

@@ -11,7 +11,9 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InvitationIncomingList: View {
+struct InvitationIncomingList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var invitationStore = InvitationStore()
     @State private var showInfo = false
@@ -19,34 +21,38 @@ struct InvitationIncomingList: View {
 
     var body: some View {
         VStack {
-            if let entities = invitationStore.entities {
-                Group {
-                    if entities.isEmpty {
-                        Text("There are no invitations.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { invitation in
-                                NavigationLink {
-                                    InvitationOverview(
-                                        invitation,
-                                        invitationStore: invitationStore,
-                                        isAcceptableDeclinable: true
-                                    )
-                                } label: {
-                                    InvitationIncomingRow(invitation)
-                                        .onAppear {
-                                            onListItemAppear(invitation.id)
-                                        }
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = invitationStore.entities {
+                    Group {
+                        if entities.isEmpty {
+                            Text("There are no invitations.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { invitation in
+                                    NavigationLink {
+                                        InvitationOverview(
+                                            invitation,
+                                            invitationStore: invitationStore,
+                                            isAcceptableDeclinable: true
+                                        )
+                                    } label: {
+                                        InvitationIncomingRow(invitation)
+                                            .onAppear {
+                                                onListItemAppear(invitation.id)
+                                            }
+                                    }
                                 }
                             }
                         }
                     }
+                    .refreshable {
+                        invitationStore.fetchNextPage(replace: true)
+                    }
                 }
-                .refreshable {
-                    invitationStore.fetchNextPage(replace: true)
-                }
-            } else {
-                ProgressView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -76,27 +82,45 @@ struct InvitationIncomingList: View {
         }
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        invitationStore.entitiesIsLoadingFirstTime
+    }
+
+    var error: String? {
+        invitationStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         invitationStore.fetchNextPage(replace: true)
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         invitationStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         invitationStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         invitationStore.token = token
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if invitationStore.isEntityThreshold(id) {
             invitationStore.fetchNextPage()
         }
