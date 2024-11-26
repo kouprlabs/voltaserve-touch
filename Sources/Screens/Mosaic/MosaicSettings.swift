@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct MosaicSettings: View {
+struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var mosaicStore = MosaicStore()
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     @State private var isCreating = false
     @State private var isDeleting = false
     private let file: VOFile.Entity
@@ -85,11 +82,7 @@ struct MosaicSettings: View {
                 }
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: mosaicStore.errorTitle,
-            message: mosaicStore.errorMessage
-        )
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             mosaicStore.fileID = file.id
             if let token = tokenStore.token {
@@ -108,7 +101,6 @@ struct MosaicSettings: View {
             }
         }
         .presentationDetents([.fraction(UIDevice.current.userInterfaceIdiom == .pad ? 0.50 : 0.40)])
-        .sync($mosaicStore.showError, with: $showError)
     }
 
     private var canCreate: Bool {
@@ -137,9 +129,8 @@ struct MosaicSettings: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Creating Mosaic"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isCreating = false
         }
@@ -153,33 +144,53 @@ struct MosaicSettings: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Deleting Mosaic"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDeleting = false
         }
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        mosaicStore.infoIsLoading
+    }
+
+    var error: String? {
+        mosaicStore.infoError
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         if let snapshot = file.snapshot, snapshot.hasMosaic() {
             mosaicStore.fetchInfo()
         }
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         mosaicStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         mosaicStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         mosaicStore.token = token
     }
 }

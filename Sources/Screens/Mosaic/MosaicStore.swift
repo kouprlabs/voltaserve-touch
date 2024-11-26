@@ -14,9 +14,8 @@ import VoltaserveCore
 
 class MosaicStore: ObservableObject {
     @Published var info: VOMosaic.Info?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
+    @Published var infoIsLoading: Bool = false
+    @Published var infoError: String?
     private var mosaicClient: VOMosaic?
     private var timer: Timer?
     var fileID: String?
@@ -42,12 +41,14 @@ class MosaicStore: ObservableObject {
         withErrorHandling {
             info = try await self.fetchInfo()
             return true
+        } before: {
+            self.infoIsLoading = true
         } success: {
             self.info = info
         } failure: { message in
-            self.errorTitle = "Error: Fetching Mosaic Info"
-            self.errorMessage = message
-            self.showError = true
+            self.infoError = message
+        } anyways: {
+            self.infoIsLoading = false
         }
     }
 
