@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SnapshotOverview: View {
+struct SnapshotOverview: View, ErrorPresentable {
     @ObservedObject private var snapshotStore: SnapshotStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
-    @State private var showActivateConfirmation = false
-    @State private var showDetachConfirmation = false
+    @State private var activateConfirmationIsPresentable = false
+    @State private var detachConfirmationIsPresentable = false
     @State private var isActivating = false
     @State private var isDetaching = false
     private let snapshot: VOSnapshot.Entity
@@ -68,7 +65,7 @@ struct SnapshotOverview: View {
             if !snapshot.isActive {
                 Section(header: VOSectionHeader("Actions")) {
                     Button {
-                        showActivateConfirmation = true
+                        activateConfirmationIsPresentable = true
                     } label: {
                         HStack {
                             Text("Activate Snapshot")
@@ -79,7 +76,7 @@ struct SnapshotOverview: View {
                         }
                     }
                     .disabled(isProcessing)
-                    .confirmationDialog("Activate Snapshot", isPresented: $showActivateConfirmation) {
+                    .confirmationDialog("Activate Snapshot", isPresented: $activateConfirmationIsPresentable) {
                         Button("Activate") {
                             performActivate()
                         }
@@ -87,7 +84,7 @@ struct SnapshotOverview: View {
                         Text("Are you sure you want to activate this snapshot?")
                     }
                     Button(role: .destructive) {
-                        showDetachConfirmation = true
+                        detachConfirmationIsPresentable = true
                     } label: {
                         HStack {
                             Text("Detach Snapshot")
@@ -98,7 +95,7 @@ struct SnapshotOverview: View {
                         }
                     }
                     .disabled(snapshot.isActive || isProcessing)
-                    .confirmationDialog("Detach Snapshot", isPresented: $showDetachConfirmation) {
+                    .confirmationDialog("Detach Snapshot", isPresented: $detachConfirmationIsPresentable) {
                         Button("Detach", role: .destructive) {
                             performDetach()
                             dismiss()
@@ -111,12 +108,7 @@ struct SnapshotOverview: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(snapshot.id)")
-        .voErrorAlert(
-            isPresented: $showError,
-            title: snapshotStore.errorTitle,
-            message: snapshotStore.errorMessage
-        )
-        .sync($snapshotStore.showError, with: $showError)
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var isProcessing: Bool {
@@ -131,9 +123,8 @@ struct SnapshotOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Activating Snapshot"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isActivating = false
         }
@@ -147,11 +138,15 @@ struct SnapshotOverview: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Detaching Snapshot"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDetaching = true
         }
     }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
 }

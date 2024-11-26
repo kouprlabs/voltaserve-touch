@@ -11,11 +11,10 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SnapshotList: View {
+struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var snapshotStore = SnapshotStore()
     @Environment(\.dismiss) private var dismiss
-    @State private var showError = false
     private let fileID: String
 
     init(fileID: String) {
@@ -24,51 +23,50 @@ struct SnapshotList: View {
 
     var body: some View {
         NavigationStack {
-            if let entities = snapshotStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no snapshots.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { snapshot in
-                                NavigationLink {
-                                    SnapshotOverview(snapshot, snapshotStore: snapshotStore)
-                                } label: {
-                                    SnapshotRow(snapshot)
-                                        .onAppear {
-                                            onListItemAppear(snapshot.id)
-                                        }
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = snapshotStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no snapshots.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { snapshot in
+                                    NavigationLink {
+                                        SnapshotOverview(snapshot, snapshotStore: snapshotStore)
+                                    } label: {
+                                        SnapshotRow(snapshot)
+                                            .onAppear {
+                                                onListItemAppear(snapshot.id)
+                                            }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Snapshots")
-                .refreshable {
-                    snapshotStore.fetchNextPage(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            dismiss()
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle("Snapshots")
+                    .refreshable {
+                        snapshotStore.fetchNextPage(replace: true)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done") {
+                                dismiss()
+                            }
+                        }
+                        ToolbarItem(placement: .topBarLeading) {
+                            if snapshotStore.entitiesIsLoading {
+                                ProgressView()
+                            }
                         }
                     }
-                    ToolbarItem(placement: .topBarLeading) {
-                        if snapshotStore.isLoading, snapshotStore.entities != nil {
-                            ProgressView()
-                        }
-                    }
                 }
-            } else {
-                ProgressView()
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: snapshotStore.errorTitle,
-            message: snapshotStore.errorMessage
-        )
         .onAppear {
             snapshotStore.fileID = fileID
             if let token = tokenStore.token {
@@ -86,30 +84,47 @@ struct SnapshotList: View {
                 onAppearOrChange()
             }
         }
-        .sync($snapshotStore.showError, with: $showError)
     }
 
-    private func onAppearOrChange() {
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        snapshotStore.entitiesIsLoadingFirstTime
+    }
+
+    var error: String? {
+        snapshotStore.entitiesError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         snapshotStore.fetchNextPage(replace: true)
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        snapshotStore.token = token
-    }
+    // MARK: - TimerLifecycle
 
-    private func startTimers() {
+    func startTimers() {
         snapshotStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         snapshotStore.stopTimer()
     }
 
-    private func onListItemAppear(_ id: String) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        snapshotStore.token = token
+    }
+
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
         if snapshotStore.isEntityThreshold(id) {
             snapshotStore.fetchNextPage()
         }

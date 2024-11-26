@@ -14,10 +14,9 @@ import VoltaserveCore
 
 class SnapshotStore: ObservableObject {
     @Published var entities: [VOSnapshot.Entity]?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
-    @Published var isLoading = false
+    @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published var entitiesError: String?
     private var list: VOSnapshot.List?
     private var timer: Timer?
     private var snapshotClient: VOSnapshot?
@@ -35,10 +34,6 @@ class SnapshotStore: ObservableObject {
     }
 
     // MARK: - Fetch
-
-    private func fetch(id: String) async throws -> VOSnapshot.Entity? {
-        try await snapshotClient?.fetch(id)
-    }
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOSnapshot.Probe? {
         guard let fileID else { return nil }
@@ -58,7 +53,7 @@ class SnapshotStore: ObservableObject {
     }
 
     func fetchNextPage(replace: Bool = false) {
-        guard !isLoading else { return }
+        guard !entitiesIsLoading else { return }
 
         var nextPage = -1
         var list: VOSnapshot.List?
@@ -81,7 +76,7 @@ class SnapshotStore: ObservableObject {
             list = try await self.fetchList(page: nextPage)
             return true
         } before: {
-            self.isLoading = true
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -92,11 +87,9 @@ class SnapshotStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Snapshots"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
         } anyways: {
-            self.isLoading = false
+            self.entitiesIsLoading = false
         }
     }
 
