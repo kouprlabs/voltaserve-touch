@@ -25,28 +25,24 @@ struct SharingGroupList: View {
     }
 
     var body: some View {
-        VStack {
-            if let groupPermissions = sharingStore.groupPermissions {
-                if groupPermissions.isEmpty {
-                    Text("Not shared with any groups.")
-                } else {
-                    List(groupPermissions, id: \.id) { groupPermission in
-                        NavigationLink {
-                            SharingGroupPermission(
-                                fileIDs: [fileID],
-                                sharingStore: sharingStore,
-                                workspaceStore: workspaceStore,
-                                predefinedGroup: groupPermission.group,
-                                defaultPermission: groupPermission.permission,
-                                enableRevoke: true
-                            )
-                        } label: {
-                            SharingGroupRow(groupPermission)
-                        }
+        if let groupPermissions = sharingStore.groupPermissions {
+            if groupPermissions.isEmpty {
+                Text("Not shared with any groups.")
+            } else {
+                List(groupPermissions, id: \.id) { groupPermission in
+                    NavigationLink {
+                        SharingGroupPermission(
+                            fileIDs: [fileID],
+                            sharingStore: sharingStore,
+                            workspaceStore: workspaceStore,
+                            predefinedGroup: groupPermission.group,
+                            defaultPermission: groupPermission.permission,
+                            enableRevoke: true
+                        )
+                    } label: {
+                        SharingGroupRow(groupPermission)
                     }
                 }
-            } else {
-                ProgressView()
             }
         }
     }

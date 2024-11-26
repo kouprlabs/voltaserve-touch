@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingUserList: View {
+struct SharingUserList: View, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
@@ -53,8 +53,6 @@ struct SharingUserList: View {
                         }
                     }
                 }
-            } else {
-                ProgressView()
             }
         }
         .onAppear {
@@ -72,7 +70,9 @@ struct SharingUserList: View {
         }
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         userStore.token = token
     }
 }

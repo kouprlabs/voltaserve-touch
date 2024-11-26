@@ -11,16 +11,13 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingUserPermission: View {
+struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
-    @State private var showRevoke = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
+    @State private var revokeConfirmationIsPresented = false
     @State private var isGranting = false
     @State private var isRevoking = false
     private let fileIDs: [String]
@@ -82,7 +79,7 @@ struct SharingUserPermission: View {
             if enableRevoke, fileIDs.count == 1 {
                 Section(header: VOSectionHeader("Actions")) {
                     Button(role: .destructive) {
-                        showRevoke = true
+                        revokeConfirmationIsPresented = true
                     } label: {
                         HStack {
                             Text("Revoke Permission")
@@ -93,7 +90,9 @@ struct SharingUserPermission: View {
                         }
                     }
                     .disabled(isRevoking)
-                    .confirmationDialog("Revoke Permission", isPresented: $showRevoke, titleVisibility: .visible) {
+                    .confirmationDialog(
+                        "Revoke Permission", isPresented: $revokeConfirmationIsPresented, titleVisibility: .visible
+                    ) {
                         Button("Revoke", role: .destructive) {
                             performRevoke()
                         }
@@ -132,7 +131,7 @@ struct SharingUserPermission: View {
                 permission = defaultPermission
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var isProcessing: Bool {
@@ -142,15 +141,15 @@ struct SharingUserPermission: View {
     private func performGrant() {
         guard let user, let permission else { return }
         isGranting = true
+
         withErrorHandling {
             try await sharingStore.grantUserPermission(ids: fileIDs, userID: user.id, permission: permission)
             return true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Granting User Permission"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isGranting = false
         }
@@ -159,21 +158,28 @@ struct SharingUserPermission: View {
     private func performRevoke() {
         guard let user, fileIDs.count == 1, let fileID = fileIDs.first else { return }
         isRevoking = true
+
         withErrorHandling {
             try await sharingStore.revokeUserPermission(id: fileID, userID: user.id)
             return true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Revoking User Permission"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isRevoking = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         user != nil && permission != nil
     }
 }
