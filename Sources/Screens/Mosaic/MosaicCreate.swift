@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct MosaicCreate: View {
+struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var mosaicStore = MosaicStore()
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
     @State private var isCreating = false
     private let fileID: String
 
@@ -63,11 +60,7 @@ struct MosaicCreate: View {
                 }
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: mosaicStore.errorTitle,
-            message: mosaicStore.errorMessage
-        )
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             mosaicStore.fileID = fileID
             if let token = tokenStore.token {
@@ -80,7 +73,6 @@ struct MosaicCreate: View {
             }
         }
         .presentationDetents([.fraction(0.35)])
-        .sync($mosaicStore.showError, with: $showError)
     }
 
     private func performCreate() {
@@ -91,15 +83,21 @@ struct MosaicCreate: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Creating Mosaic"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isCreating = false
         }
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
         mosaicStore.token = token
     }
 }
