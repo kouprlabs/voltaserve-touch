@@ -117,7 +117,6 @@ struct TaskOverview: View, ErrorPresentable {
     private func performDismiss() {
         withErrorHandling {
             try await taskStore.dismiss(task.id)
-            fileStore.fetchTaskCount()
             return true
         } before: {
             isDismissing = true

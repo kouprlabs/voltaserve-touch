@@ -100,12 +100,7 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
 
     private func performDismissAll() {
         withErrorHandling {
-            let result = try await taskStore.dismiss()
-            if let result {
-                if !result.succeeded.isEmpty {
-                    fileStore.fetchTaskCount()
-                }
-            }
+            _ = try await taskStore.dismiss()
             return true
         } before: {
             isDismissingAll = true

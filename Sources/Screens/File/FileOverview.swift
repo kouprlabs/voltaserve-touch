@@ -48,7 +48,9 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                     .onChange(of: searchText) {
                         fileStore.searchPublisher.send($1)
                     }
-                    .refreshable { fileStore.fetchNextPage(replace: true) }
+                    .refreshable {
+                        fileStore.fetchNextPage(replace: true)
+                    }
                 }
             }
         }
