@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingOverview: View {
+struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var sharingStore = SharingStore()
     @ObservedObject private var workspaceStore: WorkspaceStore
@@ -111,29 +111,45 @@ struct SharingOverview: View {
         }
     }
 
-    private func onAppearOrChange() {
+    private enum Tag {
+        case users
+        case groups
+    }
+
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        sharingStore.userPermissionsIsLoadingFirstTime || sharingStore.groupPermissionsIsLoadingFirstTime
+    }
+
+    var error: String? {
+        sharingStore.userPermissionsError ?? sharingStore.groupPermissionsError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
         fetchData()
     }
 
-    private func fetchData() {
+    func fetchData() {
         sharingStore.fetchUserPermissions()
         sharingStore.fetchGroupPermissions()
     }
 
-    private func startTimers() {
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
         sharingStore.startTimer()
     }
 
-    private func stopTimers() {
+    func stopTimers() {
         sharingStore.stopTimer()
     }
 
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        sharingStore.token = token
-    }
+    // MARK: - TokenDistributing
 
-    enum Tag {
-        case users
-        case groups
+    func assignTokenToStores(_ token: VOToken.Value) {
+        sharingStore.token = token
     }
 }

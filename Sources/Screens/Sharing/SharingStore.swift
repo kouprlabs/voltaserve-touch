@@ -14,10 +14,13 @@ import VoltaserveCore
 
 class SharingStore: ObservableObject {
     @Published var userPermissions: [VOFile.UserPermission]?
+    @Published var userPermissionsIsLoading: Bool = false
+    var userPermissionsIsLoadingFirstTime: Bool { userPermissionsIsLoading && userPermissions == nil }
+    @Published var userPermissionsError: String?
     @Published var groupPermissions: [VOFile.GroupPermission]?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
+    @Published var groupPermissionsIsLoading: Bool = false
+    var groupPermissionsIsLoadingFirstTime: Bool { groupPermissionsIsLoading && groupPermissions == nil }
+    @Published var groupPermissionsError: String?
     private var timer: Timer?
     private var fileClient: VOFile?
     var fileID: String?
@@ -51,12 +54,14 @@ class SharingStore: ObservableObject {
         withErrorHandling {
             userPermissions = try await self.fetchUserPermissions(fileID)
             return true
+        } before: {
+            self.userPermissionsIsLoading = true
         } success: {
             self.userPermissions = userPermissions
         } failure: { message in
-            self.errorTitle = "Error: Fetching User Permissions"
-            self.errorMessage = message
-            self.showError = true
+            self.userPermissionsError = message
+        } anyways: {
+            self.userPermissionsIsLoading = false
         }
     }
 
@@ -71,12 +76,14 @@ class SharingStore: ObservableObject {
         withErrorHandling {
             groupPermissions = try await self.fetchGroupPermissions(fileID)
             return true
+        } before: {
+            self.groupPermissionsIsLoading = true
         } success: {
             self.groupPermissions = groupPermissions
         } failure: { message in
-            self.errorTitle = "Error: Fetching Group Permissions"
-            self.errorMessage = message
-            self.showError = true
+            self.groupPermissionsError = message
+        } anyways: {
+            self.groupPermissionsIsLoading = false
         }
     }
 

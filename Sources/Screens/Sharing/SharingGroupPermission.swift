@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingGroupPermission: View {
+struct SharingGroupPermission: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
@@ -19,10 +19,7 @@ struct SharingGroupPermission: View {
     @State private var permission: VOPermission.Value?
     @State private var isGranting = false
     @State private var isRevoking = false
-    @State private var showRevoke = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
+    @State private var revokeConfirmationIsPresented = false
     private let fileIDs: [String]
     private let predefinedGroup: VOGroup.Entity?
     private let defaultPermission: VOPermission.Value?
@@ -79,7 +76,7 @@ struct SharingGroupPermission: View {
             if enableRevoke, fileIDs.count == 1 {
                 Section(header: VOSectionHeader("Actions")) {
                     Button(role: .destructive) {
-                        showRevoke = true
+                        revokeConfirmationIsPresented = true
                     } label: {
                         HStack {
                             Text("Revoke Permission")
@@ -90,7 +87,9 @@ struct SharingGroupPermission: View {
                         }
                     }
                     .disabled(isRevoking)
-                    .confirmationDialog("Revoke Permission", isPresented: $showRevoke, titleVisibility: .visible) {
+                    .confirmationDialog(
+                        "Revoke Permission", isPresented: $revokeConfirmationIsPresented, titleVisibility: .visible
+                    ) {
                         Button("Revoke", role: .destructive) {
                             performRevoke()
                         }
@@ -129,7 +128,7 @@ struct SharingGroupPermission: View {
                 permission = defaultPermission
             }
         }
-        .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var isProcessing: Bool {
@@ -145,9 +144,8 @@ struct SharingGroupPermission: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Granting Group Permission"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isGranting = false
         }
@@ -162,15 +160,21 @@ struct SharingGroupPermission: View {
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Revoking Group Permission"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isRevoking = false
         }
     }
 
-    private func isValid() -> Bool {
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
         group != nil && permission != nil
     }
 }
