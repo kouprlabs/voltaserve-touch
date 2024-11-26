@@ -41,7 +41,7 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                         Text(verbatim: entity.text),
                                         entity.frequency
                                     ),
-                                    innerRadius: .ratio(0.65),
+                                    innerRadius: .ratio(0.67),
                                     angularInset: 4
                                 )
                                 .cornerRadius(5)
