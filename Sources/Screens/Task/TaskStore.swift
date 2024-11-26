@@ -14,10 +14,9 @@ import VoltaserveCore
 
 class TaskStore: ObservableObject {
     @Published var entities: [VOTask.Entity]?
-    @Published var showError = false
-    @Published var errorTitle: String?
-    @Published var errorMessage: String?
-    @Published var isLoading = false
+    @Published var entitiesIsLoading: Bool = false
+    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published var entitiesError: String?
     private var list: VOTask.List?
     private var timer: Timer?
     private var taskClient: VOTask?
@@ -35,10 +34,6 @@ class TaskStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch(id: String) async throws -> VOTask.Entity? {
-        try await taskClient?.fetch(id)
-    }
-
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOTask.Probe? {
         try await taskClient?.fetchProbe(.init(size: size))
     }
@@ -48,7 +43,7 @@ class TaskStore: ObservableObject {
     }
 
     func fetchNextPage(replace: Bool = false) {
-        guard !isLoading else { return }
+        guard !entitiesIsLoading else { return }
 
         var nextPage = -1
         var list: VOTask.List?
@@ -71,7 +66,7 @@ class TaskStore: ObservableObject {
             list = try await self.fetchList(page: nextPage)
             return true
         } before: {
-            self.isLoading = true
+            self.entitiesIsLoading = true
         } success: {
             self.list = list
             if let list {
@@ -82,11 +77,9 @@ class TaskStore: ObservableObject {
                 }
             }
         } failure: { message in
-            self.errorTitle = "Error: Fetching Tasks"
-            self.errorMessage = message
-            self.showError = true
+            self.entitiesError = message
         } anyways: {
-            self.isLoading = false
+            self.entitiesIsLoading = false
         }
     }
 

@@ -11,14 +11,11 @@
 import SwiftUI
 import VoltaserveCore
 
-struct TaskOverview: View {
+struct TaskOverview: View, ErrorPresentable {
     @ObservedObject private var taskStore: TaskStore
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showDismissConfirmation = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
+    @State private var dismissConfirmationIsPresented = false
     @State private var isDismissing = false
     private let task: VOTask.Entity
 
@@ -87,7 +84,7 @@ struct TaskOverview: View {
             if task.status == .error {
                 Section(header: VOSectionHeader("Actions")) {
                     Button(role: .destructive) {
-                        showDismissConfirmation = true
+                        dismissConfirmationIsPresented = true
                     } label: {
                         HStack {
                             Text("Dismiss Task")
@@ -100,7 +97,7 @@ struct TaskOverview: View {
                     .disabled(isDismissing)
                     .confirmationDialog(
                         "Dismiss Task",
-                        isPresented: $showDismissConfirmation,
+                        isPresented: $dismissConfirmationIsPresented,
                         titleVisibility: .visible
                     ) {
                         Button("Dismiss", role: .destructive) {
@@ -114,28 +111,28 @@ struct TaskOverview: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(task.id)")
-        .voErrorAlert(
-            isPresented: $showError,
-            title: taskStore.errorTitle,
-            message: taskStore.errorMessage
-        )
-        .sync($taskStore.showError, with: $showError)
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performDismiss() {
-        isDismissing = true
         withErrorHandling {
             try await taskStore.dismiss(task.id)
             fileStore.fetchTaskCount()
             return true
+        } before: {
+            isDismissing = true
         } success: {
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Dismissing Task"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDismissing = false
         }
     }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
 }

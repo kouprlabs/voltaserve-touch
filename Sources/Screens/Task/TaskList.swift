@@ -11,15 +11,14 @@
 import SwiftUI
 import VoltaserveCore
 
-struct TaskList: View {
+struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable,
+    ErrorPresentable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var fileStore: FileStore
     @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
     @State private var isDismissingAll = false
-    @State private var showError = false
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
 
     init(fileStore: FileStore) {
         self.fileStore = fileStore
@@ -27,60 +26,60 @@ struct TaskList: View {
 
     var body: some View {
         NavigationStack {
-            if let entities = taskStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no tasks.")
-                    } else {
-                        List {
-                            ForEach(entities, id: \.id) { task in
-                                NavigationLink {
-                                    TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
-                                } label: {
-                                    TaskRow(task)
-                                        .onAppear {
-                                            onListItemAppear(task.id)
-                                        }
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let entities = taskStore.entities {
+                    Group {
+                        if entities.count == 0 {
+                            Text("There are no tasks.")
+                        } else {
+                            List {
+                                ForEach(entities, id: \.id) { task in
+                                    NavigationLink {
+                                        TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
+                                    } label: {
+                                        TaskRow(task)
+                                            .onAppear {
+                                                onListItemAppear(task.id)
+                                            }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Tasks")
-                .refreshable {
-                    taskStore.fetchNextPage(replace: true)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        if isDismissingAll {
-                            ProgressView()
-                        } else {
-                            Button("Dismiss All") {
-                                performDismissAll()
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle("Tasks")
+                    .refreshable {
+                        taskStore.fetchNextPage(replace: true)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            if isDismissingAll {
+                                ProgressView()
+                            } else {
+                                Button("Dismiss All") {
+                                    performDismissAll()
+                                }
+                            }
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done") {
+                                dismiss()
+                            }
+                        }
+                        ToolbarItem(placement: .topBarLeading) {
+                            if taskStore.entitiesIsLoading {
+                                ProgressView()
                             }
                         }
                     }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            dismiss()
-                        }
-                    }
-                    ToolbarItem(placement: .topBarLeading) {
-                        if taskStore.isLoading, taskStore.entities != nil {
-                            ProgressView()
-                        }
-                    }
                 }
-            } else {
-                ProgressView()
             }
         }
-        .voErrorAlert(
-            isPresented: $showError,
-            title: taskStore.errorTitle,
-            message: taskStore.errorMessage
-        )
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             if let token = tokenStore.token {
                 assignTokenToStores(token)
@@ -97,37 +96,9 @@ struct TaskList: View {
                 onAppearOrChange()
             }
         }
-        .sync($taskStore.showError, with: $showError)
-    }
-
-    private func onAppearOrChange() {
-        fetchData()
-    }
-
-    private func fetchData() {
-        taskStore.fetchNextPage(replace: true)
-    }
-
-    private func assignTokenToStores(_ token: VOToken.Value) {
-        taskStore.token = token
-    }
-
-    private func startTimers() {
-        taskStore.startTimer()
-    }
-
-    private func stopTimers() {
-        taskStore.stopTimer()
-    }
-
-    private func onListItemAppear(_ id: String) {
-        if taskStore.isEntityThreshold(id) {
-            taskStore.fetchNextPage()
-        }
     }
 
     private func performDismissAll() {
-        isDismissingAll = true
         withErrorHandling {
             let result = try await taskStore.dismiss()
             if let result {
@@ -136,15 +107,65 @@ struct TaskList: View {
                 }
             }
             return true
+        } before: {
+            isDismissingAll = true
         } success: {
             taskStore.fetchNextPage(replace: true)
             dismiss()
         } failure: { message in
-            errorTitle = "Error: Dismissing All Tasks"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
             isDismissingAll = false
+        }
+    }
+
+    // MARK: - LoadStateProvider
+
+    var isLoading: Bool {
+        taskStore.entitiesIsLoadingFirstTime
+    }
+
+    var error: String? {
+        taskStore.entitiesError
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
+        fetchData()
+    }
+
+    func fetchData() {
+        taskStore.fetchNextPage(replace: true)
+    }
+
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
+        taskStore.startTimer()
+    }
+
+    func stopTimers() {
+        taskStore.stopTimer()
+    }
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        taskStore.token = token
+    }
+
+    // MARK: - ListItemScrollable
+
+    func onListItemAppear(_ id: String) {
+        if taskStore.isEntityThreshold(id) {
+            taskStore.fetchNextPage()
         }
     }
 }
