@@ -25,12 +25,12 @@ struct SnapshotRow: View {
             } else {
                 spacer
             }
-            VStack(alignment: .leading) {
+            VOAvatar(name: "V \(snapshot.version)", size: VOMetrics.avatarSize)
+            VStack(alignment: .leading, spacing: VOMetrics.spacingXs) {
                 if let date = snapshot.createTime.date {
                     Text(date.pretty)
                 }
                 HStack {
-                    VOColorBadge("v\(snapshot.version)", color: .gray400, style: .outline)
                     if let size = snapshot.original.size {
                         VOColorBadge(size.prettyBytes(), color: .gray400, style: .outline)
                     }
