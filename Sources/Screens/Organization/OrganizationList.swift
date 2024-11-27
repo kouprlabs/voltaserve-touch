@@ -46,7 +46,7 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                                     }
                                 }
                             }
-                            
+
                         }
                     }
                     .navigationTitle("Organizations")
