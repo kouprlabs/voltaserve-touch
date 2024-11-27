@@ -20,7 +20,7 @@ class BrowserStore: ObservableObject {
     @Published var folder: VOFile.Entity?
     @Published var folderIsLoading: Bool = false
     @Published var folderError: String?
-    @Published var query: VOFile.Query?
+    @Published var query: VOFile.Query = .init(type: .folder)
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -44,7 +44,11 @@ class BrowserStore: ObservableObject {
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
             .sink {
-                self.query = .init(text: $0, type: .folder)
+                if $0.isEmpty {
+                    self.query = .init(type: .folder)
+                } else {
+                    self.query = .init(text: $0, type: .folder)
+                }
             }
             .store(in: &cancellables)
     }
