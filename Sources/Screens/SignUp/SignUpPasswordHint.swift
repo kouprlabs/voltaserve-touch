@@ -8,17 +8,25 @@
 // by the GNU Affero General Public License v3.0 only, included in the file
 // AGPL-3.0-only in the root of this repository.
 
-import Combine
-import Foundation
 import SwiftUI
 
-extension View {
-    func sync<T: Equatable>(_ published: Binding<T>, with binding: Binding<T>) -> some View {
-        onChange(of: published.wrappedValue) { _, published in
-            binding.wrappedValue = published
+struct SignUpPasswordHint: View {
+    var text: String
+    var isFulfilled: Bool
+
+    init(_ text: String, isFulfilled: Bool = false) {
+        self.text = text
+        self.isFulfilled = isFulfilled
+    }
+
+    var body: some View {
+        HStack {
+            Image(systemName: "checkmark")
+                .imageScale(.small)
+            Text(text)
+                .voFormHintText()
+            Spacer()
         }
-        .onChange(of: binding.wrappedValue) { _, binding in
-            published.wrappedValue = binding
-        }
+        .foregroundStyle(isFulfilled ? .green : .secondary)
     }
 }

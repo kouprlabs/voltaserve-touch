@@ -10,13 +10,13 @@
 
 import SwiftUI
 
-struct SignUp: View {
+struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, FormValidatable {
     @StateObject private var signUpStore = SignUpStore()
     @State private var fullName: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
-    @State private var isLoading = false
+    @State private var isProcessing = false
     private let onCompletion: (() -> Void)?
     private let onSignIn: (() -> Void)?
 
@@ -27,95 +27,159 @@ struct SignUp: View {
 
     var body: some View {
         NavigationView {
-            if let passwordRequirements = signUpStore.passwordRequirements {
-                VStack(spacing: VOMetrics.spacing) {
-                    VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-                    Text("Sign Up to Voltaserve")
-                        .voHeading(fontSize: VOMetrics.headingFontSize)
-                    TextField("Full name", text: $fullName)
-                        .voTextField(width: VOMetrics.formWidth)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .disabled(isLoading)
-                    TextField("Email", text: $email)
-                        .voTextField(width: VOMetrics.formWidth)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .disabled(isLoading)
-                    SecureField("Password", text: $password)
-                        .voTextField(width: VOMetrics.formWidth)
-                        .disabled(isLoading)
-                    VStack(alignment: .listRowSeparatorLeading) {
-                        PasswordHint("\(passwordRequirements.minLength) characters.")
-                        PasswordHint("\(passwordRequirements.minLowercase) lowercase character.")
-                        PasswordHint("\(passwordRequirements.minUppercase) uppercase character.")
-                        PasswordHint("\(passwordRequirements.minNumbers) number.")
-                        PasswordHint("\(passwordRequirements.minSymbols) special character(s) (!#$%).")
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let passwordRequirements = signUpStore.passwordRequirements {
+                        VStack(spacing: VOMetrics.spacing) {
+                            VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
+                            Text("Sign Up to Voltaserve")
+                                .voHeading(fontSize: VOMetrics.headingFontSize)
+                            TextField("Full name", text: $fullName)
+                                .voTextField(width: VOMetrics.formWidth)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .disabled(isProcessing)
+                            TextField("Email", text: $email)
+                                .voTextField(width: VOMetrics.formWidth)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .disabled(isProcessing)
+                            SecureField("Password", text: $password)
+                                .voTextField(width: VOMetrics.formWidth)
+                                .disabled(isProcessing)
+                            VStack(alignment: .listRowSeparatorLeading) {
+                                SignUpPasswordHint(
+                                    "\(passwordRequirements.minLength) characters.",
+                                    isFulfilled: password.hasMinLength(passwordRequirements.minLength))
+                                SignUpPasswordHint(
+                                    "\(passwordRequirements.minLowercase) lowercase character.",
+                                    isFulfilled: password.hasMinLowerCase(passwordRequirements.minLowercase))
+                                SignUpPasswordHint(
+                                    "\(passwordRequirements.minUppercase) uppercase character.",
+                                    isFulfilled: password.hasMinUpperCase(passwordRequirements.minUppercase))
+                                SignUpPasswordHint(
+                                    "\(passwordRequirements.minNumbers) number.",
+                                    isFulfilled: password.hasMinNumbers(passwordRequirements.minNumbers))
+                                SignUpPasswordHint(
+                                    "\(passwordRequirements.minSymbols) special character(s) (!#$%).",
+                                    isFulfilled: password.hasMinSymbols(passwordRequirements.minSymbols))
+                                SignUpPasswordHint(
+                                    "Passwords match.",
+                                    isFulfilled: !password.isEmpty && !confirmPassword.isEmpty
+                                        && password == confirmPassword)
+                            }
+                            .frame(width: VOMetrics.formWidth)
+                            SecureField("Confirm password", text: $confirmPassword)
+                                .voTextField(width: VOMetrics.formWidth)
+                                .disabled(isProcessing)
+                            Button {
+                                if isValid() {
+                                    performSignUp()
+                                }
+                            } label: {
+                                VOButtonLabel(
+                                    "Sign Up",
+                                    isLoading: isProcessing,
+                                    progressViewTint: .white
+                                )
+                            }
+                            .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
+                            HStack {
+                                Text("Already a member?")
+                                    .voFormHintText()
+                                Button {
+                                    onSignIn?()
+                                } label: {
+                                    Text("Sign In")
+                                        .voFormHintLabel()
+                                }
+                                .disabled(isProcessing)
+                            }
+                        }
+
                     }
-                    .frame(width: VOMetrics.formWidth)
-                    SecureField("Confirm password", text: $confirmPassword)
-                        .voTextField(width: VOMetrics.formWidth)
-                        .disabled(isLoading)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        isLoading = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            isLoading = false
-                            onCompletion?()
-                        }
+                        onSignIn?()
                     } label: {
-                        VOButtonLabel(
-                            "Sign Up",
-                            isLoading: isLoading,
-                            progressViewTint: .white
-                        )
-                    }
-                    .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isLoading)
-                    HStack {
-                        Text("Already a member?")
-                            .voFormHintText()
-                        Button {
-                            onSignIn?()
-                        } label: {
-                            Text("Sign In")
-                                .voFormHintLabel()
-                        }
-                        .disabled(isLoading)
+                        Text("Back to Sign In")
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            onSignIn?()
-                        } label: {
-                            Text("Back to Sign In")
-                        }
-                    }
-                }
-            } else {
-                ProgressView()
             }
         }
-    }
-}
-
-struct PasswordHint: View {
-    var text: String
-    var isFulfilled: Bool
-
-    init(_ text: String, isFulfilled: Bool = false) {
-        self.text = text
-        self.isFulfilled = isFulfilled
-    }
-
-    var body: some View {
-        HStack {
-            Image(systemName: "checkmark")
-                .imageScale(.small)
-            Text(text)
-                .voFormHintText()
-            Spacer()
+        .onAppear {
+            startTimers()
+            onAppearOrChange()
         }
-        .foregroundStyle(isFulfilled ? .green : .secondary)
+        .onDisappear {
+            stopTimers()
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
+    }
+
+    private func performSignUp() {
+        withErrorHandling {
+            _ = try await signUpStore.signUp(.init(email: email, password: password, fullName: fullName))
+            return true
+        } before: {
+            isProcessing = true
+        } success: {
+            onCompletion?()
+        } failure: { message in
+            errorMessage = message
+            errorIsPresented = true
+        } anyways: {
+            isProcessing = false
+        }
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - ViewDataProvider
+
+    var isLoading: Bool {
+        signUpStore.passwordRequirementsIsLoading
+    }
+
+    var error: String? {
+        signUpStore.passwordRequirementsError
+    }
+
+    // MARK: - ViewDataProvider
+
+    func onAppearOrChange() {
+        fetchData()
+    }
+
+    func fetchData() {
+        signUpStore.fetchPasswordRequirements()
+    }
+
+    // MARK: - TimerLifecycle
+
+    func startTimers() {
+        signUpStore.startTimer()
+    }
+
+    func stopTimers() {
+        signUpStore.stopTimer()
+    }
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
+        !email.isEmpty && !fullName.isEmpty && !password.isEmpty && !confirmPassword.isEmpty
+            && password == confirmPassword
     }
 }
 
