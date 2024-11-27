@@ -115,6 +115,7 @@ struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, FormVa
             }
         }
         .onAppear {
+            startTimers()
             onAppearOrChange()
         }
         .onDisappear {
