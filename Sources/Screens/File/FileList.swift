@@ -15,6 +15,7 @@ struct FileList: View, ListItemScrollable {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var tappedItem: VOFile.Entity?
+    @State private var viewerIsPresented: Bool = false
 
     init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
@@ -29,6 +30,7 @@ struct FileList: View, ListItemScrollable {
                         Button {
                             if file.snapshot?.status == .ready {
                                 tappedItem = file
+                                viewerIsPresented = true
                             }
                         } label: {
                             FileRow(file)
@@ -52,8 +54,10 @@ struct FileList: View, ListItemScrollable {
                 }
             }
             .listStyle(.inset)
-            .navigationDestination(item: $tappedItem) {
-                Viewer($0)
+            .fullScreenCover(isPresented: $viewerIsPresented) {
+                if let tappedItem {
+                    Viewer(tappedItem)
+                }
             }
         }
     }
