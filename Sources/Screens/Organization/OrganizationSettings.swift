@@ -66,11 +66,11 @@ struct OrganizationSettings: View, ErrorPresentable {
                         }
                     }
                 }
-                .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Settings")
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performDelete() {

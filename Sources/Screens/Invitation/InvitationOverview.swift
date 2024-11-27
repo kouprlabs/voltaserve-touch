@@ -135,7 +135,6 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(invitation.id)")
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             userStore.invitationID = invitation.id
             if let token = tokenStore.token {
@@ -147,6 +146,7 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
                 assignTokenToStores(newToken)
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var isProcessing: Bool {
