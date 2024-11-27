@@ -45,16 +45,16 @@ struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
                                 }
                             }
                         }
-                        .searchable(text: $searchText)
-                        .onChange(of: searchText) {
-                            organizationStore.searchPublisher.send($1)
-                        }
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle("Select Organization")
                 .refreshable {
                     organizationStore.fetchNextPage(replace: true)
+                }
+                .searchable(text: $searchText)
+                .onChange(of: searchText) {
+                    organizationStore.searchPublisher.send($1)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {

@@ -99,7 +99,11 @@ class FileStore: ObservableObject {
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
             .sink {
-                self.query = .init(text: $0)
+                if $0.isEmpty {
+                    self.query = nil
+                } else {
+                    self.query = .init(text: $0)
+                }
             }
             .store(in: &cancellables)
     }

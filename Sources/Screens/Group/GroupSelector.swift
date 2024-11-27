@@ -49,14 +49,14 @@ struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                     }
                                 }
                             }
-                            .searchable(text: $searchText)
-                            .onChange(of: searchText) {
-                                groupStore.searchPublisher.send($1)
-                            }
                         }
                     }
                     .refreshable {
                         groupStore.fetchNextPage(replace: true)
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) {
+                        groupStore.searchPublisher.send($1)
                     }
                 }
             }

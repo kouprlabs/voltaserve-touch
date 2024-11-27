@@ -44,12 +44,12 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                             }
                         }
                     }
+                    .refreshable {
+                        fileStore.fetchNextPage(replace: true)
+                    }
                     .searchable(text: $searchText)
                     .onChange(of: searchText) {
                         fileStore.searchPublisher.send($1)
-                    }
-                    .refreshable {
-                        fileStore.fetchNextPage(replace: true)
                     }
                 }
             }
