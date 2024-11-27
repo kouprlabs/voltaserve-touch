@@ -29,8 +29,8 @@ struct ViewerImageWebView: UIViewRepresentable {
                             padding: 0;
                             background: #000;
                             display: flex;
-                            align-items: center;
                             justify-content: center;
+                            align-items: center;
                             flex-grow: 1;
                             width: 100%;
                             height: 100%;
