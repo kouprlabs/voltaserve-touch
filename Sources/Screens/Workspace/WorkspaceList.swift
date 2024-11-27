@@ -58,11 +58,6 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                         .onChange(of: searchText) {
                             workspaceStore.searchPublisher.send($1)
                         }
-                        .navigationDestination(isPresented: $overviewIsPresented) {
-                            if let newWorkspace {
-                                WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
-                            }
-                        }
                     }
                 }
             }
@@ -93,6 +88,11 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                 WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in
                     self.newWorkspace = newWorkspace
                     overviewIsPresented = true
+                }
+            }
+            .navigationDestination(isPresented: $overviewIsPresented) {
+                if let newWorkspace {
+                    WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
                 }
             }
             .sheet(isPresented: $accountIsPresented) {
