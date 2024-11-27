@@ -73,7 +73,7 @@ struct ForgotPassword: View, FormValidatable, ErrorPresentable {
         }
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
-    
+
     private func performSendResetPasswordEmail() {
         withErrorHandling {
             _ = try await forgotPasswordStore.sendResetPasswordEmail(.init(email: email))
@@ -89,12 +89,12 @@ struct ForgotPassword: View, FormValidatable, ErrorPresentable {
             isProcessing = false
         }
     }
-    
+
     // MARK: - ErrorPresentable
-    
+
     @State var errorIsPresented: Bool = false
     @State var errorMessage: String?
-    
+
     // MARK: - FormValidatable
 
     func isValid() -> Bool {

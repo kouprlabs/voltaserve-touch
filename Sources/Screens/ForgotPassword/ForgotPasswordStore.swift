@@ -14,7 +14,7 @@ import VoltaserveCore
 
 class ForgotPasswordStore: ObservableObject {
     private var accountClient: VOAccount = .init(baseURL: Config.production.idpURL)
-    
+
     // MARK: - Update
 
     func sendResetPasswordEmail(_ options: VOAccount.SendResetPasswordEmailOptions) async throws {
