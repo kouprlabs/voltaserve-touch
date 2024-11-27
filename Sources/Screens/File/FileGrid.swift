@@ -25,10 +25,12 @@ struct FileGrid: View, ListItemScrollable {
     var body: some View {
         if let entities = fileStore.entities {
             GeometryReader { geometry in
+                let padding = VOMetrics.spacing * 2
+                let safeWidth = geometry.size.width - geometry.safeAreaInsets.leading - geometry.safeAreaInsets.trailing
+                let additional = UIDevice.current.userInterfaceIdiom == .pad ? -1 : 0
                 let columns = Array(
                     repeating: GridItem(.fixed(FileCellMetrics.cellSize.width), spacing: VOMetrics.spacing),
-                    count: Int(geometry.size.width / FileCellMetrics.cellSize.width)
-                        + (UIDevice.current.userInterfaceIdiom == .pad ? -1 : 0)
+                    count: Int((safeWidth - padding) / FileCellMetrics.cellSize.width) + additional
                 )
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: VOMetrics.spacing) {
