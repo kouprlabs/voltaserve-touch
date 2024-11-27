@@ -26,75 +26,77 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     var body: some View {
         NavigationStack {
-            if isLoading {
-                ProgressView()
-            } else if let error {
-                VOErrorMessage(error)
-            } else {
-                if let entities = workspaceStore.entities {
-                    Group {
-                        if entities.count == 0 {
-                            Text("There are no workspaces.")
-                        } else {
-                            List {
-                                ForEach(entities, id: \.id) { workspace in
-                                    NavigationLink {
-                                        WorkspaceOverview(workspace, workspaceStore: workspaceStore)
-                                    } label: {
-                                        WorkspaceRow(workspace)
-                                            .onAppear {
-                                                onListItemAppear(workspace.id)
-                                            }
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = workspaceStore.entities {
+                        Group {
+                            if entities.count == 0 {
+                                Text("There are no workspaces.")
+                            } else {
+                                List {
+                                    ForEach(entities, id: \.id) { workspace in
+                                        NavigationLink {
+                                            WorkspaceOverview(workspace, workspaceStore: workspaceStore)
+                                        } label: {
+                                            WorkspaceRow(workspace)
+                                                .onAppear {
+                                                    onListItemAppear(workspace.id)
+                                                }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    .navigationTitle("Home")
-                    .refreshable {
-                        workspaceStore.fetchNextPage(replace: true)
-                    }
-                    .searchable(text: $searchText)
-                    .onChange(of: searchText) {
-                        workspaceStore.searchPublisher.send($1)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            if UIDevice.current.userInterfaceIdiom == .phone {
-                                accountButton
-                                    .padding(.trailing, VOMetrics.spacingXs)
-                            } else {
-                                accountButton
+                        .refreshable {
+                            workspaceStore.fetchNextPage(replace: true)
+                        }
+                        .searchable(text: $searchText)
+                        .onChange(of: searchText) {
+                            workspaceStore.searchPublisher.send($1)
+                        }
+                        .navigationDestination(isPresented: $overviewIsPresented) {
+                            if let newWorkspace {
+                                WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
                             }
-                        }
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                createIsPresented = true
-                            } label: {
-                                Image(systemName: "plus")
-                            }
-                        }
-                        ToolbarItem(placement: .topBarLeading) {
-                            if workspaceStore.entitiesIsLoading {
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .sheet(isPresented: $createIsPresented) {
-                        WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in
-                            self.newWorkspace = newWorkspace
-                            overviewIsPresented = true
-                        }
-                    }
-                    .sheet(isPresented: $accountIsPresented) {
-                        AccountOverview()
-                    }
-                    .navigationDestination(isPresented: $overviewIsPresented) {
-                        if let newWorkspace {
-                            WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
                         }
                     }
                 }
+            }
+            .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    if UIDevice.current.userInterfaceIdiom == .phone {
+                        accountButton
+                            .padding(.trailing, VOMetrics.spacingXs)
+                    } else {
+                        accountButton
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        createIsPresented = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if workspaceStore.entitiesIsLoading {
+                        ProgressView()
+                    }
+                }
+            }
+            .sheet(isPresented: $createIsPresented) {
+                WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in
+                    self.newWorkspace = newWorkspace
+                    overviewIsPresented = true
+                }
+            }
+            .sheet(isPresented: $accountIsPresented) {
+                AccountOverview()
             }
         }
         .onAppear {

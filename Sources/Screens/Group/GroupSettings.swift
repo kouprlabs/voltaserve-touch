@@ -71,12 +71,12 @@ struct GroupSettings: View, ErrorPresentable {
     }
 
     private func performDelete() {
-        isDeleting = true
         let current = groupStore.current
-
         withErrorHandling {
             try await groupStore.delete()
             return true
+        } before: {
+            isDeleting = true
         } success: {
             dismiss()
             if let current {

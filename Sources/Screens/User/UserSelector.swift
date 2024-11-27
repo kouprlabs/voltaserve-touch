@@ -70,18 +70,18 @@ struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                     .onChange(of: searchText) {
                         userStore.searchPublisher.send($1)
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            if userStore.entitiesIsLoading {
-                                ProgressView()
-                            }
-                        }
-                    }
                 }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Select User")
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if userStore.entitiesIsLoading {
+                    ProgressView()
+                }
+            }
+        }
         .onAppear {
             if let groupID {
                 userStore.groupID = groupID

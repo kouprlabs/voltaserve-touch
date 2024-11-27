@@ -45,23 +45,23 @@ extension View {
 }
 
 #Preview {
-    @Previewable @State var showError = false
-    @Previewable @State var showLongError = false
+    @Previewable @State var errorIsPresented = false
+    @Previewable @State var longErrorIsPresented = false
 
     VStack(spacing: VOMetrics.spacing) {
         Button("Show Error") {
-            showError = true
+            errorIsPresented = true
         }
         Button("Show Long Error") {
-            showLongError = true
+            longErrorIsPresented = true
         }
     }
     .voErrorSheet(
-        isPresented: $showError,
+        isPresented: $errorIsPresented,
         message: "Lorem ipsum dolor sit amet."
     )
     .voErrorSheet(
-        isPresented: $showLongError,
+        isPresented: $longErrorIsPresented,
         message:
             // swiftlint:disable:next line_length
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."

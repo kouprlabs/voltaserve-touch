@@ -22,63 +22,65 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
 
     var body: some View {
         NavigationStack {
-            if isLoading {
-                ProgressView()
-            } else if let error {
-                VOErrorMessage(error)
-            } else {
-                if let entities = groupStore.entities {
-                    Group {
-                        if entities.count == 0 {
-                            Text("There are no groups.")
-                        } else {
-                            List {
-                                ForEach(entities, id: \.id) { group in
-                                    NavigationLink {
-                                        GroupOverview(group, groupStore: groupStore)
-                                    } label: {
-                                        GroupRow(group)
-                                            .onAppear {
-                                                onListItemAppear(group.id)
-                                            }
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = groupStore.entities {
+                        Group {
+                            if entities.count == 0 {
+                                Text("There are no groups.")
+                            } else {
+                                List {
+                                    ForEach(entities, id: \.id) { group in
+                                        NavigationLink {
+                                            GroupOverview(group, groupStore: groupStore)
+                                        } label: {
+                                            GroupRow(group)
+                                                .onAppear {
+                                                    onListItemAppear(group.id)
+                                                }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    .navigationTitle("Groups")
-                    .refreshable {
-                        groupStore.fetchNextPage(replace: true)
-                    }
-                    .searchable(text: $searchText)
-                    .onChange(of: searchText) {
-                        groupStore.searchPublisher.send($1)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                createIsPresented = true
-                            } label: {
-                                Image(systemName: "plus")
-                            }
+                        .refreshable {
+                            groupStore.fetchNextPage(replace: true)
                         }
-                        ToolbarItem(placement: .topBarLeading) {
-                            if groupStore.entitiesIsLoading {
-                                ProgressView()
+                        .searchable(text: $searchText)
+                        .onChange(of: searchText) {
+                            groupStore.searchPublisher.send($1)
+                        }
+                        .navigationDestination(isPresented: $overviewIsPresented) {
+                            if let newGroup {
+                                GroupOverview(newGroup, groupStore: groupStore)
                             }
                         }
                     }
-                    .sheet(isPresented: $createIsPresented) {
-                        GroupCreate(groupStore: groupStore) { newGroup in
-                            self.newGroup = newGroup
-                            overviewIsPresented = true
-                        }
+                }
+            }
+            .navigationTitle("Groups")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        createIsPresented = true
+                    } label: {
+                        Image(systemName: "plus")
                     }
-                    .navigationDestination(isPresented: $overviewIsPresented) {
-                        if let newGroup {
-                            GroupOverview(newGroup, groupStore: groupStore)
-                        }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if groupStore.entitiesIsLoading {
+                        ProgressView()
                     }
+                }
+            }
+            .sheet(isPresented: $createIsPresented) {
+                GroupCreate(groupStore: groupStore) { newGroup in
+                    self.newGroup = newGroup
+                    overviewIsPresented = true
                 }
             }
         }

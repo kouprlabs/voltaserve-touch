@@ -66,8 +66,8 @@ struct GroupCreate: View, FormValidatable, ErrorPresentable {
                     }
                 }
             }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedName: String {
@@ -76,12 +76,13 @@ struct GroupCreate: View, FormValidatable, ErrorPresentable {
 
     private func performCreate() {
         guard let organization else { return }
-        isProcessing = true
         var group: VOGroup.Entity?
 
         withErrorHandling {
             group = try await groupStore.create(name: normalizedName, organization: organization)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
             if let onCompletion, let group {

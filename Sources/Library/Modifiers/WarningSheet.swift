@@ -45,23 +45,23 @@ extension View {
 }
 
 #Preview {
-    @Previewable @State var showWarning = false
-    @Previewable @State var showLongWarning = false
+    @Previewable @State var warningIsPresented = false
+    @Previewable @State var longWarningIsPresented = false
 
     VStack(spacing: VOMetrics.spacing) {
         Button("Show Warning") {
-            showWarning = true
+            warningIsPresented = true
         }
         Button("Show Long Warning") {
-            showLongWarning = true
+            longWarningIsPresented = true
         }
     }
     .voWarningSheet(
-        isPresented: $showWarning,
+        isPresented: $warningIsPresented,
         message: "Lorem ipsum dolor sit amet."
     )
     .voWarningSheet(
-        isPresented: $showLongWarning,
+        isPresented: $longWarningIsPresented,
         message:
             // swiftlint:disable:next line_length
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."

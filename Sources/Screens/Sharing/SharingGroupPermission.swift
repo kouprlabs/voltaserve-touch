@@ -137,10 +137,11 @@ struct SharingGroupPermission: View, FormValidatable, ErrorPresentable {
 
     private func performGrant() {
         guard let group, let permission else { return }
-        isGranting = true
         withErrorHandling {
             try await sharingStore.grantGroupPermission(ids: fileIDs, groupID: group.id, permission: permission)
             return true
+        } before: {
+            isGranting = true
         } success: {
             dismiss()
         } failure: { message in
@@ -153,10 +154,11 @@ struct SharingGroupPermission: View, FormValidatable, ErrorPresentable {
 
     private func performRevoke() {
         guard let group, fileIDs.count == 1, let fileID = fileIDs.first else { return }
-        isRevoking = true
         withErrorHandling {
             try await sharingStore.revokeGroupPermission(id: fileID, groupID: group.id)
             return true
+        } before: {
+            isRevoking = true
         } success: {
             dismiss()
         } failure: { message in

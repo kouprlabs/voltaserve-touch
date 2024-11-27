@@ -23,46 +23,48 @@ struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
 
     var body: some View {
         NavigationStack {
-            if isLoading {
-                ProgressView()
-            } else if let error {
-                VOErrorMessage(error)
-            } else {
-                if let entities = snapshotStore.entities {
-                    Group {
-                        if entities.count == 0 {
-                            Text("There are no snapshots.")
-                        } else {
-                            List {
-                                ForEach(entities, id: \.id) { snapshot in
-                                    NavigationLink {
-                                        SnapshotOverview(snapshot, snapshotStore: snapshotStore)
-                                    } label: {
-                                        SnapshotRow(snapshot)
-                                            .onAppear {
-                                                onListItemAppear(snapshot.id)
-                                            }
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = snapshotStore.entities {
+                        Group {
+                            if entities.count == 0 {
+                                Text("There are no snapshots.")
+                            } else {
+                                List {
+                                    ForEach(entities, id: \.id) { snapshot in
+                                        NavigationLink {
+                                            SnapshotOverview(snapshot, snapshotStore: snapshotStore)
+                                        } label: {
+                                            SnapshotRow(snapshot)
+                                                .onAppear {
+                                                    onListItemAppear(snapshot.id)
+                                                }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationTitle("Snapshots")
-                    .refreshable {
-                        snapshotStore.fetchNextPage(replace: true)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Done") {
-                                dismiss()
-                            }
+                        .refreshable {
+                            snapshotStore.fetchNextPage(replace: true)
                         }
-                        ToolbarItem(placement: .topBarLeading) {
-                            if snapshotStore.entitiesIsLoading {
-                                ProgressView()
-                            }
-                        }
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Snapshots")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if snapshotStore.entitiesIsLoading {
+                        ProgressView()
                     }
                 }
             }

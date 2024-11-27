@@ -26,60 +26,61 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
 
     var body: some View {
         NavigationStack {
-            if isLoading {
-                ProgressView()
-            } else if let error {
-                VOErrorMessage(error)
-            } else {
-                if let entities = taskStore.entities {
-                    Group {
-                        if entities.count == 0 {
-                            Text("There are no tasks.")
-                        } else {
-                            List {
-                                ForEach(entities, id: \.id) { task in
-                                    NavigationLink {
-                                        TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
-                                    } label: {
-                                        TaskRow(task)
-                                            .onAppear {
-                                                onListItemAppear(task.id)
-                                            }
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = taskStore.entities {
+                        Group {
+                            if entities.count == 0 {
+                                Text("There are no tasks.")
+                            } else {
+                                List {
+                                    ForEach(entities, id: \.id) { task in
+                                        NavigationLink {
+                                            TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
+                                        } label: {
+                                            TaskRow(task)
+                                                .onAppear {
+                                                    onListItemAppear(task.id)
+                                                }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationTitle("Tasks")
-                    .refreshable {
-                        taskStore.fetchNextPage(replace: true)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            if isDismissingAll {
-                                ProgressView()
-                            } else {
-                                Button("Dismiss All") {
-                                    performDismissAll()
-                                }
-                            }
-                        }
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Done") {
-                                dismiss()
-                            }
-                        }
-                        ToolbarItem(placement: .topBarLeading) {
-                            if taskStore.entitiesIsLoading {
-                                ProgressView()
-                            }
+                        .refreshable {
+                            taskStore.fetchNextPage(replace: true)
                         }
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Tasks")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if isDismissingAll {
+                        ProgressView()
+                    } else {
+                        Button("Dismiss All") {
+                            performDismissAll()
+                        }
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if taskStore.entitiesIsLoading {
+                        ProgressView()
+                    }
+                }
+            }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             if let token = tokenStore.token {
                 assignTokenToStores(token)
@@ -96,6 +97,7 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
                 onAppearOrChange()
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performDismissAll() {

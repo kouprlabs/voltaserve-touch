@@ -125,10 +125,11 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
     }
 
     private func performDelete() {
-        isDeleting = true
         withErrorHandling {
             try await accountStore.deleteAccount(password: password)
             return true
+        } before: {
+            isDeleting = true
         } success: {
             dismiss()
             onDelete?()

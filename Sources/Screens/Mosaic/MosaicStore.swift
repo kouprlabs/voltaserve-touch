@@ -65,11 +65,13 @@ class MosaicStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            Task {
-                let info = try await self.fetchInfo()
-                if let info {
-                    DispatchQueue.main.async {
-                        self.info = info
+            if self.info != nil {
+                Task {
+                    let info = try await self.fetchInfo()
+                    if let info {
+                        DispatchQueue.main.async {
+                            self.info = info
+                        }
                     }
                 }
             }

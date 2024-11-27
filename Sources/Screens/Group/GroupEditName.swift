@@ -15,7 +15,7 @@ struct GroupEditName: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
-    @State private var isSaving = false
+    @State private var isProcessing = false
     private let onCompletion: ((VOGroup.Entity) -> Void)?
 
     init(groupStore: GroupStore, onCompletion: ((VOGroup.Entity) -> Void)? = nil) {
@@ -24,35 +24,37 @@ struct GroupEditName: View, FormValidatable, ErrorPresentable {
     }
 
     var body: some View {
-        if let current = groupStore.current {
-            Form {
-                TextField("Name", text: $value)
-                    .disabled(isSaving)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Change Name")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if isSaving {
-                        ProgressView()
-                    } else {
-                        Button("Save") {
-                            performSave()
-                        }
-                        .disabled(!isValid())
-                    }
+        VStack {
+            if let current = groupStore.current {
+                Form {
+                    TextField("Name", text: $value)
+                        .disabled(isProcessing)
                 }
-            }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-            .onAppear {
-                value = current.name
-            }
-            .onChange(of: groupStore.current) { _, newCurrent in
-                if let newCurrent {
-                    value = newCurrent.name
+                .onAppear {
+                    value = current.name
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Name")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onChange(of: groupStore.current) { _, newCurrent in
+            if let newCurrent {
+                value = newCurrent.name
+            }
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedValue: String {
@@ -61,12 +63,13 @@ struct GroupEditName: View, FormValidatable, ErrorPresentable {
 
     private func performSave() {
         guard let current = groupStore.current else { return }
-        isSaving = true
         var updatedGroup: VOGroup.Entity?
 
         withErrorHandling {
             updatedGroup = try await groupStore.patchName(current.id, name: value)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
             if let onCompletion, let updatedGroup {
@@ -76,7 +79,7 @@ struct GroupEditName: View, FormValidatable, ErrorPresentable {
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

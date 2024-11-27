@@ -19,7 +19,7 @@ class AccountStore: ObservableObject {
     @Published var storageUsageError: String?
     @Published var storageUsageIsLoading: Bool = false
     private var timer: Timer?
-    private var accountClient: VOAccount?
+    private var accountClient: VOAccount = .init(baseURL: Config.production.idpURL)
     private var identityUserClient: VOIdentityUser?
     private var storageClient: VOStorage?
     var tokenStore: TokenStore?
@@ -27,7 +27,6 @@ class AccountStore: ObservableObject {
     var token: VOToken.Value? {
         didSet {
             if let token {
-                accountClient = .init(baseURL: Config.production.idpURL)
                 identityUserClient = .init(
                     baseURL: Config.production.idpURL,
                     accessToken: token.accessToken

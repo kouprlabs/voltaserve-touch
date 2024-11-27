@@ -11,16 +11,13 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SignIn: View {
+struct SignIn: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
-    @State private var isLoading = false
+    @State private var isProcessing = false
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var errorTitle: String?
-    @State private var errorMessage: String?
-    @State private var showSignUp = false
-    @State private var showForgotPassword = false
-    @State private var showError = false
+    @State private var signUpIsPresented = false
+    @State private var forgotPasswordIsPresented = false
     private let onCompletion: (() -> Void)?
 
     init(_ onCompletion: (() -> Void)? = nil) {
@@ -37,60 +34,61 @@ struct SignIn: View {
                     .voTextField(width: VOMetrics.formWidth)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-                    .disabled(isLoading)
+                    .disabled(isProcessing)
                 SecureField("Password", text: $password)
                     .voTextField(width: VOMetrics.formWidth)
-                    .disabled(isLoading)
+                    .disabled(isProcessing)
                 Button {
-                    signIn()
+                    if !email.isEmpty && !password.isEmpty {
+                        performSignIn()
+                    }
                 } label: {
                     VOButtonLabel(
                         "Sign In",
-                        isLoading: isLoading,
+                        isLoading: isProcessing,
                         progressViewTint: .white
                     )
                 }
-                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isLoading)
+                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
                 VStack {
                     HStack {
                         Text("Don't have an account yet?")
                             .voFormHintText()
                         Button {
-                            showSignUp = true
+                            signUpIsPresented = true
                         } label: {
                             Text("Sign Up")
                                 .voFormHintLabel()
                         }
-                        .disabled(isLoading)
+                        .disabled(isProcessing)
                     }
                     HStack {
                         Text("Cannot sign in?")
                             .voFormHintText()
                         Button {
-                            showForgotPassword = true
+                            forgotPasswordIsPresented = true
                         } label: {
                             Text("Reset Password")
                                 .voFormHintLabel()
                         }
-                        .disabled(isLoading)
+                        .disabled(isProcessing)
                     }
                 }
             }
-            .fullScreenCover(isPresented: $showSignUp) {
+            .fullScreenCover(isPresented: $signUpIsPresented) {
                 SignUp {
-                    showSignUp = false
+                    signUpIsPresented = false
                 } onSignIn: {
-                    showSignUp = false
+                    signUpIsPresented = false
                 }
             }
-            .fullScreenCover(isPresented: $showForgotPassword) {
+            .fullScreenCover(isPresented: $forgotPasswordIsPresented) {
                 ForgotPassword {
-                    showForgotPassword = false
+                    forgotPasswordIsPresented = false
                 } onSignIn: {
-                    showForgotPassword = false
+                    forgotPasswordIsPresented = false
                 }
             }
-            .voErrorAlert(isPresented: $showError, title: errorTitle, message: errorMessage)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: ServerList()) {
@@ -100,16 +98,16 @@ struct SignIn: View {
             }
             .padding()
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
-    private func signIn() {
-        isLoading = true
-
+    private func performSignIn() {
         var token: VOToken.Value?
-
         withErrorHandling {
             token = try await tokenStore.signIn(username: email, password: password)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             if let token {
                 tokenStore.token = token
@@ -117,13 +115,17 @@ struct SignIn: View {
                 onCompletion?()
             }
         } failure: { message in
-            errorTitle = "Error: Signing In"
             errorMessage = message
-            showError = true
+            errorIsPresented = true
         } anyways: {
-            isLoading = false
+            isProcessing = false
         }
     }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
 }
 
 #Preview {

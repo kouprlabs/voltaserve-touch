@@ -60,7 +60,6 @@ struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
                 }
             }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             mosaicStore.fileID = fileID
             if let token = tokenStore.token {
@@ -73,13 +72,15 @@ struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
             }
         }
         .presentationDetents([.fraction(0.35)])
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performCreate() {
-        isCreating = true
         withErrorHandling {
             _ = try await mosaicStore.create()
             return true
+        } before: {
+            isCreating = true
         } success: {
             dismiss()
         } failure: { message in

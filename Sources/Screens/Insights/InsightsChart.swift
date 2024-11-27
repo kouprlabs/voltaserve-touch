@@ -25,13 +25,13 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     var body: some View {
         NavigationView {
-            if isLoading {
-                ProgressView()
-            } else if let error {
-                VOErrorMessage(error)
-            } else {
-                if let entities = insightsStore.entities {
-                    Group {
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = insightsStore.entities {
                         if entities.count < 5 {
                             Text("Not enough data to render the chart.")
                         } else {
@@ -63,17 +63,14 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                             .frame(maxWidth: 300, maxHeight: 300)
                         }
                     }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationTitle("Insights")
-                    .refreshable {
-                        insightsStore.fetchEntityNextPage(replace: true)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Done") {
-                                dismiss()
-                            }
-                        }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Insights")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
                     }
                 }
             }

@@ -146,15 +146,17 @@ class TaskStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            Task {
-                var size = Constants.pageSize
-                if let list = self.list {
-                    size = Constants.pageSize * list.page
-                }
-                let list = try await self.fetchList(page: 1, size: size)
-                if let list {
-                    DispatchQueue.main.async {
-                        self.entities = list.data
+            if self.entities != nil {
+                Task {
+                    var size = Constants.pageSize
+                    if let list = self.list {
+                        size = Constants.pageSize * list.page
+                    }
+                    let list = try await self.fetchList(page: 1, size: size)
+                    if let list {
+                        DispatchQueue.main.async {
+                            self.entities = list.data
+                        }
                     }
                 }
             }

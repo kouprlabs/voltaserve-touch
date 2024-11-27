@@ -187,23 +187,27 @@ class InvitationStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            Task {
-                var size = Constants.pageSize
-                if let list = self.list {
-                    size = Constants.pageSize * list.page
-                }
-                let list = try await self.fetchList(page: 1, size: size)
-                if let list {
-                    DispatchQueue.main.async {
-                        self.entities = list.data
+            if self.entities != nil {
+                Task {
+                    var size = Constants.pageSize
+                    if let list = self.list {
+                        size = Constants.pageSize * list.page
+                    }
+                    let list = try await self.fetchList(page: 1, size: size)
+                    if let list {
+                        DispatchQueue.main.async {
+                            self.entities = list.data
+                        }
                     }
                 }
             }
-            Task {
-                let incomingCount = try await self.fetchIncomingCount()
-                if let incomingCount {
-                    DispatchQueue.main.async {
-                        self.incomingCount = incomingCount
+            if self.incomingCount != nil {
+                Task {
+                    let incomingCount = try await self.fetchIncomingCount()
+                    if let incomingCount {
+                        DispatchQueue.main.async {
+                            self.incomingCount = incomingCount
+                        }
                     }
                 }
             }

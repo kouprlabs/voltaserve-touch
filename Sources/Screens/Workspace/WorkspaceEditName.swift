@@ -15,7 +15,7 @@ struct WorkspaceEditName: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
-    @State private var isSaving = false
+    @State private var isProcessing = false
     private let onCompletion: ((VOWorkspace.Entity) -> Void)?
 
     init(workspaceStore: WorkspaceStore, onCompletion: ((VOWorkspace.Entity) -> Void)? = nil) {
@@ -24,35 +24,37 @@ struct WorkspaceEditName: View, FormValidatable, ErrorPresentable {
     }
 
     var body: some View {
-        if let current = workspaceStore.current {
-            Form {
-                TextField("Name", text: $value)
-                    .disabled(isSaving)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Change Name")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if isSaving {
-                        ProgressView()
-                    } else {
-                        Button("Save") {
-                            performSave()
-                        }
-                        .disabled(!isValid())
-                    }
+        VStack {
+            if let current = workspaceStore.current {
+                Form {
+                    TextField("Name", text: $value)
+                        .disabled(isProcessing)
                 }
-            }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-            .onAppear {
-                value = current.name
-            }
-            .onChange(of: workspaceStore.current) { _, newCurrent in
-                if let newCurrent {
-                    value = newCurrent.name
+                .onAppear {
+                    value = current.name
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Name")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onChange(of: workspaceStore.current) { _, newCurrent in
+            if let newCurrent {
+                value = newCurrent.name
+            }
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedValue: String {
@@ -61,12 +63,13 @@ struct WorkspaceEditName: View, FormValidatable, ErrorPresentable {
 
     private func performSave() {
         guard let current = workspaceStore.current else { return }
-        isSaving = true
         var updatedWorkspace: VOWorkspace.Entity?
 
         withErrorHandling {
             updatedWorkspace = try await workspaceStore.patchName(current.id, name: normalizedValue)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
             if let onCompletion, let updatedWorkspace {
@@ -76,7 +79,7 @@ struct WorkspaceEditName: View, FormValidatable, ErrorPresentable {
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 
