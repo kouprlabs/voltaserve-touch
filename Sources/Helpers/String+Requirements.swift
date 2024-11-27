@@ -28,8 +28,7 @@ extension String {
     }
 
     func hasMinSymbols(_ count: Int) -> Bool {
-        let symbolsSet = CharacterSet.alphanumerics.union(.whitespaces).inverted
-        let symbolsCount = self.unicodeScalars.filter { symbolsSet.contains($0) }.count
-        return symbolsCount >= count
+        let symbols = CharacterSet.alphanumerics.union(.whitespaces).inverted
+        return self.unicodeScalars.filter { symbols.contains($0) }.count >= count
     }
 }
