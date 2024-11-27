@@ -18,7 +18,7 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
     @Environment(\.dismiss) private var dismiss
     @State private var commaSeparated = ""
     @State private var emails: [String] = []
-    @State private var isSending = false
+    @State private var isProcessing = false
     private let organizationID: String
 
     init(_ organizationID: String) {
@@ -32,7 +32,7 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
                     TextEditor(text: $commaSeparated)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
-                        .disabled(isSending)
+                        .disabled(isProcessing)
                         .onChange(of: commaSeparated) {
                             parseEmails()
                         }
@@ -52,7 +52,7 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
             .navigationTitle("New Invitations")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    if isSending {
+                    if isProcessing {
                         ProgressView()
                     } else {
                         Button("Send") {
@@ -63,7 +63,6 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
                 }
             }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             invitationStore.organizationID = organizationID
             if let token = tokenStore.token {
@@ -75,6 +74,7 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
                 assignTokenToStores(newToken)
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func parseEmails() {
@@ -89,17 +89,18 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
     }
 
     private func performCreate() {
-        isSending = true
         withErrorHandling {
             _ = try await invitationStore.create(emails: emails)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSending = false
+            isProcessing = false
         }
     }
 

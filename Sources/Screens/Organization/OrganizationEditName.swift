@@ -15,7 +15,7 @@ struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
-    @State private var isSaving = false
+    @State private var isProcessing = false
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
     init(organizationStore: OrganizationStore, onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
@@ -24,35 +24,37 @@ struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
     }
 
     var body: some View {
-        if let current = organizationStore.current {
-            Form {
-                TextField("Name", text: $value)
-                    .disabled(isSaving)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Change Name")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if isSaving {
-                        ProgressView()
-                    } else {
-                        Button("Save") {
-                            performSave()
-                        }
-                        .disabled(!isValid())
-                    }
+        VStack {
+            if let current = organizationStore.current {
+                Form {
+                    TextField("Name", text: $value)
+                        .disabled(isProcessing)
                 }
-            }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-            .onAppear {
-                value = current.name
-            }
-            .onChange(of: organizationStore.current) { _, newCurrent in
-                if let newCurrent {
-                    value = newCurrent.name
+                .onAppear {
+                    value = current.name
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Name")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onChange(of: organizationStore.current) { _, newCurrent in
+            if let newCurrent {
+                value = newCurrent.name
+            }
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var nornalizedValue: String {
@@ -61,12 +63,13 @@ struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
 
     private func performSave() {
         guard let current = organizationStore.current else { return }
-        isSaving = true
         var updatedOrganization: VOOrganization.Entity?
 
         withErrorHandling {
             updatedOrganization = try await organizationStore.patchName(current.id, name: nornalizedValue)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
             if let onCompletion, let updatedOrganization {
@@ -76,7 +79,7 @@ struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

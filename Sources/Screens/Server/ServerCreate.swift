@@ -16,32 +16,32 @@ struct ServerCreate: View {
     @State private var name = ""
     @State private var apiURL = ""
     @State private var idpURL = ""
-    @State private var isSaving = false
+    @State private var isProcessing = false
 
     var body: some View {
         Form {
             Section(header: VOSectionHeader("Name")) {
                 TextField("Name", text: $name)
-                    .disabled(isSaving)
+                    .disabled(isProcessing)
             }
             Section(header: VOSectionHeader("API URL")) {
                 TextField("API URL", text: $apiURL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-                    .disabled(isSaving)
+                    .disabled(isProcessing)
             }
             Section(header: VOSectionHeader("Identity Provider URL")) {
                 TextField("Identity Provider URL", text: $idpURL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-                    .disabled(isSaving)
+                    .disabled(isProcessing)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("New Server")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if isSaving {
+                if isProcessing {
                     ProgressView()
                 } else {
                     Button("Save") {
@@ -58,7 +58,7 @@ struct ServerCreate: View {
     }
 
     private func performSave() {
-        isSaving = true
+        isProcessing = true
         Task {
             context.insert(
                 Server(
@@ -72,7 +72,7 @@ struct ServerCreate: View {
             try? context.save()
             DispatchQueue.main.async {
                 dismiss()
-                isSaving = false
+                isProcessing = false
             }
         }
     }

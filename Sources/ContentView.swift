@@ -18,7 +18,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query private var servers: [Server]
     @State private var timer: Timer?
-    @State private var showSignIn = false
+    @State private var signInIsPresented = false
 
     var body: some View {
         MainView()
@@ -27,12 +27,12 @@ struct ContentView: View {
                     if token.isExpired {
                         tokenStore.token = nil
                         tokenStore.deleteFromKeychain()
-                        showSignIn = true
+                        signInIsPresented = true
                     } else {
                         tokenStore.token = token
                     }
                 } else {
-                    showSignIn = true
+                    signInIsPresented = true
                 }
 
                 startTokenTimer()
@@ -52,15 +52,15 @@ struct ContentView: View {
                     // itself unexpectedly without user interaction or a direct code-triggered dismissal.
                     Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                         DispatchQueue.main.async {
-                            showSignIn = true
+                            signInIsPresented = true
                         }
                     }
                 }
             }
-            .fullScreenCover(isPresented: $showSignIn) {
+            .fullScreenCover(isPresented: $signInIsPresented) {
                 SignIn {
                     startTokenTimer()
-                    showSignIn = false
+                    signInIsPresented = false
                 }
             }
     }

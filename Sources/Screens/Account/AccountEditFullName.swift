@@ -15,48 +15,50 @@ struct AccountEditFullName: View, LoadStateProvider, FormValidatable, ErrorPrese
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
-    @State private var isSaving = false
+    @State private var isProcessing = false
 
     init(accountStore: AccountStore) {
         self.accountStore = accountStore
     }
 
     var body: some View {
-        if isLoading {
-            ProgressView()
-        } else if let error {
-            VOErrorMessage(error)
-        } else {
-            if let identityUser = accountStore.identityUser {
-                Form {
-                    TextField("Full Name", text: $value)
-                        .disabled(isSaving)
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Change Full Name")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        if isSaving {
-                            ProgressView()
-                        } else {
-                            Button("Save") {
-                                performSave()
-                            }
-                            .disabled(!isValid())
-                        }
+        VStack {
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let identityUser = accountStore.identityUser {
+                    Form {
+                        TextField("Full Name", text: $value)
+                            .disabled(isProcessing)
                     }
-                }
-                .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-                .onAppear {
-                    value = identityUser.fullName
-                }
-                .onChange(of: accountStore.identityUser) { _, newUser in
-                    if let newUser {
-                        value = newUser.fullName
+                    .onAppear {
+                        value = identityUser.fullName
                     }
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Full Name")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onChange(of: accountStore.identityUser) { _, newUser in
+            if let newUser {
+                value = newUser.fullName
+            }
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedValue: String {
@@ -64,17 +66,18 @@ struct AccountEditFullName: View, LoadStateProvider, FormValidatable, ErrorPrese
     }
 
     private func performSave() {
-        isSaving = true
         withErrorHandling {
             _ = try await accountStore.updateFullName(normalizedValue)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

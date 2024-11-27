@@ -74,12 +74,12 @@ struct OrganizationSettings: View, ErrorPresentable {
     }
 
     private func performDelete() {
-        isDeleting = true
         let current = organizationStore.current
-
         withErrorHandling {
             try await organizationStore.delete()
             return true
+        } before: {
+            isDeleting = true
         } success: {
             dismiss()
             if let current {

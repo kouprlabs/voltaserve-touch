@@ -50,8 +50,8 @@ struct FolderCreate: View, ErrorPresentable, FormValidatable {
                     }
                 }
             }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedName: String {
@@ -59,7 +59,6 @@ struct FolderCreate: View, ErrorPresentable, FormValidatable {
     }
 
     private func performCreate() {
-        isProcessing = true
         withErrorHandling {
             _ = try await fileStore.createFolder(
                 name: normalizedName,
@@ -70,6 +69,8 @@ struct FolderCreate: View, ErrorPresentable, FormValidatable {
                 fileStore.fetchNextPage()
             }
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
         } failure: { message in

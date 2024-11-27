@@ -16,7 +16,7 @@ struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
     @Environment(\.dismiss) private var dismiss
     @State private var currentValue = ""
     @State private var newValue = ""
-    @State private var isSaving = false
+    @State private var isProcessing = false
 
     init(accountStore: AccountStore) {
         self.accountStore = accountStore
@@ -25,15 +25,15 @@ struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
     var body: some View {
         Form {
             SecureField("Current Password", text: $currentValue)
-                .disabled(isSaving)
+                .disabled(isProcessing)
             SecureField("New Password", text: $newValue)
-                .disabled(isSaving)
+                .disabled(isProcessing)
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Change Password")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if isSaving {
+                if isProcessing {
                     ProgressView()
                 } else {
                     Button("Save") {
@@ -47,17 +47,18 @@ struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
     }
 
     private func performSave() {
-        isSaving = true
         withErrorHandling {
             _ = try await accountStore.updatePassword(current: currentValue, new: newValue)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

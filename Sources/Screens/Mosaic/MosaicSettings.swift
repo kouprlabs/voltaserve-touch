@@ -82,7 +82,6 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
                 }
             }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             mosaicStore.fileID = file.id
             if let token = tokenStore.token {
@@ -101,6 +100,7 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
             }
         }
         .presentationDetents([.fraction(UIDevice.current.userInterfaceIdiom == .pad ? 0.50 : 0.40)])
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var canCreate: Bool {
@@ -122,10 +122,11 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
     }
 
     private func performCreate() {
-        isCreating = true
         withErrorHandling {
             _ = try await mosaicStore.create()
             return true
+        } before: {
+            isCreating = true
         } success: {
             dismiss()
         } failure: { message in
@@ -137,10 +138,11 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
     }
 
     private func performDelete() {
-        isDeleting = true
         withErrorHandling {
             _ = try await mosaicStore.delete()
             return true
+        } before: {
+            isDeleting = true
         } success: {
             dismiss()
         } failure: { message in

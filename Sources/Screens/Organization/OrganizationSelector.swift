@@ -27,44 +27,50 @@ struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
 
     var body: some View {
         NavigationStack {
-            if let entities = organizationStore.entities {
-                Group {
-                    if entities.count == 0 {
-                        Text("There are no organizations.")
-                    } else {
-                        List(selection: $selection) {
-                            ForEach(entities, id: \.id) { organization in
-                                Button {
-                                    dismiss()
-                                    onCompletion?(organization)
-                                } label: {
-                                    OrganizationRow(organization)
-                                        .onAppear {
-                                            onListItemAppear(organization.id)
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = organizationStore.entities {
+                        Group {
+                            if entities.count == 0 {
+                                Text("There are no organizations.")
+                            } else {
+                                List(selection: $selection) {
+                                    ForEach(entities, id: \.id) { organization in
+                                        Button {
+                                            dismiss()
+                                            onCompletion?(organization)
+                                        } label: {
+                                            OrganizationRow(organization)
+                                                .onAppear {
+                                                    onListItemAppear(organization.id)
+                                                }
                                         }
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Select Organization")
-                .refreshable {
-                    organizationStore.fetchNextPage(replace: true)
-                }
-                .searchable(text: $searchText)
-                .onChange(of: searchText) {
-                    organizationStore.searchPublisher.send($1)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        if organizationStore.entitiesIsLoading {
-                            ProgressView()
+                        .refreshable {
+                            organizationStore.fetchNextPage(replace: true)
+                        }
+                        .searchable(text: $searchText)
+                        .onChange(of: searchText) {
+                            organizationStore.searchPublisher.send($1)
                         }
                     }
                 }
-            } else {
-                ProgressView()
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Select Organization")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if organizationStore.entitiesIsLoading {
+                        ProgressView()
+                    }
+                }
             }
         }
         .onAppear {

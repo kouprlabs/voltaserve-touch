@@ -24,64 +24,65 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
 
     var body: some View {
         NavigationStack {
-            if isLoading {
-                ProgressView()
-            } else if let error {
-                VOErrorMessage(error)
-            } else {
-                if let entities = organizationStore.entities {
-                    Group {
-                        if entities.count == 0 {
-                            Text("There are no organizations.")
-                        } else {
-                            List {
-                                ForEach(entities, id: \.id) { organization in
-                                    NavigationLink {
-                                        OrganizationOverview(organization, organizationStore: organizationStore)
-                                    } label: {
-                                        OrganizationRow(organization)
-                                            .onAppear {
-                                                onListItemAppear(organization.id)
-                                            }
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = organizationStore.entities {
+                        Group {
+                            if entities.count == 0 {
+                                Text("There are no organizations.")
+                            } else {
+                                List {
+                                    ForEach(entities, id: \.id) { organization in
+                                        NavigationLink {
+                                            OrganizationOverview(organization, organizationStore: organizationStore)
+                                        } label: {
+                                            OrganizationRow(organization)
+                                                .onAppear {
+                                                    onListItemAppear(organization.id)
+                                                }
+                                        }
+                                    }
+                                }
+                                .navigationDestination(isPresented: $overviewIsPresented) {
+                                    if let newOrganization {
+                                        OrganizationOverview(newOrganization, organizationStore: organizationStore)
                                     }
                                 }
                             }
-
+                        }
+                        .refreshable {
+                            organizationStore.fetchNextPage(replace: true)
+                        }
+                        .searchable(text: $searchText)
+                        .onChange(of: searchText) {
+                            organizationStore.searchPublisher.send($1)
                         }
                     }
-                    .navigationTitle("Organizations")
-                    .refreshable {
-                        organizationStore.fetchNextPage(replace: true)
+                }
+            }
+            .navigationTitle("Organizations")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        createIsPresented = true
+                    } label: {
+                        Image(systemName: "plus")
                     }
-                    .searchable(text: $searchText)
-                    .onChange(of: searchText) {
-                        organizationStore.searchPublisher.send($1)
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if organizationStore.entitiesIsLoading {
+                        ProgressView()
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                createIsPresented = true
-                            } label: {
-                                Image(systemName: "plus")
-                            }
-                        }
-                        ToolbarItem(placement: .topBarLeading) {
-                            if organizationStore.entitiesIsLoading {
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .sheet(isPresented: $createIsPresented) {
-                        OrganizationCreate(organizationStore: organizationStore) { newOrganization in
-                            self.newOrganization = newOrganization
-                            overviewIsPresented = true
-                        }
-                    }
-                    .navigationDestination(isPresented: $overviewIsPresented) {
-                        if let newOrganization {
-                            OrganizationOverview(newOrganization, organizationStore: organizationStore)
-                        }
-                    }
+                }
+            }
+            .sheet(isPresented: $createIsPresented) {
+                OrganizationCreate(organizationStore: organizationStore) { newOrganization in
+                    self.newOrganization = newOrganization
+                    overviewIsPresented = true
                 }
             }
         }

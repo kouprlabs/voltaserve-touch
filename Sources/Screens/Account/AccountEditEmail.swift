@@ -15,50 +15,52 @@ struct AccountEditEmail: View, LoadStateProvider, FormValidatable, ErrorPresenta
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
-    @State private var isSaving = false
+    @State private var isProcessing = false
 
     init(accountStore: AccountStore) {
         self.accountStore = accountStore
     }
 
     var body: some View {
-        if isLoading {
-            ProgressView()
-        } else if let error {
-            VOErrorMessage(error)
-        } else {
-            if let identityUser = accountStore.identityUser {
-                Form {
-                    TextField("Email", text: $value)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .disabled(isSaving)
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Change Email")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        if isSaving {
-                            ProgressView()
-                        } else {
-                            Button("Save") {
-                                performSave()
-                            }
-                            .disabled(!isValid())
-                        }
+        VStack {
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else {
+                if let identityUser = accountStore.identityUser {
+                    Form {
+                        TextField("Email", text: $value)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .disabled(isProcessing)
                     }
-                }
-                .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-                .onAppear {
-                    value = identityUser.pendingEmail ?? identityUser.email
-                }
-                .onChange(of: accountStore.identityUser) { _, newUser in
-                    if let newUser {
-                        value = newUser.pendingEmail ?? newUser.email
+                    .onAppear {
+                        value = identityUser.pendingEmail ?? identityUser.email
                     }
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Email")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onChange(of: accountStore.identityUser) { _, newUser in
+            if let newUser {
+                value = newUser.pendingEmail ?? newUser.email
+            }
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedValue: String {
@@ -66,17 +68,18 @@ struct AccountEditEmail: View, LoadStateProvider, FormValidatable, ErrorPresenta
     }
 
     private func performSave() {
-        isSaving = true
         withErrorHandling {
             _ = try await accountStore.updateEmail(normalizedValue)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

@@ -59,23 +59,23 @@ struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                     .onChange(of: searchText) {
                         userStore.searchPublisher.send($1)
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                addMemberIsPresentable = true
-                            } label: {
-                                Image(systemName: "plus")
-                            }
-                        }
-                    }
-                    .sheet(isPresented: $addMemberIsPresentable) {
-                        GroupMemberAdd(groupStore: groupStore)
-                    }
                 }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Members")
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    addMemberIsPresentable = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $addMemberIsPresentable) {
+            GroupMemberAdd(groupStore: groupStore)
+        }
         .onAppear {
             if let group = groupStore.current {
                 userStore.groupID = group.id

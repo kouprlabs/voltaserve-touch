@@ -154,10 +154,11 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
     }
 
     private func performAccept() {
-        isAccepting = true
         withErrorHandling {
             try await invitationStore.accept(invitation.id)
             return true
+        } before: {
+            isAccepting = true
         } success: {
             dismiss()
         } failure: { message in
@@ -169,10 +170,11 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
     }
 
     private func performDecline() {
-        isDeclining = true
         withErrorHandling {
             try await invitationStore.decline(invitation.id)
             return true
+        } before: {
+            isDeclining = true
         } success: {
             dismiss()
         } failure: { message in
@@ -184,10 +186,11 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
     }
 
     private func performDelete() {
-        isDeleting = true
         withErrorHandling {
             try await invitationStore.delete(invitation.id)
             return true
+        } before: {
+            isDeleting = true
         } success: {
             dismiss()
         } failure: { message in

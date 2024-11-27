@@ -176,7 +176,7 @@ class BrowserStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let current = self.folder {
+            if let current = self.folder, self.entities != nil {
                 Task {
                     var size = Constants.pageSize
                     if let list = self.list {

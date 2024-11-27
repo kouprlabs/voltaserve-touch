@@ -17,7 +17,7 @@ struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerL
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var invitationStore = InvitationStore()
     @StateObject private var organizationStore = OrganizationStore()
-    @State private var showCreate = false
+    @State private var createIsPresented = false
     @State private var invitation: VOInvitation.Entity?
     private let organizationID: String
 
@@ -65,7 +65,7 @@ struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerL
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    showCreate = true
+                    createIsPresented = true
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -76,7 +76,7 @@ struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerL
                 }
             }
         }
-        .sheet(isPresented: $showCreate) {
+        .sheet(isPresented: $createIsPresented) {
             InvitationCreate(organizationID)
         }
         .onAppear {

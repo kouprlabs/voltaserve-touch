@@ -48,8 +48,8 @@ struct OrganizationCreate: View, FormValidatable, ErrorPresentable {
                     }
                 }
             }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedName: String {
@@ -57,12 +57,12 @@ struct OrganizationCreate: View, FormValidatable, ErrorPresentable {
     }
 
     private func performCreate() {
-        isProcessing = true
         var organization: VOOrganization.Entity?
-
         withErrorHandling {
             organization = try await organizationStore.create(name: normalizedName)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
             if let onCompletion, let organization {

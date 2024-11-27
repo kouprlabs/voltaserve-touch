@@ -15,58 +15,60 @@ struct WorkspaceEditStorageCapacity: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var value: Int?
-    @State private var isSaving = false
+    @State private var isProcessing = false
 
     init(workspaceStore: WorkspaceStore) {
         self.workspaceStore = workspaceStore
     }
 
     var body: some View {
-        if let current = workspaceStore.current {
-            Form {
-                VOStoragePicker(value: $value)
-                    .disabled(isSaving)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Change Storage Capacity")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if isSaving {
-                        ProgressView()
-                    } else {
-                        Button("Save") {
-                            performSave()
-                        }
-                        .disabled(!isValid())
-                    }
+        VStack {
+            if let current = workspaceStore.current {
+                Form {
+                    VOStoragePicker(value: $value)
+                        .disabled(isProcessing)
                 }
-            }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
-            .onAppear {
-                value = current.storageCapacity
-            }
-            .onChange(of: workspaceStore.current) { _, newCurrent in
-                if let newCurrent {
-                    value = newCurrent.storageCapacity
+                .onAppear {
+                    value = current.storageCapacity
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Storage Capacity")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onChange(of: workspaceStore.current) { _, newCurrent in
+            if let newCurrent {
+                value = newCurrent.storageCapacity
+            }
+        }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performSave() {
         guard let value else { return }
-        isSaving = true
-
         withErrorHandling {
             _ = try await workspaceStore.patchStorageCapacity(storageCapacity: value)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

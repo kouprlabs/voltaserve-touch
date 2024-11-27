@@ -73,8 +73,8 @@ struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
                     }
                 }
             }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedName: String {
@@ -83,7 +83,6 @@ struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
 
     private func performCreate() {
         guard let organization, let storageCapacity else { return }
-        isProcessing = true
         var workspace: VOWorkspace.Entity?
 
         withErrorHandling {
@@ -93,6 +92,8 @@ struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
                 storageCapacity: storageCapacity
             )
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
             if let onCompletion, let workspace {

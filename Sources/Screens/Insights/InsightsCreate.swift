@@ -26,53 +26,58 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
 
     var body: some View {
         NavigationStack {
-            if let languages = insightsStore.languages {
-                VStack {
-                    VStack {
-                        ScrollView {
-                            // swift-format-ignore
-                            // swiftlint:disable:next line_length
-                            Text("Select the language to use for collecting insights. During the process, text will be extracted using OCR (optical character recognition), and entities will be scanned using NER (named entity recognition).")
-                        }
-                        Picker("Language", selection: $language) {
-                            ForEach(languages, id: \.id) { language in
-                                Text(language.name)
-                                    .tag(language)
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let languages = insightsStore.languages {
+                        VStack {
+                            VStack {
+                                ScrollView {
+                                    // swift-format-ignore
+                                    // swiftlint:disable:next line_length
+                                    Text("Select the language to use for collecting insights. During the process, text will be extracted using OCR (optical character recognition), and entities will be scanned using NER (named entity recognition).")
+                                }
+                                Picker("Language", selection: $language) {
+                                    ForEach(languages, id: \.id) { language in
+                                        Text(language.name)
+                                            .tag(language)
+                                    }
+                                }
+                                .disabled(isCreating)
+                                Button {
+                                    performCreate()
+                                } label: {
+                                    VOButtonLabel("Collect Insights", isLoading: isCreating)
+                                }
+                                .voPrimaryButton(isDisabled: isCreating || !isValid())
                             }
+                            .padding()
                         }
-                        .disabled(isCreating)
-                        Button {
-                            performCreate()
-                        } label: {
-                            VOButtonLabel("Collect Insights", isLoading: isCreating)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
+                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                         }
-                        .voPrimaryButton(isDisabled: isCreating || !isValid())
-                    }
-                    .padding()
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                        .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
-                }
-                .padding(.horizontal)
-                .modifierIfPad {
-                    $0.padding(.bottom)
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Insights")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            dismiss()
+                        .padding(.horizontal)
+                        .modifierIfPad {
+                            $0.padding(.bottom)
                         }
-                        .disabled(isCreating)
                     }
                 }
-            } else {
-                ProgressView()
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Insights")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                    .disabled(isCreating)
+                }
             }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             insightsStore.fileID = fileID
             if let token = tokenStore.token {
@@ -92,6 +97,7 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
             }
         }
         .presentationDetents([.fraction(0.45)])
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performCreate() {
@@ -111,11 +117,6 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
         }
     }
 
-    // MARK: - ErrorPresentable
-
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
-
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
@@ -125,6 +126,11 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
     var error: String? {
         insightsStore.languagesError
     }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
 
     // MARK: - ViewDataProvider
 

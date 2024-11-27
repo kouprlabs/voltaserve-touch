@@ -15,7 +15,7 @@ struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
-    @State private var isSaving = false
+    @State private var isProcessing = false
 
     init(groupStore: GroupStore) {
         self.groupStore = groupStore
@@ -54,7 +54,7 @@ struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if isSaving {
+                    if isProcessing {
                         ProgressView()
                     } else {
                         Button("Add") {
@@ -64,24 +64,24 @@ struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
                     }
                 }
             }
-            .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performAdd() {
         guard let user else { return }
-        isSaving = true
-
         withErrorHandling {
             try await groupStore.addMember(userID: user.id)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

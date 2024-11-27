@@ -116,10 +116,11 @@ struct SnapshotOverview: View, ErrorPresentable {
     }
 
     private func performActivate() {
-        isActivating = true
         withErrorHandling {
             try await snapshotStore.activate(snapshot.id)
             return true
+        } before: {
+            isActivating = true
         } success: {
             dismiss()
         } failure: { message in
@@ -131,10 +132,11 @@ struct SnapshotOverview: View, ErrorPresentable {
     }
 
     private func performDetach() {
-        isDetaching = true
         withErrorHandling {
             try await snapshotStore.detach(snapshot.id)
             return true
+        } before: {
+            isDetaching = true
         } success: {
             dismiss()
         } failure: { message in

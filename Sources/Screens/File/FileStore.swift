@@ -354,7 +354,7 @@ class FileStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let current = self.file {
+            if let current = self.file, self.entities != nil {
                 Task {
                     var size = Constants.pageSize
                     if let list = self.list {
@@ -378,10 +378,12 @@ class FileStore: ObservableObject {
                     }
                 }
             }
-            Task {
-                let taskCount = try await self.fetchTaskCount()
-                DispatchQueue.main.async {
-                    self.taskCount = taskCount
+            if self.taskCount != nil {
+                Task {
+                    let taskCount = try await self.fetchTaskCount()
+                    DispatchQueue.main.async {
+                        self.taskCount = taskCount
+                    }
                 }
             }
         }

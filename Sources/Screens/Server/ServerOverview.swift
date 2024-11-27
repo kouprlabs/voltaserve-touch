@@ -16,8 +16,8 @@ struct ServerOverview: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Query private var servers: [Server]
-    @State private var showActivateConfirmation = false
-    @State private var showDeleteConfirmation = false
+    @State private var activateConfirmationIsPresented = false
+    @State private var deleteConfirmationsIsPresented = false
     @State private var isActivating = false
     @State private var isDeleting = false
     private let server: Server
@@ -36,7 +36,7 @@ struct ServerOverview: View {
             }
             Section {
                 Button {
-                    showActivateConfirmation = true
+                    activateConfirmationIsPresented = true
                 } label: {
                     HStack {
                         Text("Activate Server")
@@ -47,7 +47,7 @@ struct ServerOverview: View {
                     }
                 }
                 .disabled(server.isActive || isProcessing)
-                .confirmationDialog("Activate Server", isPresented: $showActivateConfirmation) {
+                .confirmationDialog("Activate Server", isPresented: $activateConfirmationIsPresented) {
                     Button("Activate") {
                         performActivate()
                     }
@@ -56,7 +56,7 @@ struct ServerOverview: View {
                 }
                 if !server.isCloud {
                     Button(role: .destructive) {
-                        showDeleteConfirmation = true
+                        deleteConfirmationsIsPresented = true
                     } label: {
                         HStack {
                             Text("Delete Server")
@@ -67,7 +67,7 @@ struct ServerOverview: View {
                         }
                     }
                     .disabled(isProcessing)
-                    .confirmationDialog("Delete Server", isPresented: $showDeleteConfirmation) {
+                    .confirmationDialog("Delete Server", isPresented: $deleteConfirmationsIsPresented) {
                         Button("Delete", role: .destructive) {
                             performDelete()
                             dismiss()

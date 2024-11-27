@@ -17,7 +17,7 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var fileStore = FileStore()
     @Environment(\.dismiss) private var dismiss
-    @State private var isSaving = false
+    @State private var isProcessing = false
     @State private var value = ""
     private let file: VOFile.Entity
     private let onCompletion: ((VOFile.Entity) -> Void)?
@@ -38,7 +38,7 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
                     if !value.isEmpty {
                         Form {
                             TextField("Name", text: $value)
-                                .disabled(isSaving)
+                                .disabled(isProcessing)
                         }
                     }
                 }
@@ -52,7 +52,7 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if isSaving {
+                    if isProcessing {
                         ProgressView()
                     } else {
                         Button("Save") {
@@ -63,7 +63,6 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
                 }
             }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             fileStore.file = file
             if let token = tokenStore.token {
@@ -86,6 +85,7 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
                 value = file.name
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var normalizedValue: String {
@@ -94,12 +94,13 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
 
     private func performRename() {
         guard let file = fileStore.file else { return }
-        isSaving = true
         var updatedFile: VOFile.Entity?
 
         withErrorHandling {
             updatedFile = try await fileStore.patchName(file.id, name: normalizedValue)
             return true
+        } before: {
+            isProcessing = true
         } success: {
             dismiss()
             if let onCompletion, let updatedFile {
@@ -109,7 +110,7 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
             errorMessage = message
             errorIsPresented = true
         } anyways: {
-            isSaving = false
+            isProcessing = false
         }
     }
 

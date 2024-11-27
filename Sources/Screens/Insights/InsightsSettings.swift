@@ -82,7 +82,6 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                 }
             }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             insightsStore.fileID = file.id
             if let token = tokenStore.token {
@@ -100,6 +99,7 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                 onAppearOrChange()
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var canCreate: Bool {
@@ -121,10 +121,11 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
     }
 
     private func performPatch() {
-        isPatching = true
         withErrorHandling {
             _ = try await insightsStore.patch()
             return true
+        } before: {
+            isPatching = true
         } success: {
             dismiss()
         } failure: { message in
@@ -136,10 +137,11 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
     }
 
     private func performDelete() {
-        isDeleting = true
         withErrorHandling {
             _ = try await insightsStore.delete()
             return true
+        } before: {
+            isDeleting = true
         } success: {
             dismiss()
         } failure: { message in

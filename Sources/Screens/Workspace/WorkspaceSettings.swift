@@ -111,12 +111,12 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
     }
 
     private func performDelete() {
-        isDeleting = true
         let current = workspaceStore.current
-
         withErrorHandling {
             try await workspaceStore.delete()
             return true
+        } before: {
+            isDeleting = true
         } success: {
             dismiss()
             if let current {

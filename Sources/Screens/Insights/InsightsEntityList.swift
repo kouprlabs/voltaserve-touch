@@ -27,41 +27,43 @@ struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifec
 
     var body: some View {
         NavigationView {
-            if isLoading {
-                ProgressView()
-            } else if let error {
-                VOErrorMessage(error)
-            } else {
-                if let entities = insightsStore.entities {
-                    Group {
-                        if entities.count == 0 {
-                            Text("There are no entities.")
-                        } else {
-                            List {
-                                ForEach(entities, id: \.text) { entity in
-                                    InsightsEntityRow(entity)
-                                        .onAppear {
-                                            onListItemAppear(entity.text)
-                                        }
+            VStack {
+                if isLoading {
+                    ProgressView()
+                } else if let error {
+                    VOErrorMessage(error)
+                } else {
+                    if let entities = insightsStore.entities {
+                        Group {
+                            if entities.count == 0 {
+                                Text("There are no entities.")
+                            } else {
+                                List {
+                                    ForEach(entities, id: \.text) { entity in
+                                        InsightsEntityRow(entity)
+                                            .onAppear {
+                                                onListItemAppear(entity.text)
+                                            }
+                                    }
                                 }
                             }
                         }
-                    }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationTitle("Insights")
-                    .refreshable {
-                        insightsStore.fetchEntityNextPage(replace: true)
-                    }
-                    .searchable(text: $searchText)
-                    .onChange(of: searchText) {
-                        insightsStore.searchPublisher.send($1)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Done") {
-                                dismiss()
-                            }
+                        .refreshable {
+                            insightsStore.fetchEntityNextPage(replace: true)
                         }
+                        .searchable(text: $searchText)
+                        .onChange(of: searchText) {
+                            insightsStore.searchPublisher.send($1)
+                        }
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Insights")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
                     }
                 }
             }
