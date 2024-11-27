@@ -71,7 +71,7 @@ struct GroupCreate: View, FormValidatable, ErrorPresentable {
     }
 
     private var normalizedName: String {
-        name.lowercased().trimmingCharacters(in: .whitespaces)
+        name.trimmingCharacters(in: .whitespaces)
     }
 
     private func performCreate() {
