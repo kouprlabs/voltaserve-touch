@@ -9,5 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import Combine
+import Foundation
+import VoltaserveCore
 
-class ForgotPasswordStore: ObservableObject {}
+class ForgotPasswordStore: ObservableObject {
+    private var accountClient: VOAccount = .init(baseURL: Config.production.idpURL)
+
+    // MARK: - Update
+
+    func sendResetPasswordEmail(_ options: VOAccount.SendResetPasswordEmailOptions) async throws {
+        try await accountClient.sendResetPasswordEmail(options)
+    }
+}

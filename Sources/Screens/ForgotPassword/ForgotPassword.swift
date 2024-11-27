@@ -10,9 +10,10 @@
 
 import SwiftUI
 
-struct ForgotPassword: View {
-    @State private var isLoading = false
+struct ForgotPassword: View, FormValidatable, ErrorPresentable {
+    @StateObject private var forgotPasswordStore = ForgotPasswordStore()
     @State private var email: String = ""
+    @State private var isProcessing: Bool = false
     private let onCompletion: (() -> Void)?
     private let onSignIn: (() -> Void)?
 
@@ -35,21 +36,19 @@ struct ForgotPassword: View {
                     .voTextField(width: VOMetrics.formWidth)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-                    .disabled(isLoading)
+                    .disabled(isProcessing)
                 Button {
-                    isLoading = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        isLoading = false
-                        onCompletion?()
+                    if isValid() {
+                        performSendResetPasswordEmail()
                     }
                 } label: {
                     VOButtonLabel(
                         "Send Recovery Instructions",
-                        isLoading: isLoading,
+                        isLoading: isProcessing,
                         progressViewTint: .white
                     )
                 }
-                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isLoading)
+                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
                 HStack {
                     Text("Password recovered?")
                         .voFormHintText()
@@ -59,7 +58,7 @@ struct ForgotPassword: View {
                         Text("Sign In")
                             .voFormHintLabel()
                     }
-                    .disabled(isLoading)
+                    .disabled(isProcessing)
                 }
             }
             .toolbar {
@@ -72,6 +71,34 @@ struct ForgotPassword: View {
                 }
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
+    }
+
+    private func performSendResetPasswordEmail() {
+        withErrorHandling {
+            _ = try await forgotPasswordStore.sendResetPasswordEmail(.init(email: email))
+            return true
+        } before: {
+            isProcessing = true
+        } success: {
+            onCompletion?()
+        } failure: { message in
+            errorMessage = message
+            errorIsPresented = true
+        } anyways: {
+            isProcessing = false
+        }
+    }
+
+    // MARK: - ErrorPresentable
+
+    @State var errorIsPresented: Bool = false
+    @State var errorMessage: String?
+
+    // MARK: - FormValidatable
+
+    func isValid() -> Bool {
+        !email.isEmpty
     }
 }
 
