@@ -34,9 +34,9 @@ struct Viewer: View {
             .navigationTitle(file.name)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
+                    Button {
                         presentationMode.wrappedValue.dismiss()
-                    }) {
+                    } label: {
                         Image(systemName: "xmark")
                     }
                 }
