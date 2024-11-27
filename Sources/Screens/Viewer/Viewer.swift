@@ -12,6 +12,8 @@ import SwiftUI
 import VoltaserveCore
 
 struct Viewer: View {
+    @Environment(\.presentationMode) private var presentationMode
+    @State private var isImmersiveMode: Bool = false
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
@@ -19,24 +21,27 @@ struct Viewer: View {
     }
 
     var body: some View {
-        VStack {
-            ViewerPDF(file)
-            ViewerImage(file)
-            ViewerVideo(file)
-            ViewerAudio(file)
-            Viewer3D(file)
-            if UIDevice.current.userInterfaceIdiom == .pad {
+        NavigationView {
+            VStack {
+                ViewerPDF(file)
+                ViewerImage(file)
+                ViewerVideo(file)
+                ViewerAudio(file)
+                Viewer3D(file)
                 ViewerMosaic(file)
-                    .edgesIgnoringSafeArea(.bottom)
-            } else {
-                ViewerMosaic(file)
-                    .edgesIgnoringSafeArea(.horizontal)
             }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(file.name)
-        .modifierIfPad {
-            $0.edgesIgnoringSafeArea(.bottom)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(file.name)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "xmark")
+                    }
+                }
+            }
+            .edgesIgnoringSafeArea(.bottom)
         }
     }
 }

@@ -15,6 +15,7 @@ struct FileGrid: View, ListItemScrollable {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var tappedItem: VOFile.Entity?
+    @State private var viewerIsPresented: Bool = false
 
     init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
@@ -36,6 +37,7 @@ struct FileGrid: View, ListItemScrollable {
                                 Button {
                                     if file.snapshot?.status == .ready {
                                         tappedItem = file
+                                        viewerIsPresented = true
                                     }
                                 } label: {
                                     FileCell(file, fileStore: fileStore)
@@ -58,8 +60,10 @@ struct FileGrid: View, ListItemScrollable {
                             }
                         }
                     }
-                    .navigationDestination(item: $tappedItem) {
-                        Viewer($0)
+                    .fullScreenCover(isPresented: $viewerIsPresented) {
+                        if let tappedItem {
+                            Viewer(tappedItem)
+                        }
                     }
                     .modifierIfPhone {
                         $0.padding(.vertical, VOMetrics.spacing)
