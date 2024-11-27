@@ -20,27 +20,31 @@ struct ViewerImageWebView: UIViewRepresentable {
         webView.loadHTMLString(
             """
             <!DOCTYPE html>
-            <html lang="en">
+            <html>
                 <head>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
                     <style>
                         body, html {
                             margin: 0;
                             padding: 0;
-                            height: 100%;
                             background: #000;
                             display: flex;
-                            justify-content: center;
                             align-items: center;
+                            justify-content: center;
+                            flex-grow: 1;
+                            width: 100%;
+                            height: 100%;
+                            overflow: scroll;
                         }
                         img {
-                            width: 100%;
-                            height: auto;
+                            object-fit: contain;
+                            max-width: 100%;
+                            max-height: 100%;
                         }
                     </style>
                 </head>
                 <body>
-                    <img src="\(url.absoluteString)" alt="Image">
+                    <img src="\(url.absoluteString)" />
                 </body>
             </html>
             """,
