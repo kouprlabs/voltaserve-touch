@@ -34,7 +34,7 @@ struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
                 if let entities = userStore.entities {
                     Group {
                         if entities.count == 0 {
-                            Text("There are no items.")
+                            Text("There are no users.")
                         } else {
                             List(entities, id: \.id) { member in
                                 UserRow(
@@ -48,14 +48,14 @@ struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
                                     onListItemAppear(member.id)
                                 }
                             }
-                            .searchable(text: $searchText)
-                            .onChange(of: searchText) {
-                                userStore.searchPublisher.send($1)
-                            }
                         }
                     }
                     .refreshable {
                         userStore.fetchNextPage(replace: true)
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) {
+                        userStore.searchPublisher.send($1)
                     }
                 }
             }

@@ -44,7 +44,7 @@ class BrowserStore: ObservableObject {
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
             .sink {
-                self.query = .init(text: $0)
+                self.query = .init(text: $0, type: .folder)
             }
             .store(in: &cancellables)
     }
@@ -73,11 +73,11 @@ class BrowserStore: ObservableObject {
     }
 
     private func fetchProbe(_ id: String, size: Int = Constants.pageSize) async throws -> VOFile.Probe? {
-        try await fileClient?.fetchProbe(id, options: .init(query: query, size: size, type: .folder))
+        try await fileClient?.fetchProbe(id, options: .init(query: query, size: size))
     }
 
     private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size, type: .folder))
+        try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size))
     }
 
     func fetchNextPage(replace: Bool = false) {

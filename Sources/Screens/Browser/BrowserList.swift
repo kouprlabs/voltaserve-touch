@@ -68,10 +68,6 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
                                 }
                             }
                             .listStyle(.inset)
-                            .searchable(text: $searchText)
-                            .onChange(of: searchText) {
-                                browserStore.searchPublisher.send($1)
-                            }
                             .navigationDestination(item: $tappedItem) {
                                 Viewer($0)
                             }
@@ -79,6 +75,10 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
                     }
                     .refreshable {
                         browserStore.fetchNextPage(replace: true)
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) {
+                        browserStore.searchPublisher.send($1)
                     }
                 }
             }

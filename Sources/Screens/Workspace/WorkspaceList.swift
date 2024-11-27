@@ -48,15 +48,15 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                     }
                                 }
                             }
-                            .searchable(text: $searchText)
-                            .onChange(of: searchText) {
-                                workspaceStore.searchPublisher.send($1)
-                            }
                         }
                     }
                     .navigationTitle("Home")
                     .refreshable {
                         workspaceStore.fetchNextPage(replace: true)
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) {
+                        workspaceStore.searchPublisher.send($1)
                     }
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {

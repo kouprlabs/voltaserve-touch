@@ -46,15 +46,16 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                                     }
                                 }
                             }
-                            .navigationTitle("Organizations")
-                            .searchable(text: $searchText)
-                            .onChange(of: searchText) {
-                                organizationStore.searchPublisher.send($1)
-                            }
+
                         }
                     }
+                    .navigationTitle("Organizations")
                     .refreshable {
                         organizationStore.fetchNextPage(replace: true)
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) {
+                        organizationStore.searchPublisher.send($1)
                     }
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {

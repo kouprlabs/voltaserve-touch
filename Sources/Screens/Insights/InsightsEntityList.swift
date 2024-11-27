@@ -45,16 +45,16 @@ struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifec
                                         }
                                 }
                             }
-                            .searchable(text: $searchText)
-                            .onChange(of: searchText) {
-                                insightsStore.searchPublisher.send($1)
-                            }
                         }
                     }
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationTitle("Insights")
                     .refreshable {
                         insightsStore.fetchEntityNextPage(replace: true)
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) {
+                        insightsStore.searchPublisher.send($1)
                     }
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {

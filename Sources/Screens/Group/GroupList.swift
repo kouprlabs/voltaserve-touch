@@ -44,15 +44,15 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
                                     }
                                 }
                             }
-                            .searchable(text: $searchText)
-                            .onChange(of: searchText) {
-                                groupStore.searchPublisher.send($1)
-                            }
                         }
                     }
                     .navigationTitle("Groups")
                     .refreshable {
                         groupStore.fetchNextPage(replace: true)
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) {
+                        groupStore.searchPublisher.send($1)
                     }
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
