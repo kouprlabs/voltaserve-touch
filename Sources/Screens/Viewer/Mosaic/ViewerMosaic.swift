@@ -25,110 +25,115 @@ struct ViewerMosaic: View {
     }
 
     var body: some View {
-        if file.type == .file,
-            let snapshot = file.snapshot,
-            let download = snapshot.preview,
-            let fileExtension = download.fileExtension, fileExtension.isImage(), snapshot.mosaic != nil
-        {
-            GeometryReader { geometry in
-                let visibleRect = CGRect(
-                    origin: CGPoint(x: -dragOffset.width, y: -dragOffset.height),
-                    size: geometry.size
-                )
-                ZStack {
-                    if let zoomLevel = viewerMosaicStore.zoomLevel, !viewerMosaicStore.grid.isEmpty {
-                        ForEach(0..<zoomLevel.rows, id: \.self) { row in
-                            ForEach(0..<zoomLevel.cols, id: \.self) { col in
-                                let size = viewerMosaicStore.sizeForCell(row: row, col: col)
-                                let position = viewerMosaicStore.positionForCell(row: row, col: col)
-                                let frame = viewerMosaicStore.frameForCellAt(position: position, size: size)
+        Group {
+            if file.type == .file,
+                let snapshot = file.snapshot,
+                let download = snapshot.preview,
+                let fileExtension = download.fileExtension, fileExtension.isImage(), snapshot.mosaic != nil
+            {
+                GeometryReader { geometry in
+                    let visibleRect = CGRect(
+                        origin: CGPoint(x: -dragOffset.width, y: -dragOffset.height),
+                        size: geometry.size
+                    )
+                    ZStack {
+                        if let zoomLevel = viewerMosaicStore.zoomLevel, !viewerMosaicStore.grid.isEmpty {
+                            ForEach(0..<zoomLevel.rows, id: \.self) { row in
+                                ForEach(0..<zoomLevel.cols, id: \.self) { col in
+                                    let size = viewerMosaicStore.sizeForCell(row: row, col: col)
+                                    let position = viewerMosaicStore.positionForCell(row: row, col: col)
+                                    let frame = viewerMosaicStore.frameForCellAt(position: position, size: size)
 
-                                // Check if the cell is within the visible bounds or the surrounding buffer
-                                if visibleRect.insetBy(
-                                    dx: -CGFloat(Constants.extraTilesToLoad) * size.width,
-                                    dy: -CGFloat(Constants.extraTilesToLoad) * size.height
-                                ).intersects(frame) {
-                                    if let image = viewerMosaicStore.grid[row][col] {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .frame(width: size.width, height: size.height)
-                                            .position(
-                                                x: position.x + dragOffset.width,
-                                                y: position.y + dragOffset.height
-                                            )
-                                    } else {
-                                        Rectangle()
-                                            .fill(Color.black)
-                                            .frame(width: size.width, height: size.height)
-                                            .position(
-                                                x: position.x + dragOffset.width,
-                                                y: position.y + dragOffset.height
-                                            )
-                                            .onAppear {
-                                                viewerMosaicStore.loadImageForCell(file.id, row: row, column: col)
-                                            }
+                                    // Check if the cell is within the visible bounds or the surrounding buffer
+                                    if visibleRect.insetBy(
+                                        dx: -CGFloat(Constants.extraTilesToLoad) * size.width,
+                                        dy: -CGFloat(Constants.extraTilesToLoad) * size.height
+                                    ).intersects(frame) {
+                                        if let image = viewerMosaicStore.grid[row][col] {
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .frame(width: size.width, height: size.height)
+                                                .position(
+                                                    x: position.x + dragOffset.width,
+                                                    y: position.y + dragOffset.height
+                                                )
+                                        } else {
+                                            Rectangle()
+                                                .fill(Color.black)
+                                                .frame(width: size.width, height: size.height)
+                                                .position(
+                                                    x: position.x + dragOffset.width,
+                                                    y: position.y + dragOffset.height
+                                                )
+                                                .onAppear {
+                                                    viewerMosaicStore.loadImageForCell(file.id, row: row, column: col)
+                                                }
+                                        }
                                     }
                                 }
                             }
+                        } else {
+                            Rectangle()
+                                .fill(Color.gray)
+                                .frame(width: geometry.size.width, height: geometry.size.height)
                         }
-                    } else {
-                        Rectangle()
-                            .fill(Color.gray)
-                            .frame(width: geometry.size.width, height: geometry.size.height)
                     }
-                }
-                .clipped()
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            dragOffset = CGSize(
-                                width: lastDragOffset.width + value.translation.width,
-                                height: lastDragOffset.height + value.translation.height
-                            )
-                        }
-                        .onEnded { _ in
-                            lastDragOffset = dragOffset
-                            viewerMosaicStore.unloadImagesOutsideRect(
-                                visibleRect,
-                                extraTilesToLoad: Constants.extraTilesToLoad
-                            )
-                        }
-                )
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Menu {
-                            if let zoomLevels = viewerMosaicStore.info?.metadata.zoomLevels {
-                                ForEach(zoomLevels, id: \.index) { zoomLevel in
-                                    Button(
-                                        action: {
-                                            resetMosaicPosition()
-                                            viewerMosaicStore.selectZoomLevel(zoomLevel)
-                                        },
-                                        label: {
-                                            Text("\(Int(zoomLevel.scaleDownPercentage))%")
-                                        })
-                                }
+                    .clipped()
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                dragOffset = CGSize(
+                                    width: lastDragOffset.width + value.translation.width,
+                                    height: lastDragOffset.height + value.translation.height
+                                )
                             }
-                        } label: {
-                            Image(systemName: "ellipsis.circle")
+                            .onEnded { _ in
+                                lastDragOffset = dragOffset
+                                viewerMosaicStore.unloadImagesOutsideRect(
+                                    visibleRect,
+                                    extraTilesToLoad: Constants.extraTilesToLoad
+                                )
+                            }
+                    )
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Menu {
+                                if let zoomLevels = viewerMosaicStore.info?.metadata.zoomLevels {
+                                    ForEach(zoomLevels, id: \.index) { zoomLevel in
+                                        Button(
+                                            action: {
+                                                resetMosaicPosition()
+                                                viewerMosaicStore.selectZoomLevel(zoomLevel)
+                                            },
+                                            label: {
+                                                Text("\(Int(zoomLevel.scaleDownPercentage))%")
+                                            })
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
+                            }
                         }
                     }
-                }
-                .onAppear {
-                    if let token = tokenStore.token {
-                        assignTokenToStores(token)
-                        Task {
-                            try await viewerMosaicStore.loadMosaic(file.id)
+                    .onAppear {
+                        if let token = tokenStore.token {
+                            assignTokenToStores(token)
+                            Task {
+                                try await viewerMosaicStore.loadMosaic(file.id)
+                            }
                         }
                     }
-                }
-                .onChange(of: tokenStore.token) { _, newToken in
-                    if let newToken {
-                        assignTokenToStores(newToken)
+                    .onChange(of: tokenStore.token) { _, newToken in
+                        if let newToken {
+                            assignTokenToStores(newToken)
+                        }
                     }
                 }
             }
+        }
+        .modifierIfPhone {
+            $0.edgesIgnoringSafeArea(.horizontal)
         }
     }
 
