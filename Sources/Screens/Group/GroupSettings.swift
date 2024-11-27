@@ -64,10 +64,10 @@ struct GroupSettings: View, ErrorPresentable {
                         }
                     }
                 }
-                .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
             }
         }
         .navigationTitle("Settings")
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performDelete() {

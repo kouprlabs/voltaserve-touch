@@ -110,7 +110,6 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Settings")
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             accountStore.tokenStore = tokenStore
             if tokenStore.token != nil {
@@ -122,6 +121,7 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
                 onAppearOrChange()
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performDelete() {

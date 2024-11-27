@@ -97,7 +97,6 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
             }
         }
         .navigationTitle("Settings")
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
         .onAppear {
             if tokenStore.token != nil {
                 onAppearOrChange()
@@ -108,6 +107,7 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
                 onAppearOrChange()
             }
         }
+        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performDelete() {
