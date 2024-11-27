@@ -47,11 +47,6 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                                         }
                                     }
                                 }
-                                .navigationDestination(isPresented: $overviewIsPresented) {
-                                    if let newOrganization {
-                                        OrganizationOverview(newOrganization, organizationStore: organizationStore)
-                                    }
-                                }
                             }
                         }
                         .refreshable {
@@ -83,6 +78,11 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                 OrganizationCreate(organizationStore: organizationStore) { newOrganization in
                     self.newOrganization = newOrganization
                     overviewIsPresented = true
+                }
+            }
+            .navigationDestination(isPresented: $overviewIsPresented) {
+                if let newOrganization {
+                    OrganizationOverview(newOrganization, organizationStore: organizationStore)
                 }
             }
         }

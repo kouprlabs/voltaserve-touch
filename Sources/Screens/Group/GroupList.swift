@@ -54,11 +54,6 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
                         .onChange(of: searchText) {
                             groupStore.searchPublisher.send($1)
                         }
-                        .navigationDestination(isPresented: $overviewIsPresented) {
-                            if let newGroup {
-                                GroupOverview(newGroup, groupStore: groupStore)
-                            }
-                        }
                     }
                 }
             }
@@ -81,6 +76,11 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
                 GroupCreate(groupStore: groupStore) { newGroup in
                     self.newGroup = newGroup
                     overviewIsPresented = true
+                }
+            }
+            .navigationDestination(isPresented: $overviewIsPresented) {
+                if let newGroup {
+                    GroupOverview(newGroup, groupStore: groupStore)
                 }
             }
         }
