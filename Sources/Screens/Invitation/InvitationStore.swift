@@ -48,9 +48,11 @@ class InvitationStore: ObservableObject {
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInvitation.List? {
         if let organizationID {
-            try await invitationClient?.fetchOutgoingList(.init(organizationID: organizationID, page: page, size: size))
+            try await invitationClient?.fetchOutgoingList(
+                .init(organizationID: organizationID, page: page, size: size, sortBy: .dateCreated, sortOrder: .desc))
         } else {
-            try await invitationClient?.fetchIncomingList(.init(page: page, size: size))
+            try await invitationClient?.fetchIncomingList(
+                .init(page: page, size: size, sortBy: .dateCreated, sortOrder: .desc))
         }
     }
 

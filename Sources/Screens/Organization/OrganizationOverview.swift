@@ -24,28 +24,28 @@ struct OrganizationOverview: View {
 
     var body: some View {
         VStack {
-            if let current = organizationStore.current {
-                VStack {
-                    VOAvatar(name: current.name, size: 100)
-                        .padding()
-                    Form {
-                        NavigationLink {
-                            OrganizationMemberList(organizationStore: organizationStore)
-                        } label: {
-                            Label("Members", systemImage: "person.2")
-                        }
+            VStack {
+                VOAvatar(name: organization.name, size: 100)
+                    .padding()
+                Form {
+                    NavigationLink {
+                        OrganizationMemberList(organizationStore: organizationStore)
+                    } label: {
+                        Label("Members", systemImage: "person.2")
+                    }
+                    if organization.permission.ge(.owner) {
                         NavigationLink {
                             InvitationOutgoingList(organization.id)
                         } label: {
                             Label("Invitations", systemImage: "paperplane")
                         }
-                        NavigationLink {
-                            OrganizationSettings(organizationStore: organizationStore) {
-                                dismiss()
-                            }
-                        } label: {
-                            Label("Settings", systemImage: "gear")
+                    }
+                    NavigationLink {
+                        OrganizationSettings(organizationStore: organizationStore) {
+                            dismiss()
                         }
+                    } label: {
+                        Label("Settings", systemImage: "gear")
                     }
                 }
             }

@@ -111,6 +111,11 @@ class OrganizationStore: ObservableObject {
         try await organizationClient?.patchName(id, options: .init(name: name))
     }
 
+    func leave() async throws {
+        guard let current else { return }
+        try await organizationClient?.leave(current.id)
+    }
+
     func delete() async throws {
         guard let current else { return }
         try await organizationClient?.delete(current.id)

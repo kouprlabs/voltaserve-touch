@@ -29,26 +29,24 @@ struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
             } else if let error {
                 VOErrorMessage(error)
             } else {
-                if let current = workspaceStore.current {
-                    VStack {
-                        VOAvatar(name: workspace.name, size: 100)
-                            .padding()
-                        Form {
-                            NavigationLink {
-                                if let root = workspaceStore.root {
-                                    FileOverview(root, workspaceStore: workspaceStore)
-                                        .navigationTitle(current.name)
-                                }
-                            } label: {
-                                Label("Files", systemImage: "folder")
+                VStack {
+                    VOAvatar(name: workspace.name, size: 100)
+                        .padding()
+                    Form {
+                        NavigationLink {
+                            if let root = workspaceStore.root {
+                                FileOverview(root, workspaceStore: workspaceStore)
+                                    .navigationTitle(workspace.name)
                             }
-                            NavigationLink {
-                                WorkspaceSettings(workspaceStore: workspaceStore) {
-                                    dismiss()
-                                }
-                            } label: {
-                                Label("Settings", systemImage: "gear")
+                        } label: {
+                            Label("Files", systemImage: "folder")
+                        }
+                        NavigationLink {
+                            WorkspaceSettings(workspaceStore: workspaceStore) {
+                                dismiss()
                             }
+                        } label: {
+                            Label("Settings", systemImage: "gear")
                         }
                     }
                 }
