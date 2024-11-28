@@ -17,11 +17,11 @@ struct ServerEditIdentityProviderURL: View, FormValidatable {
     @State private var value = ""
     @State private var isProcessing = false
     private let server: Server
-    
+
     init(_ server: Server) {
         self.server = server
     }
-    
+
     var body: some View {
         Form {
             TextField("Identity Provider URL", text: $value)
@@ -44,25 +44,25 @@ struct ServerEditIdentityProviderURL: View, FormValidatable {
             value = server.idpURL
         }
     }
-    
+
     private func performSave() {
         isProcessing = true
         Task {
             server.idpURL = value
             try? context.save()
-            
+
             UserDefaults.standard.server = server
             tokenStore.recreateClient()
-            
+
             DispatchQueue.main.async {
                 dismiss()
                 isProcessing = false
             }
         }
     }
-    
+
     // MARK: - FormValidatable
-    
+
     func isValid() -> Bool {
         value.isValidURL()
     }

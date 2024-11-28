@@ -17,11 +17,11 @@ struct ServerEditName: View, FormValidatable {
     @State private var value = ""
     @State private var isProcessing = false
     private let server: Server
-    
+
     init(_ server: Server) {
         self.server = server
     }
-    
+
     var body: some View {
         Form {
             TextField("Name", text: $value)
@@ -44,28 +44,28 @@ struct ServerEditName: View, FormValidatable {
             value = server.name
         }
     }
-    
+
     private var normalizedValue: String {
         value.trimmingCharacters(in: .whitespaces)
     }
-    
+
     private func performSave() {
         isProcessing = true
         Task {
             server.name = normalizedValue
             try? context.save()
-            
+
             UserDefaults.standard.server = server
-            
+
             DispatchQueue.main.async {
                 dismiss()
                 isProcessing = false
             }
         }
     }
-    
+
     // MARK: - FormValidatable
-    
+
     func isValid() -> Bool {
         !normalizedValue.isEmpty
     }
