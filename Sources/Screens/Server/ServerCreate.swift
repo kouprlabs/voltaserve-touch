@@ -20,18 +20,16 @@ struct ServerCreate: View {
 
     var body: some View {
         Form {
-            Section(header: VOSectionHeader("Name")) {
+            Section(header: VOSectionHeader("Details")) {
                 TextField("Name", text: $name)
                     .disabled(isProcessing)
             }
-            Section(header: VOSectionHeader("API URL")) {
-                TextField("API URL", text: $apiURL)
+            Section(header: VOSectionHeader("URLs")) {
+                TextField("API", text: $apiURL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .disabled(isProcessing)
-            }
-            Section(header: VOSectionHeader("Identity Provider URL")) {
-                TextField("Identity Provider URL", text: $idpURL)
+                TextField("Identity Provider", text: $idpURL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .disabled(isProcessing)

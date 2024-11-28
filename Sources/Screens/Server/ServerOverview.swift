@@ -28,31 +28,41 @@ struct ServerOverview: View {
 
     var body: some View {
         Form {
-            Section(header: VOSectionHeader("API URL")) {
-                Text(server.apiURL)
+            Section(header: VOSectionHeader("URLs")) {
+                HStack {
+                    Text("API")
+                    Spacer()
+                    Text(server.apiURL)
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Text("Identity Provider")
+                    Spacer()
+                    Text(server.idpURL)
+                        .foregroundStyle(.secondary)
+                }
             }
-            Section(header: VOSectionHeader("Identity Provider URL")) {
-                Text(server.idpURL)
-            }
-            Section {
-                Button {
-                    activateConfirmationIsPresented = true
-                } label: {
-                    HStack {
-                        Text("Activate Server")
-                        if isActivating {
-                            Spacer()
-                            ProgressView()
+            Section(header: VOSectionHeader("Advanced")) {
+                if !server.isActive {
+                    Button {
+                        activateConfirmationIsPresented = true
+                    } label: {
+                        HStack {
+                            Text("Activate Server")
+                            if isActivating {
+                                Spacer()
+                                ProgressView()
+                            }
                         }
                     }
-                }
-                .disabled(server.isActive || isProcessing)
-                .confirmationDialog("Activate Server", isPresented: $activateConfirmationIsPresented) {
-                    Button("Activate") {
-                        performActivate()
+                    .disabled(isProcessing)
+                    .confirmationDialog("Activate Server", isPresented: $activateConfirmationIsPresented) {
+                        Button("Activate") {
+                            performActivate()
+                        }
+                    } message: {
+                        Text("Are you sure you want to activate this server?")
                     }
-                } message: {
-                    Text("Are you sure you want to activate this server?")
                 }
                 if !server.isCloud {
                     Button(role: .destructive) {
