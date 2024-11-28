@@ -10,12 +10,63 @@
 
 import SwiftUI
 
-struct ServerEditName: View {
-    var body: some View {
-        Text( /*@START_MENU_TOKEN@*/"Hello, World!" /*@END_MENU_TOKEN@*/)
+struct ServerEditName: View, FormValidatable {
+    @EnvironmentObject private var tokenStore: TokenStore
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @State private var value = ""
+    @State private var isProcessing = false
+    private let server: Server
+    
+    init(_ server: Server) {
+        self.server = server
     }
-}
-
-#Preview {
-    ServerEditName()
+    
+    var body: some View {
+        Form {
+            TextField("Name", text: $value)
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Name")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onAppear {
+            value = server.name
+        }
+    }
+    
+    private var normalizedValue: String {
+        value.trimmingCharacters(in: .whitespaces)
+    }
+    
+    private func performSave() {
+        isProcessing = true
+        Task {
+            server.name = normalizedValue
+            try? context.save()
+            
+            UserDefaults.standard.server = server
+            
+            DispatchQueue.main.async {
+                dismiss()
+                isProcessing = false
+            }
+        }
+    }
+    
+    // MARK: - FormValidatable
+    
+    func isValid() -> Bool {
+        !normalizedValue.isEmpty
+    }
 }

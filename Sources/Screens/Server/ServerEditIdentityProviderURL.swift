@@ -10,12 +10,60 @@
 
 import SwiftUI
 
-struct ServerEditIdentityProviderURL: View {
-    var body: some View {
-        Text( /*@START_MENU_TOKEN@*/"Hello, World!" /*@END_MENU_TOKEN@*/)
+struct ServerEditIdentityProviderURL: View, FormValidatable {
+    @EnvironmentObject private var tokenStore: TokenStore
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @State private var value = ""
+    @State private var isProcessing = false
+    private let server: Server
+    
+    init(_ server: Server) {
+        self.server = server
     }
-}
-
-#Preview {
-    ServerEditIdentityProviderURL()
+    
+    var body: some View {
+        Form {
+            TextField("Identity Provider URL", text: $value)
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Change Identity Provider URL")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if isProcessing {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        performSave()
+                    }
+                    .disabled(!isValid())
+                }
+            }
+        }
+        .onAppear {
+            value = server.idpURL
+        }
+    }
+    
+    private func performSave() {
+        isProcessing = true
+        Task {
+            server.idpURL = value
+            try? context.save()
+            
+            UserDefaults.standard.server = server
+            tokenStore.recreateClient()
+            
+            DispatchQueue.main.async {
+                dismiss()
+                isProcessing = false
+            }
+        }
+    }
+    
+    // MARK: - FormValidatable
+    
+    func isValid() -> Bool {
+        value.isValidURL()
+    }
 }

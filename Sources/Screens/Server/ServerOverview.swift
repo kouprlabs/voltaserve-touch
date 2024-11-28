@@ -29,7 +29,7 @@ struct ServerOverview: View {
     var body: some View {
         Form {
             Section(header: VOSectionHeader("Name")) {
-                NavigationLink(destination: ServerEditName()) {
+                NavigationLink(destination: ServerEditName(server)) {
                     HStack {
                         Text("Name")
                         Spacer()
@@ -42,7 +42,7 @@ struct ServerOverview: View {
                 .disabled(server.isCloud)
             }
             Section(header: VOSectionHeader("URLs")) {
-                NavigationLink(destination: ServerEditAPIURL()) {
+                NavigationLink(destination: ServerEditAPIURL(server)) {
                     HStack {
                         Text("API")
                         Spacer()
@@ -53,7 +53,7 @@ struct ServerOverview: View {
                     }
                 }
                 .disabled(server.isCloud)
-                NavigationLink(destination: ServerEditIdentityProviderURL()) {
+                NavigationLink(destination: ServerEditIdentityProviderURL(server)) {
                     HStack {
                         Text("Identity Provider")
                         Spacer()
