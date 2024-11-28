@@ -26,7 +26,7 @@ struct GroupSettings: View, ErrorPresentable {
 
     var body: some View {
         Group {
-            if let group = groupStore.current {
+            if let current = groupStore.current {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink {
@@ -40,27 +40,29 @@ struct GroupSettings: View, ErrorPresentable {
                             HStack {
                                 Text("Name")
                                 Spacer()
-                                Text(group.name)
+                                Text(current.name)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        .disabled(isDeleting)
+                        .disabled(isDeleting || current.permission.lt(.editor))
                     }
-                    Section(header: VOSectionHeader("Advanced")) {
-                        Button(role: .destructive) {
-                            deleteConfirmationIsPresented = true
-                        } label: {
-                            VOFormButtonLabel("Delete Group", isLoading: isDeleting)
-                        }
-                        .disabled(isDeleting)
-                        .confirmationDialog("Delete Group", isPresented: $deleteConfirmationIsPresented) {
-                            Button("Delete Permanently", role: .destructive) {
-                                performDelete()
+                    if current.permission.ge(.owner) {
+                        Section(header: VOSectionHeader("Advanced")) {
+                            Button(role: .destructive) {
+                                deleteConfirmationIsPresented = true
+                            } label: {
+                                VOFormButtonLabel("Delete Group", isLoading: isDeleting)
                             }
-                        } message: {
-                            Text("Are you sure you want to delete this group?")
+                            .disabled(isDeleting)
+                            .confirmationDialog("Delete Group", isPresented: $deleteConfirmationIsPresented) {
+                                Button("Delete Permanently", role: .destructive) {
+                                    performDelete()
+                                }
+                            } message: {
+                                Text("Are you sure you want to delete this group?")
+                            }
                         }
                     }
                 }

@@ -15,7 +15,9 @@ struct OrganizationSettings: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
+    @State private var leaveConfirmationIsPresented = false
     @State private var deleteConfirmationIsPresented = false
+    @State private var isLeaving = false
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
@@ -26,7 +28,7 @@ struct OrganizationSettings: View, ErrorPresentable {
 
     var body: some View {
         Group {
-            if let organization = organizationStore.current {
+            if let current = organizationStore.current {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink {
@@ -42,27 +44,44 @@ struct OrganizationSettings: View, ErrorPresentable {
                             HStack {
                                 Text("Name")
                                 Spacer()
-                                Text(organization.name)
+                                Text(current.name)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        .disabled(isDeleting)
+                        .disabled(isDeleting || current.permission.lt(.editor))
                     }
-                    Section(header: VOSectionHeader("Advanced")) {
+                    Section(header: VOSectionHeader("Membership")) {
                         Button(role: .destructive) {
-                            deleteConfirmationIsPresented = true
+                            leaveConfirmationIsPresented = true
                         } label: {
-                            VOFormButtonLabel("Delete Organization", isLoading: isDeleting)
+                            VOFormButtonLabel("Leave Organization", isLoading: isLeaving)
                         }
-                        .disabled(isDeleting)
-                        .confirmationDialog("Delete Organization", isPresented: $deleteConfirmationIsPresented) {
-                            Button("Delete Permanently", role: .destructive) {
-                                performDelete()
+                        .disabled(isLeaving)
+                        .confirmationDialog("Leave Organization", isPresented: $leaveConfirmationIsPresented) {
+                            Button("Leave", role: .destructive) {
+                                performLeave()
                             }
                         } message: {
-                            Text("Are you sure you want to delete this organization?")
+                            Text("Are you sure you want to leave this organization?")
+                        }
+                    }
+                    if current.permission.ge(.owner) {
+                        Section(header: VOSectionHeader("Advanced")) {
+                            Button(role: .destructive) {
+                                deleteConfirmationIsPresented = true
+                            } label: {
+                                VOFormButtonLabel("Delete Organization", isLoading: isDeleting)
+                            }
+                            .disabled(isDeleting)
+                            .confirmationDialog("Delete Organization", isPresented: $deleteConfirmationIsPresented) {
+                                Button("Delete Permanently", role: .destructive) {
+                                    performDelete()
+                                }
+                            } message: {
+                                Text("Are you sure you want to delete this organization?")
+                            }
                         }
                     }
                 }
@@ -73,8 +92,27 @@ struct OrganizationSettings: View, ErrorPresentable {
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
+    private func performLeave() {
+        withErrorHandling {
+            try await organizationStore.leave()
+            return true
+        } before: {
+            isLeaving = true
+        } success: {
+            dismiss()
+            if let current = organizationStore.current {
+                reflectLeaveInStore(current.id)
+            }
+            onCompletion?()
+        } failure: { message in
+            errorMessage = message
+            errorIsPresented = true
+        } anyways: {
+            isLeaving = false
+        }
+    }
+
     private func performDelete() {
-        let current = organizationStore.current
         withErrorHandling {
             try await organizationStore.delete()
             return true
@@ -82,7 +120,7 @@ struct OrganizationSettings: View, ErrorPresentable {
             isDeleting = true
         } success: {
             dismiss()
-            if let current {
+            if let current = organizationStore.current {
                 reflectDeleteInStore(current.id)
             }
             onCompletion?()
@@ -92,6 +130,10 @@ struct OrganizationSettings: View, ErrorPresentable {
         } anyways: {
             isDeleting = false
         }
+    }
+
+    private func reflectLeaveInStore(_ id: String) {
+        organizationStore.entities?.removeAll(where: { $0.id == id })
     }
 
     private func reflectDeleteInStore(_ id: String) {

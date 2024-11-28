@@ -24,23 +24,21 @@ struct GroupOverview: View {
 
     var body: some View {
         VStack {
-            if let current = groupStore.current {
-                VStack {
-                    VOAvatar(name: current.name, size: 100)
-                        .padding()
-                    Form {
-                        NavigationLink {
-                            GroupMemberList(groupStore: groupStore)
-                        } label: {
-                            Label("Members", systemImage: "person.2")
+            VStack {
+                VOAvatar(name: group.name, size: 100)
+                    .padding()
+                Form {
+                    NavigationLink {
+                        GroupMemberList(groupStore: groupStore)
+                    } label: {
+                        Label("Members", systemImage: "person.2")
+                    }
+                    NavigationLink {
+                        GroupSettings(groupStore: groupStore) {
+                            dismiss()
                         }
-                        NavigationLink {
-                            GroupSettings(groupStore: groupStore) {
-                                dismiss()
-                            }
-                        } label: {
-                            Label("Settings", systemImage: "gear")
-                        }
+                    } label: {
+                        Label("Settings", systemImage: "gear")
                     }
                 }
             }

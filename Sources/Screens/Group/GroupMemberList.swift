@@ -65,11 +65,13 @@ struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Members")
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    addMemberIsPresentable = true
-                } label: {
-                    Image(systemName: "plus")
+            if let group = groupStore.current, group.permission.ge(.owner) {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        addMemberIsPresentable = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
         }

@@ -53,7 +53,7 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
                                         .foregroundStyle(.secondary)
                                 }
                             }
-                            .disabled(isDeleting)
+                            .disabled(isDeleting || current.permission.lt(.owner))
                         }
                         Section(header: VOSectionHeader("Basics")) {
                             NavigationLink {
@@ -75,21 +75,23 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
                                         .foregroundStyle(.secondary)
                                 }
                             }
-                            .disabled(isDeleting)
+                            .disabled(isDeleting || current.permission.lt(.editor))
                         }
-                        Section(header: VOSectionHeader("Advanced")) {
-                            Button(role: .destructive) {
-                                deleteConfirmationIsPresentable = true
-                            } label: {
-                                VOFormButtonLabel("Delete Workspace", isLoading: isDeleting)
-                            }
-                            .disabled(isDeleting)
-                            .confirmationDialog("Delete Workspace", isPresented: $deleteConfirmationIsPresentable) {
-                                Button("Delete Permanently", role: .destructive) {
-                                    performDelete()
+                        if current.permission.ge(.owner) {
+                            Section(header: VOSectionHeader("Advanced")) {
+                                Button(role: .destructive) {
+                                    deleteConfirmationIsPresentable = true
+                                } label: {
+                                    VOFormButtonLabel("Delete Workspace", isLoading: isDeleting)
                                 }
-                            } message: {
-                                Text("Are you sure you want to delete this workspace?")
+                                .disabled(isDeleting)
+                                .confirmationDialog("Delete Workspace", isPresented: $deleteConfirmationIsPresentable) {
+                                    Button("Delete Permanently", role: .destructive) {
+                                        performDelete()
+                                    }
+                                } message: {
+                                    Text("Are you sure you want to delete this workspace?")
+                                }
                             }
                         }
                     }

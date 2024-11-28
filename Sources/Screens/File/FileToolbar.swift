@@ -37,8 +37,10 @@ struct FileToolbar: ViewModifier {
                 ToolbarItem(placement: .topBarTrailing) {
                     tasksButton
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    uploadMenu
+                if let file = fileStore.file, file.permission.ge(.editor) {
+                    ToolbarItem(placement: .topBarLeading) {
+                        uploadMenu
+                    }
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     if fileStore.entitiesIsLoading {
