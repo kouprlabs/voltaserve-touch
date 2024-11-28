@@ -78,6 +78,6 @@ struct ServerCreate: View, FormValidatable {
     // MARK: - FormValidatable
 
     func isValid() -> Bool {
-        !normalizedName.isEmpty && !apiURL.isEmpty && !idpURL.isEmpty
+        !normalizedName.isEmpty && apiURL.isValidURL() && idpURL.isValidURL()
     }
 }
