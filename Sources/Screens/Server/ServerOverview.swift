@@ -28,19 +28,42 @@ struct ServerOverview: View {
 
     var body: some View {
         Form {
+            Section(header: VOSectionHeader("Name")) {
+                NavigationLink(destination: ServerEditName()) {
+                    HStack {
+                        Text("Name")
+                        Spacer()
+                        Text(server.name)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .disabled(server.isCloud)
+            }
             Section(header: VOSectionHeader("URLs")) {
-                HStack {
-                    Text("API")
-                    Spacer()
-                    Text(server.apiURL)
-                        .foregroundStyle(.secondary)
+                NavigationLink(destination: ServerEditAPIURL()) {
+                    HStack {
+                        Text("API")
+                        Spacer()
+                        Text(server.apiURL)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .foregroundStyle(.secondary)
+                    }
                 }
-                HStack {
-                    Text("Identity Provider")
-                    Spacer()
-                    Text(server.idpURL)
-                        .foregroundStyle(.secondary)
+                .disabled(server.isCloud)
+                NavigationLink(destination: ServerEditIdentityProviderURL()) {
+                    HStack {
+                        Text("Identity Provider")
+                        Spacer()
+                        Text(server.idpURL)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .disabled(server.isCloud)
             }
             Section(header: VOSectionHeader("Advanced")) {
                 if !server.isActive {
