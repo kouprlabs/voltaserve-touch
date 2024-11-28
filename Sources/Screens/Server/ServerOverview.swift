@@ -28,31 +28,64 @@ struct ServerOverview: View {
 
     var body: some View {
         Form {
-            Section(header: VOSectionHeader("API URL")) {
-                Text(server.apiURL)
-            }
-            Section(header: VOSectionHeader("Identity Provider URL")) {
-                Text(server.idpURL)
-            }
-            Section {
-                Button {
-                    activateConfirmationIsPresented = true
-                } label: {
+            Section(header: VOSectionHeader("Name")) {
+                NavigationLink(destination: ServerEditName(server)) {
                     HStack {
-                        Text("Activate Server")
-                        if isActivating {
-                            Spacer()
-                            ProgressView()
-                        }
+                        Text("Name")
+                        Spacer()
+                        Text(server.name)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .foregroundStyle(.secondary)
                     }
                 }
-                .disabled(server.isActive || isProcessing)
-                .confirmationDialog("Activate Server", isPresented: $activateConfirmationIsPresented) {
-                    Button("Activate") {
-                        performActivate()
+                .disabled(server.isCloud)
+            }
+            Section(header: VOSectionHeader("URLs")) {
+                NavigationLink(destination: ServerEditAPIURL(server)) {
+                    HStack {
+                        Text("API")
+                        Spacer()
+                        Text(server.apiURL)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .foregroundStyle(.secondary)
                     }
-                } message: {
-                    Text("Are you sure you want to activate this server?")
+                }
+                .disabled(server.isCloud)
+                NavigationLink(destination: ServerEditIdentityProviderURL(server)) {
+                    HStack {
+                        Text("Identity Provider")
+                        Spacer()
+                        Text(server.idpURL)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .disabled(server.isCloud)
+            }
+            Section(header: VOSectionHeader("Advanced")) {
+                if !server.isActive {
+                    Button {
+                        activateConfirmationIsPresented = true
+                    } label: {
+                        HStack {
+                            Text("Activate Server")
+                            if isActivating {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(isProcessing)
+                    .confirmationDialog("Activate Server", isPresented: $activateConfirmationIsPresented) {
+                        Button("Activate") {
+                            performActivate()
+                        }
+                    } message: {
+                        Text("Are you sure you want to activate this server?")
+                    }
                 }
                 if !server.isCloud {
                     Button(role: .destructive) {
