@@ -31,7 +31,11 @@ struct FileDownload: View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
-                Text("Downloading \(fileStore.selectionFiles.count) item(s).")
+                if fileStore.selectionFiles.count > 1 {
+                    Text("Downloading (\(fileStore.selectionFiles.count)) items.")
+                } else {
+                    Text("Downloading item.")
+                }
             } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
@@ -110,7 +114,11 @@ struct FileDownload: View {
                 dismiss()
             } else {
                 let count = fileStore.selection.count - urls.count
-                errorMessage = "Failed to download \(count) item(s)."
+                if count > 1 {
+                    errorMessage = "Failed to download (\(count)) items."
+                } else {
+                    errorMessage = "Failed to download item."
+                }
                 if count < fileStore.selection.count {
                     errorSeverity = .partial
                 } else {

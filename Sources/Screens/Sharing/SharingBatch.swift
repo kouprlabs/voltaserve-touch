@@ -54,8 +54,6 @@ struct SharingBatch: View, TokenDistributing {
                 }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Sharing")
         .onAppear {
             if let token = tokenStore.token {
                 assignTokenToStores(token)

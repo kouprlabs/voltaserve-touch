@@ -28,7 +28,11 @@ struct FileDelete: View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
-                Text("Deleting \(fileStore.selection.count) item(s).")
+                if fileStore.selection.count > 1 {
+                    Text("Deleting (\(fileStore.selection.count)) items.")
+                } else {
+                    Text("Deleting item.")
+                }
             } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
@@ -70,7 +74,11 @@ struct FileDelete: View {
                 if result.failed.isEmpty {
                     return true
                 } else {
-                    errorMessage = "Failed to delete \(result.failed.count) item(s)."
+                    if result.failed.count > 1 {
+                        errorMessage = "Failed to delete (\(result.failed.count)) items."
+                    } else {
+                        errorMessage = "Failed to delete item."
+                    }
                     if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
                     } else if result.failed.count == fileStore.selection.count {
@@ -84,7 +92,11 @@ struct FileDelete: View {
             errorIsPresented = false
             dismiss()
         } failure: { _ in
-            errorMessage = "Failed to delete \(fileStore.selection.count) item(s)."
+            if fileStore.selection.count > 1 {
+                errorMessage = "Failed to delete (\(fileStore.selection.count)) items."
+            } else {
+                errorMessage = "Failed to delete item."
+            }
             errorSeverity = .full
             errorIsPresented = true
         } anyways: {

@@ -30,7 +30,11 @@ struct FileMove: View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
-                Text("Moving \(fileStore.selection.count) item(s).")
+                if fileStore.selection.count > 1 {
+                    Text("Moving (\(fileStore.selection.count)) items.")
+                } else {
+                    Text("Moving item.")
+                }
             } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
@@ -72,7 +76,11 @@ struct FileMove: View {
                 if result.failed.isEmpty {
                     return true
                 } else {
-                    errorMessage = "Failed to move \(result.failed.count) item(s)."
+                    if result.failed.count > 1 {
+                        errorMessage = "Failed to move (\(result.failed.count)) items."
+                    } else {
+                        errorMessage = "Failed to move item."
+                    }
                     if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
                     } else if result.failed.count == fileStore.selection.count {
@@ -86,7 +94,11 @@ struct FileMove: View {
             errorIsPresented = false
             dismiss()
         } failure: { _ in
-            errorMessage = "Failed to move \(fileStore.selection.count) item(s)."
+            if fileStore.selection.count > 1 {
+                errorMessage = "Failed to move (\(fileStore.selection.count)) items."
+            } else {
+                errorMessage = "Failed to move item."
+            }
             errorSeverity = .full
             errorIsPresented = true
         } anyways: {

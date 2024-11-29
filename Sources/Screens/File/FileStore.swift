@@ -38,7 +38,7 @@ class FileStore: ObservableObject {
     }
 
     @Published var renameIsPresented = false
-    @Published var deleteIsPresented = false
+    @Published var deleteConfirmationIsPresented = false
     @Published var downloadIsPresented = false
     @Published var browserForMoveIsPresented = false
     @Published var browserForCopyIsPresented = false

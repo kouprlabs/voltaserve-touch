@@ -30,7 +30,11 @@ struct FileCopy: View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
-                Text("Copying \(fileStore.selection.count) item(s).")
+                if fileStore.selection.count > 1 {
+                    Text("Copying (\(fileStore.selection.count)) item.")
+                } else {
+                    Text("Copying item.")
+                }
             } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
@@ -74,7 +78,11 @@ struct FileCopy: View {
                 if result.failed.isEmpty {
                     return true
                 } else {
-                    errorMessage = "Failed to copy \(result.failed.count) item(s)."
+                    if result.failed.count > 1 {
+                        errorMessage = "Failed to copy (\(result.failed.count)) items."
+                    } else {
+                        errorMessage = "Failed to copy item."
+                    }
                     if result.failed.count < fileStore.selection.count {
                         errorSeverity = .partial
                     } else if result.failed.count == fileStore.selection.count {
@@ -88,7 +96,11 @@ struct FileCopy: View {
             errorIsPresented = false
             dismiss()
         } failure: { _ in
-            errorMessage = "Failed to copy \(fileStore.selection.count) item(s)."
+            if fileStore.selection.count > 1 {
+                errorMessage = "Failed to copy (\(fileStore.selection.count)) items."
+            } else {
+                errorMessage = "Failed to copy item."
+            }
             errorSeverity = .full
             errorIsPresented = true
         } anyways: {

@@ -32,7 +32,11 @@ struct FileUpload: View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
-                Text("Uploading \(urls.count) item(s).")
+                if urls.count > 1 {
+                    Text("Uploading (\(urls.count)) items.")
+                } else {
+                    Text("Uploading item.")
+                }
             } else if errorIsPresented, errorSeverity == .full {
                 VOErrorIcon()
                 if let errorMessage {
@@ -94,7 +98,11 @@ struct FileUpload: View {
                 errorIsPresented = false
                 dismiss()
             } else {
-                errorMessage = "Failed to upload \(failedCount) item(s)."
+                if failedCount > 1 {
+                    errorMessage = "Failed to upload (\(failedCount)) items."
+                } else {
+                    errorMessage = "Failed to upload item."
+                }
                 if failedCount == urls.count {
                     errorSeverity = .full
                 } else if failedCount < urls.count {
