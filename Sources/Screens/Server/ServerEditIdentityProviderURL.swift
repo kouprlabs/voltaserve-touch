@@ -64,6 +64,6 @@ struct ServerEditIdentityProviderURL: View, FormValidatable {
     // MARK: - FormValidatable
 
     func isValid() -> Bool {
-        value.isValidURL()
+        value.isValidURL() && value != server.idpURL
     }
 }

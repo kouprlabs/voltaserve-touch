@@ -67,6 +67,6 @@ struct ServerEditName: View, FormValidatable {
     // MARK: - FormValidatable
 
     func isValid() -> Bool {
-        !normalizedValue.isEmpty
+        !normalizedValue.isEmpty && normalizedValue != server.name
     }
 }
