@@ -62,11 +62,6 @@ struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                         dismiss()
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    if snapshotStore.entitiesIsLoading {
-                        ProgressView()
-                    }
-                }
             }
         }
         .onAppear {

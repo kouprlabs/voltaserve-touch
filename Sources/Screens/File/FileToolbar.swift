@@ -42,11 +42,6 @@ struct FileToolbar: ViewModifier {
                         uploadMenu
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    if fileStore.entitiesIsLoading {
-                        ProgressView()
-                    }
-                }
             }
     }
 

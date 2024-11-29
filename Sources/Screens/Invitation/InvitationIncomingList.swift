@@ -57,13 +57,6 @@ struct InvitationIncomingList: View, ViewDataProvider, LoadStateProvider, TimerL
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Invitations")
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                if invitationStore.entitiesIsLoading, invitationStore.entities != nil {
-                    ProgressView()
-                }
-            }
-        }
         .onAppear {
             if let token = tokenStore.token {
                 assignTokenToStores(token)
