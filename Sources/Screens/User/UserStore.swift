@@ -25,6 +25,7 @@ class UserStore: ObservableObject {
     let searchPublisher = PassthroughSubject<String, Never>()
     var organizationID: String?
     var groupID: String?
+    var excludeGroupMembers: Bool?
     var invitationID: String?
 
     var token: VOToken.Value? {
@@ -85,24 +86,15 @@ class UserStore: ObservableObject {
     }
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
-        if let organizationID {
-            return try await userClient?.fetchList(
-                .init(
-                    query: query,
-                    organizationID: organizationID,
-                    page: page,
-                    size: size
-                ))
-        } else if let groupID {
-            return try await userClient?.fetchList(
-                .init(
-                    query: query,
-                    groupID: groupID,
-                    page: page,
-                    size: size
-                ))
-        }
-        return nil
+        try await userClient?.fetchList(
+            .init(
+                query: query,
+                organizationID: organizationID,
+                groupID: groupID,
+                excludeGroupMembers: excludeGroupMembers,
+                page: page,
+                size: size
+            ))
     }
 
     func fetchNextPage(replace: Bool = false) {
