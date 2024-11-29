@@ -27,7 +27,7 @@ struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
                 Section {
                     NavigationLink {
                         if let group = groupStore.current {
-                            UserSelector(groupID: group.id) { user in
+                            UserSelector(organizationID: group.organization.id) { user in
                                 self.user = user
                             }
                         }
