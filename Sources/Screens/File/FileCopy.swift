@@ -31,7 +31,7 @@ struct FileCopy: View {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()
                 if fileStore.selection.count > 1 {
-                    Text("Copying (\(fileStore.selection.count)) item.")
+                    Text("Copying (\(fileStore.selection.count)) items.")
                 } else {
                     Text("Copying item.")
                 }
