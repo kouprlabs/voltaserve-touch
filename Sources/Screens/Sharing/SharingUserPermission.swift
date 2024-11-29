@@ -103,7 +103,7 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("User Permission")
+        .navigationTitle(fileIDs.count > 1 ? "Sharing (\(fileIDs.count)) Items" : "Sharing")
         .toolbar {
             if enableCancel {
                 ToolbarItem(placement: .topBarLeading) {
