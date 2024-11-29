@@ -71,6 +71,7 @@ class InsightsStore: ObservableObject {
             self.languagesIsLoading = true
         } success: {
             self.languages = languages
+            self.languagesError = nil
         } failure: { message in
             self.languagesError = message
         } anyways: {
@@ -87,6 +88,7 @@ class InsightsStore: ObservableObject {
         var info: VOInsights.Info?
         withErrorHandling {
             info = try await self.fetchInfo()
+            self.infoError = nil
             return true
         } before: {
             self.infoIsLoading = true
@@ -148,6 +150,7 @@ class InsightsStore: ObservableObject {
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchEntityList(page: nextPage)
+            self.entitiesError = nil
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -247,6 +250,7 @@ class InsightsStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
+                            self.entitiesError = nil
                         }
                     }
                 }

@@ -34,6 +34,7 @@ class SignUpStore: ObservableObject {
             self.passwordRequirementsIsLoading = true
         } success: {
             self.passwordRequirements = passwordRequirements
+            self.passwordRequirementsError = nil
         } failure: { message in
             self.passwordRequirementsError = message
         } anyways: {
@@ -58,6 +59,7 @@ class SignUpStore: ObservableObject {
                     if let passwordRequirements {
                         DispatchQueue.main.async {
                             self.passwordRequirements = passwordRequirements
+                            self.passwordRequirementsError = nil
                         }
                     }
                 }

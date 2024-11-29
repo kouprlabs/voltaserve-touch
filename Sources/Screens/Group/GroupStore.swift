@@ -120,6 +120,7 @@ class GroupStore: ObservableObject {
                     self.append(list.data)
                 }
             }
+            self.entitiesError = nil
         } failure: { message in
             self.entitiesError = message
         } anyways: {
@@ -210,16 +211,7 @@ class GroupStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
-                        }
-                    }
-                }
-            }
-            if let current = self.current {
-                Task {
-                    let group = try await self.groupClient?.fetch(current.id)
-                    if let group {
-                        DispatchQueue.main.async {
-                            self.current = group
+                            self.entitiesError = nil
                         }
                     }
                 }

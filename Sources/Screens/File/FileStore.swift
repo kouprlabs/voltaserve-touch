@@ -124,6 +124,7 @@ class FileStore: ObservableObject {
             self.fileIsLoading = true
         } success: {
             self.file = folder
+            self.fileError = nil
         } failure: { message in
             self.fileError = message
         } anyways: {
@@ -163,6 +164,7 @@ class FileStore: ObservableObject {
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(file.id, page: nextPage)
+            self.entitiesError = nil
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -190,6 +192,7 @@ class FileStore: ObservableObject {
         var taskCount: Int?
         withErrorHandling {
             taskCount = try await self.fetchTaskCount()
+            self.taskCountError = nil
             return true
         } before: {
             self.taskCountIsLoading = true
@@ -211,6 +214,7 @@ class FileStore: ObservableObject {
         var storageUsage: VOStorage.Usage?
         withErrorHandling {
             storageUsage = try await self.fetchStorageUsage()
+            self.storageUsageError = nil
             return true
         } before: {
             self.storageUsageIsLoading = true
@@ -232,6 +236,7 @@ class FileStore: ObservableObject {
         var itemCount: Int?
         withErrorHandling {
             itemCount = try await self.fetchItemCount()
+            self.itemCountError = nil
             return true
         } before: {
             self.itemCountIsLoading = true
@@ -364,6 +369,7 @@ class FileStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
+                            self.entitiesError = nil
                         }
                     }
                 }
@@ -374,6 +380,7 @@ class FileStore: ObservableObject {
                     if let file {
                         DispatchQueue.main.async {
                             self.file = file
+                            self.fileError = nil
                         }
                     }
                 }
@@ -383,6 +390,7 @@ class FileStore: ObservableObject {
                     let taskCount = try await self.fetchTaskCount()
                     DispatchQueue.main.async {
                         self.taskCount = taskCount
+                        self.taskCountError = nil
                     }
                 }
             }

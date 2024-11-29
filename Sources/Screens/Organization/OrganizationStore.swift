@@ -94,6 +94,7 @@ class OrganizationStore: ObservableObject {
                     self.append(list.data)
                 }
             }
+            self.entitiesError = nil
         } failure: { message in
             self.entitiesError = message
         } anyways: {
@@ -184,16 +185,7 @@ class OrganizationStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
-                        }
-                    }
-                }
-            }
-            if let current = self.current {
-                Task {
-                    let organization = try await self.fetch(current.id)
-                    if let organization {
-                        DispatchQueue.main.async {
-                            self.current = organization
+                            self.entitiesError = nil
                         }
                     }
                 }

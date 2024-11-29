@@ -45,6 +45,7 @@ class MosaicStore: ObservableObject {
             self.infoIsLoading = true
         } success: {
             self.info = info
+            self.infoError = nil
         } failure: { message in
             self.infoError = message
         } anyways: {
@@ -71,6 +72,7 @@ class MosaicStore: ObservableObject {
                     if let info {
                         DispatchQueue.main.async {
                             self.info = info
+                            self.infoError = nil
                         }
                     }
                 }

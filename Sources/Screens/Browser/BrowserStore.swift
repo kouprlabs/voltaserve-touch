@@ -69,6 +69,7 @@ class BrowserStore: ObservableObject {
             self.folderIsLoading = true
         } success: {
             self.folder = folder
+            self.folderError = nil
         } failure: { message in
             self.folderError = message
         } anyways: {
@@ -108,6 +109,7 @@ class BrowserStore: ObservableObject {
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
             list = try await self.fetchList(folderID, page: nextPage)
+            self.entitiesError = nil
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -190,6 +192,7 @@ class BrowserStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
+                            self.entitiesError = nil
                         }
                     }
                 }
@@ -200,6 +203,7 @@ class BrowserStore: ObservableObject {
                     if let folder {
                         DispatchQueue.main.async {
                             self.folder = folder
+                            self.folderError = nil
                         }
                     }
                 }

@@ -90,6 +90,7 @@ class InvitationStore: ObservableObject {
                     self.append(list.data)
                 }
             }
+            self.entitiesError = nil
         } failure: { message in
             self.entitiesError = message
         } anyways: {
@@ -110,6 +111,7 @@ class InvitationStore: ObservableObject {
             self.incomingCountIsLoading = true
         } success: {
             self.incomingCount = incomingCount
+            self.incomingCountError = nil
         } failure: { message in
             self.incomingCountError = message
         } anyways: {
@@ -199,6 +201,7 @@ class InvitationStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
+                            self.entitiesError = nil
                         }
                     }
                 }
@@ -209,6 +212,7 @@ class InvitationStore: ObservableObject {
                     if let incomingCount {
                         DispatchQueue.main.async {
                             self.incomingCount = incomingCount
+                            self.incomingCountError = nil
                         }
                     }
                 }
