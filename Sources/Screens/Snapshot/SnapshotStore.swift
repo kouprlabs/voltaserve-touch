@@ -86,6 +86,7 @@ class SnapshotStore: ObservableObject {
                     self.append(list.data)
                 }
             }
+            self.entitiesError = nil
         } failure: { message in
             self.entitiesError = message
         } anyways: {
@@ -166,6 +167,7 @@ class SnapshotStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
+                            self.entitiesError = nil
                         }
                     }
                 }

@@ -67,6 +67,7 @@ class AccountStore: ObservableObject {
             self.identityUserIsLoading = true
         } success: {
             self.identityUser = identityUser
+            self.identityUserError = nil
         } failure: { message in
             self.identityUserError = message
         } invalidCredentials: {
@@ -90,6 +91,7 @@ class AccountStore: ObservableObject {
             self.storageUsageIsLoading = true
         } success: {
             self.storageUsage = storageUsage
+            self.storageUsageError = nil
         } failure: { message in
             self.storageUsageError = message
         } anyways: {
@@ -126,6 +128,7 @@ class AccountStore: ObservableObject {
                     if let user {
                         DispatchQueue.main.async {
                             self.identityUser = user
+                            self.identityUserError = nil
                         }
                     }
                 }
@@ -136,6 +139,7 @@ class AccountStore: ObservableObject {
                     if let storageUsage {
                         DispatchQueue.main.async {
                             self.storageUsage = storageUsage
+                            self.storageUsageError = nil
                         }
                     }
                 }

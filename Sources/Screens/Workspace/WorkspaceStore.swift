@@ -112,6 +112,7 @@ class WorkspaceStore: ObservableObject {
                     self.append(list.data)
                 }
             }
+            self.entitiesError = nil
         } failure: { message in
             self.entitiesError = message
         } anyways: {
@@ -128,6 +129,7 @@ class WorkspaceStore: ObservableObject {
         var root: VOFile.Entity?
         withErrorHandling {
             root = try await self.fetchRoot()
+            self.rootError = nil
             return true
         } before: {
             self.rootIsLoading = true
@@ -149,6 +151,7 @@ class WorkspaceStore: ObservableObject {
         var storageUsage: VOStorage.Usage?
         withErrorHandling {
             storageUsage = try await self.fetchStorageUsage()
+            self.storageUsageError = nil
             return true
         } before: {
             self.storageUsageIsLoading = true
@@ -256,25 +259,19 @@ class WorkspaceStore: ObservableObject {
                     if let list {
                         DispatchQueue.main.async {
                             self.entities = list.data
+                            self.entitiesError = nil
                         }
                     }
                 }
             }
             if self.current != nil {
-                Task {
-                    let workspace = try await self.fetch()
-                    if let workspace {
-                        DispatchQueue.main.async {
-                            self.current = workspace
-                        }
-                    }
-                }
                 if self.root != nil {
                     Task {
                         let root = try await self.fetchRoot()
                         if let root {
                             DispatchQueue.main.async {
                                 self.root = root
+                                self.rootError = nil
                             }
                         }
                     }
@@ -285,6 +282,7 @@ class WorkspaceStore: ObservableObject {
                         if let storageUsage {
                             DispatchQueue.main.async {
                                 self.storageUsage = storageUsage
+                                self.storageUsageError = nil
                             }
                         }
                     }

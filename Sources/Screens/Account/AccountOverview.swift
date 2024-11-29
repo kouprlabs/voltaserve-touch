@@ -24,7 +24,17 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                 if isLoading {
                     ProgressView()
                 } else if let error {
-                    VOErrorMessage(error)
+                    VStack {
+                        VOErrorMessage(error)
+                        Button {
+                            performSignOut()
+                        } label: {
+                            VOButtonLabel("Sign Out")
+                        }
+                        .voButton(color: .red500)
+                        .fixedSize()
+                        .padding(.horizontal)
+                    }
                 } else {
                     if let identityUser = accountStore.identityUser {
                         VOAvatar(

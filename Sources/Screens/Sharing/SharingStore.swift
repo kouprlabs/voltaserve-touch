@@ -58,6 +58,7 @@ class SharingStore: ObservableObject {
             self.userPermissionsIsLoading = true
         } success: {
             self.userPermissions = userPermissions
+            self.userPermissionsError = nil
         } failure: { message in
             self.userPermissionsError = message
         } anyways: {
@@ -75,6 +76,7 @@ class SharingStore: ObservableObject {
 
         withErrorHandling {
             groupPermissions = try await self.fetchGroupPermissions(fileID)
+            self.groupPermissionsError = nil
             return true
         } before: {
             self.groupPermissionsIsLoading = true
@@ -117,6 +119,7 @@ class SharingStore: ObservableObject {
                     if let values {
                         DispatchQueue.main.async {
                             self.userPermissions = values
+                            self.userPermissionsError = nil
                         }
                     }
                 }
@@ -127,6 +130,7 @@ class SharingStore: ObservableObject {
                     if let values {
                         DispatchQueue.main.async {
                             self.groupPermissions = values
+                            self.groupPermissionsError = nil
                         }
                     }
                 }
