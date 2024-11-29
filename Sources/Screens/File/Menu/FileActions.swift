@@ -44,7 +44,7 @@ struct FileActions: ViewModifier {
                     fileStore.downloadIsPresented = true
                 },
                 onDelete: {
-                    fileStore.deleteIsPresented = true
+                    fileStore.deleteConfirmationIsPresented = true
                 },
                 onRename: {
                     fileStore.renameIsPresented = true

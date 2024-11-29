@@ -12,6 +12,7 @@ import SwiftUI
 
 struct FileSheetDelete: ViewModifier {
     @ObservedObject private var fileStore: FileStore
+    @State private var deleteIsPresented: Bool = false
 
     init(fileStore: FileStore) {
         self.fileStore = fileStore
@@ -19,7 +20,21 @@ struct FileSheetDelete: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $fileStore.deleteIsPresented) {
+            .alert(
+                fileStore.selection.count > 1 ? "Delete (\(fileStore.selection.count)) Items" : "Delete Item",
+                isPresented: $fileStore.deleteConfirmationIsPresented
+            ) {
+                Button("Delete", role: .destructive) {
+                    deleteIsPresented = true
+                }
+            } message: {
+                if fileStore.selection.count > 1 {
+                    Text("Are you sure you want to delete these items?")
+                } else {
+                    Text("Are you sure you want to delete this item?")
+                }
+            }
+            .sheet(isPresented: $deleteIsPresented) {
                 if !fileStore.selection.isEmpty {
                     FileDelete(fileStore: fileStore)
                 }
