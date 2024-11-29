@@ -75,7 +75,7 @@ struct FileDownload: View {
         }
         .presentationDetents([.fraction(0.25)])
     }
-    
+
     // swiftlint:disable:next type_body_length
     private func performDownload() {
         let dispatchGroup = DispatchGroup()
