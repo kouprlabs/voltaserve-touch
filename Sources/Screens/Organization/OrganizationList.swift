@@ -68,11 +68,6 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                         Image(systemName: "plus")
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    if organizationStore.entitiesIsLoading {
-                        ProgressView()
-                    }
-                }
             }
             .sheet(isPresented: $createIsPresented) {
                 OrganizationCreate(organizationStore: organizationStore) { newOrganization in

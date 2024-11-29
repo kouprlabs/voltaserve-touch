@@ -66,11 +66,6 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
                         Image(systemName: "plus")
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    if groupStore.entitiesIsLoading {
-                        ProgressView()
-                    }
-                }
             }
             .sheet(isPresented: $createIsPresented) {
                 GroupCreate(groupStore: groupStore) { newGroup in

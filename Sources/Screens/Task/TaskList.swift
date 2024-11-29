@@ -74,11 +74,6 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
                         dismiss()
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    if taskStore.entitiesIsLoading {
-                        ProgressView()
-                    }
-                }
             }
         }
         .onAppear {

@@ -96,11 +96,6 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
                     }
                 }
             }
-            ToolbarItem(placement: .topBarLeading) {
-                if browserStore.entitiesIsLoading {
-                    ProgressView()
-                }
-            }
         }
         .onAppear {
             browserStore.folderID = folderID

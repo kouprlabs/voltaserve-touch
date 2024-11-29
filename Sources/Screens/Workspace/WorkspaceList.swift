@@ -78,11 +78,6 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                         Image(systemName: "plus")
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    if workspaceStore.entitiesIsLoading {
-                        ProgressView()
-                    }
-                }
             }
             .sheet(isPresented: $createIsPresented) {
                 WorkspaceCreate(workspaceStore: workspaceStore) { newWorkspace in

@@ -70,11 +70,6 @@ struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerL
                     Image(systemName: "plus")
                 }
             }
-            ToolbarItem(placement: .topBarLeading) {
-                if invitationStore.entitiesIsLoading, invitationStore.entities != nil {
-                    ProgressView()
-                }
-            }
         }
         .sheet(isPresented: $createIsPresented) {
             InvitationCreate(organizationID)
