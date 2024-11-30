@@ -35,7 +35,7 @@ struct SharingBatch: View, TokenDistributing {
         TabView(selection: $selection) {
             Tab("Users", systemImage: "person", value: Tag.users) {
                 NavigationStack {
-                    SharingUserPermission(
+                    SharingUserForm(
                         fileIDs: fileIDs,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore,
@@ -45,7 +45,7 @@ struct SharingBatch: View, TokenDistributing {
             }
             Tab("Groups", systemImage: "person.2", value: Tag.groups) {
                 NavigationStack {
-                    SharingGroupPermission(
+                    SharingGroupForm(
                         fileIDs: fileIDs,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore,

@@ -11,17 +11,17 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
+struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
-    @State private var user: VOUser.Entity?
+    @State private var group: VOGroup.Entity?
     @State private var permission: VOPermission.Value?
-    @State private var revokeConfirmationIsPresented = false
     @State private var isGranting = false
     @State private var isRevoking = false
+    @State private var revokeConfirmationIsPresented = false
     private let fileIDs: [String]
-    private let predefinedUser: VOUser.Entity?
+    private let predefinedGroup: VOGroup.Entity?
     private let defaultPermission: VOPermission.Value?
     private let enableCancel: Bool
     private let enableRevoke: Bool
@@ -30,7 +30,7 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
         fileIDs: [String],
         sharingStore: SharingStore,
         workspaceStore: WorkspaceStore,
-        predefinedUser: VOUser.Entity? = nil,
+        predefinedGroup: VOGroup.Entity? = nil,
         defaultPermission: VOPermission.Value? = nil,
         enableCancel: Bool = false,
         enableRevoke: Bool = false
@@ -38,7 +38,7 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
         self.fileIDs = fileIDs
         self.sharingStore = sharingStore
         self.workspaceStore = workspaceStore
-        self.predefinedUser = predefinedUser
+        self.predefinedGroup = predefinedGroup
         self.defaultPermission = defaultPermission
         self.enableCancel = enableCancel
         self.enableRevoke = enableRevoke
@@ -46,33 +46,30 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
 
     var body: some View {
         Form {
-            Section(header: VOSectionHeader("User Permission")) {
+            Section(header: VOSectionHeader("Group Permission")) {
                 NavigationLink {
                     if let workspace = workspaceStore.current {
-                        UserSelector(organizationID: workspace.organization.id) { user in
-                            self.user = user
+                        GroupSelector(organizationID: workspace.organization.id) { group in
+                            self.group = group
                         }
                     }
                 } label: {
                     HStack {
-                        Text("User")
-                        if let user {
+                        Text("Group")
+                        if let group {
                             Spacer()
-                            Text(user.fullName)
+                            Text(group.name)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
                                 .foregroundStyle(.secondary)
                         }
                     }
                 }
-                .disabled(predefinedUser != nil || isProcessing)
+                .disabled(predefinedGroup != nil || isProcessing)
                 Picker("Permission", selection: $permission) {
-                    Text("Viewer")
-                        .tag(VOPermission.Value.viewer)
-                    Text("Editor")
-                        .tag(VOPermission.Value.editor)
-                    Text("Owner")
-                        .tag(VOPermission.Value.owner)
+                    Text("Viewer").tag(VOPermission.Value.viewer)
+                    Text("Editor").tag(VOPermission.Value.editor)
+                    Text("Owner").tag(VOPermission.Value.owner)
                 }
                 .disabled(isProcessing)
             }
@@ -124,8 +121,8 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
             }
         }
         .onAppear {
-            if let predefinedUser {
-                user = predefinedUser
+            if let predefinedGroup {
+                group = predefinedGroup
             }
             if let defaultPermission {
                 permission = defaultPermission
@@ -139,9 +136,9 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
     }
 
     private func performGrant() {
-        guard let user, let permission else { return }
+        guard let group, let permission else { return }
         withErrorHandling {
-            try await sharingStore.grantUserPermission(ids: fileIDs, userID: user.id, permission: permission)
+            try await sharingStore.grantGroupPermission(ids: fileIDs, groupID: group.id, permission: permission)
             return true
         } before: {
             isGranting = true
@@ -156,9 +153,9 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
     }
 
     private func performRevoke() {
-        guard let user, fileIDs.count == 1, let fileID = fileIDs.first else { return }
+        guard let group, fileIDs.count == 1, let fileID = fileIDs.first else { return }
         withErrorHandling {
-            try await sharingStore.revokeUserPermission(id: fileID, userID: user.id)
+            try await sharingStore.revokeGroupPermission(id: fileID, groupID: group.id)
             return true
         } before: {
             isRevoking = true
@@ -180,6 +177,6 @@ struct SharingUserPermission: View, FormValidatable, ErrorPresentable {
     // MARK: - FormValidatable
 
     func isValid() -> Bool {
-        user != nil && permission != nil
+        group != nil && permission != nil
     }
 }

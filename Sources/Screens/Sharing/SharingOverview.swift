@@ -33,7 +33,7 @@ struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
         NavigationStack {
             TabView(selection: $selection) {
                 Tab("Users", systemImage: "person", value: Tag.users) {
-                    SharingUserList(
+                    SharingUserPermissions(
                         fileID,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore
@@ -41,7 +41,7 @@ struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                 }
                 .badge(userPermissionCount)
                 Tab("Groups", systemImage: "person.2", value: Tag.groups) {
-                    SharingGroupList(
+                    SharingGroupPermissions(
                         fileID,
                         sharingStore: sharingStore,
                         workspaceStore: workspaceStore
@@ -55,13 +55,13 @@ struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink {
                         if selection == .users {
-                            SharingUserPermission(
+                            SharingUserForm(
                                 fileIDs: [fileID],
                                 sharingStore: sharingStore,
                                 workspaceStore: workspaceStore
                             )
                         } else if selection == .groups {
-                            SharingGroupPermission(
+                            SharingGroupForm(
                                 fileIDs: [fileID],
                                 sharingStore: sharingStore,
                                 workspaceStore: workspaceStore
