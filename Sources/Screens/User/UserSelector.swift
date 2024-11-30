@@ -20,16 +20,19 @@ struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
     private let groupID: String?
     private let organizationID: String?
     private let excludeGroupMembers: Bool?
+    private let excludeMe: Bool?
 
     init(
         organizationID: String? = nil,
         groupID: String? = nil,
         excludeGroupMembers: Bool? = nil,
+        excludeMe: Bool? = nil,
         onCompletion: ((VOUser.Entity) -> Void)? = nil
     ) {
         self.organizationID = organizationID
         self.groupID = groupID
         self.excludeGroupMembers = excludeGroupMembers
+        self.excludeMe = excludeMe
         self.onCompletion = onCompletion
     }
 
@@ -89,6 +92,7 @@ struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
             userStore.organizationID = organizationID
             userStore.groupID = groupID
             userStore.excludeGroupMembers = excludeGroupMembers
+            userStore.excludeMe = excludeMe
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()

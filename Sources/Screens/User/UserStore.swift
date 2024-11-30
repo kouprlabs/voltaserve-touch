@@ -26,6 +26,7 @@ class UserStore: ObservableObject {
     var organizationID: String?
     var groupID: String?
     var excludeGroupMembers: Bool?
+    var excludeMe: Bool?
     var invitationID: String?
 
     var token: VOToken.Value? {
@@ -92,6 +93,7 @@ class UserStore: ObservableObject {
                 organizationID: organizationID,
                 groupID: groupID,
                 excludeGroupMembers: excludeGroupMembers,
+                excludeMe: excludeMe,
                 page: page,
                 size: size
             ))

@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingUserList: View, TokenDistributing {
+struct SharingUserPermissions: View, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
@@ -34,7 +34,7 @@ struct SharingUserList: View, TokenDistributing {
                 } else {
                     List(userPermissions, id: \.id) { userPermission in
                         NavigationLink {
-                            SharingUserPermission(
+                            SharingUserForm(
                                 fileIDs: [fileID],
                                 sharingStore: sharingStore,
                                 workspaceStore: workspaceStore,

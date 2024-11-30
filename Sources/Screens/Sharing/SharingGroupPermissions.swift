@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SharingGroupList: View {
+struct SharingGroupPermissions: View {
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var group: VOGroup.Entity?
@@ -31,7 +31,7 @@ struct SharingGroupList: View {
             } else {
                 List(groupPermissions, id: \.id) { groupPermission in
                     NavigationLink {
-                        SharingGroupPermission(
+                        SharingGroupForm(
                             fileIDs: [fileID],
                             sharingStore: sharingStore,
                             workspaceStore: workspaceStore,
