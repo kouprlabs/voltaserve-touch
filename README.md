@@ -12,9 +12,9 @@ Watch the [demo video](https://youtu.be/RpHp0OEa_o8?feature=shared).
 
 - Make sure your Voltaserve instance is up and running, or follow the instructions [here](https://github.com/kouprlabs/voltaserve) to create a new instance.
 - Install the app on your device with Xcode.
-- On the sign in screen, in the upper right corner, click the cog button to create a new server that points to the URLs of your instance, **then activate it**. Example URLs:
+- On the sign in screen, in the upper right corner, click the cog button to create a new server that points to the URLs of your instance, **then activate it**, example URLs:
   - API: `http://localhost:8080`
-  - Identity Provider: `http://localhost:8081`.
+  - Identity Provider: `http://localhost:8081`
 - Sign in and enjoy!
 
 ## Getting Started
