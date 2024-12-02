@@ -1,6 +1,6 @@
 # Voltaserve iOS
 
-Optimized for iPhone and iPad, and runs great on the Mac.
+Optimized for iPhone and iPad, runs great on the Mac.
 
 Watch the [demo video](https://youtu.be/RpHp0OEa_o8?feature=shared).
 
