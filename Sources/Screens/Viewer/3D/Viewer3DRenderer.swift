@@ -29,7 +29,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
         let sceneView = context.coordinator.sceneView
         sceneView.allowsCameraControl = true
         sceneView.autoenablesDefaultLighting = true
-        sceneView.backgroundColor = .white
+        sceneView.backgroundColor = UIColor.systemBackground
 
         sceneView.isHidden = true
         containerView.addSubview(sceneView)
