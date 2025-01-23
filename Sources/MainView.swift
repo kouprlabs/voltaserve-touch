@@ -22,7 +22,7 @@ struct MainView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            Tab("Home", systemImage: "house", value: TabType.workspaces) {
+            Tab("Workspaces", systemImage: "internaldrive", value: TabType.workspaces) {
                 WorkspaceList()
             }
             Tab("Groups", systemImage: "person.2.fill", value: TabType.groups) {

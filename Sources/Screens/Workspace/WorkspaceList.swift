@@ -61,7 +61,7 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                     }
                 }
             }
-            .navigationTitle("Home")
+            .navigationTitle("Workspaces")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     if UIDevice.current.userInterfaceIdiom == .phone {
