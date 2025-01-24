@@ -100,6 +100,7 @@ struct FileDelete: View {
             errorSeverity = .full
             errorIsPresented = true
         } anyways: {
+            fileStore.selection = []
             isProcessing = false
         }
     }
