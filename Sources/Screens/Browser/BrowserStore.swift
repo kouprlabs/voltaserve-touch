@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class BrowserStore: ObservableObject {
     @Published var entities: [VOFile.Entity]?
     @Published var entitiesIsLoading: Bool = false

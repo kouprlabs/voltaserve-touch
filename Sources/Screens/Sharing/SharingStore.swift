@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class SharingStore: ObservableObject {
     @Published var userPermissions: [VOFile.UserPermission]?
     @Published var userPermissionsIsLoading: Bool = false

@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class SnapshotStore: ObservableObject {
     @Published var entities: [VOSnapshot.Entity]?
     @Published var entitiesIsLoading: Bool = false

@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class InvitationStore: ObservableObject {
     @Published var entities: [VOInvitation.Entity]?
     @Published var entitiesError: String?

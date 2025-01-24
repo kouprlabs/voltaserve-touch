@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class TokenStore: ObservableObject {
     @Published var token: VOToken.Value?
     private var client = createClient()

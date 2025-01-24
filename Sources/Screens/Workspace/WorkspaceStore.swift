@@ -13,6 +13,7 @@ import Foundation
 import VoltaserveCore
 
 // swiftlint:disable:next type_body_length
+@MainActor
 class WorkspaceStore: ObservableObject {
     @Published var entities: [VOWorkspace.Entity]?
     @Published var entitiesIsLoading: Bool = false
