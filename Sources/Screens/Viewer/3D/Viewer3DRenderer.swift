@@ -103,15 +103,17 @@ struct Viewer3DRenderer: UIViewRepresentable {
         }
 
         func loadAsset(url: URL, completion: @escaping (GLTFAsset?, Error?) -> Void) {
-            GLTFAsset.load(
-                with: url,
-                options: [:]
-            ) { _, status, maybeAsset, maybeError, _ in
-                DispatchQueue.main.async {
-                    if status == .complete {
-                        completion(maybeAsset, nil)
-                    } else if let error = maybeError {
-                        completion(nil, error)
+            DispatchQueue.global(qos: .userInitiated).async {
+                GLTFAsset.load(
+                    with: url,
+                    options: [:]
+                ) { _, status, maybeAsset, maybeError, _ in
+                    DispatchQueue.main.async {
+                        if status == .complete {
+                            completion(maybeAsset, nil)
+                        } else if let error = maybeError {
+                            completion(nil, error)
+                        }
                     }
                 }
             }
