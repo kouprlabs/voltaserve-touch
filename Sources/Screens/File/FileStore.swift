@@ -12,8 +12,8 @@ import Combine
 import Foundation
 import VoltaserveCore
 
-// swiftlint:disable:next type_body_length
 @MainActor
+// swiftlint:disable:next type_body_length
 class FileStore: ObservableObject {
     @Published var entities: [VOFile.Entity]?
     @Published var entitiesIsLoading: Bool = false
