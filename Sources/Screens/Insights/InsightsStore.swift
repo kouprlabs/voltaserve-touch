@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class InsightsStore: ObservableObject {
     @Published var entities: [VOInsights.Entity]?
     @Published var entitiesIsLoading: Bool = false

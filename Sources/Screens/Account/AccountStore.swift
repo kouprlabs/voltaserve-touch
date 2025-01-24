@@ -11,6 +11,7 @@
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class AccountStore: ObservableObject {
     @Published var identityUser: VOIdentityUser.Entity?
     @Published var identityUserError: String?

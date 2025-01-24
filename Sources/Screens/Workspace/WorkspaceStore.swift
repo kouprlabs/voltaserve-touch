@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 // swiftlint:disable:next type_body_length
 class WorkspaceStore: ObservableObject {
     @Published var entities: [VOWorkspace.Entity]?

@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class SignUpStore: ObservableObject {
     @Published var passwordRequirements: VOAccount.PasswordRequirements?
     @Published var passwordRequirementsIsLoading: Bool = false

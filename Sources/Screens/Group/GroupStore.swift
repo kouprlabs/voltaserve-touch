@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class GroupStore: ObservableObject {
     @Published var entities: [VOGroup.Entity]?
     @Published var entitiesIsLoading: Bool = false

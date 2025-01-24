@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class TaskStore: ObservableObject {
     @Published var entities: [VOTask.Entity]?
     @Published var entitiesIsLoading: Bool = false

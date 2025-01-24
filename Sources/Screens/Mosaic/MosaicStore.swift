@@ -12,6 +12,7 @@ import Combine
 import Foundation
 import VoltaserveCore
 
+@MainActor
 class MosaicStore: ObservableObject {
     @Published var info: VOMosaic.Info?
     @Published var infoIsLoading: Bool = false
