@@ -40,7 +40,7 @@ class TaskStore: ObservableObject {
     }
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOTask.List? {
-        try await taskClient?.fetchList(.init(page: page, size: size, sortBy: .dateCreated, sortOrder: .desc))
+        try await taskClient?.fetchList(.init(page: page, size: size, sortBy: .status, sortOrder: .desc))
     }
 
     func fetchNextPage(replace: Bool = false) {
