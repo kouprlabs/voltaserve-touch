@@ -16,7 +16,6 @@ extension VOFile.Entity {
     func iconForFile(colorScheme: ColorScheme) -> String {
         guard let snapshot else { return "" }
         guard let fileExtension = snapshot.original.fileExtension else { return "" }
-        let hasThumbnail = snapshot.thumbnail != nil
 
         var image =
             if fileExtension.isImage() {
@@ -39,9 +38,9 @@ extension VOFile.Entity {
                 "icon-spreadsheet"
             } else if fileExtension.isSlides() {
                 "icon-power-point"
-            } else if fileExtension.isVideo(), hasThumbnail {
+            } else if fileExtension.isVideo() {
                 "icon-video"
-            } else if fileExtension.isAudio(), !hasThumbnail {
+            } else if fileExtension.isAudio() {
                 "icon-audio"
             } else if fileExtension.isArchive() {
                 "icon-archive"
