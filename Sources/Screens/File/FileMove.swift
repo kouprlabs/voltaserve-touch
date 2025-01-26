@@ -102,6 +102,7 @@ struct FileMove: View {
             errorSeverity = .full
             errorIsPresented = true
         } anyways: {
+            fileStore.selection = []
             isProcessing = false
         }
     }
