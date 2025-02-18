@@ -138,7 +138,15 @@ class FileStore: ObservableObject {
     }
 
     private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await fileClient?.fetchList(id, options: .init(query: query, page: page, size: size))
+        try await fileClient?.fetchList(
+            id,
+            options: .init(
+                query: query,
+                page: page,
+                size: size,
+                sortBy: .dateCreated,
+                sortOrder: .desc
+            ))
     }
 
     func fetchNextPage(replace: Bool = false) {
@@ -316,7 +324,7 @@ class FileStore: ObservableObject {
         list = nil
     }
 
-    // MARK: - Paging
+    // MARK: - Pagination
 
     func nextPage() -> Int {
         var page = 1

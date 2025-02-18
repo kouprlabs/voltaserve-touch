@@ -76,7 +76,14 @@ class WorkspaceStore: ObservableObject {
     }
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
-        try await workspaceClient?.fetchList(.init(query: query, page: page, size: size))
+        try await workspaceClient?.fetchList(
+            .init(
+                query: query,
+                page: page,
+                size: size,
+                sortBy: .dateCreated,
+                sortOrder: .desc
+            ))
     }
 
     func fetchNextPage(replace: Bool = false) {
@@ -213,7 +220,7 @@ class WorkspaceStore: ObservableObject {
         list = nil
     }
 
-    // MARK: - Paging
+    // MARK: - Pagination
 
     func nextPage() -> Int {
         var page = 1
