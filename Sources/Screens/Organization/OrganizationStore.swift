@@ -58,7 +58,14 @@ class OrganizationStore: ObservableObject {
     }
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOOrganization.List? {
-        try await organizationClient?.fetchList(.init(query: query, page: page, size: size))
+        try await organizationClient?.fetchList(
+            .init(
+                query: query,
+                page: page,
+                size: size,
+                sortBy: .dateCreated,
+                sortOrder: .desc
+            ))
     }
 
     func fetchNextPage(replace: Bool = false) {
@@ -139,7 +146,7 @@ class OrganizationStore: ObservableObject {
         list = nil
     }
 
-    // MARK: - Paging
+    // MARK: - Pagination
 
     func nextPage() -> Int {
         var page = 1

@@ -75,14 +75,18 @@ class GroupStore: ObservableObject {
                     query: query,
                     organizationID: organizationID,
                     page: page,
-                    size: size
+                    size: size,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
                 ))
         } else {
             try await groupClient?.fetchList(
                 .init(
                     query: query,
                     page: page,
-                    size: size
+                    size: size,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
                 ))
         }
     }
@@ -165,7 +169,7 @@ class GroupStore: ObservableObject {
         list = nil
     }
 
-    // MARK: - Paging
+    // MARK: - Pagination
 
     func nextPage() -> Int {
         var page = 1

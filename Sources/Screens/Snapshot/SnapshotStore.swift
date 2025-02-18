@@ -38,7 +38,7 @@ class SnapshotStore: ObservableObject {
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOSnapshot.Probe? {
         guard let fileID else { return nil }
-        return try await snapshotClient?.fetchProbe(.init(fileID: fileID, size: size, sortOrder: .desc))
+        return try await snapshotClient?.fetchProbe(.init(fileID: fileID, size: size))
     }
 
     private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOSnapshot.List? {
@@ -121,7 +121,7 @@ class SnapshotStore: ObservableObject {
         list = nil
     }
 
-    // MARK: - Paging
+    // MARK: - Pagination
 
     func nextPage() -> Int {
         var page = 1
