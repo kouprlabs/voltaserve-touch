@@ -32,10 +32,10 @@ struct FileAdornments: View {
             if let isShared = file.isShared, isShared {
                 FileBadge.shared
             }
-            if file.snapshot?.mosaic != nil {
+            if let snapshot = file.snapshot, snapshot.capabilities.mosaic {
                 FileBadge.mosaic
             }
-            if file.snapshot?.entities != nil {
+            if let snapshot = file.snapshot, snapshot.capabilities.entities || snapshot.capabilities.summary {
                 FileBadge.insights
             }
         }

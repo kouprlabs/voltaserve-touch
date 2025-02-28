@@ -11,8 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ErrorPresentable
-{
+struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore()
     @Environment(\.dismiss) private var dismiss
@@ -28,35 +27,15 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
     var body: some View {
         NavigationView {
             VStack {
-                if isLoading {
-                    ProgressView()
-                } else if let error {
-                    VOErrorMessage(error)
-                } else {
-                    VStack(spacing: VOMetrics.spacingLg) {
+                VStack(spacing: VOMetrics.spacingLg) {
+                    if let snapshot = file.snapshot, snapshot.capabilities.entities {
                         VStack {
                             VStack {
-                                Text("Collect insights for the active snapshot.")
-                                Button {
-                                    performPatch()
-                                } label: {
-                                    VOButtonLabel("Collect Insights", systemImage: "bolt", isLoading: isPatching)
-                                }
-                                .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcessing || !canCreate)
-                            }
-                            .padding()
-                        }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
-                        }
-                        VStack {
-                            VStack {
-                                Text("Delete insights from the active snapshot.")
+                                Text("Delete entities from the active snapshot.")
                                 Button {
                                     performDelete()
                                 } label: {
-                                    VOButtonLabel("Delete Insights", systemImage: "trash", isLoading: isDeleting)
+                                    VOButtonLabel("Delete Entities", systemImage: "trash", isLoading: isDeleting)
                                 }
                                 .voButton(color: .red400, isDisabled: isProcessing || !canDelete)
                             }
@@ -66,10 +45,27 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                             RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
                                 .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                         }
+                    } else {
+                        VStack {
+                            VStack {
+                                Text("Collect entities for the active snapshot.")
+                                Button {
+                                    performPatch()
+                                } label: {
+                                    VOButtonLabel("Collect Entities", systemImage: "bolt", isLoading: isPatching)
+                                }
+                                .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcessing || !canCreate)
+                            }
+                            .padding()
+                        }
+                        .overlay {
+                            RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
+                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                        }
                     }
-                    .padding(.horizontal)
-                    Spacer()
                 }
+                .padding(.horizontal)
+                Spacer()
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Insights")
@@ -83,11 +79,10 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
             }
         }
         .onAppear {
-            insightsStore.fileID = file.id
+            insightsStore.file = file
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()
-                onAppearOrChange()
             }
         }
         .onDisappear {
@@ -96,24 +91,17 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
         .onChange(of: tokenStore.token) { _, newToken in
             if let newToken {
                 assignTokenToStores(newToken)
-                onAppearOrChange()
             }
         }
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private var canCreate: Bool {
-        if let info = insightsStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) && info.isOutdated && file.permission.ge(.editor)
-        }
-        return false
+        !(file.snapshot?.task?.isPending ?? false) && file.permission.ge(.editor)
     }
 
     private var canDelete: Bool {
-        if let info = insightsStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) && !info.isOutdated && file.permission.ge(.owner)
-        }
-        return false
+        !(file.snapshot?.task?.isPending ?? false) && file.permission.ge(.owner)
     }
 
     private var isProcessing: Bool {
@@ -152,32 +140,10 @@ struct InsightsSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
         }
     }
 
-    // MARK: - LoadStateProvider
-
-    var isLoading: Bool {
-        insightsStore.infoIsLoading
-    }
-
-    var error: String? {
-        insightsStore.infoError
-    }
-
     // MARK: - ErrorPresentable
 
     @State var errorIsPresented: Bool = false
     @State var errorMessage: String?
-
-    // MARK: - ViewDataProvider
-
-    func onAppearOrChange() {
-        fetchData()
-    }
-
-    func fetchData() {
-        if let snapshot = file.snapshot, snapshot.hasEntities() {
-            insightsStore.fetchInfo()
-        }
-    }
 
     // MARK: - TimerLifecycle
 

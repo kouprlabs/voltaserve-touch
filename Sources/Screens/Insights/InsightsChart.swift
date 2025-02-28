@@ -17,10 +17,10 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     @StateObject private var insightsStore = InsightsStore(pageSize: Constants.pageSize)
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    private let fileID: String
+    private let file: VOFile.Entity
 
-    init(_ fileID: String) {
-        self.fileID = fileID
+    init(_ file: VOFile.Entity) {
+        self.file = file
     }
 
     var body: some View {
@@ -31,37 +31,45 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                 } else if let error {
                     VOErrorMessage(error)
                 } else {
-                    if let entities = insightsStore.entities {
-                        if entities.count < 5 {
-                            Text("Not enough data to render the chart.")
-                        } else {
-                            Chart(entities) { entity in
-                                SectorMark(
-                                    angle: .value(
-                                        Text(verbatim: entity.text),
-                                        entity.frequency
-                                    ),
-                                    innerRadius: .ratio(0.67),
-                                    angularInset: 4
-                                )
-                                .cornerRadius(5)
-                                .foregroundStyle(sectorMarkColor)
-                                .annotation(position: .overlay) {
-                                    Text("\(entity.text) (\(entity.frequency))")
-                                        .font(.footnote)
-                                        .padding(.horizontal)
-                                        .frame(height: 20)
-                                        .background(Color(UIColor.systemBackground))
-                                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                                        .overlay {
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke(sectorMarkColor, lineWidth: 1)
-                                        }
-                                }
-                            }
-                            .chartLegend(.hidden)
-                            .frame(maxWidth: 300, maxHeight: 300)
+                    VStack(spacing: VOMetrics.spacing2Xl) {
+                        if let summary = file.snapshot?.summary {
+                            Text(summary)
+                                .padding(.horizontal)
                         }
+                        Spacer()
+                        if let entities = insightsStore.entities {
+                            if entities.count < 5 {
+                                Text("Not enough data to render the chart.")
+                            } else {
+                                Chart(entities) { entity in
+                                    SectorMark(
+                                        angle: .value(
+                                            Text(verbatim: entity.text),
+                                            entity.frequency
+                                        ),
+                                        innerRadius: .ratio(0.67),
+                                        angularInset: 4
+                                    )
+                                    .cornerRadius(5)
+                                    .foregroundStyle(sectorMarkColor)
+                                    .annotation(position: .overlay) {
+                                        Text("\(entity.text) (\(entity.frequency))")
+                                            .font(.footnote)
+                                            .padding(.horizontal)
+                                            .frame(height: 20)
+                                            .background(Color(UIColor.systemBackground))
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(sectorMarkColor, lineWidth: 1)
+                                            }
+                                    }
+                                }
+                                .chartLegend(.hidden)
+                                .frame(maxWidth: 300, maxHeight: 300)
+                            }
+                        }
+                        Spacer()
                     }
                 }
             }
@@ -76,7 +84,7 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
             }
         }
         .onAppear {
-            insightsStore.fileID = fileID
+            insightsStore.file = file
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()
@@ -114,7 +122,9 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     }
 
     func fetchData() {
-        insightsStore.fetchEntityNextPage(replace: true)
+        if let snapshot = file.snapshot, snapshot.capabilities.entities {
+            insightsStore.fetchEntityNextPage(replace: true)
+        }
     }
 
     // MARK: - TimerLifecycle

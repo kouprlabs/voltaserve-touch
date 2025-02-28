@@ -14,30 +14,38 @@ import VoltaserveCore
 
 @MainActor
 class InsightsStore: ObservableObject {
-    @Published var entities: [VOInsights.Entity]?
+    @Published var entities: [VOEntity.Entity]?
     @Published var entitiesIsLoading: Bool = false
     var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published var entitiesError: String?
-    @Published var languages: [VOInsights.Language]?
+    @Published var languages: [VOSnapshot.Language]?
     @Published var languagesIsLoading: Bool = false
     var languagesIsLoadingFirstTime: Bool { languagesIsLoading && languages == nil }
     @Published var languagesError: String?
-    @Published var info: VOInsights.Info?
-    @Published var infoIsLoading: Bool = false
-    @Published var infoError: String?
     @Published var query: String?
-    private var list: VOInsights.EntityList?
+    private var list: VOEntity.List?
     private var cancellables: Set<AnyCancellable> = []
     private var timer: Timer?
-    private var insightsClient: VOInsights?
+    private var entityClient: VOEntity?
+    private var fileClient: VOFile?
+    private var snapshotClient: VOSnapshot?
+
     let searchPublisher = PassthroughSubject<String, Never>()
-    var fileID: String?
+    var file: VOFile.Entity?
     var pageSize: Int?
 
     var token: VOToken.Value? {
         didSet {
             if let token {
-                insightsClient = .init(
+                entityClient = .init(
+                    baseURL: Config.production.apiURL,
+                    accessToken: token.accessToken
+                )
+                fileClient = .init(
+                    baseURL: Config.production.apiURL,
+                    accessToken: token.accessToken
+                )
+                snapshotClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
@@ -45,8 +53,8 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    init(fileID: String? = nil, pageSize: Int? = nil) {
-        self.fileID = fileID
+    init(file: VOFile.Entity? = nil, pageSize: Int? = nil) {
+        self.file = file
         self.pageSize = pageSize
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
@@ -59,12 +67,12 @@ class InsightsStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchLanguages() async throws -> [VOInsights.Language]? {
-        try await insightsClient?.fetchLanguages()
+    private func fetchLanguages() async throws -> [VOSnapshot.Language]? {
+        try await snapshotClient?.fetchLanguages()
     }
 
     func fetchLanguages() {
-        var languages: [VOInsights.Language]?
+        var languages: [VOSnapshot.Language]?
         withErrorHandling {
             languages = try await self.fetchLanguages()
             return true
@@ -80,32 +88,10 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    private func fetchInfo() async throws -> VOInsights.Info? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.fetchInfo(fileID)
-    }
-
-    func fetchInfo() {
-        var info: VOInsights.Info?
-        withErrorHandling {
-            info = try await self.fetchInfo()
-            self.infoError = nil
-            return true
-        } before: {
-            self.infoIsLoading = true
-        } success: {
-            self.info = info
-        } failure: { message in
-            self.infoError = message
-        } anyways: {
-            self.infoIsLoading = false
-        }
-    }
-
-    private func fetchEntityProbe(size: Int = Constants.pageSize) async throws -> VOInsights.EntityProbe? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.fetchEntityProbe(
-            fileID,
+    private func fetchEntityProbe(size: Int = Constants.pageSize) async throws -> VOEntity.Probe? {
+        guard let file else { return nil }
+        return try await entityClient?.fetchProbe(
+            file.id,
             options: .init(
                 query: query,
                 size: pageSize ?? size,
@@ -115,10 +101,10 @@ class InsightsStore: ObservableObject {
         )
     }
 
-    private func fetchEntityList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInsights.EntityList? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.fetchEntityList(
-            fileID,
+    private func fetchEntityList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOEntity.List? {
+        guard let file else { return nil }
+        return try await entityClient?.fetchList(
+            file.id,
             options: .init(
                 query: query,
                 page: page,
@@ -133,7 +119,7 @@ class InsightsStore: ObservableObject {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
-        var list: VOInsights.EntityList?
+        var list: VOEntity.List?
 
         withErrorHandling {
             if let list = self.list {
@@ -173,24 +159,24 @@ class InsightsStore: ObservableObject {
 
     // MARK: - Update
 
-    func create(languageID: String) async throws -> VOTask.Entity? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.create(fileID, options: .init(languageID: languageID))
+    func create(language: String) async throws -> VOTask.Entity? {
+        guard let file else { return nil }
+        return try await entityClient?.create(file.id, options: .init(language: language))
     }
 
     func patch() async throws -> VOTask.Entity? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.patch(fileID)
+        guard let file else { return nil }
+        return try await entityClient?.patch(file.id)
     }
 
     func delete() async throws -> VOTask.Entity? {
-        guard let fileID else { return nil }
-        return try await insightsClient?.delete(fileID)
+        guard let file else { return nil }
+        return try await entityClient?.delete(file.id)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOInsights.Entity]) {
+    func append(_ newEntities: [VOEntity.Entity]) {
         if entities == nil {
             entities = []
         }

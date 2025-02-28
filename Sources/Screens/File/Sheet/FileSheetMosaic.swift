@@ -22,7 +22,7 @@ struct FileSheetMosaic: ViewModifier {
         content
             .sheet(isPresented: $fileStore.mosaicIsPresented) {
                 if let file, let snapshot = file.snapshot {
-                    if snapshot.hasMosaic() {
+                    if snapshot.capabilities.mosaic {
                         MosaicSettings(file)
                     } else {
                         MosaicCreate(file.id)

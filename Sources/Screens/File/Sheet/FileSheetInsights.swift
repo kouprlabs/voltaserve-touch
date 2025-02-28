@@ -22,10 +22,10 @@ struct FileSheetInsights: ViewModifier {
         content
             .sheet(isPresented: $fileStore.insightsIsPresented) {
                 if let file {
-                    if let snapshot = file.snapshot, snapshot.hasEntities() {
+                    if let snapshot = file.snapshot, snapshot.capabilities.entities || snapshot.capabilities.summary {
                         InsightsOverview(file)
                     } else {
-                        InsightsCreate(file.id)
+                        InsightsCreate(file)
                     }
                 }
             }

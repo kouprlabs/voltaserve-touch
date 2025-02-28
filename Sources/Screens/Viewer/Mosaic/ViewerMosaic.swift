@@ -29,7 +29,7 @@ struct ViewerMosaic: View {
             if file.type == .file,
                 let snapshot = file.snapshot,
                 let download = snapshot.preview,
-                let fileExtension = download.fileExtension, fileExtension.isImage(), snapshot.mosaic != nil
+                let fileExtension = download.fileExtension, fileExtension.isImage(), snapshot.capabilities.mosaic
             {
                 GeometryReader { geometry in
                     let visibleRect = CGRect(
@@ -99,7 +99,7 @@ struct ViewerMosaic: View {
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             Menu {
-                                if let zoomLevels = viewerMosaicStore.info?.metadata.zoomLevels {
+                                if let zoomLevels = viewerMosaicStore.metadata?.zoomLevels {
                                     ForEach(zoomLevels, id: \.index) { zoomLevel in
                                         Button(
                                             action: {

@@ -12,9 +12,9 @@ import SwiftUI
 import VoltaserveCore
 
 struct InsightsEntityRow: View {
-    private let entity: VOInsights.Entity
+    private let entity: VOEntity.Entity
 
-    init(_ entity: VOInsights.Entity) {
+    init(_ entity: VOEntity.Entity) {
         self.entity = entity
     }
 
