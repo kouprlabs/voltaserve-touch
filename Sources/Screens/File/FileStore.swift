@@ -451,7 +451,8 @@ class FileStore: ObservableObject {
         return file.type == .file && !(file.snapshot?.task?.isPending ?? false)
             && (fileExtension.isPDF() || fileExtension.isMicrosoftOffice() || fileExtension.isOpenOffice()
                 || fileExtension.isImage())
-            && ((file.permission.ge(.viewer) && snapshot.capabilities.entities) || file.permission.ge(.editor))
+            && ((file.permission.ge(.viewer) && snapshot.capabilities.entities || snapshot.capabilities.summary)
+                || file.permission.ge(.editor))
     }
 
     func isMosaicAuthorized(_ file: VOFile.Entity) -> Bool {
