@@ -22,10 +22,12 @@ struct InsightsOverview: View {
     var body: some View {
         TabView(selection: $selection) {
             Tab("Chart", systemImage: "chart.pie", value: Tag.chart) {
-                InsightsChart(file.id)
+                InsightsChart(file)
             }
-            Tab("Entities", systemImage: "circle.grid.2x2", value: Tag.entities) {
-                InsightsEntityList(file.id)
+            if let snapshot = file.snapshot, snapshot.capabilities.entities {
+                Tab("Entities", systemImage: "circle.grid.2x2", value: Tag.entities) {
+                    InsightsEntityList(file)
+                }
             }
             Tab("Settings", systemImage: "gear", value: Tag.settings) {
                 InsightsSettings(file)

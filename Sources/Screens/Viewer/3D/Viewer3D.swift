@@ -26,8 +26,8 @@ struct Viewer3D: View {
         VStack {
             if file.type == .file,
                 let snapshot = file.snapshot,
-                let download = snapshot.preview,
-                let fileExtension = download.fileExtension, fileExtension.isGLB(),
+                let downloadable = snapshot.preview,
+                let fileExtension = downloadable.fileExtension, fileExtension.isGLB(),
                 let url = viewer3DStore.url
             {
                 Viewer3DRenderer(file: file, url: url)

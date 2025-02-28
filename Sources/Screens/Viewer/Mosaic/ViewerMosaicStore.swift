@@ -12,7 +12,7 @@ import SwiftUI
 import VoltaserveCore
 
 class ViewerMosaicStore: ObservableObject {
-    @Published private(set) var info: VOMosaic.Info?
+    @Published private(set) var metadata: VOMosaic.Metadata?
     @Published private(set) var zoomLevel: VOMosaic.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
     private var busy: [[Bool]] = []
@@ -30,11 +30,11 @@ class ViewerMosaicStore: ObservableObject {
     }
 
     func loadMosaic(_ id: String) async throws {
-        let info = try await mosaicClient?.fetchInfo(id)
-        if let info {
+        let metadata = try await mosaicClient?.fetchMetadata(id)
+        if let metadata {
             DispatchQueue.main.async {
-                self.info = info
-                if let zoomLevel = self.info?.metadata.zoomLevels.first {
+                self.metadata = metadata
+                if let zoomLevel = self.metadata?.zoomLevels.first {
                     self.zoomLevel = zoomLevel
                     self.allocateGridForZoomLevel(zoomLevel)
                 }
@@ -58,13 +58,13 @@ class ViewerMosaicStore: ObservableObject {
     func loadImageForCell(_ id: String, row: Int, column: Int) {
         guard busy[row][column] == false else { return }
         busy[row][column] = true
-        if let zoomLevel, let info {
+        if let zoomLevel, let metadata {
             Task {
                 let data = try await mosaicClient?.fetchData(
                     id,
                     zoomLevel: zoomLevel,
                     forCellAtRow: row, column: column,
-                    fileExtension: String(info.metadata.fileExtension.dropFirst())
+                    fileExtension: String(metadata.fileExtension.dropFirst())
                 )
                 if let data {
                     self.busy[row][column] = false

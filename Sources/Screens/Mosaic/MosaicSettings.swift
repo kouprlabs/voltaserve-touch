@@ -27,41 +27,23 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
     var body: some View {
         NavigationView {
             VStack {
-                if mosaicStore.info != nil {
-                    VStack(spacing: VOMetrics.spacingLg) {
+                if let snapshot = file.snapshot, snapshot.capabilities.mosaic {
+                    VStack {
                         VStack {
-                            VStack {
-                                Text("Create a mosaic for the active snapshot.")
-                                Button {
-                                    performCreate()
-                                } label: {
-                                    VOButtonLabel("Create Mosaic", systemImage: "bolt", isLoading: isCreating)
-                                }
-                                .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcesssing || !canCreate)
+                            Text("Delete mosaic from the active snapshot.")
+                            Button {
+                                performDelete()
+                            } label: {
+                                VOButtonLabel("Delete Mosaic", systemImage: "trash", isLoading: isDeleting)
+                                    .foregroundStyle(Color.red400.textColor())
                             }
-                            .padding()
+                            .voButton(color: .red400, isDisabled: isProcesssing || !canDelete)
                         }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
-                        }
-                        VStack {
-                            VStack {
-                                Text("Delete mosaic from the active snapshot.")
-                                Button {
-                                    performDelete()
-                                } label: {
-                                    VOButtonLabel("Delete Mosaic", systemImage: "trash", isLoading: isDeleting)
-                                        .foregroundStyle(Color.red400.textColor())
-                                }
-                                .voButton(color: .red400, isDisabled: isProcesssing || !canDelete)
-                            }
-                            .padding()
-                        }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
-                        }
+                        .padding()
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
+                            .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                     }
                     .padding(.horizontal)
                     .modifierIfPad {
@@ -104,17 +86,11 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
     }
 
     private var canCreate: Bool {
-        if let info = mosaicStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) && info.isOutdated && file.permission.ge(.editor)
-        }
-        return false
+        !(file.snapshot?.task?.isPending ?? false) && file.permission.ge(.editor)
     }
 
     private var canDelete: Bool {
-        if let info = mosaicStore.info {
-            return !(file.snapshot?.task?.isPending ?? false) && !info.isOutdated && file.permission.ge(.owner)
-        }
-        return false
+        !(file.snapshot?.task?.isPending ?? false) && file.permission.ge(.owner)
     }
 
     private var isProcesssing: Bool {
@@ -156,11 +132,11 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        mosaicStore.infoIsLoading
+        mosaicStore.metadataIsLoading
     }
 
     var error: String? {
-        mosaicStore.infoError
+        mosaicStore.metadataError
     }
 
     // MARK: - ErrorPresentable
@@ -175,8 +151,8 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
     }
 
     func fetchData() {
-        if let snapshot = file.snapshot, snapshot.hasMosaic() {
-            mosaicStore.fetchInfo()
+        if let snapshot = file.snapshot, snapshot.capabilities.mosaic {
+            mosaicStore.fetchMetadata()
         }
     }
 

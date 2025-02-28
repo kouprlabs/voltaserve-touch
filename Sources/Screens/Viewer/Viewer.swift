@@ -29,6 +29,7 @@ struct Viewer: View {
                 ViewerAudio(file)
                 Viewer3D(file)
                 ViewerMosaic(file)
+                ViewerOCR(file)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(file.name)

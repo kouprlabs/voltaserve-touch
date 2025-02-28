@@ -35,7 +35,7 @@ struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
                     Button {
                         performCreate()
                     } label: {
-                        VOButtonLabel("Create Mosaic", isLoading: isCreating)
+                        VOButtonLabel("Create", isLoading: isCreating)
                     }
                     .voPrimaryButton(isDisabled: isCreating)
                 }

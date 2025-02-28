@@ -11,9 +11,9 @@
 import SwiftUI
 import VoltaserveCore
 
-struct ViewerPDF: View {
+struct ViewerOCR: View {
     @EnvironmentObject private var tokenStore: TokenStore
-    @StateObject private var viewerPDFStore = ViewerPDFStore()
+    @StateObject private var viewerOCRStore = ViewerOCRStore()
     private let file: VOFile.Entity
 
     init(_ file: VOFile.Entity) {
@@ -23,17 +23,17 @@ struct ViewerPDF: View {
     var body: some View {
         VStack {
             if file.type == .file,
-                let snapshot = file.snapshot,
-                let downloadable = snapshot.preview,
+                let snapshot = file.snapshot, snapshot.capabilities.ocr,
+                let downloadable = snapshot.ocr,
                 let fileExtension = downloadable.fileExtension, fileExtension.isPDF(),
-                let url = viewerPDFStore.url
+                let url = viewerOCRStore.url
             {
-                ViewerPDFWebView(url: url)
+                ViewerOCRWebView(url: url)
                     .edgesIgnoringSafeArea(.horizontal)
             }
         }
         .onAppear {
-            viewerPDFStore.id = file.id
+            viewerOCRStore.id = file.id
             if let token = tokenStore.token {
                 assignTokenToStores(token)
             }
@@ -46,6 +46,6 @@ struct ViewerPDF: View {
     }
 
     private func assignTokenToStores(_ token: VOToken.Value) {
-        viewerPDFStore.token = token
+        viewerOCRStore.token = token
     }
 }

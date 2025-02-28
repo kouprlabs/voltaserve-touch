@@ -14,9 +14,9 @@ import VoltaserveCore
 
 @MainActor
 class MosaicStore: ObservableObject {
-    @Published var info: VOMosaic.Info?
-    @Published var infoIsLoading: Bool = false
-    @Published var infoError: String?
+    @Published var metadata: VOMosaic.Metadata?
+    @Published var metadataIsLoading: Bool = false
+    @Published var metadataError: String?
     private var mosaicClient: VOMosaic?
     private var timer: Timer?
     var fileID: String?
@@ -32,25 +32,25 @@ class MosaicStore: ObservableObject {
         }
     }
 
-    private func fetchInfo() async throws -> VOMosaic.Info? {
+    private func fetchMetadata() async throws -> VOMosaic.Metadata? {
         guard let fileID else { return nil }
-        return try await mosaicClient?.fetchInfo(fileID)
+        return try await mosaicClient?.fetchMetadata(fileID)
     }
 
-    func fetchInfo() {
-        var info: VOMosaic.Info?
+    func fetchMetadata() {
+        var metadata: VOMosaic.Metadata?
         withErrorHandling {
-            info = try await self.fetchInfo()
+            metadata = try await self.fetchMetadata()
             return true
         } before: {
-            self.infoIsLoading = true
+            self.metadataIsLoading = true
         } success: {
-            self.info = info
-            self.infoError = nil
+            self.metadata = metadata
+            self.metadataError = nil
         } failure: { message in
-            self.infoError = message
+            self.metadataError = message
         } anyways: {
-            self.infoIsLoading = false
+            self.metadataIsLoading = false
         }
     }
 
@@ -67,13 +67,13 @@ class MosaicStore: ObservableObject {
     func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.info != nil {
+            if self.metadata != nil {
                 Task {
-                    let info = try await self.fetchInfo()
-                    if let info {
+                    let metadata = try await self.fetchMetadata()
+                    if let metadata {
                         DispatchQueue.main.async {
-                            self.info = info
-                            self.infoError = nil
+                            self.metadata = metadata
+                            self.metadataError = nil
                         }
                     }
                 }

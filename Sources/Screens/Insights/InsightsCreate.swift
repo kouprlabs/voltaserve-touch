@@ -17,11 +17,11 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @State private var isCreating = false
-    @State private var language: VOInsights.Language?
-    private let fileID: String
+    @State private var language: VOSnapshot.Language?
+    private let file: VOFile.Entity
 
-    init(_ fileID: String) {
-        self.fileID = fileID
+    init(_ file: VOFile.Entity) {
+        self.file = file
     }
 
     var body: some View {
@@ -50,7 +50,7 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
                                 Button {
                                     performCreate()
                                 } label: {
-                                    VOButtonLabel("Collect Insights", isLoading: isCreating)
+                                    VOButtonLabel("Collect", isLoading: isCreating)
                                 }
                                 .voPrimaryButton(isDisabled: isCreating || !isValid())
                             }
@@ -79,7 +79,7 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
             }
         }
         .onAppear {
-            insightsStore.fileID = fileID
+            insightsStore.file = file
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 onAppearOrChange()
@@ -103,7 +103,7 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
     private func performCreate() {
         guard let language else { return }
         withErrorHandling {
-            _ = try await insightsStore.create(languageID: language.id)
+            _ = try await insightsStore.create(language: language.id)
             return true
         } before: {
             isCreating = true

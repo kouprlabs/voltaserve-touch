@@ -8,22 +8,18 @@
 // by the GNU Affero General Public License v3.0 only, included in the file
 // AGPL-3.0-only in the root of this repository.
 
+import Foundation
 import SwiftUI
-import VoltaserveCore
+import WebKit
 
-struct InsightsEntityRow: View {
-    private let entity: VOEntity.Entity
+struct ViewerOCRWebView: UIViewRepresentable {
+    let url: URL
 
-    init(_ entity: VOEntity.Entity) {
-        self.entity = entity
+    func makeUIView(context _: Context) -> WKWebView {
+        WKWebView()
     }
 
-    var body: some View {
-        HStack(spacing: VOMetrics.spacing) {
-            Text(entity.text)
-                .lineLimit(1)
-                .truncationMode(.tail)
-            VOColorBadge("\(entity.frequency)", color: .gray300, style: .fill)
-        }
+    func updateUIView(_ uiView: WKWebView, context _: Context) {
+        uiView.load(URLRequest(url: url))
     }
 }

@@ -24,8 +24,8 @@ struct ViewerVideo: View {
         VStack {
             if file.type == .file,
                 let snapshot = file.snapshot,
-                let download = snapshot.preview,
-                let fileExtension = download.fileExtension, fileExtension.isVideo(),
+                let downloadable = snapshot.preview,
+                let fileExtension = downloadable.fileExtension, fileExtension.isVideo(),
                 let url = viewerVideoStore.url
             {
                 ViewerVideoWebView(url: url)

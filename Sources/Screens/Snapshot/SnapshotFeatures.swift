@@ -20,10 +20,10 @@ struct SnapshotFeatures: View {
 
     var body: some View {
         HStack {
-            if snapshot.entities != nil {
-                VOColorBadge("Insights", color: .gray400, style: .outline)
+            if snapshot.capabilities.entities {
+                VOColorBadge("Entities", color: .gray400, style: .outline)
             }
-            if snapshot.mosaic != nil {
+            if snapshot.capabilities.mosaic {
                 VOColorBadge("Mosaic", color: .gray400, style: .outline)
             }
         }
@@ -32,14 +32,6 @@ struct SnapshotFeatures: View {
 
 extension VOSnapshot.Entity {
     func hasFeatures() -> Bool {
-        entities != nil || mosaic != nil
-    }
-
-    func hasEntities() -> Bool {
-        entities != nil
-    }
-
-    func hasMosaic() -> Bool {
-        mosaic != nil
+        capabilities.entities || capabilities.mosaic
     }
 }

@@ -19,10 +19,10 @@ struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifec
     @Environment(\.dismiss) private var dismiss
     @State private var showError = false
     @State private var searchText = ""
-    private let fileID: String
+    private let file: VOFile.Entity
 
-    init(_ fileID: String) {
-        self.fileID = fileID
+    init(_ file: VOFile.Entity) {
+        self.file = file
     }
 
     var body: some View {
@@ -69,7 +69,7 @@ struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifec
             }
         }
         .onAppear {
-            insightsStore.fileID = fileID
+            insightsStore.file = file
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()
