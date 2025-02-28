@@ -21,11 +21,11 @@ struct FileAdornments: View {
     var body: some View {
         HStack(spacing: VOMetrics.spacingXs) {
             if let snapshot = file.snapshot {
-                if snapshot.status == .processing {
+                if snapshot.task?.status == .running {
                     FileBadge.processing
-                } else if snapshot.status == .waiting {
+                } else if snapshot.task?.status == .waiting {
                     FileBadge.waiting
-                } else if snapshot.status == .error {
+                } else if snapshot.task?.status == .error {
                     FileBadge.error
                 }
             }

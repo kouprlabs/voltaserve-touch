@@ -11,7 +11,7 @@
 import SwiftUI
 import VoltaserveCore
 
-struct SnapshotFeatures: View {
+struct SnapshotCapabilities: View {
     private let snapshot: VOSnapshot.Entity
 
     init(_ snapshot: VOSnapshot.Entity) {
@@ -20,6 +20,12 @@ struct SnapshotFeatures: View {
 
     var body: some View {
         HStack {
+            if snapshot.capabilities.summary {
+                VOColorBadge("Summary", color: .gray400, style: .outline)
+            }
+            if snapshot.capabilities.ocr {
+                VOColorBadge("OCR", color: .gray400, style: .outline)
+            }
             if snapshot.capabilities.entities {
                 VOColorBadge("Entities", color: .gray400, style: .outline)
             }
@@ -27,11 +33,5 @@ struct SnapshotFeatures: View {
                 VOColorBadge("Mosaic", color: .gray400, style: .outline)
             }
         }
-    }
-}
-
-extension VOSnapshot.Entity {
-    func hasFeatures() -> Bool {
-        capabilities.entities || capabilities.mosaic
     }
 }

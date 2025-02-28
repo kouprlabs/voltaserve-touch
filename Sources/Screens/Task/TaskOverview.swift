@@ -108,6 +108,24 @@ struct TaskOverview: View, ErrorPresentable {
                     }
                 }
             }
+            Section(header: VOSectionHeader("Time")) {
+                if let createTime = task.createTime.date?.pretty {
+                    HStack {
+                        Text("Create time")
+                        Spacer()
+                        Text(createTime)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                if let updateTime = task.updateTime?.date?.pretty {
+                    HStack {
+                        Text("Update time")
+                        Spacer()
+                        Text(updateTime)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(task.id)")

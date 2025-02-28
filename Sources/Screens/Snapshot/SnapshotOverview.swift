@@ -13,6 +13,8 @@ import VoltaserveCore
 
 struct SnapshotOverview: View, ErrorPresentable {
     @ObservedObject private var snapshotStore: SnapshotStore
+    @ObservedObject private var fileStore: FileStore
+    @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
     @State private var activateConfirmationIsPresentable = false
     @State private var detachConfirmationIsPresentable = false
@@ -20,9 +22,10 @@ struct SnapshotOverview: View, ErrorPresentable {
     @State private var isDetaching = false
     private let snapshot: VOSnapshot.Entity
 
-    init(_ snapshot: VOSnapshot.Entity, snapshotStore: SnapshotStore) {
+    init(_ snapshot: VOSnapshot.Entity, snapshotStore: SnapshotStore, fileStore: FileStore) {
         self.snapshot = snapshot
         self.snapshotStore = snapshotStore
+        self.fileStore = fileStore
     }
 
     var body: some View {
@@ -44,22 +47,22 @@ struct SnapshotOverview: View, ErrorPresentable {
                     Text("\(snapshot.version)")
                         .foregroundStyle(.secondary)
                 }
-                if let size = snapshot.original.size {
-                    HStack {
-                        Text("Size")
-                        Spacer()
-                        Text(size.prettyBytes())
+                HStack {
+                    Text("Size")
+                    Spacer()
+                    Text(snapshot.original.size.prettyBytes())
+                }
+                if let task = snapshot.task {
+                    NavigationLink {
+                        TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
+                    } label: {
+                        Text("Task")
                     }
                 }
-                HStack {
-                    Text("Status")
-                    Spacer()
-                    SnapshotStatus(snapshot.status)
-                }
             }
-            if snapshot.hasFeatures() {
-                Section(header: VOSectionHeader("Features")) {
-                    SnapshotFeatures(snapshot)
+            if snapshot.hasCapabilities {
+                Section(header: VOSectionHeader("Capabilities")) {
+                    SnapshotCapabilities(snapshot)
                 }
             }
             if !snapshot.isActive {
