@@ -44,22 +44,22 @@ struct SnapshotOverview: View, ErrorPresentable {
                     Text("\(snapshot.version)")
                         .foregroundStyle(.secondary)
                 }
-                if let size = snapshot.original.size {
-                    HStack {
-                        Text("Size")
-                        Spacer()
-                        Text(size.prettyBytes())
+                HStack {
+                    Text("Size")
+                    Spacer()
+                    Text(snapshot.original.size.prettyBytes())
+                }
+                if let task = snapshot.task {
+                    NavigationLink {
+                        TaskOverview(task)
+                    } label: {
+                        Text("Task")
                     }
                 }
-                HStack {
-                    Text("Status")
-                    Spacer()
-                    SnapshotStatus(snapshot.status)
-                }
             }
-            if snapshot.hasFeatures() {
-                Section(header: VOSectionHeader("Features")) {
-                    SnapshotFeatures(snapshot)
+            if snapshot.hasCapabilities {
+                Section(header: VOSectionHeader("Capabilities")) {
+                    SnapshotCapabilities(snapshot)
                 }
             }
             if !snapshot.isActive {

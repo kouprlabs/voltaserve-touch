@@ -28,7 +28,7 @@ struct FileList: View, ListItemScrollable {
                 ForEach(entities, id: \.id) { file in
                     if file.type == .file {
                         Button {
-                            if file.snapshot?.status == .ready {
+                            if !(file.snapshot?.task?.isPending ?? false) {
                                 tappedItem = file
                                 viewerIsPresented = true
                             }

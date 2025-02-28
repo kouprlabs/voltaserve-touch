@@ -50,13 +50,21 @@ struct TaskRow: View {
                             .foregroundStyle(Color.gray500)
                             .lineLimit(3)
                             .truncationMode(.tail)
+                        Text(task.createTime.relativeDate())
+                            .font(.footnote)
+                            .foregroundStyle(Color.gray500)
                     }
                 } else {
-                    Text(task.name)
-                        .font(.footnote)
-                        .foregroundStyle(Color.gray500)
-                        .lineLimit(3)
-                        .truncationMode(.tail)
+                    VStack(alignment: .leading) {
+                        Text(task.name)
+                            .font(.footnote)
+                            .foregroundStyle(Color.gray500)
+                            .lineLimit(3)
+                            .truncationMode(.tail)
+                        Text(task.createTime.relativeDate())
+                            .font(.footnote)
+                            .foregroundStyle(Color.gray500)
+                    }
                 }
                 Spacer()
             }
@@ -81,7 +89,8 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .running,
-                            payload: VOTask.Payload(object: "human-freedom-index-2022.pdf")
+                            payload: VOTask.Payload(object: "human-freedom-index-2022.pdf"),
+                            createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-5 * 60))
                         ))
                 }
                 NavigationLink(destination: Color.clear) {
@@ -92,7 +101,8 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .waiting,
-                            payload: VOTask.Payload(object: "Kubernetes-Patterns-2nd-Edition.pdf")
+                            payload: VOTask.Payload(object: "Kubernetes-Patterns-2nd-Edition.pdf"),
+                            createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-60 * 60))
                         ))
                 }
                 NavigationLink(destination: Color.clear) {
@@ -103,7 +113,9 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .success,
-                            payload: VOTask.Payload(object: "In_the_Conservatory.tiff")
+                            payload: VOTask.Payload(object: "In_the_Conservatory.tiff"),
+                            createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-2 * 60 * 60))
+
                         ))
                 }
                 NavigationLink(destination: Color.clear) {
@@ -115,18 +127,21 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .error,
-                            payload: VOTask.Payload(object: "Choose-an-automation-tool-ebook-Red-Hat-Developer.pdf")
+                            payload: VOTask.Payload(object: "Choose-an-automation-tool-ebook-Red-Hat-Developer.pdf"),
+                            createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-3 * 60 * 60))
                         ))
                 }
                 NavigationLink(destination: Color.clear) {
                     TaskRow(
                         .init(
                             id: UUID().uuidString,
-                            name: "Lorem ipsum dolor sit amet.",
+                            name: "Collecting insights.",
                             percentage: 50,
                             isIndeterminate: false,
                             userID: UUID().uuidString,
-                            status: .running
+                            status: .running,
+                            payload: VOTask.Payload(object: "Introducing the Arm architecture.pdf"),
+                            createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-4 * 60 * 60))
                         ))
                 }
             }

@@ -29,11 +29,9 @@ struct SnapshotRow: View {
             VStack(alignment: .leading, spacing: VOMetrics.spacingXs) {
                 Text(snapshot.createTime.relativeDate())
                 HStack {
-                    if let size = snapshot.original.size {
-                        VOColorBadge(size.prettyBytes(), color: .gray400, style: .outline)
-                    }
-                    if snapshot.hasFeatures() {
-                        SnapshotFeatures(snapshot)
+                    VOColorBadge(snapshot.original.size.prettyBytes(), color: .gray400, style: .outline)
+                    if snapshot.hasCapabilities {
+                        SnapshotCapabilities(snapshot)
                     }
                 }
             }

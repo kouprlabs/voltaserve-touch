@@ -37,7 +37,8 @@ struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                                 List {
                                     ForEach(entities, id: \.id) { snapshot in
                                         NavigationLink {
-                                            SnapshotOverview(snapshot, snapshotStore: snapshotStore)
+                                            SnapshotOverview(
+                                                snapshot, snapshotStore: snapshotStore)
                                         } label: {
                                             SnapshotRow(snapshot)
                                                 .onAppear {
