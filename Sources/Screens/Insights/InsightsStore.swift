@@ -27,7 +27,6 @@ class InsightsStore: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private var timer: Timer?
     private var entityClient: VOEntity?
-    private var fileClient: VOFile?
     private var snapshotClient: VOSnapshot?
 
     let searchPublisher = PassthroughSubject<String, Never>()
@@ -38,10 +37,6 @@ class InsightsStore: ObservableObject {
         didSet {
             if let token {
                 entityClient = .init(
-                    baseURL: Config.production.apiURL,
-                    accessToken: token.accessToken
-                )
-                fileClient = .init(
                     baseURL: Config.production.apiURL,
                     accessToken: token.accessToken
                 )
