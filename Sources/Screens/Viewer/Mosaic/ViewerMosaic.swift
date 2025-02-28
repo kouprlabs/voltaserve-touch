@@ -28,8 +28,8 @@ struct ViewerMosaic: View {
         Group {
             if file.type == .file,
                 let snapshot = file.snapshot,
-                let download = snapshot.preview,
-                let fileExtension = download.fileExtension, fileExtension.isImage(), snapshot.capabilities.mosaic
+                let downloadable = snapshot.preview,
+                let fileExtension = downloadable.fileExtension, fileExtension.isImage(), snapshot.capabilities.mosaic
             {
                 GeometryReader { geometry in
                     let visibleRect = CGRect(

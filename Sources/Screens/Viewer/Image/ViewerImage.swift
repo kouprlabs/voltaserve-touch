@@ -23,9 +23,9 @@ struct ViewerImage: View {
     var body: some View {
         VStack {
             if file.type == .file,
-                let snapshot = file.snapshot, !snapshot.capabilities.mosaic,
-                let download = snapshot.preview,
-                let fileExtension = download.fileExtension, fileExtension.isImage(),
+                let snapshot = file.snapshot, !snapshot.capabilities.mosaic, !snapshot.capabilities.ocr,
+                let downloadable = snapshot.preview,
+                let fileExtension = downloadable.fileExtension, fileExtension.isImage(),
                 let url = viewerImageStore.url
             {
                 ViewerImageWebView(url: url)
