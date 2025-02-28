@@ -22,7 +22,7 @@ struct FileSheetSnapshots: ViewModifier {
         content
             .sheet(isPresented: $fileStore.snapshotsIsPresented) {
                 if let file {
-                    SnapshotList(fileID: file.id, fileStore: fileStore)
+                    SnapshotList(fileID: file.id)
                 }
             }
     }

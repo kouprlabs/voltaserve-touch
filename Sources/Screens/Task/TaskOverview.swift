@@ -11,18 +11,16 @@
 import SwiftUI
 import VoltaserveCore
 
-struct TaskOverview: View, ErrorPresentable {
-    @ObservedObject private var taskStore: TaskStore
-    @ObservedObject private var fileStore: FileStore
+struct TaskOverview: View, ErrorPresentable, TokenDistributing {
+    @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
     @State private var dismissConfirmationIsPresented = false
     @State private var isDismissing = false
     private let task: VOTask.Entity
 
-    init(_ task: VOTask.Entity, taskStore: TaskStore, fileStore: FileStore) {
+    init(_ task: VOTask.Entity) {
         self.task = task
-        self.taskStore = taskStore
-        self.fileStore = fileStore
     }
 
     var body: some View {
@@ -129,6 +127,16 @@ struct TaskOverview: View, ErrorPresentable {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("#\(task.id)")
+        .onAppear {
+            if let token = tokenStore.token {
+                assignTokenToStores(token)
+            }
+        }
+        .onChange(of: tokenStore.token) { _, newToken in
+            if let newToken {
+                assignTokenToStores(newToken)
+            }
+        }
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
@@ -152,4 +160,10 @@ struct TaskOverview: View, ErrorPresentable {
 
     @State var errorIsPresented: Bool = false
     @State var errorMessage: String?
+
+    // MARK: - TokenDistributing
+
+    func assignTokenToStores(_ token: VOToken.Value) {
+        taskStore.token = token
+    }
 }

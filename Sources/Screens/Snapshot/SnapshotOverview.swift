@@ -13,8 +13,6 @@ import VoltaserveCore
 
 struct SnapshotOverview: View, ErrorPresentable {
     @ObservedObject private var snapshotStore: SnapshotStore
-    @ObservedObject private var fileStore: FileStore
-    @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
     @State private var activateConfirmationIsPresentable = false
     @State private var detachConfirmationIsPresentable = false
@@ -22,10 +20,9 @@ struct SnapshotOverview: View, ErrorPresentable {
     @State private var isDetaching = false
     private let snapshot: VOSnapshot.Entity
 
-    init(_ snapshot: VOSnapshot.Entity, snapshotStore: SnapshotStore, fileStore: FileStore) {
+    init(_ snapshot: VOSnapshot.Entity, snapshotStore: SnapshotStore) {
         self.snapshot = snapshot
         self.snapshotStore = snapshotStore
-        self.fileStore = fileStore
     }
 
     var body: some View {
@@ -54,7 +51,7 @@ struct SnapshotOverview: View, ErrorPresentable {
                 }
                 if let task = snapshot.task {
                     NavigationLink {
-                        TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
+                        TaskOverview(task)
                     } label: {
                         Text("Task")
                     }

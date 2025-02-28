@@ -20,7 +20,7 @@ struct FileSheetTasks: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.tasksIsPresented) {
-                TaskList(fileStore: fileStore)
+                TaskList()
             }
     }
 }

@@ -12,6 +12,6 @@ import VoltaserveCore
 
 extension VOTask.Entity {
     var isPending: Bool {
-        status != .waiting && status != .running
+        status == .waiting || status == .running
     }
 }

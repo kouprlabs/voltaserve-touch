@@ -15,14 +15,9 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
     ErrorPresentable
 {
     @EnvironmentObject private var tokenStore: TokenStore
-    @ObservedObject private var fileStore: FileStore
     @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
     @State private var isDismissingAll = false
-
-    init(fileStore: FileStore) {
-        self.fileStore = fileStore
-    }
 
     var body: some View {
         NavigationStack {
@@ -40,7 +35,7 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
                                 List {
                                     ForEach(entities, id: \.id) { task in
                                         NavigationLink {
-                                            TaskOverview(task, taskStore: taskStore, fileStore: fileStore)
+                                            TaskOverview(task)
                                         } label: {
                                             TaskRow(task)
                                                 .onAppear {

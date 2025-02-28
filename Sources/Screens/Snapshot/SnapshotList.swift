@@ -13,14 +13,12 @@ import VoltaserveCore
 
 struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
-    @ObservedObject private var fileStore: FileStore
     @StateObject private var snapshotStore = SnapshotStore()
     @Environment(\.dismiss) private var dismiss
     private let fileID: String
 
-    init(fileID: String, fileStore: FileStore) {
+    init(fileID: String) {
         self.fileID = fileID
-        self.fileStore = fileStore
     }
 
     var body: some View {
@@ -40,7 +38,7 @@ struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
                                     ForEach(entities, id: \.id) { snapshot in
                                         NavigationLink {
                                             SnapshotOverview(
-                                                snapshot, snapshotStore: snapshotStore, fileStore: fileStore)
+                                                snapshot, snapshotStore: snapshotStore)
                                         } label: {
                                             SnapshotRow(snapshot)
                                                 .onAppear {
