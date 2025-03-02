@@ -89,6 +89,7 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .running,
+                            isDismissible: false,
                             payload: VOTask.Payload(object: "human-freedom-index-2022.pdf"),
                             createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-5 * 60))
                         ))
@@ -101,6 +102,7 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .waiting,
+                            isDismissible: false,
                             payload: VOTask.Payload(object: "Kubernetes-Patterns-2nd-Edition.pdf"),
                             createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-60 * 60))
                         ))
@@ -113,6 +115,7 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .success,
+                            isDismissible: true,
                             payload: VOTask.Payload(object: "In_the_Conservatory.tiff"),
                             createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-2 * 60 * 60))
 
@@ -127,6 +130,7 @@ struct TaskRow: View {
                             isIndeterminate: true,
                             userID: UUID().uuidString,
                             status: .error,
+                            isDismissible: true,
                             payload: VOTask.Payload(object: "Choose-an-automation-tool-ebook-Red-Hat-Developer.pdf"),
                             createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-3 * 60 * 60))
                         ))
@@ -140,6 +144,7 @@ struct TaskRow: View {
                             isIndeterminate: false,
                             userID: UUID().uuidString,
                             status: .running,
+                            isDismissible: false,
                             payload: VOTask.Payload(object: "Introducing the Arm architecture.pdf"),
                             createTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(-4 * 60 * 60))
                         ))
