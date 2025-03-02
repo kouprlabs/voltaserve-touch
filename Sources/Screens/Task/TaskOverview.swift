@@ -79,7 +79,7 @@ struct TaskOverview: View, ErrorPresentable, TokenDistributing {
                     }
                 }
             }
-            if task.status == .error {
+            if task.isDismissible {
                 Section(header: VOSectionHeader("Actions")) {
                     Button(role: .destructive) {
                         dismissConfirmationIsPresented = true
