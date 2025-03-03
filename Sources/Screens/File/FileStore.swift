@@ -449,8 +449,6 @@ class FileStore: ObservableObject {
         guard let snapshot = file.snapshot else { return false }
         guard let fileExtension = snapshot.original.fileExtension else { return false }
         return file.type == .file && !(file.snapshot?.task?.isPending ?? false)
-            && (fileExtension.isPDF() || fileExtension.isMicrosoftOffice() || fileExtension.isOpenOffice()
-                || fileExtension.isImage())
             && ((file.permission.ge(.viewer) && snapshot.capabilities.entities || snapshot.capabilities.summary)
                 || file.permission.ge(.editor))
     }
