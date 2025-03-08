@@ -159,11 +159,6 @@ class InsightsStore: ObservableObject {
         return try await entityClient?.create(file.id, options: .init(language: language))
     }
 
-    func patch() async throws -> VOTask.Entity? {
-        guard let file else { return nil }
-        return try await entityClient?.patch(file.id)
-    }
-
     func delete() async throws -> VOTask.Entity? {
         guard let file else { return nil }
         return try await entityClient?.delete(file.id)

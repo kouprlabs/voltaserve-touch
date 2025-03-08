@@ -447,10 +447,9 @@ class FileStore: ObservableObject {
 
     func isInsightsAuthorized(_ file: VOFile.Entity) -> Bool {
         guard let snapshot = file.snapshot else { return false }
-        guard let fileExtension = snapshot.original.fileExtension else { return false }
         return file.type == .file && !(file.snapshot?.task?.isPending ?? false)
-            && ((file.permission.ge(.viewer) && snapshot.capabilities.entities || snapshot.capabilities.summary)
-                || file.permission.ge(.editor))
+            && (snapshot.capabilities.entities || snapshot.capabilities.summary || snapshot.intent == .document)
+            && (file.permission.ge(.viewer) || file.permission.ge(.editor))
     }
 
     func isMosaicAuthorized(_ file: VOFile.Entity) -> Bool {
@@ -513,10 +512,6 @@ class FileStore: ObservableObject {
 
     func isInfoAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.viewer)
-    }
-
-    func isToolsAuthorized(_ file: VOFile.Entity) -> Bool {
-        isInsightsAuthorized(file) || isMosaicAuthorized(file)
     }
 
     func isManagementAuthorized(_ file: VOFile.Entity) -> Bool {
