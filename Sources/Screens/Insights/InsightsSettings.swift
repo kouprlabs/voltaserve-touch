@@ -28,39 +28,41 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
         NavigationView {
             VStack {
                 VStack(spacing: VOMetrics.spacingLg) {
-                    if let snapshot = file.snapshot, snapshot.capabilities.entities {
-                        VStack {
+                    if let snapshot = file.snapshot {
+                        if snapshot.capabilities.entities {
                             VStack {
-                                Text("Delete entities from the active snapshot.")
-                                Button {
-                                    performDelete()
-                                } label: {
-                                    VOButtonLabel("Delete Entities", systemImage: "trash", isLoading: isDeleting)
+                                VStack {
+                                    Text("Delete entities from the active snapshot.")
+                                    Button {
+                                        performDelete()
+                                    } label: {
+                                        VOButtonLabel("Delete Entities", systemImage: "trash", isLoading: isDeleting)
+                                    }
+                                    .voButton(color: .red400, isDisabled: isProcessing || !canDelete)
                                 }
-                                .voButton(color: .red400, isDisabled: isProcessing || !canDelete)
+                                .padding()
                             }
-                            .padding()
-                        }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
-                        }
-                    } else {
-                        VStack {
+                            .overlay {
+                                RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
+                                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                            }
+                        } else {
                             VStack {
-                                Text("Collect entities for the active snapshot.")
-                                Button {
-                                    performPatch()
-                                } label: {
-                                    VOButtonLabel("Collect Entities", systemImage: "bolt", isLoading: isPatching)
+                                VStack {
+                                    Text("Collect entities for the active snapshot.")
+                                    Button {
+                                        performCreate()
+                                    } label: {
+                                        VOButtonLabel("Collect Entities", systemImage: "bolt", isLoading: isPatching)
+                                    }
+                                    .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcessing || !canCreate)
                                 }
-                                .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcessing || !canCreate)
+                                .padding()
                             }
-                            .padding()
-                        }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
+                                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                            }
                         }
                     }
                 }
@@ -97,7 +99,8 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
     }
 
     private var canCreate: Bool {
-        !(file.snapshot?.task?.isPending ?? false) && file.permission.ge(.editor)
+        !(file.snapshot?.task?.isPending ?? false) && file.permission.ge(.editor) && file.snapshot?.intent == .document
+            && file.snapshot?.language != nil
     }
 
     private var canDelete: Bool {
@@ -108,9 +111,11 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
         isDeleting || isPatching
     }
 
-    private func performPatch() {
+    private func performCreate() {
+        guard let snapshot = file.snapshot else { return }
+        guard let language = snapshot.language else { return }
         withErrorHandling {
-            _ = try await insightsStore.patch()
+            _ = try await insightsStore.create(language: language)
             return true
         } before: {
             isPatching = true

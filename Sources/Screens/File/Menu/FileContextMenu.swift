@@ -72,7 +72,7 @@ struct FileContextMenu: ViewModifier {
                     }
                     Divider()
                 }
-                if fileStore.isToolsAuthorized(file) {
+                if fileStore.isInsightsAuthorized(file) || fileStore.isMosaicAuthorized(file) {
                     if fileStore.isInsightsAuthorized(file) {
                         Button {
                             updateSelection()
