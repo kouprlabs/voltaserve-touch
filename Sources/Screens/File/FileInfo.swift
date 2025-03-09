@@ -75,7 +75,7 @@ struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
                                 }
                             }
                         }
-                        if let document = file.snapshot?.original.document {
+                        if let document = file.snapshot?.preview?.document ?? file.snapshot?.ocr?.document {
                             Section(header: VOSectionHeader("Document")) {
                                 if let pages = document.pages {
                                     HStack {
