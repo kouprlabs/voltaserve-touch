@@ -12,9 +12,10 @@ import SwiftUI
 import VoltaserveCore
 
 struct MainView: View {
-    @State private var selection: TabType = .workspaces
+    @State private var selection: TabType = .murph
 
     enum TabType {
+        case murph
         case workspaces
         case groups
         case organizations
@@ -22,6 +23,9 @@ struct MainView: View {
 
     var body: some View {
         TabView(selection: $selection) {
+            Tab("Murph", systemImage: "message", value: TabType.murph) {
+                MurphOverview()
+            }
             Tab("Workspaces", systemImage: "internaldrive", value: TabType.workspaces) {
                 WorkspaceList()
             }

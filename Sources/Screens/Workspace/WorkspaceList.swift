@@ -19,7 +19,6 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
     @State private var searchText = ""
-    @State private var accountIsPresented = false
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
     @State private var newWorkspace: VOWorkspace.Entity?
@@ -62,15 +61,8 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                 }
             }
             .navigationTitle("Workspaces")
+            .accountToolbar(accountStore: accountStore, invitationStore: invitationStore)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
-                        accountButton
-                            .padding(.trailing, VOMetrics.spacingXs)
-                    } else {
-                        accountButton
-                    }
-                }
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
                         createIsPresented = true
@@ -89,9 +81,6 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                 if let newWorkspace {
                     WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
                 }
-            }
-            .sheet(isPresented: $accountIsPresented) {
-                AccountOverview()
             }
         }
         .onAppear {
@@ -114,35 +103,6 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
         .onChange(of: workspaceStore.query) {
             workspaceStore.clear()
             workspaceStore.fetchNextPage()
-        }
-    }
-
-    private var accountButton: some View {
-        ZStack {
-            Button {
-                accountIsPresented.toggle()
-            } label: {
-                if let identityUser = accountStore.identityUser {
-                    VOAvatar(
-                        name: identityUser.fullName,
-                        size: 30,
-                        url: accountStore.urlForUserPicture(
-                            identityUser.id,
-                            fileExtension: identityUser.picture?.fileExtension
-                        )
-                    )
-                } else {
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                }
-            }
-            if let count = invitationStore.incomingCount, count > 0 {
-                Circle()
-                    .fill(.red)
-                    .frame(width: 10, height: 10)
-                    .offset(x: 14, y: -11)
-            }
         }
     }
 

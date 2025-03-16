@@ -15,6 +15,8 @@ import VoltaserveCore
 struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var groupStore = GroupStore()
+    @StateObject private var accountStore = AccountStore()
+    @StateObject private var invitationStore = InvitationStore()
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
     @State private var searchText = ""
@@ -58,6 +60,7 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
                 }
             }
             .navigationTitle("Groups")
+            .accountToolbar(accountStore: accountStore, invitationStore: invitationStore)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -80,6 +83,7 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
             }
         }
         .onAppear {
+            accountStore.tokenStore = tokenStore
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()
@@ -104,11 +108,12 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        groupStore.entitiesIsLoadingFirstTime
+        groupStore.entitiesIsLoadingFirstTime || accountStore.identityUserIsLoading
+            || invitationStore.incomingCountIsLoading
     }
 
     var error: String? {
-        groupStore.entitiesError
+        groupStore.entitiesError ?? accountStore.identityUserError ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider
@@ -119,22 +124,30 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
 
     func fetchData() {
         groupStore.fetchNextPage(replace: true)
+        accountStore.fetchIdentityUser()
+        invitationStore.fetchIncomingCount()
     }
 
     // MARK: - TimerLifecycle
 
     func startTimers() {
         groupStore.startTimer()
+        accountStore.startTimer()
+        invitationStore.startTimer()
     }
 
     func stopTimers() {
         groupStore.stopTimer()
+        accountStore.stopTimer()
+        invitationStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
     func assignTokenToStores(_ token: VOToken.Value) {
         groupStore.token = token
+        accountStore.token = token
+        invitationStore.token = token
     }
 
     // MARK: - ListItemScrollable

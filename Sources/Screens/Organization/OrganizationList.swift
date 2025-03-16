@@ -17,6 +17,8 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
 {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var organizationStore = OrganizationStore()
+    @StateObject private var accountStore = AccountStore()
+    @StateObject private var invitationStore = InvitationStore()
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
     @State private var searchText = ""
@@ -60,6 +62,7 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                 }
             }
             .navigationTitle("Organizations")
+            .accountToolbar(accountStore: accountStore, invitationStore: invitationStore)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -82,6 +85,7 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
             }
         }
         .onAppear {
+            accountStore.tokenStore = tokenStore
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()
@@ -106,11 +110,12 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
-        organizationStore.entitiesIsLoadingFirstTime
+        organizationStore.entitiesIsLoadingFirstTime || accountStore.identityUserIsLoading
+        || invitationStore.incomingCountIsLoading
     }
 
     var error: String? {
-        organizationStore.entitiesError
+        organizationStore.entitiesError ?? accountStore.identityUserError ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider
@@ -121,22 +126,30 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
 
     func fetchData() {
         organizationStore.fetchNextPage(replace: true)
+        accountStore.fetchIdentityUser()
+        invitationStore.fetchIncomingCount()
     }
 
     // MARK: - TimerLifecycle
 
     func startTimers() {
         organizationStore.startTimer()
+        accountStore.startTimer()
+        invitationStore.startTimer()
     }
 
     func stopTimers() {
         organizationStore.stopTimer()
+        accountStore.stopTimer()
+        invitationStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
     func assignTokenToStores(_ token: VOToken.Value) {
         organizationStore.token = token
+        accountStore.token = token
+        invitationStore.token = token
     }
 
     // MARK: - ListItemScrollable
