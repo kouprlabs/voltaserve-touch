@@ -111,7 +111,7 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
 
     var isLoading: Bool {
         organizationStore.entitiesIsLoadingFirstTime || accountStore.identityUserIsLoading
-        || invitationStore.incomingCountIsLoading
+            || invitationStore.incomingCountIsLoading
     }
 
     var error: String? {

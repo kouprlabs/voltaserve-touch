@@ -15,7 +15,7 @@ struct MurphOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var accountStore = AccountStore()
     @StateObject private var invitationStore = InvitationStore()
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -42,7 +42,7 @@ struct MurphOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
             }
         }
     }
-    
+
     // MARK: - LoadStateProvider
 
     var isLoading: Bool {
