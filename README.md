@@ -4,13 +4,7 @@ Optimized for iPhone and iPad, runs great on the Mac.
 
 Watch the [demo video](https://youtu.be/RpHp0OEa_o8?feature=shared).
 
-## Use with Voltaserve Cloud
-
-- Install the app on your device with Xcode.
-- Sign up if you don't have an account yet.
-- Sign in and enjoy!
-
-## Use with Your Own Voltaserve Instance
+## Usage
 
 - Make sure your Voltaserve instance is up and running, or follow the instructions [here](https://github.com/kouprlabs/voltaserve) to create a new instance.
 - Install the app on your device with Xcode.
