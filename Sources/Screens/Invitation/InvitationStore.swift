@@ -31,7 +31,7 @@ public class InvitationStore: ObservableObject {
         didSet {
             if let token {
                 invitationClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

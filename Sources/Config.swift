@@ -14,7 +14,7 @@ public struct Config {
     public var apiURL: String
     public var idpURL: String
 
-    public static var production: Config {
+    public static var shared: Config {
         if let server = UserDefaults.standard.server {
             Config(
                 apiURL: server.apiURL,

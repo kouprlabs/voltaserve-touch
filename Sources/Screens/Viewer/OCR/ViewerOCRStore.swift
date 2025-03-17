@@ -29,7 +29,7 @@ public class ViewerOCRStore: ObservableObject {
     private func buildURL(id: String?, token: VOToken.Value?) -> URL? {
         guard let id, let token else { return nil }
         return VOFile(
-            baseURL: Config.production.apiURL,
+            baseURL: Config.shared.apiURL,
             accessToken: token.accessToken
         ).urlForOCR(id, fileExtension: "pdf")
     }

@@ -26,7 +26,7 @@ public class SnapshotStore: ObservableObject {
         didSet {
             if let token {
                 snapshotClient = VOSnapshot(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

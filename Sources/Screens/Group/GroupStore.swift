@@ -30,7 +30,7 @@ public class GroupStore: ObservableObject {
         didSet {
             if let token {
                 groupClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

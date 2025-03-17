@@ -19,7 +19,7 @@ public struct Voltaserve: View {
     @State private var timer: Timer?
     @State private var signInIsPresented = false
     @State private var selection: TabType?
-    private var extensions: Extensions?
+    private var extensions = Extensions()
 
     public enum TabType: Hashable {
         case workspaces
@@ -42,32 +42,51 @@ public struct Voltaserve: View {
         }
     }
 
-    public struct Extensions {
-        public let tabs: TabsExtensions?
+    public class Extensions: ObservableObject {
+        @Published public var tabs = Tabs()
+        @Published public var features = Features()
 
-        public init(tabs: TabsExtensions? = nil) {
-            self.tabs = tabs
+        public struct Tabs {
+            public let selection: TabType?
+            public let items: [TabItem]?
+
+            public init(selection: TabType? = nil, items: [TabItem]? = nil) {
+                self.selection = selection
+                self.items = items
+            }
         }
-    }
 
-    public struct TabsExtensions {
-        public let selection: TabType?
-        public let items: [TabItem]?
+        public struct Features {
+            public let servers: Bool
 
-        public init(selection: TabType? = nil, items: [TabItem]? = nil) {
-            self.selection = selection
-            self.items = items
+            public init(servers: Bool = true) {
+                self.servers = servers
+            }
+        }
+
+        public init(
+            tabs: Tabs? = nil,
+            features: Features? = nil
+        ) {
+            if let tabs = tabs {
+                self.tabs = tabs
+            }
+            if let features = features {
+                self.features = features
+            }
         }
     }
 
     public init(_ extensions: Extensions? = nil) {
-        self.extensions = extensions
+        if let extensions = extensions {
+            self.extensions = extensions
+        }
     }
 
     public var body: some View {
         if #available(iOS 18.0, macOS 15.0, *) {
             TabView(selection: $selection) {
-                if let tabs = self.extensions?.tabs?.items {
+                if let tabs = self.extensions.tabs.items {
                     ForEach(tabs, id: \.tabType) { tab in
                         Tab(tab.title, systemImage: tab.systemImageName, value: tab.tabType) {
                             tab.view
@@ -127,6 +146,7 @@ public struct Voltaserve: View {
             }
             .font(.custom(VOMetrics.bodyFontFamily, size: VOMetrics.bodyFontSize))
             .environmentObject(tokenStore)
+            .environmentObject(extensions)
             .modelContainer(for: Server.self)
         }
     }

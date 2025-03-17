@@ -17,7 +17,7 @@ public class SignUpStore: ObservableObject {
     @Published public var passwordRequirementsIsLoading: Bool = false
     @Published public var passwordRequirementsError: String?
     private var timer: Timer?
-    private var accountClient: VOAccount = .init(baseURL: Config.production.idpURL)
+    private var accountClient: VOAccount = .init(baseURL: Config.shared.idpURL)
 
     // MARK: - Fetch
 

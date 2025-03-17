@@ -37,7 +37,7 @@ public class ViewerAudioStore: ObservableObject {
     private func buildURL(id: String?, token: VOToken.Value?, fileExtension: String?) -> URL? {
         guard let id, let fileExtension, let token else { return nil }
         return VOFile(
-            baseURL: Config.production.apiURL,
+            baseURL: Config.shared.apiURL,
             accessToken: token.accessToken
         ).urlForPreview(id, fileExtension: fileExtension)
     }

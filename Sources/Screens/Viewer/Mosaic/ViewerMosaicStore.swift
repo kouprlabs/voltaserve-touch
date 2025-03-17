@@ -21,7 +21,7 @@ public class ViewerMosaicStore: ObservableObject {
         didSet {
             if let token {
                 mosaicClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }
