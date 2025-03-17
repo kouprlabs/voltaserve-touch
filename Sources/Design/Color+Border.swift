@@ -12,7 +12,7 @@ import Foundation
 import SwiftUI
 
 extension Color {
-    static func borderColor(colorScheme: ColorScheme) -> Color {
+    public static func borderColor(colorScheme: ColorScheme) -> Color {
         if colorScheme == .dark {
             Color(.sRGB, red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.16)
         } else {

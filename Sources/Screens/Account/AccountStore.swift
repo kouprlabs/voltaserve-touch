@@ -9,23 +9,22 @@
 // AGPL-3.0-only in the root of this repository.
 
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class AccountStore: ObservableObject {
-    @Published var identityUser: VOIdentityUser.Entity?
-    @Published var identityUserError: String?
-    @Published var identityUserIsLoading: Bool = false
-    @Published var storageUsage: VOStorage.Usage?
-    @Published var storageUsageError: String?
-    @Published var storageUsageIsLoading: Bool = false
+public class AccountStore: ObservableObject {
+    @Published public var identityUser: VOIdentityUser.Entity?
+    @Published public var identityUserError: String?
+    @Published public var identityUserIsLoading: Bool = false
+    @Published public var storageUsage: VOStorage.Usage?
+    @Published public var storageUsageError: String?
+    @Published public var storageUsageIsLoading: Bool = false
     private var timer: Timer?
     private var accountClient: VOAccount = .init(baseURL: Config.production.idpURL)
     private var identityUserClient: VOIdentityUser?
     private var storageClient: VOStorage?
-    var tokenStore: TokenStore?
+    public var tokenStore: TokenStore?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 identityUserClient = .init(
@@ -40,13 +39,13 @@ class AccountStore: ObservableObject {
         }
     }
 
-    init(_ identityUser: VOIdentityUser.Entity? = nil) {
+    public init(_ identityUser: VOIdentityUser.Entity? = nil) {
         self.identityUser = identityUser
     }
 
     // MARK: - URLs
 
-    func urlForUserPicture(_ id: String, fileExtension: String? = nil) -> URL? {
+    public func urlForUserPicture(_ id: String, fileExtension: String? = nil) -> URL? {
         if let fileExtension {
             return identityUserClient?.urlForPicture(id, fileExtension: fileExtension)
         }
@@ -59,7 +58,7 @@ class AccountStore: ObservableObject {
 
     // MARK: - Fetch
 
-    func fetchIdentityUser() {
+    public func fetchIdentityUser() {
         var identityUser: VOIdentityUser.Entity?
         withErrorHandling {
             identityUser = try await self.fetchIdentityUser()
@@ -83,7 +82,7 @@ class AccountStore: ObservableObject {
         try await storageClient?.fetchAccountUsage()
     }
 
-    func fetchAccountStorageUsage() {
+    public func fetchAccountStorageUsage() {
         var storageUsage: VOStorage.Usage?
         withErrorHandling {
             storageUsage = try await self.fetchAccountStorageUsage()
@@ -102,25 +101,25 @@ class AccountStore: ObservableObject {
 
     // MARK: - Update
 
-    func updateEmail(_ email: String) async throws -> VOIdentityUser.Entity? {
+    public func updateEmail(_ email: String) async throws -> VOIdentityUser.Entity? {
         try await identityUserClient?.updateEmailRequest(.init(email: email))
     }
 
-    func updateFullName(_ fullName: String) async throws -> VOIdentityUser.Entity? {
+    public func updateFullName(_ fullName: String) async throws -> VOIdentityUser.Entity? {
         try await identityUserClient?.updateFullName(.init(fullName: fullName))
     }
 
-    func updatePassword(current: String, new: String) async throws -> VOIdentityUser.Entity? {
+    public func updatePassword(current: String, new: String) async throws -> VOIdentityUser.Entity? {
         try await identityUserClient?.updatePassword(.init(currentPassword: current, newPassword: new))
     }
 
-    func deleteAccount(password: String) async throws {
+    public func deleteAccount(password: String) async throws {
         try await identityUserClient?.delete(.init(password: password))
     }
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.identityUser != nil {
@@ -148,7 +147,7 @@ class AccountStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

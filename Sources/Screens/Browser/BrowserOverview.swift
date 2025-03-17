@@ -10,15 +10,14 @@
 
 import Foundation
 import SwiftUI
-import VoltaserveCore
 
-struct BrowserOverview: View {
+public struct BrowserOverview: View {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
 
-    init(
+    public init(
         workspaceStore: WorkspaceStore,
         confirmLabelText: String?,
         onCompletion: ((String) -> Void)?
@@ -28,7 +27,7 @@ struct BrowserOverview: View {
         self.confirmLabelText = confirmLabelText
     }
 
-    var body: some View {
+    public var body: some View {
         if let workspace = workspaceStore.current {
             NavigationStack {
                 BrowserList(

@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
+public struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var invitationStore: InvitationStore
     @StateObject private var userStore = UserStore()
@@ -25,7 +24,7 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
     private let isDeletable: Bool
     private let isAcceptableDeclinable: Bool
 
-    init(
+    public init(
         _ invitation: VOInvitation.Entity,
         invitationStore: InvitationStore,
         isDeletable: Bool = false,
@@ -37,7 +36,7 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
         self.isAcceptableDeclinable = isAcceptableDeclinable
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             if let owner = invitation.owner {
                 Section(header: VOSectionHeader("Sender")) {
@@ -203,12 +202,12 @@ struct InvitationOverview: View, TokenDistributing, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         userStore.token = token
     }
 }

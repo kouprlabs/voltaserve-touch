@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SharingUserForm: View, FormValidatable, ErrorPresentable {
+public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
@@ -26,7 +25,7 @@ struct SharingUserForm: View, FormValidatable, ErrorPresentable {
     private let enableCancel: Bool
     private let enableRevoke: Bool
 
-    init(
+    public init(
         fileIDs: [String],
         sharingStore: SharingStore,
         workspaceStore: WorkspaceStore,
@@ -44,7 +43,7 @@ struct SharingUserForm: View, FormValidatable, ErrorPresentable {
         self.enableRevoke = enableRevoke
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             Section(header: VOSectionHeader("User Permission")) {
                 NavigationLink {
@@ -174,12 +173,12 @@ struct SharingUserForm: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         user != nil && permission != nil
     }
 }

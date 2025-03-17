@@ -9,20 +9,19 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct GroupOverview: View {
+public struct GroupOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     private let group: VOGroup.Entity
 
-    init(_ group: VOGroup.Entity, groupStore: GroupStore) {
+    public init(_ group: VOGroup.Entity, groupStore: GroupStore) {
         self.group = group
         self.groupStore = groupStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             VStack {
                 VOAvatar(name: group.name, size: 100)

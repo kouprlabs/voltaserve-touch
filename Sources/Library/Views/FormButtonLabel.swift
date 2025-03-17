@@ -10,16 +10,16 @@
 
 import SwiftUI
 
-struct VOFormButtonLabel: View {
+public struct VOFormButtonLabel: View {
     private let text: String
     private let isLoading: Bool
 
-    init(_ text: String, isLoading: Bool = false) {
+    public init(_ text: String, isLoading: Bool = false) {
         self.text = text
         self.isLoading = isLoading
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             Text(text)
             if isLoading {

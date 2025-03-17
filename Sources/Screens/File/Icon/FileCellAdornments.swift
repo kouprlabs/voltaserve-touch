@@ -9,12 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileCellAdornments: ViewModifier {
-    var file: VOFile.Entity
+public struct FileCellAdornments: ViewModifier {
+    private var file: VOFile.Entity
 
-    func body(content: Content) -> some View {
+    public init(file: VOFile.Entity) {
+        self.file = file
+    }
+
+    public func body(content: Content) -> some View {
         ZStack(alignment: .bottomTrailing) {
             content
             FileAdornments(file)
@@ -24,7 +27,7 @@ struct FileCellAdornments: ViewModifier {
 }
 
 extension View {
-    func fileCellAdornments(_ file: VOFile.Entity) -> some View {
+    public func fileCellAdornments(_ file: VOFile.Entity) -> some View {
         modifier(FileCellAdornments(file: file))
     }
 }

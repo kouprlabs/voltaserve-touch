@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SnapshotOverview: View, ErrorPresentable {
+public struct SnapshotOverview: View, ErrorPresentable {
     @ObservedObject private var snapshotStore: SnapshotStore
     @Environment(\.dismiss) private var dismiss
     @State private var activateConfirmationIsPresentable = false
@@ -20,12 +19,12 @@ struct SnapshotOverview: View, ErrorPresentable {
     @State private var isDetaching = false
     private let snapshot: VOSnapshot.Entity
 
-    init(_ snapshot: VOSnapshot.Entity, snapshotStore: SnapshotStore) {
+    public init(_ snapshot: VOSnapshot.Entity, snapshotStore: SnapshotStore) {
         self.snapshot = snapshot
         self.snapshotStore = snapshotStore
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             Section(header: VOSectionHeader("Properties")) {
                 if let createTime = snapshot.createTime.date?.pretty {
@@ -149,6 +148,6 @@ struct SnapshotOverview: View, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 }

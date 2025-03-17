@@ -10,22 +10,23 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class TokenStore: ObservableObject {
-    @Published var token: VOToken.Value?
+public class TokenStore: ObservableObject {
+    @Published public var token: VOToken.Value?
     private var client = createClient()
+
+    public init() {}
 
     private static func createClient() -> VOToken {
         VOToken(baseURL: Config.production.idpURL)
     }
 
-    func recreateClient() {
+    public func recreateClient() {
         client = TokenStore.createClient()
     }
 
-    func signIn(username: String, password: String) async throws -> VOToken.Value {
+    public func signIn(username: String, password: String) async throws -> VOToken.Value {
         try await client.exchange(
             .init(
                 grantType: .password,
@@ -34,7 +35,7 @@ class TokenStore: ObservableObject {
             ))
     }
 
-    func refreshTokenIfNecessary() async throws -> VOToken.Value? {
+    public func refreshTokenIfNecessary() async throws -> VOToken.Value? {
         guard token != nil else { return nil }
         if let token, token.isExpired {
             if let newToken = try? await client.exchange(
@@ -49,21 +50,21 @@ class TokenStore: ObservableObject {
         return nil
     }
 
-    func loadFromKeyChain() -> VOToken.Value? {
+    public func loadFromKeyChain() -> VOToken.Value? {
         KeychainManager.standard.getToken(KeychainManager.Constants.tokenKey)
     }
 
-    func saveInKeychain(_ token: VOToken.Value) {
+    public func saveInKeychain(_ token: VOToken.Value) {
         KeychainManager.standard.saveToken(token, forKey: KeychainManager.Constants.tokenKey)
     }
 
-    func deleteFromKeychain() {
+    public func deleteFromKeychain() {
         KeychainManager.standard.delete(KeychainManager.Constants.tokenKey)
     }
 }
 
 extension VOToken.Value {
-    var isExpired: Bool {
+    public var isExpired: Bool {
         Int(Date().timeIntervalSince1970) >= expiresIn
     }
 }

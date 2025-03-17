@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
+public struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var accountStore = AccountStore()
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
     @State private var deleteIsPresented = false
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -122,22 +121,22 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         accountStore.identityUserIsLoading || accountStore.storageUsageIsLoading
             || invitationStore.incomingCountIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         accountStore.identityUserError ?? accountStore.storageUsageError ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         accountStore.fetchIdentityUser()
         accountStore.fetchAccountStorageUsage()
         invitationStore.fetchIncomingCount()
@@ -145,19 +144,19 @@ struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         accountStore.startTimer()
         invitationStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         accountStore.stopTimer()
         invitationStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         accountStore.token = token
         invitationStore.token = token
     }

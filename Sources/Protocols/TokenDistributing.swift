@@ -9,8 +9,7 @@
 // AGPL-3.0-only in the root of this repository.
 
 import Foundation
-import VoltaserveCore
 
-protocol TokenDistributing {
+public protocol TokenDistributing {
     func assignTokenToStores(_ token: VOToken.Value)
 }

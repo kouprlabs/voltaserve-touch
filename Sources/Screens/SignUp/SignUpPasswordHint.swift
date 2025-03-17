@@ -10,16 +10,16 @@
 
 import SwiftUI
 
-struct SignUpPasswordHint: View {
-    var text: String
-    var isFulfilled: Bool
+public struct SignUpPasswordHint: View {
+    private var text: String
+    private var isFulfilled: Bool
 
-    init(_ text: String, isFulfilled: Bool = false) {
+    public init(_ text: String, isFulfilled: Bool = false) {
         self.text = text
         self.isFulfilled = isFulfilled
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             Image(systemName: "checkmark")
                 .imageScale(.small)

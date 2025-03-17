@@ -9,17 +9,16 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SharingGroupRow: View {
+public struct SharingGroupRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let groupPermission: VOFile.GroupPermission
 
-    init(_ groupPermission: VOFile.GroupPermission) {
+    public init(_ groupPermission: VOFile.GroupPermission) {
         self.groupPermission = groupPermission
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             VOAvatar(name: groupPermission.group.name, size: VOMetrics.avatarSize)
             VStack(alignment: .leading) {

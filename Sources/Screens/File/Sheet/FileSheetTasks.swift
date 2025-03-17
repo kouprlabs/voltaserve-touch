@@ -10,14 +10,14 @@
 
 import SwiftUI
 
-struct FileSheetTasks: ViewModifier {
+public struct FileSheetTasks: ViewModifier {
     @ObservedObject private var fileStore: FileStore
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.tasksIsPresented) {
                 TaskList()
@@ -26,7 +26,7 @@ struct FileSheetTasks: ViewModifier {
 }
 
 extension View {
-    func fileSheetTasks(fileStore: FileStore) -> some View {
+    public func fileSheetTasks(fileStore: FileStore) -> some View {
         modifier(FileSheetTasks(fileStore: fileStore))
     }
 }

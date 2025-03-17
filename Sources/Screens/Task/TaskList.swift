@@ -9,9 +9,9 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable,
+public struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable,
     ErrorPresentable
 {
     @EnvironmentObject private var tokenStore: TokenStore
@@ -19,7 +19,7 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
     @Environment(\.dismiss) private var dismiss
     @State private var isDismissingAll = false
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -109,48 +109,48 @@ struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         taskStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         taskStore.entitiesError
     }
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         taskStore.fetchNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         taskStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         taskStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         taskStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if taskStore.isEntityThreshold(id) {
             taskStore.fetchNextPage()
         }

@@ -10,7 +10,7 @@
 
 import Foundation
 
-protocol ErrorPresentable {
+public protocol ErrorPresentable {
     var errorIsPresented: Bool { get set }
     var errorMessage: String? { get set }
 }

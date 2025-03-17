@@ -10,7 +10,7 @@
 
 import Foundation
 
-protocol LoadStateProvider {
+public protocol LoadStateProvider {
     var isLoading: Bool { get }
     var error: String? { get }
 }

@@ -10,17 +10,17 @@
 
 import SwiftUI
 
-struct FileSheetUpload: ViewModifier {
+public struct FileSheetUpload: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var pickerURLs: [URL]?
 
-    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.uploadDocumentPickerIsPresented) {
                 FileUploadPicker { urls in
@@ -38,7 +38,7 @@ struct FileSheetUpload: ViewModifier {
 }
 
 extension View {
-    func fileSheetUpload(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
+    public func fileSheetUpload(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
         modifier(FileSheetUpload(fileStore: fileStore, workspaceStore: workspaceStore))
     }
 }

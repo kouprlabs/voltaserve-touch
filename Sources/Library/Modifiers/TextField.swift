@@ -10,10 +10,14 @@
 
 import SwiftUI
 
-struct VOTextField: ViewModifier {
-    var width: CGFloat
+public struct VOTextField: ViewModifier {
+    private var width: CGFloat
 
-    func body(content: Content) -> some View {
+    public init(width: CGFloat) {
+        self.width = width
+    }
+
+    public func body(content: Content) -> some View {
         content
             .frame(width: width)
             .padding()
@@ -26,7 +30,7 @@ struct VOTextField: ViewModifier {
 }
 
 extension View {
-    func voTextField(width: CGFloat) -> some View {
+    public func voTextField(width: CGFloat) -> some View {
         modifier(VOTextField(width: width))
     }
 }

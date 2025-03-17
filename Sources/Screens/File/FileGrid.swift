@@ -9,20 +9,19 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileGrid: View, ListItemScrollable {
+public struct FileGrid: View, ListItemScrollable {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var tappedItem: VOFile.Entity?
     @State private var viewerIsPresented: Bool = false
 
-    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         if let entities = fileStore.entities {
             GeometryReader { geometry in
                 let padding = VOMetrics.spacing * 2
@@ -80,7 +79,7 @@ struct FileGrid: View, ListItemScrollable {
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if fileStore.isEntityThreshold(id) {
             fileStore.fetchNextPage()
         }

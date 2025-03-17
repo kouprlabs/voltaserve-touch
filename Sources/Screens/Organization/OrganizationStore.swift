@@ -10,23 +10,22 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class OrganizationStore: ObservableObject {
-    @Published var entities: [VOOrganization.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
-    @Published var current: VOOrganization.Entity?
-    @Published var query: String?
+public class OrganizationStore: ObservableObject {
+    @Published public var entities: [VOOrganization.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
+    @Published public var current: VOOrganization.Entity?
+    @Published public var query: String?
     private var list: VOOrganization.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var organizationClient: VOOrganization?
-    let searchPublisher = PassthroughSubject<String, Never>()
+    public let searchPublisher = PassthroughSubject<String, Never>()
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 organizationClient = .init(
@@ -37,7 +36,7 @@ class OrganizationStore: ObservableObject {
         }
     }
 
-    init() {
+    public init() {
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -68,7 +67,7 @@ class OrganizationStore: ObservableObject {
             ))
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -112,27 +111,27 @@ class OrganizationStore: ObservableObject {
 
     // MARK: - Update
 
-    func create(name: String) async throws -> VOOrganization.Entity? {
+    public func create(name: String) async throws -> VOOrganization.Entity? {
         try await organizationClient?.create(.init(name: name))
     }
 
-    func patchName(_ id: String, name: String) async throws -> VOOrganization.Entity? {
+    public func patchName(_ id: String, name: String) async throws -> VOOrganization.Entity? {
         try await organizationClient?.patchName(id, options: .init(name: name))
     }
 
-    func leave() async throws {
+    public func leave() async throws {
         guard let current else { return }
         try await organizationClient?.leave(current.id)
     }
 
-    func delete() async throws {
+    public func delete() async throws {
         guard let current else { return }
         try await organizationClient?.delete(current.id)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOOrganization.Entity]) {
+    public func append(_ newEntities: [VOOrganization.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -141,14 +140,14 @@ class OrganizationStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -160,11 +159,11 @@ class OrganizationStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -180,7 +179,7 @@ class OrganizationStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.entities != nil {
@@ -201,7 +200,7 @@ class OrganizationStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

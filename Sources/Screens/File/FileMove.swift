@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileMove: View {
+public struct FileMove: View {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
@@ -21,12 +20,12 @@ struct FileMove: View {
     @State private var errorMessage: String?
     private let destinationID: String
 
-    init(fileStore: FileStore, to destinationID: String) {
+    public init(fileStore: FileStore, to destinationID: String) {
         self.fileStore = fileStore
         self.destinationID = destinationID
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()

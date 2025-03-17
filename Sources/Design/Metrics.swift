@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-enum VOMetrics {
+public enum VOMetrics {
     static let headingFontFamily = "Unbounded"
     static let headingFontSize: CGFloat = 24
     static let headingFontWeight: Font.Weight = .medium

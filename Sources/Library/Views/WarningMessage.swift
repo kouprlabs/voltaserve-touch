@@ -10,18 +10,18 @@
 
 import SwiftUI
 
-struct VOWarningMessage: View {
+public struct VOWarningMessage: View {
     private let message: String?
 
-    init() {
+    public init() {
         message = nil
     }
 
-    init(_ message: String?) {
+    public init(_ message: String?) {
         self.message = message
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: VOMetrics.spacingXs) {
             VOWarningIcon()
             if let message {

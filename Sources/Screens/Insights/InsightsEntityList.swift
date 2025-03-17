@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+public struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
     ListItemScrollable
 {
     @EnvironmentObject private var tokenStore: TokenStore
@@ -21,11 +20,11 @@ struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifec
     @State private var searchText = ""
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 if isLoading {
@@ -93,43 +92,43 @@ struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, TimerLifec
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         insightsStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         insightsStore.entitiesError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         insightsStore.fetchEntityNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         insightsStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         insightsStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         insightsStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if insightsStore.isEntityThreshold(id) {
             insightsStore.fetchEntityNextPage()
         }

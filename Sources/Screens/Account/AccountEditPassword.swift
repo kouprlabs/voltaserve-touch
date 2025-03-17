@@ -9,20 +9,19 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
+public struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var currentValue = ""
     @State private var newValue = ""
     @State private var isProcessing = false
 
-    init(accountStore: AccountStore) {
+    public init(accountStore: AccountStore) {
         self.accountStore = accountStore
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             SecureField("Current Password", text: $currentValue)
                 .disabled(isProcessing)
@@ -64,12 +63,12 @@ struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !currentValue.isEmpty && !newValue.isEmpty
     }
 }

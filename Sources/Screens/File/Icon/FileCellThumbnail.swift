@@ -9,23 +9,24 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileCellThumbnail<FallbackContent: View>: View {
+public struct FileCellThumbnail<FallbackContent: View>: View {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.colorScheme) private var colorScheme
     private let url: URL
     private let fallback: () -> FallbackContent
     private let file: VOFile.Entity
 
-    init(url: URL, file: VOFile.Entity, fileStore: FileStore, @ViewBuilder fallback: @escaping () -> FallbackContent) {
+    public init(
+        url: URL, file: VOFile.Entity, fileStore: FileStore, @ViewBuilder fallback: @escaping () -> FallbackContent
+    ) {
         self.url = url
         self.fallback = fallback
         self.file = file
         self.fileStore = fileStore
     }
 
-    var body: some View {
+    public var body: some View {
         AsyncImage(url: url) { image in
             image
                 .resizable()

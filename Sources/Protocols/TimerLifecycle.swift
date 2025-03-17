@@ -10,7 +10,7 @@
 
 import Foundation
 
-protocol TimerLifecycle {
+public protocol TimerLifecycle {
     func startTimers()
     func stopTimers()
 }

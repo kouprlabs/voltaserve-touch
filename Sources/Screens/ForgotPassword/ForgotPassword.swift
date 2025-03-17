@@ -10,19 +10,19 @@
 
 import SwiftUI
 
-struct ForgotPassword: View, FormValidatable, ErrorPresentable {
+public struct ForgotPassword: View, FormValidatable, ErrorPresentable {
     @StateObject private var forgotPasswordStore = ForgotPasswordStore()
     @State private var email: String = ""
     @State private var isProcessing: Bool = false
     private let onCompletion: (() -> Void)?
     private let onSignIn: (() -> Void)?
 
-    init(_ onCompletion: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
+    public init(_ onCompletion: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
         self.onCompletion = onCompletion
         self.onSignIn = onSignIn
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack(spacing: VOMetrics.spacing) {
                 VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
@@ -92,12 +92,12 @@ struct ForgotPassword: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !email.isEmpty
     }
 }

@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InvitationStatusBadge: View {
-    var status: VOInvitation.InvitationStatus
+public struct InvitationStatusBadge: View {
+    private var status: VOInvitation.InvitationStatus
 
-    init(_ status: VOInvitation.InvitationStatus) {
+    public init(_ status: VOInvitation.InvitationStatus) {
         self.status = status
     }
 
-    var body: some View {
+    public var body: some View {
         Text(text())
             .font(.footnote)
             .padding(.horizontal)
@@ -28,7 +27,7 @@ struct InvitationStatusBadge: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
-    func text() -> String {
+    public func text() -> String {
         switch status {
         case .pending:
             "Pending"
@@ -39,7 +38,7 @@ struct InvitationStatusBadge: View {
         }
     }
 
-    func background() -> Color {
+    public func background() -> Color {
         switch status {
         case .pending:
             .gray300

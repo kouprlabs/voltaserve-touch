@@ -9,19 +9,18 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
+public struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var fileStore = FileStore()
     @Environment(\.dismiss) private var dismiss
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 if isLoading {
@@ -167,21 +166,21 @@ struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         fileStore.storageUsageIsLoading || fileStore.itemCountIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         fileStore.storageUsageError ?? fileStore.itemCountError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         fileStore.fetchStorageUsage()
         if file.type == .folder {
             fileStore.fetchItemCount()
@@ -190,17 +189,17 @@ struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Toke
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         fileStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         fileStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         fileStore.token = token
     }
 }

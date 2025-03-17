@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct GroupCreate: View, FormValidatable, ErrorPresentable {
+public struct GroupCreate: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -19,12 +18,12 @@ struct GroupCreate: View, FormValidatable, ErrorPresentable {
     @State private var organization: VOOrganization.Entity?
     private var onCompletion: ((VOGroup.Entity?) -> Void)?
 
-    init(groupStore: GroupStore, onCompletion: ((VOGroup.Entity?) -> Void)? = nil) {
+    public init(groupStore: GroupStore, onCompletion: ((VOGroup.Entity?) -> Void)? = nil) {
         self.groupStore = groupStore
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             Form {
                 TextField("Name", text: $name)
@@ -98,12 +97,12 @@ struct GroupCreate: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !normalizedName.isEmpty && organization != nil
     }
 }

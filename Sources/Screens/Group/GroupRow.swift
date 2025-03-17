@@ -9,17 +9,16 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct GroupRow: View {
+public struct GroupRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let group: VOGroup.Entity
 
-    init(_ group: VOGroup.Entity) {
+    public init(_ group: VOGroup.Entity) {
         self.group = group
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             VOAvatar(name: group.name, size: VOMetrics.avatarSize)
             VStack(alignment: .leading) {

@@ -9,9 +9,10 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ErrorPresentable {
+public struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ErrorPresentable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var mosaicStore = MosaicStore()
     @Environment(\.dismiss) private var dismiss
@@ -20,11 +21,11 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
     @State private var isDeleting = false
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 if let snapshot = file.snapshot, snapshot.capabilities.mosaic {
@@ -131,26 +132,26 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         mosaicStore.metadataIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         mosaicStore.metadataError
     }
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         if let snapshot = file.snapshot, snapshot.capabilities.mosaic {
             mosaicStore.fetchMetadata()
         }
@@ -158,17 +159,17 @@ struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLifecycle
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         mosaicStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         mosaicStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         mosaicStore.token = token
     }
 }

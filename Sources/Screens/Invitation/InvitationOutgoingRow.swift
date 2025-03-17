@@ -9,17 +9,16 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InvitationOutgoingRow: View {
+public struct InvitationOutgoingRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let invitation: VOInvitation.Entity
 
-    init(_ invitation: VOInvitation.Entity) {
+    public init(_ invitation: VOInvitation.Entity) {
         self.invitation = invitation
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             VStack(alignment: .leading) {
                 Text(invitation.email)

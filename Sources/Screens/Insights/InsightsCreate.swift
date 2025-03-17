@@ -9,9 +9,10 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistributing, FormValidatable, ErrorPresentable {
+public struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistributing, FormValidatable,
+    ErrorPresentable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore()
     @Environment(\.dismiss) private var dismiss
@@ -20,11 +21,11 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
     @State private var language: VOSnapshot.Language?
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -119,38 +120,38 @@ struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDistribut
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         insightsStore.languagesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         insightsStore.languagesError
     }
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         insightsStore.fetchLanguages()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         insightsStore.token = token
     }
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         language != nil
     }
 }

@@ -9,11 +9,10 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
 extension VOFile.Entity {
     // swiftlint:disable:next cyclomatic_complexity
-    func iconForFile(colorScheme: ColorScheme) -> String {
+    public func iconForFile(colorScheme: ColorScheme) -> String {
         guard let snapshot else { return "" }
         guard let fileExtension = snapshot.original.fileExtension else { return "" }
 

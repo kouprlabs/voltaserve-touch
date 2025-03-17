@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileDownload: View {
+public struct FileDownload: View {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
@@ -22,12 +21,12 @@ struct FileDownload: View {
     @State private var errorMessage: String?
     private let onCompletion: (([URL]) -> Void)?
 
-    init(fileStore: FileStore, onCompletion: (([URL]) -> Void)? = nil) {
+    public init(fileStore: FileStore, onCompletion: (([URL]) -> Void)? = nil) {
         self.fileStore = fileStore
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()

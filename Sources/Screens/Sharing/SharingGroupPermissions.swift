@@ -9,22 +9,21 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SharingGroupPermissions: View {
+public struct SharingGroupPermissions: View {
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var group: VOGroup.Entity?
     @State private var permission: VOPermission.Value?
     private let fileID: String
 
-    init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
+    public init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
         self.fileID = fileID
         self.sharingStore = sharingStore
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         if let groupPermissions = sharingStore.groupPermissions {
             if groupPermissions.isEmpty {
                 Text("Not shared with any groups.")

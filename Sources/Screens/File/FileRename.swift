@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, FormValidatable,
+public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, FormValidatable,
     ErrorPresentable
 {
     @EnvironmentObject private var tokenStore: TokenStore
@@ -22,12 +21,12 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
     private let file: VOFile.Entity
     private let onCompletion: ((VOFile.Entity) -> Void)?
 
-    init(_ file: VOFile.Entity, onCompletion: ((VOFile.Entity) -> Void)? = nil) {
+    public init(_ file: VOFile.Entity, onCompletion: ((VOFile.Entity) -> Void)? = nil) {
         self.file = file
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 if isLoading {
@@ -116,48 +115,48 @@ struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, To
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         fileStore.fileIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         fileStore.fileError
     }
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         fileStore.fetchFile()
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         fileStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         fileStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         fileStore.token = token
     }
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         if let file = fileStore.file {
             return !normalizedValue.isEmpty && normalizedValue != file.name
         }

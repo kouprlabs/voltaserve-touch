@@ -9,17 +9,16 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileRow: View {
-    @Environment(\.colorScheme) var colorScheme
+public struct FileRow: View {
+    @Environment(\.colorScheme) private var colorScheme
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             if file.type == .file {
                 Image(file.iconForFile(colorScheme: colorScheme))

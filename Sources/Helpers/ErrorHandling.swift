@@ -9,7 +9,6 @@
 // AGPL-3.0-only in the root of this repository.
 
 import Foundation
-import VoltaserveCore
 
 func withErrorHandling(
     _ code: @escaping () async throws -> Bool,

@@ -10,12 +10,12 @@
 
 import SwiftUI
 
-struct VOButton: ViewModifier {
+public struct VOButton: ViewModifier {
     var width: CGFloat?
     var isDisabled: Bool
     var color: Color
 
-    init(
+    public init(
         color: Color = .blue500,
         width: CGFloat? = nil,
         isDisabled: Bool = false
@@ -25,7 +25,7 @@ struct VOButton: ViewModifier {
         self.isDisabled = isDisabled
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         if let width {
             content
                 .frame(width: width, height: VOButtonMetrics.height)
@@ -39,14 +39,14 @@ struct VOButton: ViewModifier {
     }
 }
 
-struct VOButtonCommons: ViewModifier {
-    var button: VOButton
+public struct VOButtonCommons: ViewModifier {
+    private var button: VOButton
 
-    init(_ button: VOButton) {
+    public init(_ button: VOButton) {
         self.button = button
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .padding(.horizontal)
             .foregroundColor(button.color.textColor())
@@ -57,12 +57,12 @@ struct VOButtonCommons: ViewModifier {
     }
 }
 
-enum VOButtonMetrics {
+public enum VOButtonMetrics {
     static let height: CGFloat = 40
 }
 
 extension View {
-    func voButton(
+    public func voButton(
         color: Color,
         width: CGFloat? = nil,
         isDisabled: Bool = false
@@ -70,11 +70,13 @@ extension View {
         modifier(VOButton(color: color, width: width, isDisabled: isDisabled))
     }
 
-    func voPrimaryButton(width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
+    public func voPrimaryButton(width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
         modifier(VOButton(color: .blue500, width: width, isDisabled: isDisabled))
     }
 
-    func voSecondaryButton(colorScheme: ColorScheme, width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
+    public func voSecondaryButton(colorScheme: ColorScheme, width: CGFloat? = nil, isDisabled: Bool = false)
+        -> some View
+    {
         modifier(
             VOButton(
                 color: colorScheme == .dark ? .gray700 : .gray200,

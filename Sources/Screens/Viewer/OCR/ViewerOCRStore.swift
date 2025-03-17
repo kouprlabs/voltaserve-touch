@@ -10,18 +10,17 @@
 
 import PDFKit
 import SwiftUI
-import VoltaserveCore
 
-class ViewerOCRStore: ObservableObject {
-    @Published var url: URL?
+public class ViewerOCRStore: ObservableObject {
+    @Published public var url: URL?
 
-    var id: String? {
+    public var id: String? {
         didSet {
             url = buildURL(id: id, token: token)
         }
     }
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             url = buildURL(id: id, token: token)
         }

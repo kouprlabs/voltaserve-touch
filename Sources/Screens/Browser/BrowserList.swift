@@ -10,9 +10,10 @@
 
 import Combine
 import SwiftUI
-import VoltaserveCore
 
-struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
+public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var browserStore = BrowserStore()
@@ -23,7 +24,7 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
     private let onCompletion: ((String) -> Void)?
     private let onDismiss: (() -> Void)?
 
-    init(
+    public init(
         _ folderID: String,
         workspaceStore: WorkspaceStore,
         confirmLabelText: String?,
@@ -37,7 +38,7 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
         self.onDismiss = onDismiss
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -122,44 +123,44 @@ struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, T
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         workspaceStore.entitiesIsLoadingFirstTime && browserStore.folderIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         workspaceStore.entitiesError ?? browserStore.folderError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         browserStore.fetchFolder()
         browserStore.fetchNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         browserStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         browserStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         browserStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if browserStore.isEntityThreshold(id) {
             browserStore.fetchNextPage()
         }

@@ -10,8 +10,8 @@
 
 import SwiftUI
 
-struct VOWarningIcon: View {
-    var body: some View {
+public struct VOWarningIcon: View {
+    public var body: some View {
         Image(systemName: "exclamationmark.triangle")
             .font(.title)
             .foregroundStyle(Color.yellow400)

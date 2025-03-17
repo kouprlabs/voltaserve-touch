@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
 struct SnapshotCapabilities: View {
     private let snapshot: VOSnapshot.Entity
 
-    init(_ snapshot: VOSnapshot.Entity) {
+    public init(_ snapshot: VOSnapshot.Entity) {
         self.snapshot = snapshot
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             if snapshot.capabilities.summary {
                 VOColorBadge("Summary", color: .gray400, style: .outline)

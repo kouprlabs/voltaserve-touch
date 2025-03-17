@@ -9,20 +9,19 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct VOPermissionBadge: View {
+public struct VOPermissionBadge: View {
     private let permission: VOPermission.Value
 
-    init(_ permission: VOPermission.Value) {
+    public init(_ permission: VOPermission.Value) {
         self.permission = permission
     }
 
-    var body: some View {
+    public var body: some View {
         VOColorBadge(text(), color: Constants.background, style: .fill)
     }
 
-    func text() -> String {
+    public func text() -> String {
         switch permission {
         case .viewer:
             "Viewer"

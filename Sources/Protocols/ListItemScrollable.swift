@@ -10,6 +10,6 @@
 
 import Foundation
 
-protocol ListItemScrollable {
+public protocol ListItemScrollable {
     func onListItemAppear(_ id: String)
 }

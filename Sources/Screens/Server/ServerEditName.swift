@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-struct ServerEditName: View, FormValidatable {
+public struct ServerEditName: View, FormValidatable {
     @EnvironmentObject private var tokenStore: TokenStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
@@ -18,11 +18,11 @@ struct ServerEditName: View, FormValidatable {
     @State private var isProcessing = false
     private let server: Server
 
-    init(_ server: Server) {
+    public init(_ server: Server) {
         self.server = server
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             TextField("Name", text: $value)
         }
@@ -66,7 +66,7 @@ struct ServerEditName: View, FormValidatable {
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !normalizedValue.isEmpty && normalizedValue != server.name
     }
 }

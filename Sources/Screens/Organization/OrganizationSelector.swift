@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+public struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
     ListItemScrollable
 {
     @EnvironmentObject private var tokenStore: TokenStore
@@ -21,11 +20,11 @@ struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
     @State private var searchText = ""
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
-    init(onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
+    public init(onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -98,43 +97,43 @@ struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         organizationStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         organizationStore.entitiesError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         organizationStore.fetchNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         organizationStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         organizationStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         organizationStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if organizationStore.isEntityThreshold(id) {
             organizationStore.fetchNextPage()
         }

@@ -9,18 +9,17 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileSheetSharing: ViewModifier {
+public struct FileSheetSharing: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
 
-    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.sharingIsPresented) {
                 if let fileID {
@@ -40,7 +39,7 @@ struct FileSheetSharing: ViewModifier {
 }
 
 extension View {
-    func fileSheetSharing(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
+    public func fileSheetSharing(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
         modifier(FileSheetSharing(fileStore: fileStore, workspaceStore: workspaceStore))
     }
 }

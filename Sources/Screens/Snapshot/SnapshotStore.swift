@@ -10,20 +10,19 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class SnapshotStore: ObservableObject {
-    @Published var entities: [VOSnapshot.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
+public class SnapshotStore: ObservableObject {
+    @Published public var entities: [VOSnapshot.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
     private var list: VOSnapshot.List?
     private var timer: Timer?
     private var snapshotClient: VOSnapshot?
-    var fileID: String?
+    public var fileID: String?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 snapshotClient = VOSnapshot(
@@ -53,7 +52,7 @@ class SnapshotStore: ObservableObject {
             ))
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -97,17 +96,17 @@ class SnapshotStore: ObservableObject {
 
     // MARK: - Update
 
-    func activate(_ id: String) async throws {
+    public func activate(_ id: String) async throws {
         try await snapshotClient?.activate(id)
     }
 
-    func detach(_ id: String) async throws {
+    public func detach(_ id: String) async throws {
         try await snapshotClient?.detach(id)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOSnapshot.Entity]) {
+    public func append(_ newEntities: [VOSnapshot.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -116,14 +115,14 @@ class SnapshotStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -135,11 +134,11 @@ class SnapshotStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -155,7 +154,7 @@ class SnapshotStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.entities != nil {
@@ -176,7 +175,7 @@ class SnapshotStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

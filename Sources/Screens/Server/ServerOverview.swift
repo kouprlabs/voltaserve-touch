@@ -11,7 +11,7 @@
 import SwiftData
 import SwiftUI
 
-struct ServerOverview: View {
+public struct ServerOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
@@ -22,11 +22,11 @@ struct ServerOverview: View {
     @State private var isDeleting = false
     private let server: Server
 
-    init(_ server: Server) {
+    public init(_ server: Server) {
         self.server = server
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             Section(header: VOSectionHeader("Name")) {
                 NavigationLink(destination: ServerEditName(server)) {

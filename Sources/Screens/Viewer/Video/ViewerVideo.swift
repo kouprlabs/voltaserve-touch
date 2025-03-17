@@ -9,18 +9,17 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct ViewerVideo: View {
+public struct ViewerVideo: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var viewerVideoStore = ViewerVideoStore()
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if file.type == .file,
                 let snapshot = file.snapshot,

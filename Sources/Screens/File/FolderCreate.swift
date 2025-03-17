@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FolderCreate: View, ErrorPresentable, FormValidatable {
+public struct FolderCreate: View, ErrorPresentable, FormValidatable {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -19,13 +18,13 @@ struct FolderCreate: View, ErrorPresentable, FormValidatable {
     private let parentID: String
     private let workspaceId: String
 
-    init(parentID: String, workspaceId: String, fileStore: FileStore) {
+    public init(parentID: String, workspaceId: String, fileStore: FileStore) {
         self.workspaceId = workspaceId
         self.parentID = parentID
         self.fileStore = fileStore
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             Form {
                 TextField("Name", text: $name)
@@ -83,12 +82,12 @@ struct FolderCreate: View, ErrorPresentable, FormValidatable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !normalizedName.isEmpty
     }
 }

@@ -9,21 +9,20 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
+public struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
     @State private var isProcessing = false
     private let onCompletion: ((VOOrganization.Entity) -> Void)?
 
-    init(organizationStore: OrganizationStore, onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
+    public init(organizationStore: OrganizationStore, onCompletion: ((VOOrganization.Entity) -> Void)? = nil) {
         self.organizationStore = organizationStore
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if let current = organizationStore.current {
                 Form {
@@ -85,12 +84,12 @@ struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         if let current = organizationStore.current {
             return !nornalizedValue.isEmpty && nornalizedValue != current.name
         }

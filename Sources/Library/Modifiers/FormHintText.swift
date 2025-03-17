@@ -10,14 +10,14 @@
 
 import SwiftUI
 
-struct VOFormHintText: ViewModifier {
-    func body(content: Content) -> some View {
+public struct VOFormHintText: ViewModifier {
+    public func body(content: Content) -> some View {
         content.font(.custom(VOMetrics.bodyFontFamily, size: 15))
     }
 }
 
 extension View {
-    func voFormHintText() -> some View {
+    public func voFormHintText() -> some View {
         modifier(VOFormHintText())
     }
 }

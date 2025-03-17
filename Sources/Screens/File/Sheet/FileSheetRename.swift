@@ -10,14 +10,14 @@
 
 import SwiftUI
 
-struct FileSheetRename: ViewModifier {
+public struct FileSheetRename: ViewModifier {
     @ObservedObject private var fileStore: FileStore
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.renameIsPresented) {
                 if !fileStore.selection.isEmpty, let file = fileStore.selectionFiles.first {
@@ -32,7 +32,7 @@ struct FileSheetRename: ViewModifier {
 }
 
 extension View {
-    func fileSheetRename(fileStore: FileStore) -> some View {
+    public func fileSheetRename(fileStore: FileStore) -> some View {
         modifier(FileSheetRename(fileStore: fileStore))
     }
 }

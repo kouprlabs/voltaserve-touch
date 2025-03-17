@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileDelete: View {
+public struct FileDelete: View {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
@@ -20,11 +19,11 @@ struct FileDelete: View {
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()

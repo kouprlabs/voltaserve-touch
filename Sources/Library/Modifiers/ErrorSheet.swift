@@ -10,17 +10,17 @@
 
 import SwiftUI
 
-struct VOErrorSheet: ViewModifier {
+public struct VOErrorSheet: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
     private let isPresented: Binding<Bool>
     private let message: String?
 
-    init(isPresented: Binding<Bool>, message: String?) {
+    public init(isPresented: Binding<Bool>, message: String?) {
         self.isPresented = isPresented
         self.message = message
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: isPresented) {
                 VStack(spacing: VOMetrics.spacing) {
@@ -39,7 +39,7 @@ struct VOErrorSheet: ViewModifier {
 }
 
 extension View {
-    func voErrorSheet(isPresented: Binding<Bool>, message: String?) -> some View {
+    public func voErrorSheet(isPresented: Binding<Bool>, message: String?) -> some View {
         modifier(VOErrorSheet(isPresented: isPresented, message: message))
     }
 }

@@ -10,7 +10,7 @@
 
 import Foundation
 
-protocol ViewDataProvider: LoadStateProvider {
+public protocol ViewDataProvider: LoadStateProvider {
     func onAppearOrChange()
     func fetchData()
 }

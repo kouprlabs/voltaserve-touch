@@ -12,15 +12,15 @@ import Foundation
 import SwiftData
 
 @Model
-class Server: Codable {
-    var id: String
-    var name: String
-    var apiURL: String
-    var idpURL: String
-    var isCloud: Bool
-    var isActive: Bool
+public class Server: Codable {
+    public var id: String
+    public var name: String
+    public var apiURL: String
+    public var idpURL: String
+    public var isCloud: Bool
+    public var isActive: Bool
 
-    static let cloud = Server(
+    public static let cloud = Server(
         id: "cloud",
         name: "Voltaserve Cloud",
         apiURL: "https://api.cloud.voltaserve.com",
@@ -29,7 +29,7 @@ class Server: Codable {
         isActive: true
     )
 
-    init(id: String, name: String, apiURL: String, idpURL: String, isCloud: Bool, isActive: Bool) {
+    public init(id: String, name: String, apiURL: String, idpURL: String, isCloud: Bool, isActive: Bool) {
         self.id = id
         self.name = name
         self.apiURL = apiURL
@@ -38,7 +38,7 @@ class Server: Codable {
         self.isActive = isActive
     }
 
-    required init(from decoder: any Decoder) throws {
+    public required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
@@ -48,7 +48,7 @@ class Server: Codable {
         isActive = try container.decode(Bool.self, forKey: .isActive)
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
@@ -58,7 +58,7 @@ class Server: Codable {
         try container.encode(isActive, forKey: .isActive)
     }
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case id
         case name
         case apiURL

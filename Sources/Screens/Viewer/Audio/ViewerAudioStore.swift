@@ -10,24 +10,23 @@
 
 import PDFKit
 import SwiftUI
-import VoltaserveCore
 
-class ViewerAudioStore: ObservableObject {
-    @Published var url: URL?
+public class ViewerAudioStore: ObservableObject {
+    @Published public var url: URL?
 
-    var id: String? {
+    public var id: String? {
         didSet {
             url = buildURL(id: id, token: token, fileExtension: fileExtension)
         }
     }
 
-    var fileExtension: String? {
+    public var fileExtension: String? {
         didSet {
             url = buildURL(id: id, token: token, fileExtension: fileExtension)
         }
     }
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 url = buildURL(id: id, token: token, fileExtension: fileExtension)

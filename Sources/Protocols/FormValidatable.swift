@@ -10,6 +10,6 @@
 
 import Foundation
 
-protocol FormValidatable {
+public protocol FormValidatable {
     func isValid() -> Bool
 }

@@ -9,19 +9,18 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SharingUserRow: View {
+public struct SharingUserRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let userPermission: VOFile.UserPermission
     private let userPictureURL: URL?
 
-    init(_ userPermission: VOFile.UserPermission, userPictureURL: URL? = nil) {
+    public init(_ userPermission: VOFile.UserPermission, userPictureURL: URL? = nil) {
         self.userPermission = userPermission
         self.userPictureURL = userPictureURL
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             VOAvatar(
                 name: userPermission.user.fullName,

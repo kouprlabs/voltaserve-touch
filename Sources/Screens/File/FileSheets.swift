@@ -9,18 +9,17 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileSheets: ViewModifier {
+public struct FileSheets: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
 
-    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .fileSheetMove(fileStore: fileStore, workspaceStore: workspaceStore)
             .fileSheetCopy(fileStore: fileStore, workspaceStore: workspaceStore)
@@ -39,7 +38,7 @@ struct FileSheets: ViewModifier {
 }
 
 extension View {
-    func fileSheets(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
+    public func fileSheets(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
         modifier(FileSheets(fileStore: fileStore, workspaceStore: workspaceStore))
     }
 }

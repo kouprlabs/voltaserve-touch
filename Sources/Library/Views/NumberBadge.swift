@@ -10,15 +10,15 @@
 
 import SwiftUI
 
-struct VONumberBadge: View {
+public struct VONumberBadge: View {
     @Environment(\.colorScheme) private var colorScheme
     private let value: Int
 
-    init(_ value: Int) {
+    public init(_ value: Int) {
         self.value = value
     }
 
-    var body: some View {
+    public var body: some View {
         Text("\(value)")
             .padding(value > 9 ? VOMetrics.spacingSm : 0)
             .font(.footnote)

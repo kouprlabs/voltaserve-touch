@@ -10,11 +10,11 @@
 
 import Foundation
 
-struct Config {
-    var apiURL: String
-    var idpURL: String
+public struct Config {
+    public var apiURL: String
+    public var idpURL: String
 
-    static var production: Config {
+    public static var production: Config {
         if let server = UserDefaults.standard.server {
             Config(
                 apiURL: server.apiURL,
@@ -22,8 +22,8 @@ struct Config {
             )
         } else {
             Config(
-                apiURL: "https://api.cloud.voltaserve.com",
-                idpURL: "https://idp.cloud.voltaserve.com"
+                apiURL: "https://api.voltaserve.cloud",
+                idpURL: "https://idp.voltaserve.cloud"
             )
         }
     }

@@ -9,19 +9,18 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct AccountEditEmail: View, LoadStateProvider, FormValidatable, ErrorPresentable {
+public struct AccountEditEmail: View, LoadStateProvider, FormValidatable, ErrorPresentable {
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var value = ""
     @State private var isProcessing = false
 
-    init(accountStore: AccountStore) {
+    public init(accountStore: AccountStore) {
         self.accountStore = accountStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -85,22 +84,22 @@ struct AccountEditEmail: View, LoadStateProvider, FormValidatable, ErrorPresenta
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented = false
+    @State public var errorMessage: String?
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         accountStore.identityUserIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         accountStore.identityUserError
     }
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         if let identityUser = accountStore.identityUser {
             return !normalizedValue.isEmpty && normalizedValue != (identityUser.pendingEmail ?? identityUser.email)
         }

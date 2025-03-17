@@ -9,25 +9,24 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileContextMenu: ViewModifier {
+public struct FileContextMenu: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    var file: VOFile.Entity
-    var onInsights: (() -> Void)?
-    var onMosaic: (() -> Void)?
-    var onSharing: (() -> Void)?
-    var onSnapshots: (() -> Void)?
-    var onUpload: (() -> Void)?
-    var onDownload: (() -> Void)?
-    var onDelete: (() -> Void)?
-    var onRename: (() -> Void)?
-    var onMove: (() -> Void)?
-    var onCopy: (() -> Void)?
-    var onOpen: (() -> Void)?
-    var onInfo: (() -> Void)?
+    private var file: VOFile.Entity
+    private var onInsights: (() -> Void)?
+    private var onMosaic: (() -> Void)?
+    private var onSharing: (() -> Void)?
+    private var onSnapshots: (() -> Void)?
+    private var onUpload: (() -> Void)?
+    private var onDownload: (() -> Void)?
+    private var onDelete: (() -> Void)?
+    private var onRename: (() -> Void)?
+    private var onMove: (() -> Void)?
+    private var onCopy: (() -> Void)?
+    private var onOpen: (() -> Void)?
+    private var onInfo: (() -> Void)?
 
-    init(
+    public init(
         _ file: VOFile.Entity,
         fileStore: FileStore,
         onInsights: (() -> Void)? = nil,
@@ -60,7 +59,7 @@ struct FileContextMenu: ViewModifier {
     }
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .contextMenu {
                 if fileStore.isOpenAuthorized(file) {
@@ -179,7 +178,7 @@ struct FileContextMenu: ViewModifier {
 }
 
 extension View {
-    func fileContextMenu(
+    public func fileContextMenu(
         _ file: VOFile.Entity,
         fileStore: FileStore,
         onInsights: (() -> Void)? = nil,

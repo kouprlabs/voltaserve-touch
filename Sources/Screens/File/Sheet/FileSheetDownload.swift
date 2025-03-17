@@ -10,15 +10,15 @@
 
 import SwiftUI
 
-struct FileSheetDownload: ViewModifier {
+public struct FileSheetDownload: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @State private var pickerURLs: [URL]?
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.downloadIsPresented) {
                 if !fileStore.selection.isEmpty {
@@ -54,7 +54,7 @@ struct FileSheetDownload: ViewModifier {
 }
 
 extension View {
-    func fileSheetDownload(fileStore: FileStore) -> some View {
+    public func fileSheetDownload(fileStore: FileStore) -> some View {
         modifier(FileSheetDownload(fileStore: fileStore))
     }
 }

@@ -10,20 +10,21 @@
 
 import SwiftUI
 
-struct VOButtonLabel: View {
+public struct VOButtonLabel: View {
     private let text: String
     private let systemImage: String?
     private let isLoading: Bool
     private let progressViewTint: Color
 
-    init(_ text: String, systemImage: String? = nil, isLoading: Bool = false, progressViewTint: Color = .primary) {
+    public init(_ text: String, systemImage: String? = nil, isLoading: Bool = false, progressViewTint: Color = .primary)
+    {
         self.text = text
         self.systemImage = systemImage
         self.isLoading = isLoading
         self.progressViewTint = progressViewTint
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             if let systemImage {
                 Image(systemName: systemImage)

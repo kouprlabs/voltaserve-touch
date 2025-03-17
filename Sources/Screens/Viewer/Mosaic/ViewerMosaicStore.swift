@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-class ViewerMosaicStore: ObservableObject {
+public class ViewerMosaicStore: ObservableObject {
     @Published private(set) var metadata: VOMosaic.Metadata?
     @Published private(set) var zoomLevel: VOMosaic.ZoomLevel?
     @Published private(set) var grid: [[UIImage?]] = []
     private var busy: [[Bool]] = []
     private var mosaicClient: VOMosaic?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 mosaicClient = .init(
@@ -29,7 +28,7 @@ class ViewerMosaicStore: ObservableObject {
         }
     }
 
-    func loadMosaic(_ id: String) async throws {
+    public func loadMosaic(_ id: String) async throws {
         let metadata = try await mosaicClient?.fetchMetadata(id)
         if let metadata {
             DispatchQueue.main.async {
@@ -50,12 +49,12 @@ class ViewerMosaicStore: ObservableObject {
         )
     }
 
-    func selectZoomLevel(_ zoomLevel: VOMosaic.ZoomLevel) {
+    public func selectZoomLevel(_ zoomLevel: VOMosaic.ZoomLevel) {
         self.zoomLevel = zoomLevel
         allocateGridForZoomLevel(zoomLevel)
     }
 
-    func loadImageForCell(_ id: String, row: Int, column: Int) {
+    public func loadImageForCell(_ id: String, row: Int, column: Int) {
         guard busy[row][column] == false else { return }
         busy[row][column] = true
         if let zoomLevel, let metadata {
@@ -76,7 +75,7 @@ class ViewerMosaicStore: ObservableObject {
         }
     }
 
-    func unloadImagesOutsideRect(_ visibleRect: CGRect, extraTilesToLoad: Int) {
+    public func unloadImagesOutsideRect(_ visibleRect: CGRect, extraTilesToLoad: Int) {
         guard let zoomLevel else { return }
 
         for row in 0..<zoomLevel.rows {
@@ -94,7 +93,7 @@ class ViewerMosaicStore: ObservableObject {
         }
     }
 
-    func sizeForCell(row: Int, col: Int) -> CGSize {
+    public func sizeForCell(row: Int, col: Int) -> CGSize {
         if let zoomLevel {
             let tile = zoomLevel.tile
             var size = CGSize(width: tile.width, height: tile.height)
@@ -109,7 +108,7 @@ class ViewerMosaicStore: ObservableObject {
         return .zero
     }
 
-    func positionForCell(row: Int, col: Int) -> CGPoint {
+    public func positionForCell(row: Int, col: Int) -> CGPoint {
         if let zoomLevel {
             let tile = zoomLevel.tile
             var position: CGPoint = .zero
@@ -128,7 +127,7 @@ class ViewerMosaicStore: ObservableObject {
         return .zero
     }
 
-    func frameForCellAt(position: CGPoint, size: CGSize) -> CGRect {
+    public func frameForCellAt(position: CGPoint, size: CGSize) -> CGRect {
         CGRect(
             x: position.x - (size.width / 2),
             y: position.y - (size.height / 2),

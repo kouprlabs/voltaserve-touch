@@ -9,9 +9,10 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
+public struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var groupStore = GroupStore()
     @Environment(\.dismiss) private var dismiss
@@ -19,12 +20,12 @@ struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     private let onCompletion: ((VOGroup.Entity) -> Void)?
     private let organizationID: String?
 
-    init(organizationID: String?, onCompletion: ((VOGroup.Entity) -> Void)? = nil) {
+    public init(organizationID: String?, onCompletion: ((VOGroup.Entity) -> Void)? = nil) {
         self.organizationID = organizationID
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -95,43 +96,43 @@ struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         groupStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         groupStore.entitiesError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         groupStore.fetchNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         groupStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         groupStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         groupStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if groupStore.isEntityThreshold(id) {
             groupStore.fetchNextPage()
         }

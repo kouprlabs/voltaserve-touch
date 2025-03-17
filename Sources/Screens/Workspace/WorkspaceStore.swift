@@ -10,23 +10,22 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
 // swiftlint:disable:next type_body_length
-class WorkspaceStore: ObservableObject {
-    @Published var entities: [VOWorkspace.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
-    @Published var root: VOFile.Entity?
-    @Published var rootIsLoading: Bool = false
-    @Published var rootError: String?
-    @Published var storageUsage: VOStorage.Usage?
-    @Published var storageUsageIsLoading: Bool = false
-    @Published var storageUsageError: String?
-    @Published var current: VOWorkspace.Entity?
-    @Published var query: String?
+public class WorkspaceStore: ObservableObject {
+    @Published public var entities: [VOWorkspace.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
+    @Published public var root: VOFile.Entity?
+    @Published public var rootIsLoading: Bool = false
+    @Published public var rootError: String?
+    @Published public var storageUsage: VOStorage.Usage?
+    @Published public var storageUsageIsLoading: Bool = false
+    @Published public var storageUsageError: String?
+    @Published public var current: VOWorkspace.Entity?
+    @Published public var query: String?
     private var list: VOWorkspace.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -35,7 +34,7 @@ class WorkspaceStore: ObservableObject {
     private var storageClient: VOStorage?
     let searchPublisher = PassthroughSubject<String, Never>()
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 workspaceClient = .init(
@@ -54,7 +53,7 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    init() {
+    public init() {
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -86,7 +85,7 @@ class WorkspaceStore: ObservableObject {
             ))
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -133,7 +132,7 @@ class WorkspaceStore: ObservableObject {
         return try await fileClient?.fetch(current.rootID)
     }
 
-    func fetchRoot() {
+    public func fetchRoot() {
         var root: VOFile.Entity?
         withErrorHandling {
             root = try await self.fetchRoot()
@@ -155,7 +154,7 @@ class WorkspaceStore: ObservableObject {
         return try await storageClient?.fetchWorkspaceUsage(current.id)
     }
 
-    func fetchStorageUsage() {
+    public func fetchStorageUsage() {
         var storageUsage: VOStorage.Usage?
         withErrorHandling {
             storageUsage = try await self.fetchStorageUsage()
@@ -174,7 +173,7 @@ class WorkspaceStore: ObservableObject {
 
     // MARK: - Update
 
-    func create(
+    public func create(
         name: String,
         organization: VOOrganization.Entity,
         storageCapacity: Int
@@ -187,11 +186,11 @@ class WorkspaceStore: ObservableObject {
             ))
     }
 
-    func patchName(_ id: String, name: String) async throws -> VOWorkspace.Entity? {
+    public func patchName(_ id: String, name: String) async throws -> VOWorkspace.Entity? {
         try await workspaceClient?.patchName(id, options: .init(name: name))
     }
 
-    func patchStorageCapacity(storageCapacity: Int) async throws -> VOWorkspace.Entity? {
+    public func patchStorageCapacity(storageCapacity: Int) async throws -> VOWorkspace.Entity? {
         guard let current else { return nil }
         return try await workspaceClient?.patchStorageCapacity(
             current.id,
@@ -199,14 +198,14 @@ class WorkspaceStore: ObservableObject {
         )
     }
 
-    func delete() async throws {
+    public func delete() async throws {
         guard let current else { return }
         try await workspaceClient?.delete(current.id)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOWorkspace.Entity]) {
+    public func append(_ newEntities: [VOWorkspace.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -215,14 +214,14 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -234,11 +233,11 @@ class WorkspaceStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -254,7 +253,7 @@ class WorkspaceStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.entities != nil {
@@ -299,7 +298,7 @@ class WorkspaceStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

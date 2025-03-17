@@ -11,21 +11,20 @@
 import Combine
 import SwiftUI
 import UIKit
-import VoltaserveCore
 
-struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
+public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var fileStore = FileStore()
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var searchText = ""
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
+    public init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
         self.file = file
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -82,21 +81,21 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         fileStore.entitiesIsLoadingFirstTime || fileStore.fileIsLoading || fileStore.taskCountIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         fileStore.entitiesError ?? fileStore.fileError ?? fileStore.taskCountError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         fileStore.fetchFile()
         fileStore.fetchNextPage(replace: true)
         fileStore.fetchTaskCount()
@@ -104,17 +103,17 @@ struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         fileStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         fileStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         fileStore.token = token
     }
 }

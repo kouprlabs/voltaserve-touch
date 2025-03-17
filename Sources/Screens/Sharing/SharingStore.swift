@@ -10,23 +10,22 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class SharingStore: ObservableObject {
-    @Published var userPermissions: [VOFile.UserPermission]?
-    @Published var userPermissionsIsLoading: Bool = false
-    var userPermissionsIsLoadingFirstTime: Bool { userPermissionsIsLoading && userPermissions == nil }
-    @Published var userPermissionsError: String?
-    @Published var groupPermissions: [VOFile.GroupPermission]?
-    @Published var groupPermissionsIsLoading: Bool = false
-    var groupPermissionsIsLoadingFirstTime: Bool { groupPermissionsIsLoading && groupPermissions == nil }
-    @Published var groupPermissionsError: String?
+public class SharingStore: ObservableObject {
+    @Published public var userPermissions: [VOFile.UserPermission]?
+    @Published public var userPermissionsIsLoading: Bool = false
+    public var userPermissionsIsLoadingFirstTime: Bool { userPermissionsIsLoading && userPermissions == nil }
+    @Published public var userPermissionsError: String?
+    @Published public var groupPermissions: [VOFile.GroupPermission]?
+    @Published public var groupPermissionsIsLoading: Bool = false
+    public var groupPermissionsIsLoadingFirstTime: Bool { groupPermissionsIsLoading && groupPermissions == nil }
+    @Published public var groupPermissionsError: String?
     private var timer: Timer?
     private var fileClient: VOFile?
-    var fileID: String?
+    public var fileID: String?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 fileClient = VOFile(
@@ -48,7 +47,7 @@ class SharingStore: ObservableObject {
         try await fileClient?.fetchUserPermissions(id)
     }
 
-    func fetchUserPermissions() {
+    public func fetchUserPermissions() {
         guard let fileID else { return }
         var userPermissions: [VOFile.UserPermission]?
 
@@ -71,7 +70,7 @@ class SharingStore: ObservableObject {
         try await fileClient?.fetchGroupPermissions(id)
     }
 
-    func fetchGroupPermissions() {
+    public func fetchGroupPermissions() {
         guard let fileID else { return }
         var groupPermissions: [VOFile.GroupPermission]?
 
@@ -92,25 +91,25 @@ class SharingStore: ObservableObject {
 
     // MARK: - Update
 
-    func grantUserPermission(ids: [String], userID: String, permission: VOPermission.Value) async throws {
+    public func grantUserPermission(ids: [String], userID: String, permission: VOPermission.Value) async throws {
         try await fileClient?.grantUserPermission(.init(ids: ids, userID: userID, permission: permission))
     }
 
-    func revokeUserPermission(id: String, userID: String) async throws {
+    public func revokeUserPermission(id: String, userID: String) async throws {
         try await fileClient?.revokeUserPermission(.init(ids: [id], userID: userID))
     }
 
-    func grantGroupPermission(ids: [String], groupID: String, permission: VOPermission.Value) async throws {
+    public func grantGroupPermission(ids: [String], groupID: String, permission: VOPermission.Value) async throws {
         try await fileClient?.grantGroupPermission(.init(ids: ids, groupID: groupID, permission: permission))
     }
 
-    func revokeGroupPermission(id: String, groupID: String) async throws {
+    public func revokeGroupPermission(id: String, groupID: String) async throws {
         try await fileClient?.revokeGroupPermission(.init(ids: [id], groupID: groupID))
     }
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             guard let fileID = self.fileID else { return }
@@ -139,7 +138,7 @@ class SharingStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileUpload: View {
+public struct FileUpload: View {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
@@ -22,13 +21,13 @@ struct FileUpload: View {
     @State private var errorMessage: String?
     private let urls: [URL]
 
-    init(_ urls: [URL], fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(_ urls: [URL], fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.urls = urls
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isProcessing, !errorIsPresented {
                 VOSheetProgressView()

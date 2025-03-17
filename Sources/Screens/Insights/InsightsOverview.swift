@@ -9,33 +9,34 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InsightsOverview: View {
+public struct InsightsOverview: View {
     @State private var selection: Tag = .chart
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
-        TabView(selection: $selection) {
-            Tab("Chart", systemImage: "chart.pie", value: Tag.chart) {
-                InsightsChart(file)
-            }
-            if let snapshot = file.snapshot, snapshot.capabilities.entities {
-                Tab("Entities", systemImage: "circle.grid.2x2", value: Tag.entities) {
-                    InsightsEntityList(file)
+    public var body: some View {
+        if #available(iOS 18.0, macOS 15.0, *) {
+            TabView(selection: $selection) {
+                Tab("Chart", systemImage: "chart.pie", value: Tag.chart) {
+                    InsightsChart(file)
                 }
-            }
-            Tab("Settings", systemImage: "gear", value: Tag.settings) {
-                InsightsSettings(file)
+                if let snapshot = file.snapshot, snapshot.capabilities.entities {
+                    Tab("Entities", systemImage: "circle.grid.2x2", value: Tag.entities) {
+                        InsightsEntityList(file)
+                    }
+                }
+                Tab("Settings", systemImage: "gear", value: Tag.settings) {
+                    InsightsSettings(file)
+                }
             }
         }
     }
 
-    enum Tag {
+    public enum Tag {
         case chart
         case entities
         case settings

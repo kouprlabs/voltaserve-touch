@@ -9,18 +9,17 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileActions: ViewModifier {
+public struct FileActions: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity, fileStore: FileStore) {
+    public init(_ file: VOFile.Entity, fileStore: FileStore) {
         self.file = file
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .fileContextMenu(
                 file,
@@ -71,7 +70,7 @@ struct FileActions: ViewModifier {
 }
 
 extension View {
-    func fileActions(_ file: VOFile.Entity, fileStore: FileStore) -> some View {
+    public func fileActions(_ file: VOFile.Entity, fileStore: FileStore) -> some View {
         modifier(FileActions(file, fileStore: fileStore))
     }
 }

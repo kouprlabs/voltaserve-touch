@@ -10,15 +10,15 @@
 
 import SwiftUI
 
-struct FileToolbar: ViewModifier {
+public struct FileToolbar: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.editMode) private var editMode
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .toolbar {
                 if fileStore.viewMode == .list {
@@ -115,7 +115,7 @@ struct FileToolbar: ViewModifier {
 }
 
 extension View {
-    func fileToolbar(fileStore: FileStore) -> some View {
+    public func fileToolbar(fileStore: FileStore) -> some View {
         modifier(FileToolbar(fileStore: fileStore))
     }
 }

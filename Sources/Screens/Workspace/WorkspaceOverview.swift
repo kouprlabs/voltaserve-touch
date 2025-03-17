@@ -9,20 +9,19 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
+public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     private var workspace: VOWorkspace.Entity
 
-    init(_ workspace: VOWorkspace.Entity, workspaceStore: WorkspaceStore) {
+    public init(_ workspace: VOWorkspace.Entity, workspaceStore: WorkspaceStore) {
         self.workspace = workspace
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -62,21 +61,21 @@ struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         workspaceStore.rootIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         workspaceStore.rootError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         workspaceStore.fetchRoot()
     }
 }

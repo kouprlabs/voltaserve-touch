@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
+public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
@@ -21,12 +20,12 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
     @State private var isDeleting = false
     private let onDelete: (() -> Void)?
 
-    init(accountStore: AccountStore, onDelete: (() -> Void)? = nil) {
+    public init(accountStore: AccountStore, onDelete: (() -> Void)? = nil) {
         self.accountStore = accountStore
         self.onDelete = onDelete
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -143,26 +142,26 @@ struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresenta
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented = false
+    @State public var errorMessage: String?
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         accountStore.identityUserIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         accountStore.identityUserError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         accountStore.fetchIdentityUser()
     }
 }
