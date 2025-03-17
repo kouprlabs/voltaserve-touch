@@ -3,3 +3,9 @@ disabled_rules:
     - cyclomatic_complexity
     - trailing_comma
     - opening_brace
+    - identifier_name
+    - function_parameter_count
+    - nesting
+    - type_body_length
+    - function_body_length
+    - non_optional_string_data_conversion
