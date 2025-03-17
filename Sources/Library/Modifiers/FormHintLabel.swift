@@ -10,10 +10,10 @@
 
 import SwiftUI
 
-struct VOFormHintLabel: ViewModifier {
-    @Environment(\.colorScheme) var colorScheme
+public struct VOFormHintLabel: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .font(.custom(VOMetrics.bodyFontFamily, size: 15))
             .foregroundStyle(colorScheme == .dark ? .white : .black)
@@ -22,7 +22,7 @@ struct VOFormHintLabel: ViewModifier {
 }
 
 extension View {
-    func voFormHintLabel() -> some View {
+    public func voFormHintLabel() -> some View {
         modifier(VOFormHintLabel())
     }
 }

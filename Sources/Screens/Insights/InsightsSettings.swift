@@ -9,7 +9,6 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
 struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
@@ -20,11 +19,11 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
     @State private var isDeleting = false
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 VStack(spacing: VOMetrics.spacingLg) {
@@ -147,22 +146,22 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         insightsStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         insightsStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         insightsStore.token = token
     }
 }

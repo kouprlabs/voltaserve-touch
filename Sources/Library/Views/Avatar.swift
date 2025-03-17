@@ -10,18 +10,18 @@
 
 import SwiftUI
 
-struct VOAvatar: View {
+public struct VOAvatar: View {
     private let name: String
     private let size: CGFloat
     private let url: URL?
 
-    init(name: String, size: CGFloat, url: URL? = nil) {
+    public init(name: String, size: CGFloat, url: URL? = nil) {
         self.name = name
         self.size = size
         self.url = url
     }
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { geometry in
             AsyncImage(url: url) { image in
                 image

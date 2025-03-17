@@ -10,17 +10,17 @@
 
 import SwiftUI
 
-struct VOStoragePicker: View {
+public struct VOStoragePicker: View {
     @Binding private var valueBinding: Int?
     @State private var value: Int?
     @State private var unit: StorageUnit?
     @State private var mask = true
 
-    init(value: Binding<Int?>) {
+    public init(value: Binding<Int?>) {
         _valueBinding = value
     }
 
-    var body: some View {
+    public var body: some View {
         TextField(
             "Storage Capacity",
             value: Binding<Int>(

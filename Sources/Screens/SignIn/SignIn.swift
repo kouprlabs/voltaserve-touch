@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SignIn: View, ErrorPresentable {
+public struct SignIn: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @State private var isProcessing = false
     @State private var email: String = ""
@@ -20,11 +19,11 @@ struct SignIn: View, ErrorPresentable {
     @State private var forgotPasswordIsPresented = false
     private let onCompletion: (() -> Void)?
 
-    init(_ onCompletion: (() -> Void)? = nil) {
+    public init(_ onCompletion: (() -> Void)? = nil) {
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack(spacing: VOMetrics.spacing) {
                 VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
@@ -124,8 +123,8 @@ struct SignIn: View, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 }
 
 #Preview {

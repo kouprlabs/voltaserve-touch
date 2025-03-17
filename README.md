@@ -26,6 +26,26 @@ Prerequisites:
 - Install [Xcode](https://developer.apple.com/xcode/).
 - Install [SwiftLint](https://github.com/realm/SwiftLint).
 
+This is a Swift package, it can be installed using the [Swift Package Manager](https://www.swift.org/documentation/package-manager/) and imported in your code.
+
+The clients in [Sources/Clients](./Sources/Clients) can be used to communicate with Voltaserve APIs.
+
+The extensible `Voltaserve` SwiftUI view can be used to embed the entire UI in your apps:
+
+```swift
+import SwiftUI
+import VoltaserveCore
+
+@main
+struct MyApp: App {
+    var body: some Scene {
+        WindowGroup {
+            Voltaserve()
+        }
+    }
+}
+```
+
 Format code:
 
 ```shell
@@ -40,6 +60,34 @@ swift format lint -r .
 
 ```shell
 swiftlint lint --strict .
+```
+
+## Tests
+
+The test suite expects the following accounts to exist:
+
+| Email            | Password    |
+| ---------------- | ----------- |
+| test@koupr.com   | `Passw0rd!` |
+| test+1@koupr.com | `Passw0rd!` |
+
+Build and run with Docker:
+
+```shell
+docker build -t voltaserve/ios-tests . && docker run --rm \
+    -e API_HOST=host.docker.internal \
+    -e IDP_HOST=host.docker.internal \
+    -e USERNAME='test@koupr.com' \
+    -e PASSWORD='Passw0rd!' \
+    -e OTHER_USERNAME='test+1@koupr.com' \
+    -e OTHER_PASSWORD='Passw0rd!' \
+    voltaserve/ios-tests
+```
+
+In Linux you should replace `host.docker.internal` with the host IP address, it can be found as follows:
+
+```shell
+ip route | grep default | awk '{print $3}'
 ```
 
 ## Licensing

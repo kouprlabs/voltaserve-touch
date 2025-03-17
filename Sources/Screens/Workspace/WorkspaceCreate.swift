@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
+public struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var name: String = ""
@@ -20,12 +19,12 @@ struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
     @State private var isProcessing = false
     private let onCompletion: ((VOWorkspace.Entity) -> Void)?
 
-    init(workspaceStore: WorkspaceStore, onCompletion: ((VOWorkspace.Entity) -> Void)? = nil) {
+    public init(workspaceStore: WorkspaceStore, onCompletion: ((VOWorkspace.Entity) -> Void)? = nil) {
         self.workspaceStore = workspaceStore
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             Form {
                 Section(header: VOSectionHeader("Basics")) {
@@ -109,12 +108,12 @@ struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !normalizedName.isEmpty && organization != nil && storageCapacity != nil && storageCapacity! > 0
     }
 }

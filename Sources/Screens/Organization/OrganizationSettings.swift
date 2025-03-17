@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct OrganizationSettings: View, ErrorPresentable {
+public struct OrganizationSettings: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
@@ -21,12 +20,12 @@ struct OrganizationSettings: View, ErrorPresentable {
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
-    init(organizationStore: OrganizationStore, onCompletion: (() -> Void)? = nil) {
+    public init(organizationStore: OrganizationStore, onCompletion: (() -> Void)? = nil) {
         self.organizationStore = organizationStore
         self.onCompletion = onCompletion
     }
 
-    var body: some View {
+    public var body: some View {
         Group {
             if let current = organizationStore.current {
                 Form {
@@ -142,6 +141,6 @@ struct OrganizationSettings: View, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 }

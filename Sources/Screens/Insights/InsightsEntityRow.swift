@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InsightsEntityRow: View {
+public struct InsightsEntityRow: View {
     private let entity: VOEntity.Entity
 
-    init(_ entity: VOEntity.Entity) {
+    public init(_ entity: VOEntity.Entity) {
         self.entity = entity
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             Text(entity.text)
                 .lineLimit(1)

@@ -10,17 +10,17 @@
 
 import SwiftUI
 
-struct VOLogo: View {
+public struct VOLogo: View {
     @Environment(\.colorScheme) private var colorScheme
     private let isGlossy: Bool
     private let size: CGSize
 
-    init(isGlossy: Bool = false, size: CGSize) {
+    public init(isGlossy: Bool = false, size: CGSize) {
         self.isGlossy = isGlossy
         self.size = size
     }
 
-    var body: some View {
+    public var body: some View {
         if colorScheme == .dark {
             if isGlossy {
                 Image("logo-dark-glossy")

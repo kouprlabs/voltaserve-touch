@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct TaskOverview: View, ErrorPresentable, TokenDistributing {
+public struct TaskOverview: View, ErrorPresentable, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var taskStore = TaskStore()
     @Environment(\.dismiss) private var dismiss
@@ -19,11 +18,11 @@ struct TaskOverview: View, ErrorPresentable, TokenDistributing {
     @State private var isDismissing = false
     private let task: VOTask.Entity
 
-    init(_ task: VOTask.Entity) {
+    public init(_ task: VOTask.Entity) {
         self.task = task
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             Section(header: VOSectionHeader("Properties")) {
                 if let object = task.payload?.object {
@@ -158,12 +157,12 @@ struct TaskOverview: View, ErrorPresentable, TokenDistributing {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         taskStore.token = token
     }
 }

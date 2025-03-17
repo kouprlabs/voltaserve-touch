@@ -9,19 +9,18 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
+public struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var isProcessing = false
 
-    init(groupStore: GroupStore) {
+    public init(groupStore: GroupStore) {
         self.groupStore = groupStore
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             Form {
                 Section {
@@ -89,12 +88,12 @@ struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         user != nil
     }
 }

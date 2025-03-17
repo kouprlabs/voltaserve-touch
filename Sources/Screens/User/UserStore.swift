@@ -10,27 +10,26 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class UserStore: ObservableObject {
-    @Published var entities: [VOUser.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
-    @Published var query: String?
+public class UserStore: ObservableObject {
+    @Published public var entities: [VOUser.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
+    @Published public var query: String?
     private var list: VOUser.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var userClient: VOUser?
-    let searchPublisher = PassthroughSubject<String, Never>()
-    var organizationID: String?
-    var groupID: String?
-    var excludeGroupMembers: Bool?
-    var excludeMe: Bool?
-    var invitationID: String?
+    public let searchPublisher = PassthroughSubject<String, Never>()
+    public var organizationID: String?
+    public var groupID: String?
+    public var excludeGroupMembers: Bool?
+    public var excludeMe: Bool?
+    public var invitationID: String?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 userClient = .init(
@@ -41,7 +40,7 @@ class UserStore: ObservableObject {
         }
     }
 
-    init() {
+    public init() {
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -53,7 +52,7 @@ class UserStore: ObservableObject {
 
     // MARK: - URLs
 
-    func urlForPicture(_ id: String, fileExtension: String? = nil) -> URL? {
+    public func urlForPicture(_ id: String, fileExtension: String? = nil) -> URL? {
         if let fileExtension {
             return userClient?.urlForPicture(
                 id,
@@ -100,7 +99,7 @@ class UserStore: ObservableObject {
             ))
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -144,7 +143,7 @@ class UserStore: ObservableObject {
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOUser.Entity]) {
+    public func append(_ newEntities: [VOUser.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -153,14 +152,14 @@ class UserStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -172,11 +171,11 @@ class UserStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -192,7 +191,7 @@ class UserStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.entities != nil {
@@ -213,7 +212,7 @@ class UserStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

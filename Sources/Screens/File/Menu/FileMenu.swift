@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileMenu: View {
+public struct FileMenu: View {
     @ObservedObject private var fileStore: FileStore
     private let onSharing: (() -> Void)?
     private let onSnapshots: (() -> Void)?
@@ -22,7 +21,7 @@ struct FileMenu: View {
     private let onMove: (() -> Void)?
     private let onCopy: (() -> Void)?
 
-    init(
+    public init(
         fileStore: FileStore,
         onSharing: (() -> Void)? = nil,
         onSnapshots: (() -> Void)? = nil,
@@ -44,7 +43,7 @@ struct FileMenu: View {
         self.onCopy = onCopy
     }
 
-    var body: some View {
+    public var body: some View {
         Menu {
             if fileStore.isSharingAuthorized(fileStore.selection) {
                 Button {

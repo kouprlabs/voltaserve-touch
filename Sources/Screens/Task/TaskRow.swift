@@ -9,24 +9,25 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct TaskRow: View {
+public struct TaskRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let task: VOTask.Entity
 
-    init(_ task: VOTask.Entity) {
+    public init(_ task: VOTask.Entity) {
         self.task = task
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             HStack(spacing: VOMetrics.spacingSm) {
                 if task.status == .running, task.isIndeterminate {
-                    Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90.circle")
-                        .symbolEffect(.rotate, options: .repeat(.continuous))
-                        .font(.title2)
-                        .foregroundStyle(Color.blue400)
+                    if #available(iOS 18.0, macOS 15.0, *) {
+                        Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90.circle")
+                            .symbolEffect(.rotate, options: .repeat(.continuous))
+                            .font(.title2)
+                            .foregroundStyle(Color.blue400)
+                    }
                 } else if task.status == .waiting {
                     Image(systemName: "hourglass.circle")
                         .font(.title2)

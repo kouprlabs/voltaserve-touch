@@ -10,23 +10,24 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class InvitationStore: ObservableObject {
-    @Published var entities: [VOInvitation.Entity]?
-    @Published var entitiesError: String?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var incomingCount: Int?
-    @Published var incomingCountError: String?
-    @Published var incomingCountIsLoading: Bool = false
+public class InvitationStore: ObservableObject {
+    @Published public var entities: [VOInvitation.Entity]?
+    @Published public var entitiesError: String?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var incomingCount: Int?
+    @Published public var incomingCountError: String?
+    @Published public var incomingCountIsLoading: Bool = false
     private var list: VOInvitation.List?
     private var timer: Timer?
     private var invitationClient: VOInvitation?
-    var organizationID: String?
+    public var organizationID: String?
 
-    var token: VOToken.Value? {
+    public init() {}
+
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 invitationClient = .init(
@@ -68,7 +69,7 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -114,7 +115,7 @@ class InvitationStore: ObservableObject {
         try await invitationClient?.fetchIncomingCount()
     }
 
-    func fetchIncomingCount() {
+    public func fetchIncomingCount() {
         var incomingCount: Int?
         withErrorHandling {
             incomingCount = try await self.fetchIncomingCount()
@@ -133,26 +134,26 @@ class InvitationStore: ObservableObject {
 
     // MARK: - Update
 
-    func create(emails: [String]) async throws -> [VOInvitation.Entity]? {
+    public func create(emails: [String]) async throws -> [VOInvitation.Entity]? {
         guard let organizationID else { return nil }
         return try await invitationClient?.create(.init(organizationID: organizationID, emails: emails))
     }
 
-    func accept(_ id: String) async throws {
+    public func accept(_ id: String) async throws {
         try await invitationClient?.accept(id)
     }
 
-    func decline(_ id: String) async throws {
+    public func decline(_ id: String) async throws {
         try await invitationClient?.decline(id)
     }
 
-    func delete(_ id: String) async throws {
+    public func delete(_ id: String) async throws {
         try await invitationClient?.delete(id)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOInvitation.Entity]) {
+    public func append(_ newEntities: [VOInvitation.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -161,14 +162,14 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -180,11 +181,11 @@ class InvitationStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -200,7 +201,7 @@ class InvitationStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.entities != nil {
@@ -232,7 +233,7 @@ class InvitationStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

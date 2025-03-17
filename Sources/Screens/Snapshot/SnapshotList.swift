@@ -9,19 +9,20 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
+public struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var snapshotStore = SnapshotStore()
     @Environment(\.dismiss) private var dismiss
     private let fileID: String
 
-    init(fileID: String) {
+    public init(fileID: String) {
         self.fileID = fileID
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -86,43 +87,43 @@ struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, 
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         snapshotStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         snapshotStore.entitiesError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         snapshotStore.fetchNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         snapshotStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         snapshotStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         snapshotStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if snapshotStore.isEntityThreshold(id) {
             snapshotStore.fetchNextPage()
         }

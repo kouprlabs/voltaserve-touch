@@ -10,15 +10,15 @@
 
 import SwiftUI
 
-struct FileSheetDelete: ViewModifier {
+public struct FileSheetDelete: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @State private var deleteIsPresented: Bool = false
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .alert(
                 fileStore.selection.count > 1 ? "Delete (\(fileStore.selection.count)) Items" : "Delete Item",
@@ -43,7 +43,7 @@ struct FileSheetDelete: ViewModifier {
 }
 
 extension View {
-    func fileSheetDelete(fileStore: FileStore) -> some View {
+    public func fileSheetDelete(fileStore: FileStore) -> some View {
         modifier(FileSheetDelete(fileStore: fileStore))
     }
 }

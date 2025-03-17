@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
+public struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var sharingStore = SharingStore()
     @ObservedObject private var workspaceStore: WorkspaceStore
@@ -24,56 +23,58 @@ struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
     @State private var groupPermissionCount = 0
     private let fileID: String
 
-    init(_ fileID: String, workspaceStore: WorkspaceStore) {
+    public init(_ fileID: String, workspaceStore: WorkspaceStore) {
         self.fileID = fileID
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
-            TabView(selection: $selection) {
-                Tab("Users", systemImage: "person", value: Tag.users) {
-                    SharingUserPermissions(
-                        fileID,
-                        sharingStore: sharingStore,
-                        workspaceStore: workspaceStore
-                    )
-                }
-                .badge(userPermissionCount)
-                Tab("Groups", systemImage: "person.2", value: Tag.groups) {
-                    SharingGroupPermissions(
-                        fileID,
-                        sharingStore: sharingStore,
-                        workspaceStore: workspaceStore
-                    )
-                }
-                .badge(groupPermissionCount)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Sharing")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        if selection == .users {
-                            SharingUserForm(
-                                fileIDs: [fileID],
-                                sharingStore: sharingStore,
-                                workspaceStore: workspaceStore
-                            )
-                        } else if selection == .groups {
-                            SharingGroupForm(
-                                fileIDs: [fileID],
-                                sharingStore: sharingStore,
-                                workspaceStore: workspaceStore
-                            )
-                        }
-                    } label: {
-                        Image(systemName: "plus")
+            if #available(iOS 18.0, macOS 15.0, *) {
+                TabView(selection: $selection) {
+                    Tab("Users", systemImage: "person", value: Tag.users) {
+                        SharingUserPermissions(
+                            fileID,
+                            sharingStore: sharingStore,
+                            workspaceStore: workspaceStore
+                        )
                     }
+                    .badge(userPermissionCount)
+                    Tab("Groups", systemImage: "person.2", value: Tag.groups) {
+                        SharingGroupPermissions(
+                            fileID,
+                            sharingStore: sharingStore,
+                            workspaceStore: workspaceStore
+                        )
+                    }
+                    .badge(groupPermissionCount)
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        dismiss()
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("Sharing")
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink {
+                            if selection == .users {
+                                SharingUserForm(
+                                    fileIDs: [fileID],
+                                    sharingStore: sharingStore,
+                                    workspaceStore: workspaceStore
+                                )
+                            } else if selection == .groups {
+                                SharingGroupForm(
+                                    fileIDs: [fileID],
+                                    sharingStore: sharingStore,
+                                    workspaceStore: workspaceStore
+                                )
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") {
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -118,38 +119,38 @@ struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         sharingStore.userPermissionsIsLoadingFirstTime || sharingStore.groupPermissionsIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         sharingStore.userPermissionsError ?? sharingStore.groupPermissionsError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         sharingStore.fetchUserPermissions()
         sharingStore.fetchGroupPermissions()
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         sharingStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         sharingStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         sharingStore.token = token
     }
 }

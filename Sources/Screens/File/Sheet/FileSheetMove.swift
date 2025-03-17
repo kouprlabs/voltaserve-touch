@@ -10,17 +10,17 @@
 
 import SwiftUI
 
-struct FileSheetMove: ViewModifier {
+public struct FileSheetMove: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var destinationID: String?
 
-    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.browserForMoveIsPresented) {
                 if let workspace = workspaceStore.current {
@@ -43,7 +43,7 @@ struct FileSheetMove: ViewModifier {
 }
 
 extension View {
-    func fileSheetMove(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
+    public func fileSheetMove(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
         modifier(FileSheetMove(fileStore: fileStore, workspaceStore: workspaceStore))
     }
 }

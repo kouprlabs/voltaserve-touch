@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
+public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
@@ -19,12 +18,12 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
     @State private var isDeleting = false
     private var onCompletion: (() -> Void)?
 
-    init(workspaceStore: WorkspaceStore, onCompletion: (() -> Void)? = nil) {
+    public init(workspaceStore: WorkspaceStore, onCompletion: (() -> Void)? = nil) {
         self.onCompletion = onCompletion
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -139,26 +138,26 @@ struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresen
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         workspaceStore.storageUsageIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         workspaceStore.storageUsageError
     }
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         workspaceStore.fetchStorageUsage()
     }
 }

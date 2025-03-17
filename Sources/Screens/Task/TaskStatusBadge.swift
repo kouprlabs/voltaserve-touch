@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct TaskStatusBadge: View {
-    var status: VOTask.Status
+public struct TaskStatusBadge: View {
+    private var status: VOTask.Status
 
-    init(_ status: VOTask.Status) {
+    public init(_ status: VOTask.Status) {
         self.status = status
     }
 
-    var body: some View {
+    public var body: some View {
         Text(text())
             .font(.footnote)
             .padding(.horizontal)
@@ -28,7 +27,7 @@ struct TaskStatusBadge: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
-    func text() -> String {
+    public func text() -> String {
         switch status {
         case .waiting:
             "Waiting"
@@ -41,7 +40,7 @@ struct TaskStatusBadge: View {
         }
     }
 
-    func background() -> Color {
+    public func background() -> Color {
         switch status {
         case .waiting:
             Color.gray300

@@ -10,16 +10,16 @@
 
 import SwiftUI
 
-struct FileSheetCreateFolder: ViewModifier {
+public struct FileSheetCreateFolder: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
 
-    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.createFolderIsPresented) {
                 if let parent = fileStore.file, let workspace = workspaceStore.current {
@@ -30,7 +30,7 @@ struct FileSheetCreateFolder: ViewModifier {
 }
 
 extension View {
-    func fileSheetCreateFolder(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
+    public func fileSheetCreateFolder(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
         modifier(FileSheetCreateFolder(fileStore: fileStore, workspaceStore: workspaceStore))
     }
 }

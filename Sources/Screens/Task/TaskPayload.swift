@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct TaskPayload: View {
+public struct TaskPayload: View {
     private let task: VOTask.Entity
 
-    init(_ task: VOTask.Entity) {
+    public init(_ task: VOTask.Entity) {
         self.task = task
     }
 
-    var body: some View {
+    public var body: some View {
         if let object = task.payload?.object {
             Form {
                 Text(object)

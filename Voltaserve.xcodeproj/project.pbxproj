@@ -7,211 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		644C380F2C8EA8E4008E8F0F /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 644C380E2C8EA8E4008E8F0F /* VoltaserveCore */; };
-		649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */; };
-		649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649066E32C5E35AD00BA3CCD /* ContentView.swift */; };
-		649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E52C5E35AE00BA3CCD /* Assets.xcassets */; };
-		649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */; };
-		649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */ = {isa = PBXBuildFile; productRef = 649067042C60979900BA3CCD /* GLTFKit2 */; };
-		649AED232C7FBE0F00DAAA0B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649AED222C7FBE0F00DAAA0B /* MainView.swift */; };
-		64D0D9152C8103DF00B96180 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0D9132C8103DF00B96180 /* Config.swift */; };
-		64D0D97B2C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */; };
-		64D0D97C2C8120E800B96180 /* Unbounded-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */; };
-		64F083822CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64F083812CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf */; };
+		891C72622D876EC4001A4EBB /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 891C72612D876EC4001A4EBB /* VoltaserveCore */; };
+		892D8AE72D8763AC00FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8AE62D8763AC00FCA879 /* VoltaserveCore */; };
+		892D8AEA2D87643100FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8AE92D87643100FCA879 /* VoltaserveCore */; };
+		892D8B0F2D8765D600FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B0E2D8765D600FCA879 /* VoltaserveCore */; };
+		892D8B222D87679E00FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B212D87679E00FCA879 /* VoltaserveCore */; };
+		892D8B252D87680D00FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B242D87680D00FCA879 /* VoltaserveCore */; };
+		892D8B3F2D87684600FCA879 /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892D8B3E2D87684600FCA879 /* VoltaserveApp.swift */; };
+		892D8B482D87685400FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B472D87685400FCA879 /* VoltaserveCore */; };
+		89300BB62D8761AA0083E871 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 89300BB52D8761AA0083E871 /* VoltaserveCore */; };
+		893CA8BF2D876A910003CFC9 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 893CA8BE2D876A910003CFC9 /* VoltaserveCore */; };
+		893CA8CA2D876B300003CFC9 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 893CA8C92D876B300003CFC9 /* VoltaserveCore */; };
+		89FDB5672D87737000EF8593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89FDB5662D87737000EF8593 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
-		649066E32C5E35AD00BA3CCD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		649066E52C5E35AE00BA3CCD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		649AED222C7FBE0F00DAAA0B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
-		64D0D9132C8103DF00B96180 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
-		64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBM Plex Sans Var-Roman.ttf"; sourceTree = "<group>"; };
-		64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Unbounded-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		64F083812CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBM Plex Sans Var-Italic.ttf"; sourceTree = "<group>"; };
+		892D8B3E2D87684600FCA879 /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
+		89FDB5662D87737000EF8593 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		644C38DA2C8F3744008E8F0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				KeychainManager.swift,
-				TokenStorage.swift,
-				"UserDefaults+Server.swift",
-			);
-			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;
-		};
-		64E4CA1B2C92496100395C9D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Account/AccountEditEmail.swift,
-				Account/AccountEditFullName.swift,
-				Account/AccountEditPassword.swift,
-				Account/AccountOverview.swift,
-				Account/AccountSettings.swift,
-				Account/AccountStore.swift,
-				Browser/BrowserList.swift,
-				Browser/BrowserOverview.swift,
-				Browser/BrowserStore.swift,
-				File/FileCopy.swift,
-				File/FileDelete.swift,
-				File/FileDownload.swift,
-				File/FileDownloadPicker.swift,
-				File/FileGrid.swift,
-				File/FileInfo.swift,
-				File/FileList.swift,
-				File/FileMove.swift,
-				File/FileOverview.swift,
-				File/FileRename.swift,
-				File/FileSheets.swift,
-				File/FileStore.swift,
-				File/FileToolbar.swift,
-				File/FileUpload.swift,
-				File/FileUploadPicker.swift,
-				File/FolderCreate.swift,
-				"File/Icon/File+Icon.swift",
-				File/Icon/FileAdornments.swift,
-				File/Icon/FileBadge.swift,
-				File/Icon/FileCell.swift,
-				File/Icon/FileCellAdornments.swift,
-				File/Icon/FileCellMetrics.swift,
-				File/Icon/FileCellThumbnail.swift,
-				File/Icon/FileRow.swift,
-				File/Menu/FileActions.swift,
-				File/Menu/FileContextMenu.swift,
-				File/Menu/FileMenu.swift,
-				File/Sheet/FileSheetCopy.swift,
-				File/Sheet/FileSheetCreateFolder.swift,
-				File/Sheet/FileSheetDelete.swift,
-				File/Sheet/FileSheetDownload.swift,
-				File/Sheet/FileSheetInfo.swift,
-				File/Sheet/FileSheetInsights.swift,
-				File/Sheet/FileSheetMosaic.swift,
-				File/Sheet/FileSheetMove.swift,
-				File/Sheet/FileSheetRename.swift,
-				File/Sheet/FileSheetSharing.swift,
-				File/Sheet/FileSheetSnapshots.swift,
-				File/Sheet/FileSheetTasks.swift,
-				File/Sheet/FileSheetUpload.swift,
-				ForgotPassword/ForgotPassword.swift,
-				ForgotPassword/ForgotPasswordStore.swift,
-				Group/GroupCreate.swift,
-				Group/GroupEditName.swift,
-				Group/GroupList.swift,
-				Group/GroupMemberAdd.swift,
-				Group/GroupMemberList.swift,
-				Group/GroupOverview.swift,
-				Group/GroupRow.swift,
-				Group/GroupSelector.swift,
-				Group/GroupSettings.swift,
-				Group/GroupStore.swift,
-				Insights/InsightsChart.swift,
-				Insights/InsightsCreate.swift,
-				Insights/InsightsEntityList.swift,
-				Insights/InsightsEntityRow.swift,
-				Insights/InsightsOverview.swift,
-				Insights/InsightsSettings.swift,
-				Insights/InsightsStore.swift,
-				Invitation/InvitationCreate.swift,
-				Invitation/InvitationIncomingList.swift,
-				Invitation/InvitationIncomingRow.swift,
-				Invitation/InvitationOutgoingList.swift,
-				Invitation/InvitationOutgoingRow.swift,
-				Invitation/InvitationOverview.swift,
-				Invitation/InvitationStatusBadge.swift,
-				Invitation/InvitationStore.swift,
-				Mosaic/MosaicCreate.swift,
-				Mosaic/MosaicSettings.swift,
-				Mosaic/MosaicStore.swift,
-				Organization/OrganizationCreate.swift,
-				Organization/OrganizationEditName.swift,
-				Organization/OrganizationList.swift,
-				Organization/OrganizationMemberList.swift,
-				Organization/OrganizationOverview.swift,
-				Organization/OrganizationRow.swift,
-				Organization/OrganizationSelector.swift,
-				Organization/OrganizationSettings.swift,
-				Organization/OrganizationStore.swift,
-				Server/ServerCreate.swift,
-				Server/ServerEditAPIURL.swift,
-				Server/ServerEditIdentityProviderURL.swift,
-				Server/ServerEditName.swift,
-				Server/ServerList.swift,
-				Server/ServerModel.swift,
-				Server/ServerOverview.swift,
-				Server/ServerRow.swift,
-				Sharing/SharingBatch.swift,
-				Sharing/SharingGroupForm.swift,
-				Sharing/SharingGroupPermissions.swift,
-				Sharing/SharingGroupRow.swift,
-				Sharing/SharingOverview.swift,
-				Sharing/SharingStore.swift,
-				Sharing/SharingUserForm.swift,
-				Sharing/SharingUserPermissions.swift,
-				Sharing/SharingUserRow.swift,
-				SignIn/SignIn.swift,
-				SignIn/TokenStore.swift,
-				SignUp/SignUp.swift,
-				SignUp/SignUpPasswordHint.swift,
-				SignUp/SignUpStore.swift,
-				Snapshot/SnapshotCapabilities.swift,
-				Snapshot/SnapshotList.swift,
-				Snapshot/SnapshotOverview.swift,
-				Snapshot/SnapshotRow.swift,
-				Snapshot/SnapshotStore.swift,
-				Task/TaskList.swift,
-				Task/TaskOverview.swift,
-				Task/TaskPayload.swift,
-				Task/TaskRow.swift,
-				Task/TaskStatusBadge.swift,
-				Task/TaskStore.swift,
-				User/UserRow.swift,
-				User/UserSelector.swift,
-				User/UserStore.swift,
-				"Viewer/3D/SCNNode+BoundingBox.swift",
-				Viewer/3D/Viewer3D.swift,
-				Viewer/3D/Viewer3DRenderer.swift,
-				Viewer/3D/Viewer3DStore.swift,
-				Viewer/Audio/ViewerAudio.swift,
-				Viewer/Audio/ViewerAudioStore.swift,
-				Viewer/Audio/ViewerAudioWebView.swift,
-				Viewer/Image/ViewerImage.swift,
-				Viewer/Image/ViewerImageStore.swift,
-				Viewer/Image/ViewerImageWebView.swift,
-				Viewer/Mosaic/ViewerMosaic.swift,
-				Viewer/Mosaic/ViewerMosaicStore.swift,
-				Viewer/OCR/ViewerOCR.swift,
-				Viewer/OCR/ViewerOCRStore.swift,
-				Viewer/OCR/ViewerOCRWebView.swift,
-				Viewer/PDF/ViewerPDF.swift,
-				Viewer/PDF/ViewerPDFStore.swift,
-				Viewer/PDF/ViewerPDFWebView.swift,
-				Viewer/Video/ViewerVideo.swift,
-				Viewer/Video/ViewerVideoStore.swift,
-				Viewer/Video/ViewerVideoWebView.swift,
-				Viewer/Viewer.swift,
-				Workspace/WorkspaceCreate.swift,
-				Workspace/WorkspaceEditName.swift,
-				Workspace/WorkspaceEditStorageCapacity.swift,
-				Workspace/WorkspaceList.swift,
-				Workspace/WorkspaceOverview.swift,
-				Workspace/WorkspaceRow.swift,
-				Workspace/WorkspaceSettings.swift,
-				Workspace/WorkspaceStore.swift,
-			);
-			target = 649066DD2C5E35AD00BA3CCD /* Voltaserve */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		644C38B42C8F3744008E8F0F /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
-		644C38B72C8F3744008E8F0F /* Infrastructure */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (644C38DA2C8F3744008E8F0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Infrastructure; sourceTree = "<group>"; };
-		64C0F65F2CF26AE8007049E7 /* Protocols */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Protocols; sourceTree = "<group>"; };
-		64DA01D12C98766E0063A4CB /* Design */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Design; sourceTree = "<group>"; };
-		64DA46312CF1A7AA00D57366 /* Library */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Library; sourceTree = "<group>"; };
-		64E4C9B52C92495000395C9D /* Screens */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (64E4CA1B2C92496100395C9D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Screens; sourceTree = "<group>"; };
+		89695FFB2D8776CA000DE6EA /* Fonts */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Fonts; sourceTree = "<group>"; };
+		89FDB5692D87739100EF8593 /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,8 +37,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				644C380F2C8EA8E4008E8F0F /* VoltaserveCore in Frameworks */,
-				649067052C60979900BA3CCD /* GLTFKit2 in Frameworks */,
+				89300BB62D8761AA0083E871 /* VoltaserveCore in Frameworks */,
+				892D8B222D87679E00FCA879 /* VoltaserveCore in Frameworks */,
+				893CA8CA2D876B300003CFC9 /* VoltaserveCore in Frameworks */,
+				893CA8BF2D876A910003CFC9 /* VoltaserveCore in Frameworks */,
+				892D8B482D87685400FCA879 /* VoltaserveCore in Frameworks */,
+				892D8B252D87680D00FCA879 /* VoltaserveCore in Frameworks */,
+				891C72622D876EC4001A4EBB /* VoltaserveCore in Frameworks */,
+				892D8AE72D8763AC00FCA879 /* VoltaserveCore in Frameworks */,
+				892D8B0F2D8765D600FCA879 /* VoltaserveCore in Frameworks */,
+				892D8AEA2D87643100FCA879 /* VoltaserveCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,10 +56,10 @@
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
-				649066E52C5E35AE00BA3CCD /* Assets.xcassets */,
-				64D0D97A2C8120E800B96180 /* Fonts */,
-				649066E72C5E35AE00BA3CCD /* Preview Content */,
-				649066E02C5E35AD00BA3CCD /* Sources */,
+				89695FFB2D8776CA000DE6EA /* Fonts */,
+				89FDB5662D87737000EF8593 /* Assets.xcassets */,
+				89FDB5692D87739100EF8593 /* Preview Content */,
+				892D8B3E2D87684600FCA879 /* VoltaserveApp.swift */,
 				649066DF2C5E35AD00BA3CCD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -244,41 +70,6 @@
 				649066DE2C5E35AD00BA3CCD /* Voltaserve.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		649066E02C5E35AD00BA3CCD /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				64C0F65F2CF26AE8007049E7 /* Protocols */,
-				64DA46312CF1A7AA00D57366 /* Library */,
-				64E4C9B52C92495000395C9D /* Screens */,
-				64DA01D12C98766E0063A4CB /* Design */,
-				644C38B42C8F3744008E8F0F /* Helpers */,
-				644C38B72C8F3744008E8F0F /* Infrastructure */,
-				64D0D9132C8103DF00B96180 /* Config.swift */,
-				649AED222C7FBE0F00DAAA0B /* MainView.swift */,
-				649066E32C5E35AD00BA3CCD /* ContentView.swift */,
-				649066E12C5E35AD00BA3CCD /* VoltaserveApp.swift */,
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
-		649066E72C5E35AE00BA3CCD /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				649066E82C5E35AE00BA3CCD /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		64D0D97A2C8120E800B96180 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				64F083812CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf */,
-				64D0D9782C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf */,
-				64D0D9792C8120E800B96180 /* Unbounded-VariableFont_wght.ttf */,
-			);
-			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,15 +88,21 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				644C38B42C8F3744008E8F0F /* Helpers */,
-				64C0F65F2CF26AE8007049E7 /* Protocols */,
-				64DA01D12C98766E0063A4CB /* Design */,
-				64DA46312CF1A7AA00D57366 /* Library */,
+				89695FFB2D8776CA000DE6EA /* Fonts */,
+				89FDB5692D87739100EF8593 /* Preview Content */,
 			);
 			name = Voltaserve;
 			packageProductDependencies = (
-				649067042C60979900BA3CCD /* GLTFKit2 */,
-				644C380E2C8EA8E4008E8F0F /* VoltaserveCore */,
+				89300BB52D8761AA0083E871 /* VoltaserveCore */,
+				892D8AE62D8763AC00FCA879 /* VoltaserveCore */,
+				892D8AE92D87643100FCA879 /* VoltaserveCore */,
+				892D8B0E2D8765D600FCA879 /* VoltaserveCore */,
+				892D8B212D87679E00FCA879 /* VoltaserveCore */,
+				892D8B242D87680D00FCA879 /* VoltaserveCore */,
+				892D8B472D87685400FCA879 /* VoltaserveCore */,
+				893CA8BE2D876A910003CFC9 /* VoltaserveCore */,
+				893CA8C92D876B300003CFC9 /* VoltaserveCore */,
+				891C72612D876EC4001A4EBB /* VoltaserveCore */,
 			);
 			productName = Voltaserve;
 			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
@@ -323,6 +120,7 @@
 				TargetAttributes = {
 					649066DD2C5E35AD00BA3CCD = {
 						CreatedOnToolsVersion = 15.4;
+						LastSwiftMigration = 1620;
 					};
 				};
 			};
@@ -336,8 +134,7 @@
 			);
 			mainGroup = 649066D52C5E35AD00BA3CCD;
 			packageReferences = (
-				649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */,
-				644C380D2C8EA8E4008E8F0F /* XCRemoteSwiftPackageReference "voltaserve-swift" */,
+				891C72602D876EC4001A4EBB /* XCLocalSwiftPackageReference "../voltaserve-ios" */,
 			);
 			productRefGroup = 649066DF2C5E35AD00BA3CCD /* Products */;
 			projectDirPath = "";
@@ -353,11 +150,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				64D0D97B2C8120E800B96180 /* IBM Plex Sans Var-Roman.ttf in Resources */,
-				64D0D97C2C8120E800B96180 /* Unbounded-VariableFont_wght.ttf in Resources */,
-				649066E92C5E35AE00BA3CCD /* Preview Assets.xcassets in Resources */,
-				649066E62C5E35AE00BA3CCD /* Assets.xcassets in Resources */,
-				64F083822CA87E0A00CCB644 /* IBM Plex Sans Var-Italic.ttf in Resources */,
+				89FDB5672D87737000EF8593 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,10 +161,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				649AED232C7FBE0F00DAAA0B /* MainView.swift in Sources */,
-				649066E42C5E35AD00BA3CCD /* ContentView.swift in Sources */,
-				649066E22C5E35AD00BA3CCD /* VoltaserveApp.swift in Sources */,
-				64D0D9152C8103DF00B96180 /* Config.swift in Sources */,
+				892D8B3F2D87684600FCA879 /* VoltaserveApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,6 +292,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
@@ -510,7 +301,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Voltaserve-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
+				INFOPLIST_KEY_CFBundleDisplayName = "Voltaserve Core";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -522,10 +313,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.koupr.Voltaserve;
+				PRODUCT_BUNDLE_IDENTIFIER = com.koupr.VoltaserveCore;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -536,6 +328,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
@@ -544,7 +337,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Voltaserve-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
+				INFOPLIST_KEY_CFBundleDisplayName = "Voltaserve Core";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -556,7 +349,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.koupr.Voltaserve;
+				PRODUCT_BUNDLE_IDENTIFIER = com.koupr.VoltaserveCore;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -588,35 +381,53 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		644C380D2C8EA8E4008E8F0F /* XCRemoteSwiftPackageReference "voltaserve-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kouprlabs/voltaserve-swift.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		891C72602D876EC4001A4EBB /* XCLocalSwiftPackageReference "../voltaserve-ios" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../voltaserve-ios";
 		};
-		649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/warrenm/GLTFKit2.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.11;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		644C380E2C8EA8E4008E8F0F /* VoltaserveCore */ = {
+		891C72612D876EC4001A4EBB /* VoltaserveCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 644C380D2C8EA8E4008E8F0F /* XCRemoteSwiftPackageReference "voltaserve-swift" */;
 			productName = VoltaserveCore;
 		};
-		649067042C60979900BA3CCD /* GLTFKit2 */ = {
+		892D8AE62D8763AC00FCA879 /* VoltaserveCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 649067032C60979900BA3CCD /* XCRemoteSwiftPackageReference "GLTFKit2" */;
-			productName = GLTFKit2;
+			productName = VoltaserveCore;
+		};
+		892D8AE92D87643100FCA879 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		892D8B0E2D8765D600FCA879 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		892D8B212D87679E00FCA879 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		892D8B242D87680D00FCA879 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		892D8B472D87685400FCA879 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		89300BB52D8761AA0083E871 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		893CA8BE2D876A910003CFC9 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		893CA8C92D876B300003CFC9 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

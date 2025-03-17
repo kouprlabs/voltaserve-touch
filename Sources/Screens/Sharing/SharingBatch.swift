@@ -9,7 +9,6 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
 struct SharingBatch: View, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
@@ -26,49 +25,51 @@ struct SharingBatch: View, TokenDistributing {
     @State private var errorMessage: String?
     private let fileIDs: [String]
 
-    init(_ files: [String], workspaceStore: WorkspaceStore) {
+    public init(_ files: [String], workspaceStore: WorkspaceStore) {
         fileIDs = files
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
-        TabView(selection: $selection) {
-            Tab("Users", systemImage: "person", value: Tag.users) {
-                NavigationStack {
-                    SharingUserForm(
-                        fileIDs: fileIDs,
-                        sharingStore: sharingStore,
-                        workspaceStore: workspaceStore,
-                        enableCancel: true
-                    )
+    public var body: some View {
+        if #available(iOS 18.0, macOS 15.0, *) {
+            TabView(selection: $selection) {
+                Tab("Users", systemImage: "person", value: Tag.users) {
+                    NavigationStack {
+                        SharingUserForm(
+                            fileIDs: fileIDs,
+                            sharingStore: sharingStore,
+                            workspaceStore: workspaceStore,
+                            enableCancel: true
+                        )
+                    }
+                }
+                Tab("Groups", systemImage: "person.2", value: Tag.groups) {
+                    NavigationStack {
+                        SharingGroupForm(
+                            fileIDs: fileIDs,
+                            sharingStore: sharingStore,
+                            workspaceStore: workspaceStore,
+                            enableCancel: true
+                        )
+                    }
                 }
             }
-            Tab("Groups", systemImage: "person.2", value: Tag.groups) {
-                NavigationStack {
-                    SharingGroupForm(
-                        fileIDs: fileIDs,
-                        sharingStore: sharingStore,
-                        workspaceStore: workspaceStore,
-                        enableCancel: true
-                    )
+            .onAppear {
+                if let token = tokenStore.token {
+                    assignTokenToStores(token)
                 }
-            }
-        }
-        .onAppear {
-            if let token = tokenStore.token {
-                assignTokenToStores(token)
             }
         }
     }
 
-    enum Tag {
+    public enum Tag {
         case users
         case groups
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         sharingStore.token = token
     }
 }

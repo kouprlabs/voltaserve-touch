@@ -10,21 +10,18 @@
 
 import SwiftUI
 
-struct VOColorBadge: View {
+public struct VOColorBadge: View {
     private let text: String
     private let color: Color
     private let style: Style
 
-    init(_ text: String, color: Color, style: Style) {
+    public init(_ text: String, color: Color, style: Style) {
         self.text = text
         self.color = color
         self.style = style
     }
 
-    var body: some View {
-        if style == .fill {
-        } else if style == .outline {
-        }
+    public var body: some View {
         Text(text)
             .font(.footnote)
             .padding(.horizontal)
@@ -45,7 +42,7 @@ struct VOColorBadge: View {
             }
     }
 
-    enum Style {
+    public enum Style {
         case fill
         case outline
     }

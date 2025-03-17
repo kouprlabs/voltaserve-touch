@@ -10,20 +10,19 @@
 
 import Charts
 import SwiftUI
-import VoltaserveCore
 
-struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
+public struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var insightsStore = InsightsStore(pageSize: Constants.pageSize)
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 if isLoading {
@@ -107,21 +106,21 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         insightsStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         insightsStore.entitiesError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         if let snapshot = file.snapshot, snapshot.capabilities.entities {
             insightsStore.fetchEntityNextPage(replace: true)
         }
@@ -129,17 +128,17 @@ struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         insightsStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         insightsStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         insightsStore.token = token
     }
 }

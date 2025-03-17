@@ -10,26 +10,25 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class BrowserStore: ObservableObject {
-    @Published var entities: [VOFile.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
-    @Published var folder: VOFile.Entity?
-    @Published var folderIsLoading: Bool = false
-    @Published var folderError: String?
-    @Published var query: VOFile.Query = .init(type: .folder)
+public class BrowserStore: ObservableObject {
+    @Published public var entities: [VOFile.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
+    @Published public var folder: VOFile.Entity?
+    @Published public var folderIsLoading: Bool = false
+    @Published public var folderError: String?
+    @Published public var query: VOFile.Query = .init(type: .folder)
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var fileClient: VOFile?
-    var folderID: String?
-    let searchPublisher = PassthroughSubject<String, Never>()
+    public var folderID: String?
+    public let searchPublisher = PassthroughSubject<String, Never>()
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 fileClient = .init(
@@ -40,7 +39,7 @@ class BrowserStore: ObservableObject {
         }
     }
 
-    init() {
+    public init() {
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -61,7 +60,7 @@ class BrowserStore: ObservableObject {
         return try await fileClient?.fetch(folderID)
     }
 
-    func fetchFolder() {
+    public func fetchFolder() {
         var folder: VOFile.Entity?
         withErrorHandling {
             folder = try await self.fetchFolder()
@@ -94,7 +93,7 @@ class BrowserStore: ObservableObject {
             ))
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard let folderID else { return }
         guard !entitiesIsLoading else { return }
 
@@ -140,7 +139,7 @@ class BrowserStore: ObservableObject {
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOFile.Entity]) {
+    public func append(_ newEntities: [VOFile.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -149,14 +148,14 @@ class BrowserStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -168,11 +167,11 @@ class BrowserStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -188,7 +187,7 @@ class BrowserStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let current = self.folder, self.entities != nil {
@@ -220,7 +219,7 @@ class BrowserStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

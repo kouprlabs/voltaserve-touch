@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-struct ServerCreate: View, FormValidatable {
+public struct ServerCreate: View, FormValidatable {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) var dismiss
     @State private var name = ""
@@ -18,7 +18,7 @@ struct ServerCreate: View, FormValidatable {
     @State private var idpURL = ""
     @State private var isProcessing = false
 
-    var body: some View {
+    public var body: some View {
         Form {
             Section(header: VOSectionHeader("Details")) {
                 TextField("Name", text: $name)
@@ -77,7 +77,7 @@ struct ServerCreate: View, FormValidatable {
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !normalizedName.isEmpty && apiURL.isValidURL() && idpURL.isValidURL()
     }
 }

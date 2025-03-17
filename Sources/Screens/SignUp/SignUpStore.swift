@@ -10,13 +10,12 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class SignUpStore: ObservableObject {
-    @Published var passwordRequirements: VOAccount.PasswordRequirements?
-    @Published var passwordRequirementsIsLoading: Bool = false
-    @Published var passwordRequirementsError: String?
+public class SignUpStore: ObservableObject {
+    @Published public var passwordRequirements: VOAccount.PasswordRequirements?
+    @Published public var passwordRequirementsIsLoading: Bool = false
+    @Published public var passwordRequirementsError: String?
     private var timer: Timer?
     private var accountClient: VOAccount = .init(baseURL: Config.production.idpURL)
 
@@ -26,7 +25,7 @@ class SignUpStore: ObservableObject {
         return try await accountClient.fetchPasswordRequirements()
     }
 
-    func fetchPasswordRequirements() {
+    public func fetchPasswordRequirements() {
         var passwordRequirements: VOAccount.PasswordRequirements?
         withErrorHandling {
             passwordRequirements = try await self.fetchPasswordRequirements()
@@ -45,13 +44,13 @@ class SignUpStore: ObservableObject {
 
     // MARK: - Update
 
-    func signUp(_ options: VOAccount.CreateOptions) async throws -> VOIdentityUser.Entity {
+    public func signUp(_ options: VOAccount.CreateOptions) async throws -> VOIdentityUser.Entity {
         return try await accountClient.create(options)
     }
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.passwordRequirements != nil {
@@ -68,7 +67,7 @@ class SignUpStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

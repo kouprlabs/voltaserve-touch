@@ -10,24 +10,23 @@
 
 import PDFKit
 import SwiftUI
-import VoltaserveCore
 
-class ViewerVideoStore: ObservableObject {
-    @Published var url: URL?
+public class ViewerVideoStore: ObservableObject {
+    @Published public var url: URL?
 
-    var id: String? {
+    public var id: String? {
         didSet {
             url = buildURL(id: id, fileExtension: fileExtension, token: token)
         }
     }
 
-    var fileExtension: String? {
+    public var fileExtension: String? {
         didSet {
             url = buildURL(id: id, fileExtension: fileExtension, token: token)
         }
     }
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             url = buildURL(id: id, fileExtension: fileExtension, token: token)
         }

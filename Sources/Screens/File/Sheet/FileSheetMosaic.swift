@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileSheetMosaic: ViewModifier {
+public struct FileSheetMosaic: ViewModifier {
     @ObservedObject private var fileStore: FileStore
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.mosaicIsPresented) {
                 if let file, let snapshot = file.snapshot {
@@ -40,7 +39,7 @@ struct FileSheetMosaic: ViewModifier {
 }
 
 extension View {
-    func fileSheetMosaic(fileStore: FileStore) -> some View {
+    public func fileSheetMosaic(fileStore: FileStore) -> some View {
         modifier(FileSheetMosaic(fileStore: fileStore))
     }
 }

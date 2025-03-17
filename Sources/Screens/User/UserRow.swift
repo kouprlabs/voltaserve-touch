@@ -10,20 +10,19 @@
 
 import SwiftUI
 import UIKit
-import VoltaserveCore
 
-struct UserRow: View {
+public struct UserRow: View {
     @StateObject private var userStore = UserStore()
     @Environment(\.colorScheme) private var colorScheme
     private let user: VOUser.Entity
     private let pictureURL: URL?
 
-    init(_ user: VOUser.Entity, pictureURL: URL? = nil) {
+    public init(_ user: VOUser.Entity, pictureURL: URL? = nil) {
         self.user = user
         self.pictureURL = pictureURL
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             VOAvatar(
                 name: user.fullName,

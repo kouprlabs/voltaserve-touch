@@ -10,17 +10,17 @@
 
 import SwiftUI
 
-struct FileSheetCopy: ViewModifier {
+public struct FileSheetCopy: ViewModifier {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var destinationID: String?
 
-    init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore
         self.workspaceStore = workspaceStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.browserForCopyIsPresented) {
                 NavigationStack {
@@ -43,7 +43,7 @@ struct FileSheetCopy: ViewModifier {
 }
 
 extension View {
-    func fileSheetCopy(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
+    public func fileSheetCopy(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
         modifier(FileSheetCopy(fileStore: fileStore, workspaceStore: workspaceStore))
     }
 }

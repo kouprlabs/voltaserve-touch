@@ -10,9 +10,9 @@
 
 import Combine
 import SwiftUI
-import VoltaserveCore
 
-struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable
+public struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
 {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var groupStore: GroupStore
@@ -20,11 +20,11 @@ struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
     @State private var addMemberIsPresentable = false
     @State private var searchText = ""
 
-    init(groupStore: GroupStore) {
+    public init(groupStore: GroupStore) {
         self.groupStore = groupStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -105,43 +105,43 @@ struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         userStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         userStore.entitiesError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         userStore.fetchNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         userStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         userStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         userStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if userStore.isEntityThreshold(id) {
             userStore.fetchNextPage()
         }

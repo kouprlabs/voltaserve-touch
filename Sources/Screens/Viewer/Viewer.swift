@@ -9,18 +9,17 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct Viewer: View {
+public struct Viewer: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var isImmersiveMode: Bool = false
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity) {
+    public init(_ file: VOFile.Entity) {
         self.file = file
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 ViewerPDF(file)

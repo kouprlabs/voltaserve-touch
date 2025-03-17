@@ -10,30 +10,29 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class InsightsStore: ObservableObject {
-    @Published var entities: [VOEntity.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
-    @Published var languages: [VOSnapshot.Language]?
-    @Published var languagesIsLoading: Bool = false
-    var languagesIsLoadingFirstTime: Bool { languagesIsLoading && languages == nil }
-    @Published var languagesError: String?
-    @Published var query: String?
+public class InsightsStore: ObservableObject {
+    @Published public var entities: [VOEntity.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
+    @Published public var languages: [VOSnapshot.Language]?
+    @Published public var languagesIsLoading: Bool = false
+    public var languagesIsLoadingFirstTime: Bool { languagesIsLoading && languages == nil }
+    @Published public var languagesError: String?
+    @Published public var query: String?
     private var list: VOEntity.List?
     private var cancellables: Set<AnyCancellable> = []
     private var timer: Timer?
     private var entityClient: VOEntity?
     private var snapshotClient: VOSnapshot?
 
-    let searchPublisher = PassthroughSubject<String, Never>()
-    var file: VOFile.Entity?
-    var pageSize: Int?
+    public let searchPublisher = PassthroughSubject<String, Never>()
+    public var file: VOFile.Entity?
+    public var pageSize: Int?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 entityClient = .init(
@@ -48,7 +47,7 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    init(file: VOFile.Entity? = nil, pageSize: Int? = nil) {
+    public init(file: VOFile.Entity? = nil, pageSize: Int? = nil) {
         self.file = file
         self.pageSize = pageSize
         searchPublisher
@@ -66,7 +65,7 @@ class InsightsStore: ObservableObject {
         try await snapshotClient?.fetchLanguages()
     }
 
-    func fetchLanguages() {
+    public func fetchLanguages() {
         var languages: [VOSnapshot.Language]?
         withErrorHandling {
             languages = try await self.fetchLanguages()
@@ -110,7 +109,7 @@ class InsightsStore: ObservableObject {
         )
     }
 
-    func fetchEntityNextPage(replace: Bool = false) {
+    public func fetchEntityNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -154,19 +153,19 @@ class InsightsStore: ObservableObject {
 
     // MARK: - Update
 
-    func create(language: String) async throws -> VOTask.Entity? {
+    public func create(language: String) async throws -> VOTask.Entity? {
         guard let file else { return nil }
         return try await entityClient?.create(file.id, options: .init(language: language))
     }
 
-    func delete() async throws -> VOTask.Entity? {
+    public func delete() async throws -> VOTask.Entity? {
         guard let file else { return nil }
         return try await entityClient?.delete(file.id)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOEntity.Entity]) {
+    public func append(_ newEntities: [VOEntity.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -175,14 +174,14 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -194,11 +193,11 @@ class InsightsStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -214,7 +213,7 @@ class InsightsStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.entities != nil {
@@ -235,7 +234,7 @@ class InsightsStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

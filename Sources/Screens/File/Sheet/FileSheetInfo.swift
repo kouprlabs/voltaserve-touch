@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileSheetInfo: ViewModifier {
+public struct FileSheetInfo: ViewModifier {
     @ObservedObject private var fileStore: FileStore
 
-    init(fileStore: FileStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.infoIsPresented) {
                 if let file {
@@ -36,7 +35,7 @@ struct FileSheetInfo: ViewModifier {
 }
 
 extension View {
-    func fileSheetInfo(fileStore: FileStore) -> some View {
+    public func fileSheetInfo(fileStore: FileStore) -> some View {
         modifier(FileSheetInfo(fileStore: fileStore))
     }
 }

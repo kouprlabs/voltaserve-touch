@@ -14,11 +14,11 @@ struct ServerRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let server: Server
 
-    init(_ server: Server) {
+    public init(_ server: Server) {
         self.server = server
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacingSm) {
             if server.isActive {
                 checkmark
@@ -28,6 +28,8 @@ struct ServerRow: View {
             }
             if server.isCloud {
                 cloudBadge
+            } else {
+                otherBadge
             }
             Text(server.name)
                 .foregroundStyle(colorScheme == .dark ? .white : .black)
@@ -47,7 +49,19 @@ struct ServerRow: View {
     }
 
     private var cloudBadge: some View {
-        Image("social")
+        Image("server-icon-cloud")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs))
+            .overlay {
+                RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs)
+                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+            }
+            .frame(width: 20, height: 20)
+    }
+
+    private var otherBadge: some View {
+        Image("server-icon-other")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs))

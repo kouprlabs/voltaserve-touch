@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-struct FileBadge: View {
+public struct FileBadge: View {
     @Environment(\.colorScheme) private var colorScheme
     private let icon: String
     static let shared = FileBadge(Icons.shared)
@@ -20,23 +20,25 @@ struct FileBadge: View {
     static let error = FileBadge(Icons.error)
     static let waiting = FileBadge(Icons.waiting)
 
-    init(_ icon: String) {
+    public init(_ icon: String) {
         self.icon = icon
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             Circle()
                 .fill(colorScheme == .dark ? Color.gray700 : .white)
                 .stroke(colorScheme == .dark ? Color.gray600 : Color.gray300, lineWidth: 1)
                 .frame(width: Constants.circleSize, height: Constants.circleSize)
             if icon == Icons.processing {
-                Image(systemName: Icons.processing)
-                    .symbolEffect(.rotate, options: .repeat(.continuous))
-                    .symbolRenderingMode(.palette)
-                    .font(.title2)
-                    .foregroundStyle(Color.gray400, colorScheme == .dark ? Color.gray700 : .white)
-                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+                if #available(iOS 18.0, macOS 15.0, *) {
+                    Image(systemName: Icons.processing)
+                        .symbolEffect(.rotate, options: .repeat(.continuous))
+                        .symbolRenderingMode(.palette)
+                        .font(.title2)
+                        .foregroundStyle(Color.gray400, colorScheme == .dark ? Color.gray700 : .white)
+                        .frame(width: Constants.iconSize, height: Constants.iconSize)
+                }
             } else if icon == Icons.error {
                 Image(systemName: Icons.error)
                     .symbolRenderingMode(.palette)

@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, FormValidatable {
+public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, FormValidatable {
     @StateObject private var signUpStore = SignUpStore()
     @State private var fullName: String = ""
     @State private var email: String = ""
@@ -20,12 +20,12 @@ struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, FormVa
     private let onCompletion: (() -> Void)?
     private let onSignIn: (() -> Void)?
 
-    init(_ onCompletion: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
+    public init(_ onCompletion: (() -> Void)? = nil, onSignIn: (() -> Void)? = nil) {
         self.onCompletion = onCompletion
         self.onSignIn = onSignIn
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 if isLoading {
@@ -142,42 +142,42 @@ struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, FormVa
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         signUpStore.passwordRequirementsIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         signUpStore.passwordRequirementsError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         signUpStore.fetchPasswordRequirements()
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         signUpStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         signUpStore.stopTimer()
     }
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !email.isEmpty && !fullName.isEmpty && !password.isEmpty && !confirmPassword.isEmpty
             && password == confirmPassword
     }

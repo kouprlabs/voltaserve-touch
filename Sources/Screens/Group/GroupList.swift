@@ -10,17 +10,20 @@
 
 import Combine
 import SwiftUI
-import VoltaserveCore
 
-struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
+public struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var groupStore = GroupStore()
+    @StateObject private var accountStore = AccountStore()
+    @StateObject private var invitationStore = InvitationStore()
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
     @State private var searchText = ""
     @State private var newGroup: VOGroup.Entity?
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -58,6 +61,7 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
                 }
             }
             .navigationTitle("Groups")
+            .accountToolbar(accountStore: accountStore, invitationStore: invitationStore)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -80,6 +84,7 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
             }
         }
         .onAppear {
+            accountStore.tokenStore = tokenStore
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()
@@ -103,43 +108,52 @@ struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, Tok
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
-        groupStore.entitiesIsLoadingFirstTime
+    public var isLoading: Bool {
+        groupStore.entitiesIsLoadingFirstTime || accountStore.identityUserIsLoading
+            || invitationStore.incomingCountIsLoading
     }
 
-    var error: String? {
-        groupStore.entitiesError
+    public var error: String? {
+        groupStore.entitiesError ?? accountStore.identityUserError ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         groupStore.fetchNextPage(replace: true)
+        accountStore.fetchIdentityUser()
+        invitationStore.fetchIncomingCount()
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         groupStore.startTimer()
+        accountStore.startTimer()
+        invitationStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         groupStore.stopTimer()
+        accountStore.stopTimer()
+        invitationStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         groupStore.token = token
+        accountStore.token = token
+        invitationStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if groupStore.isEntityThreshold(id) {
             groupStore.fetchNextPage()
         }

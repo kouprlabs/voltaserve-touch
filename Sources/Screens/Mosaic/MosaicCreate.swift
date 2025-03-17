@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
+public struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var mosaicStore = MosaicStore()
     @Environment(\.dismiss) private var dismiss
@@ -19,11 +18,11 @@ struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
     @State private var isCreating = false
     private let fileID: String
 
-    init(_ fileID: String) {
+    public init(_ fileID: String) {
         self.fileID = fileID
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 VStack {
@@ -93,12 +92,12 @@ struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         mosaicStore.token = token
     }
 }

@@ -10,8 +10,8 @@
 
 import SwiftUI
 
-struct VOSheetProgressView: View {
-    var body: some View {
+public struct VOSheetProgressView: View {
+    public var body: some View {
         ProgressView()
             .frame(width: 30, height: 30)
     }

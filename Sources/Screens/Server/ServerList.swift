@@ -11,12 +11,12 @@
 import SwiftData
 import SwiftUI
 
-struct ServerList: View {
+public struct ServerList: View {
     @Environment(\.modelContext) private var context
     @Query private var servers: [Server]
     @State private var showCreate = false
 
-    var body: some View {
+    public var body: some View {
         List(servers, id: \.id) { server in
             NavigationLink {
                 ServerOverview(server)

@@ -10,19 +10,20 @@
 
 import Combine
 import SwiftUI
-import VoltaserveCore
 
-struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
     ListItemScrollable
 {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var organizationStore = OrganizationStore()
+    @StateObject private var accountStore = AccountStore()
+    @StateObject private var invitationStore = InvitationStore()
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
     @State private var searchText = ""
     @State private var newOrganization: VOOrganization.Entity?
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -60,6 +61,7 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                 }
             }
             .navigationTitle("Organizations")
+            .accountToolbar(accountStore: accountStore, invitationStore: invitationStore)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -105,43 +107,52 @@ struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
-        organizationStore.entitiesIsLoadingFirstTime
+    public var isLoading: Bool {
+        organizationStore.entitiesIsLoadingFirstTime || accountStore.identityUserIsLoading
+            || invitationStore.incomingCountIsLoading
     }
 
-    var error: String? {
-        organizationStore.entitiesError
+    public var error: String? {
+        organizationStore.entitiesError ?? accountStore.identityUserError ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         organizationStore.fetchNextPage(replace: true)
+        accountStore.fetchIdentityUser()
+        invitationStore.fetchIncomingCount()
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         organizationStore.startTimer()
+        accountStore.startTimer()
+        invitationStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         organizationStore.stopTimer()
+        accountStore.stopTimer()
+        invitationStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         organizationStore.token = token
+        accountStore.token = token
+        invitationStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if organizationStore.isEntityThreshold(id) {
             organizationStore.fetchNextPage()
         }

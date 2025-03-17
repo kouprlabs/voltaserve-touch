@@ -10,61 +10,60 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
 // swiftlint:disable:next type_body_length
-class FileStore: ObservableObject {
-    @Published var entities: [VOFile.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
-    @Published var taskCount: Int?
-    @Published var taskCountIsLoading: Bool = false
-    @Published var taskCountError: String?
-    @Published var storageUsage: VOStorage.Usage?
-    @Published var storageUsageIsLoading: Bool = false
-    @Published var storageUsageError: String?
-    @Published var itemCount: Int?
-    @Published var itemCountIsLoading: Bool = false
-    @Published var itemCountError: String?
-    @Published var file: VOFile.Entity?
-    @Published var fileIsLoading: Bool = false
-    @Published var fileError: String?
-    @Published var query: VOFile.Query?
-    @Published var selection = Set<String>() {
+public class FileStore: ObservableObject {
+    @Published public var entities: [VOFile.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
+    @Published public var taskCount: Int?
+    @Published public var taskCountIsLoading: Bool = false
+    @Published public var taskCountError: String?
+    @Published public var storageUsage: VOStorage.Usage?
+    @Published public var storageUsageIsLoading: Bool = false
+    @Published public var storageUsageError: String?
+    @Published public var itemCount: Int?
+    @Published public var itemCountIsLoading: Bool = false
+    @Published public var itemCountError: String?
+    @Published public var file: VOFile.Entity?
+    @Published public var fileIsLoading: Bool = false
+    @Published public var fileError: String?
+    @Published public var query: VOFile.Query?
+    @Published public var selection = Set<String>() {
         willSet {
             objectWillChange.send()
         }
     }
 
-    @Published var renameIsPresented = false
-    @Published var deleteConfirmationIsPresented = false
-    @Published var downloadIsPresented = false
-    @Published var browserForMoveIsPresented = false
-    @Published var browserForCopyIsPresented = false
-    @Published var uploadDocumentPickerIsPresented = false
-    @Published var downloadDocumentPickerIsPresented = false
-    @Published var createFolderIsPresented = false
-    @Published var uploadIsPresented = false
-    @Published var moveIsPresented = false
-    @Published var copyIsPresented = false
-    @Published var sharingIsPresented = false
-    @Published var snapshotsIsPresented = false
-    @Published var tasksIsPresented = false
-    @Published var mosaicIsPresented = false
-    @Published var insightsIsPresented = false
-    @Published var infoIsPresented = false
-    @Published var viewMode: ViewMode = .grid
+    @Published public var renameIsPresented = false
+    @Published public var deleteConfirmationIsPresented = false
+    @Published public var downloadIsPresented = false
+    @Published public var browserForMoveIsPresented = false
+    @Published public var browserForCopyIsPresented = false
+    @Published public var uploadDocumentPickerIsPresented = false
+    @Published public var downloadDocumentPickerIsPresented = false
+    @Published public var createFolderIsPresented = false
+    @Published public var uploadIsPresented = false
+    @Published public var moveIsPresented = false
+    @Published public var copyIsPresented = false
+    @Published public var sharingIsPresented = false
+    @Published public var snapshotsIsPresented = false
+    @Published public var tasksIsPresented = false
+    @Published public var mosaicIsPresented = false
+    @Published public var insightsIsPresented = false
+    @Published public var infoIsPresented = false
+    @Published public var viewMode: ViewMode = .grid
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
     private var fileClient: VOFile?
     private var taskClient: VOTask?
     private var storageClient: VOStorage?
-    let searchPublisher = PassthroughSubject<String, Never>()
+    public let searchPublisher = PassthroughSubject<String, Never>()
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 fileClient = .init(
@@ -83,7 +82,7 @@ class FileStore: ObservableObject {
         }
     }
 
-    var selectionFiles: [VOFile.Entity] {
+    public var selectionFiles: [VOFile.Entity] {
         var files: [VOFile.Entity] = []
         for id in selection {
             let file = entities?.first(where: { $0.id == id })
@@ -94,7 +93,7 @@ class FileStore: ObservableObject {
         return files
     }
 
-    init() {
+    public init() {
         loadViewModeFromUserDefaults()
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
@@ -116,7 +115,7 @@ class FileStore: ObservableObject {
         return try await fileClient?.fetch(file.id)
     }
 
-    func fetchFile() {
+    public func fetchFile() {
         var folder: VOFile.Entity?
         withErrorHandling {
             folder = try await self.fetchFile()
@@ -149,7 +148,7 @@ class FileStore: ObservableObject {
             ))
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard let file else { return }
         guard !entitiesIsLoading else { return }
 
@@ -197,7 +196,7 @@ class FileStore: ObservableObject {
         try await taskClient?.fetchCount()
     }
 
-    func fetchTaskCount() {
+    public func fetchTaskCount() {
         var taskCount: Int?
         withErrorHandling {
             taskCount = try await self.fetchTaskCount()
@@ -219,7 +218,7 @@ class FileStore: ObservableObject {
         return try await storageClient?.fetchFileUsage(file.id)
     }
 
-    func fetchStorageUsage() {
+    public func fetchStorageUsage() {
         var storageUsage: VOStorage.Usage?
         withErrorHandling {
             storageUsage = try await self.fetchStorageUsage()
@@ -241,7 +240,7 @@ class FileStore: ObservableObject {
         return try await fileClient?.fetchCount(file.id)
     }
 
-    func fetchItemCount() {
+    public func fetchItemCount() {
         var itemCount: Int?
         withErrorHandling {
             itemCount = try await self.fetchItemCount()
@@ -260,27 +259,27 @@ class FileStore: ObservableObject {
 
     // MARK: - Update
 
-    func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
+    public func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
         try await fileClient?.createFolder(.init(workspaceID: workspaceID, parentID: parentID, name: name))
     }
 
-    func patchName(_ id: String, name: String) async throws -> VOFile.Entity? {
+    public func patchName(_ id: String, name: String) async throws -> VOFile.Entity? {
         try await fileClient?.patchName(id, options: .init(name: name))
     }
 
-    func copy(_ ids: [String], to targetID: String) async throws -> VOFile.CopyResult? {
+    public func copy(_ ids: [String], to targetID: String) async throws -> VOFile.CopyResult? {
         try await fileClient?.copy(.init(sourceIDs: ids, targetID: targetID))
     }
 
-    func move(_ ids: [String], to targetID: String) async throws -> VOFile.MoveResult? {
+    public func move(_ ids: [String], to targetID: String) async throws -> VOFile.MoveResult? {
         try await fileClient?.move(.init(sourceIDs: ids, targetID: targetID))
     }
 
-    func delete(_ ids: [String]) async throws -> VOFile.DeleteResult? {
+    public func delete(_ ids: [String]) async throws -> VOFile.DeleteResult? {
         try await fileClient?.delete(.init(ids: ids))
     }
 
-    func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
+    public func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
         guard let file else { return nil }
         if let data = try? Data(contentsOf: url) {
             return try await fileClient?.createFile(
@@ -296,21 +295,21 @@ class FileStore: ObservableObject {
 
     // MARK: - URL
 
-    func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
+    public func urlForThumbnail(_ id: String, fileExtension: String) -> URL? {
         fileClient?.urlForThumbnail(id, fileExtension: fileExtension)
     }
 
-    func urlForPreview(_ id: String, fileExtension: String) -> URL? {
+    public func urlForPreview(_ id: String, fileExtension: String) -> URL? {
         fileClient?.urlForPreview(id, fileExtension: fileExtension)
     }
 
-    func urlForOriginal(_ id: String, fileExtension: String) -> URL? {
+    public func urlForOriginal(_ id: String, fileExtension: String) -> URL? {
         fileClient?.urlForOriginal(id, fileExtension: fileExtension)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOFile.Entity]) {
+    public func append(_ newEntities: [VOFile.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -319,14 +318,14 @@ class FileStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -338,11 +337,11 @@ class FileStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -356,7 +355,7 @@ class FileStore: ObservableObject {
         return false
     }
 
-    func isLastPage() -> Bool {
+    public func isLastPage() -> Bool {
         if let list {
             return list.page == list.totalPages
         }
@@ -365,7 +364,7 @@ class FileStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if let current = self.file, self.entities != nil {
@@ -406,14 +405,14 @@ class FileStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }
 
     // MARK: - Misc
 
-    func isOwnerInSelection(_ selection: Set<String>) -> Bool {
+    public func isOwnerInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
         return
             entities
@@ -421,7 +420,7 @@ class FileStore: ObservableObject {
             .allSatisfy { $0.permission.ge(.owner) }
     }
 
-    func isEditorInSelection(_ selection: Set<String>) -> Bool {
+    public func isEditorInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
         return
             entities
@@ -429,7 +428,7 @@ class FileStore: ObservableObject {
             .allSatisfy { $0.permission.ge(.editor) }
     }
 
-    func isViewerInSelection(_ selection: Set<String>) -> Bool {
+    public func isViewerInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
         return
             entities
@@ -437,7 +436,7 @@ class FileStore: ObservableObject {
             .allSatisfy { $0.permission.ge(.viewer) }
     }
 
-    func isFilesInSelection(_ selection: Set<String>) -> Bool {
+    public func isFilesInSelection(_ selection: Set<String>) -> Bool {
         guard let entities else { return false }
         return
             entities
@@ -445,96 +444,96 @@ class FileStore: ObservableObject {
             .allSatisfy { $0.type == .file }
     }
 
-    func isInsightsAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isInsightsAuthorized(_ file: VOFile.Entity) -> Bool {
         guard let snapshot = file.snapshot else { return false }
         return file.type == .file && !(file.snapshot?.task?.isPending ?? false)
             && (snapshot.capabilities.entities || snapshot.capabilities.summary || snapshot.intent == .document)
             && (file.permission.ge(.viewer) || file.permission.ge(.editor))
     }
 
-    func isMosaicAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isMosaicAuthorized(_ file: VOFile.Entity) -> Bool {
         guard let snapshot = file.snapshot else { return false }
         guard let fileExtension = snapshot.original.fileExtension else { return false }
         return file.type == .file && !(snapshot.task?.isPending ?? false) && fileExtension.isImage()
     }
 
-    func isSharingAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isSharingAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.owner)
     }
 
-    func isSharingAuthorized(_ selection: Set<String>) -> Bool {
+    public func isSharingAuthorized(_ selection: Set<String>) -> Bool {
         !selection.isEmpty && isOwnerInSelection(selection)
     }
 
-    func isDeleteAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isDeleteAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.owner)
     }
 
-    func isDeleteAuthorized(_ selection: Set<String>) -> Bool {
+    public func isDeleteAuthorized(_ selection: Set<String>) -> Bool {
         !selection.isEmpty && isOwnerInSelection(selection)
     }
 
-    func isMoveAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isMoveAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.editor)
     }
 
-    func isMoveAuthorized(_ selection: Set<String>) -> Bool {
+    public func isMoveAuthorized(_ selection: Set<String>) -> Bool {
         !selection.isEmpty && isEditorInSelection(selection)
     }
 
-    func isCopyAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isCopyAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.editor)
     }
 
-    func isCopyAuthorized(_ selection: Set<String>) -> Bool {
+    public func isCopyAuthorized(_ selection: Set<String>) -> Bool {
         !selection.isEmpty && isEditorInSelection(selection)
     }
 
-    func isSnapshotsAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isSnapshotsAuthorized(_ file: VOFile.Entity) -> Bool {
         file.type == .file && file.permission.ge(.owner)
     }
 
-    func isUploadAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isUploadAuthorized(_ file: VOFile.Entity) -> Bool {
         file.type == .file && file.permission.ge(.editor)
     }
 
-    func isDownloadAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isDownloadAuthorized(_ file: VOFile.Entity) -> Bool {
         file.type == .file && file.permission.ge(.viewer)
     }
 
-    func isDownloadAuthorized(_ selection: Set<String>) -> Bool {
+    public func isDownloadAuthorized(_ selection: Set<String>) -> Bool {
         !selection.isEmpty && isViewerInSelection(selection) && isFilesInSelection(selection)
     }
 
-    func isRenameAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isRenameAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.editor)
     }
 
-    func isInfoAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isInfoAuthorized(_ file: VOFile.Entity) -> Bool {
         file.permission.ge(.viewer)
     }
 
-    func isManagementAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isManagementAuthorized(_ file: VOFile.Entity) -> Bool {
         isSharingAuthorized(file) || isSnapshotsAuthorized(file) || isUploadAuthorized(file)
             || isDownloadAuthorized(file)
     }
 
-    func isOpenAuthorized(_ file: VOFile.Entity) -> Bool {
+    public func isOpenAuthorized(_ file: VOFile.Entity) -> Bool {
         file.type == .file && file.permission.ge(.viewer)
     }
 
-    func toggleViewMode() {
+    public func toggleViewMode() {
         viewMode = viewMode == .list ? .grid : .list
         UserDefaults.standard.set(viewMode.rawValue, forKey: Constants.userDefaultViewModeKey)
     }
 
-    func loadViewModeFromUserDefaults() {
+    public func loadViewModeFromUserDefaults() {
         if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
             self.viewMode = ViewMode(rawValue: viewMode)!
         }
     }
 
-    enum ViewMode: String {
+    public enum ViewMode: String {
         case list
         case grid
     }

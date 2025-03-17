@@ -9,17 +9,16 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct WorkspaceRow: View {
+public struct WorkspaceRow: View {
     @Environment(\.colorScheme) private var colorScheme
-    var workspace: VOWorkspace.Entity
+    private var workspace: VOWorkspace.Entity
 
-    init(_ workspace: VOWorkspace.Entity) {
+    public init(_ workspace: VOWorkspace.Entity) {
         self.workspace = workspace
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacing) {
             VOAvatar(name: workspace.name, size: VOMetrics.avatarSize)
             VStack(alignment: .leading) {

@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SharingUserPermissions: View, TokenDistributing {
+public struct SharingUserPermissions: View, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var sharingStore: SharingStore
     @ObservedObject private var workspaceStore: WorkspaceStore
@@ -20,13 +19,13 @@ struct SharingUserPermissions: View, TokenDistributing {
     @State private var permission: VOPermission.Value?
     private let fileID: String
 
-    init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
+    public init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
         self.fileID = fileID
         self.sharingStore = sharingStore
         self.workspaceStore = workspaceStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if let userPermissions = sharingStore.userPermissions {
                 if userPermissions.isEmpty {
@@ -72,7 +71,7 @@ struct SharingUserPermissions: View, TokenDistributing {
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         userStore.token = token
     }
 }

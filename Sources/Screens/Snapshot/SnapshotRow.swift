@@ -9,16 +9,15 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct SnapshotRow: View {
+public struct SnapshotRow: View {
     private let snapshot: VOSnapshot.Entity
 
-    init(_ snapshot: VOSnapshot.Entity) {
+    public init(_ snapshot: VOSnapshot.Entity) {
         self.snapshot = snapshot
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: VOMetrics.spacingSm) {
             if snapshot.isActive {
                 checkmark

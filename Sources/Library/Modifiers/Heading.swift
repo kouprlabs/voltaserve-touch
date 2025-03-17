@@ -10,10 +10,14 @@
 
 import SwiftUI
 
-struct VOHeading: ViewModifier {
-    var fontSize: CGFloat
+public struct VOHeading: ViewModifier {
+    private var fontSize: CGFloat
 
-    func body(content: Content) -> some View {
+    public init(fontSize: CGFloat) {
+        self.fontSize = fontSize
+    }
+
+    public func body(content: Content) -> some View {
         content
             .font(.custom("Unbounded", size: fontSize))
             .fontWeight(.medium)
@@ -21,7 +25,7 @@ struct VOHeading: ViewModifier {
 }
 
 extension View {
-    func voHeading(fontSize: CGFloat) -> some View {
+    public func voHeading(fontSize: CGFloat) -> some View {
         modifier(VOHeading(fontSize: fontSize))
     }
 }

@@ -10,21 +10,21 @@
 
 import Combine
 import SwiftUI
-import VoltaserveCore
 
-struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing, ListItemScrollable {
+public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+    ListItemScrollable
+{
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var workspaceStore = WorkspaceStore()
     @StateObject private var accountStore = AccountStore()
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
     @State private var searchText = ""
-    @State private var accountIsPresented = false
     @State private var createIsPresented = false
     @State private var overviewIsPresented = false
     @State private var newWorkspace: VOWorkspace.Entity?
 
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             VStack {
                 if isLoading {
@@ -62,15 +62,8 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                 }
             }
             .navigationTitle("Workspaces")
+            .accountToolbar(accountStore: accountStore, invitationStore: invitationStore)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
-                        accountButton
-                            .padding(.trailing, VOMetrics.spacingXs)
-                    } else {
-                        accountButton
-                    }
-                }
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
                         createIsPresented = true
@@ -89,9 +82,6 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                 if let newWorkspace {
                     WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
                 }
-            }
-            .sheet(isPresented: $accountIsPresented) {
-                AccountOverview()
             }
         }
         .onAppear {
@@ -117,53 +107,24 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
         }
     }
 
-    private var accountButton: some View {
-        ZStack {
-            Button {
-                accountIsPresented.toggle()
-            } label: {
-                if let identityUser = accountStore.identityUser {
-                    VOAvatar(
-                        name: identityUser.fullName,
-                        size: 30,
-                        url: accountStore.urlForUserPicture(
-                            identityUser.id,
-                            fileExtension: identityUser.picture?.fileExtension
-                        )
-                    )
-                } else {
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                }
-            }
-            if let count = invitationStore.incomingCount, count > 0 {
-                Circle()
-                    .fill(.red)
-                    .frame(width: 10, height: 10)
-                    .offset(x: 14, y: -11)
-            }
-        }
-    }
-
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         workspaceStore.entitiesIsLoadingFirstTime || accountStore.identityUserIsLoading
             || invitationStore.incomingCountIsLoading
     }
 
-    var error: String? {
+    public var error: String? {
         workspaceStore.entitiesError ?? accountStore.identityUserError ?? invitationStore.incomingCountError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         workspaceStore.fetchNextPage(replace: true)
         accountStore.fetchIdentityUser()
         invitationStore.fetchIncomingCount()
@@ -171,13 +132,13 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         workspaceStore.startTimer()
         accountStore.startTimer()
         invitationStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         workspaceStore.stopTimer()
         accountStore.stopTimer()
         invitationStore.stopTimer()
@@ -185,7 +146,7 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         workspaceStore.token = token
         accountStore.token = token
         invitationStore.token = token
@@ -193,7 +154,7 @@ struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if workspaceStore.isEntityThreshold(id) {
             workspaceStore.fetchNextPage()
         }

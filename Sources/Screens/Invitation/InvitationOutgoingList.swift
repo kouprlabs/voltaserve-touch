@@ -9,9 +9,8 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
+public struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing,
     ListItemScrollable
 {
     @EnvironmentObject private var tokenStore: TokenStore
@@ -21,11 +20,11 @@ struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerL
     @State private var invitation: VOInvitation.Entity?
     private let organizationID: String
 
-    init(_ organizationID: String) {
+    public init(_ organizationID: String) {
         self.organizationID = organizationID
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if isLoading {
                 ProgressView()
@@ -95,46 +94,46 @@ struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider, TimerL
 
     // MARK: - LoadStateProvider
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         invitationStore.entitiesIsLoadingFirstTime
     }
 
-    var error: String? {
+    public var error: String? {
         invitationStore.entitiesError
     }
 
     // MARK: - ViewDataProvider
 
-    func onAppearOrChange() {
+    public func onAppearOrChange() {
         fetchData()
     }
 
-    func fetchData() {
+    public func fetchData() {
         invitationStore.fetchNextPage(replace: true)
     }
 
     // MARK: - TimerLifecycle
 
-    func startTimers() {
+    public func startTimers() {
         invitationStore.startTimer()
         organizationStore.startTimer()
     }
 
-    func stopTimers() {
+    public func stopTimers() {
         invitationStore.stopTimer()
         organizationStore.stopTimer()
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         invitationStore.token = token
         organizationStore.token = token
     }
 
     // MARK: - ListItemScrollable
 
-    func onListItemAppear(_ id: String) {
+    public func onListItemAppear(_ id: String) {
         if invitationStore.isEntityThreshold(id) {
             invitationStore.fetchNextPage()
         }

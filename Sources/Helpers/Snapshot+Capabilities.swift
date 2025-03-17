@@ -8,8 +8,6 @@
 // by the GNU Affero General Public License v3.0 only, included in the file
 // AGPL-3.0-only in the root of this repository.
 
-import VoltaserveCore
-
 extension VOSnapshot.Entity {
     var hasCapabilities: Bool {
         capabilities.summary || capabilities.ocr || capabilities.entities || capabilities.mosaic

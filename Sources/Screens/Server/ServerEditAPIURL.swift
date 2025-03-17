@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-struct ServerEditAPIURL: View, FormValidatable {
+public struct ServerEditAPIURL: View, FormValidatable {
     @EnvironmentObject private var tokenStore: TokenStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
@@ -18,11 +18,11 @@ struct ServerEditAPIURL: View, FormValidatable {
     @State private var isProcessing = false
     private let server: Server
 
-    init(_ server: Server) {
+    public init(_ server: Server) {
         self.server = server
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             TextField("API URL", text: $value)
         }
@@ -63,7 +63,7 @@ struct ServerEditAPIURL: View, FormValidatable {
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         value.isValidURL() && value != server.apiURL
     }
 }

@@ -10,18 +10,17 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class MosaicStore: ObservableObject {
-    @Published var metadata: VOMosaic.Metadata?
-    @Published var metadataIsLoading: Bool = false
-    @Published var metadataError: String?
+public class MosaicStore: ObservableObject {
+    @Published public var metadata: VOMosaic.Metadata?
+    @Published public var metadataIsLoading: Bool = false
+    @Published public var metadataError: String?
     private var mosaicClient: VOMosaic?
     private var timer: Timer?
-    var fileID: String?
+    public var fileID: String?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 mosaicClient = .init(
@@ -37,7 +36,7 @@ class MosaicStore: ObservableObject {
         return try await mosaicClient?.fetchMetadata(fileID)
     }
 
-    func fetchMetadata() {
+    public func fetchMetadata() {
         var metadata: VOMosaic.Metadata?
         withErrorHandling {
             metadata = try await self.fetchMetadata()
@@ -54,17 +53,17 @@ class MosaicStore: ObservableObject {
         }
     }
 
-    func create() async throws -> VOTask.Entity? {
+    public func create() async throws -> VOTask.Entity? {
         guard let fileID else { return nil }
         return try await mosaicClient?.create(fileID)
     }
 
-    func delete() async throws -> VOTask.Entity? {
+    public func delete() async throws -> VOTask.Entity? {
         guard let fileID else { return nil }
         return try await mosaicClient?.delete(fileID)
     }
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.metadata != nil {
@@ -81,7 +80,7 @@ class MosaicStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

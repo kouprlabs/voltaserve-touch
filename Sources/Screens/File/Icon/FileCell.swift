@@ -9,19 +9,18 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
-import VoltaserveCore
 
-struct FileCell: View {
+public struct FileCell: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var fileStore: FileStore
     private let file: VOFile.Entity
 
-    init(_ file: VOFile.Entity, fileStore: FileStore) {
+    public init(_ file: VOFile.Entity, fileStore: FileStore) {
         self.file = file
         self.fileStore = fileStore
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: VOMetrics.spacing) {
             if file.type == .file {
                 if let snapshot = file.snapshot,

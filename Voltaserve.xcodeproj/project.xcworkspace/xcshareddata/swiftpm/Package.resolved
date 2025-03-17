@@ -1,5 +1,5 @@
 {
-  "originHash" : "439ab86b420d70774d1e105145fd8adfc90175c9d3700087ff0e150d10193d2a",
+  "originHash" : "5ae4da4ceba075aa3a919d52cb3f6e936bbdc18e76ad731b9a2a3a6b55cc6997",
   "pins" : [
     {
       "identity" : "gltfkit2",
@@ -8,15 +8,6 @@
       "state" : {
         "revision" : "0e399286a29580a6f3c0f49aa01075b5c43a9ce2",
         "version" : "0.5.11"
-      }
-    },
-    {
-      "identity" : "voltaserve-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kouprlabs/voltaserve-swift.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "26ca679d4a113b55a15747c3f3e79eac1c004271"
       }
     }
   ],

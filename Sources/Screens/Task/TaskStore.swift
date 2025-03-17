@@ -10,19 +10,18 @@
 
 import Combine
 import Foundation
-import VoltaserveCore
 
 @MainActor
-class TaskStore: ObservableObject {
-    @Published var entities: [VOTask.Entity]?
-    @Published var entitiesIsLoading: Bool = false
-    var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
-    @Published var entitiesError: String?
+public class TaskStore: ObservableObject {
+    @Published public var entities: [VOTask.Entity]?
+    @Published public var entitiesIsLoading: Bool = false
+    public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
+    @Published public var entitiesError: String?
     private var list: VOTask.List?
     private var timer: Timer?
     private var taskClient: VOTask?
 
-    var token: VOToken.Value? {
+    public var token: VOToken.Value? {
         didSet {
             if let token {
                 taskClient = VOTask(
@@ -43,7 +42,7 @@ class TaskStore: ObservableObject {
         try await taskClient?.fetchList(.init(page: page, size: size, sortBy: .status, sortOrder: .desc))
     }
 
-    func fetchNextPage(replace: Bool = false) {
+    public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -87,17 +86,17 @@ class TaskStore: ObservableObject {
 
     // MARK: - Update
 
-    func dismiss() async throws -> VOTask.DismissAllResult? {
+    public func dismiss() async throws -> VOTask.DismissAllResult? {
         try await taskClient?.dismiss()
     }
 
-    func dismiss(_ id: String) async throws {
+    public func dismiss(_ id: String) async throws {
         try await taskClient?.dismiss(id)
     }
 
     // MARK: - Entities
 
-    func append(_ newEntities: [VOTask.Entity]) {
+    public func append(_ newEntities: [VOTask.Entity]) {
         if entities == nil {
             entities = []
         }
@@ -106,14 +105,14 @@ class TaskStore: ObservableObject {
         }
     }
 
-    func clear() {
+    public func clear() {
         entities = nil
         list = nil
     }
 
     // MARK: - Pagination
 
-    func nextPage() -> Int {
+    public func nextPage() -> Int {
         var page = 1
         if let list {
             if list.page < list.totalPages {
@@ -125,11 +124,11 @@ class TaskStore: ObservableObject {
         return page
     }
 
-    func hasNextPage() -> Bool {
+    public func hasNextPage() -> Bool {
         nextPage() != -1
     }
 
-    func isEntityThreshold(_ id: String) -> Bool {
+    public func isEntityThreshold(_ id: String) -> Bool {
         if let entities {
             let threashold = Constants.pageSize / 2
             if entities.count >= threashold,
@@ -145,7 +144,7 @@ class TaskStore: ObservableObject {
 
     // MARK: - Timer
 
-    func startTimer() {
+    public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             if self.entities != nil {
@@ -166,7 +165,7 @@ class TaskStore: ObservableObject {
         }
     }
 
-    func stopTimer() {
+    public func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

@@ -10,9 +10,8 @@
 
 import Foundation
 import SwiftUI
-import VoltaserveCore
 
-struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresentable {
+public struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
@@ -21,11 +20,11 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
     @State private var isProcessing = false
     private let organizationID: String
 
-    init(_ organizationID: String) {
+    public init(_ organizationID: String) {
         self.organizationID = organizationID
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             Form {
                 Section(header: VOSectionHeader("Comma separated emails")) {
@@ -106,18 +105,18 @@ struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorPresenta
 
     // MARK: - ErrorPresentable
 
-    @State var errorIsPresented: Bool = false
-    @State var errorMessage: String?
+    @State public var errorIsPresented: Bool = false
+    @State public var errorMessage: String?
 
     // MARK: - FormValidatable
 
-    func isValid() -> Bool {
+    public func isValid() -> Bool {
         !emails.isEmpty
     }
 
     // MARK: - TokenDistributing
 
-    func assignTokenToStores(_ token: VOToken.Value) {
+    public func assignTokenToStores(_ token: VOToken.Value) {
         invitationStore.token = token
     }
 }
