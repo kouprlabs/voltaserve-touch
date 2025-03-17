@@ -44,7 +44,6 @@ public struct Voltaserve: View {
 
     public class Extensions: ObservableObject {
         @Published public var tabs = Tabs()
-        @Published public var features = Features()
 
         public struct Tabs {
             public let selection: TabType?
@@ -56,23 +55,9 @@ public struct Voltaserve: View {
             }
         }
 
-        public struct Features {
-            public let servers: Bool
-
-            public init(servers: Bool = true) {
-                self.servers = servers
-            }
-        }
-
-        public init(
-            tabs: Tabs? = nil,
-            features: Features? = nil
-        ) {
+        public init(tabs: Tabs? = nil) {
             if let tabs = tabs {
                 self.tabs = tabs
-            }
-            if let features = features {
-                self.features = features
             }
         }
     }
