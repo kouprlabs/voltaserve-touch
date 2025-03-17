@@ -67,15 +67,15 @@ public class FileStore: ObservableObject {
         didSet {
             if let token {
                 fileClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
                 taskClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
                 storageClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

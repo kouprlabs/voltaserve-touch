@@ -12,7 +12,7 @@ import Combine
 import Foundation
 
 public class ForgotPasswordStore: ObservableObject {
-    private var accountClient: VOAccount = .init(baseURL: Config.production.idpURL)
+    private var accountClient: VOAccount = .init(baseURL: Config.shared.idpURL)
 
     // MARK: - Update
 

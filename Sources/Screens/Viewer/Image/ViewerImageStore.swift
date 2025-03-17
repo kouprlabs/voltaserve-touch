@@ -35,7 +35,7 @@ public class ViewerImageStore: ObservableObject {
     private func buildURL(id: String?, fileExtension: String?, token: VOToken.Value?) -> URL? {
         guard let id, let fileExtension, let token else { return nil }
         return VOFile(
-            baseURL: Config.production.apiURL,
+            baseURL: Config.shared.apiURL,
             accessToken: token.accessToken
         ).urlForPreview(id, fileExtension: fileExtension)
     }

@@ -29,7 +29,7 @@ public class OrganizationStore: ObservableObject {
         didSet {
             if let token {
                 organizationClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

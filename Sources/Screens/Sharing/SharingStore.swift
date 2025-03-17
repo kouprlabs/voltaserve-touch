@@ -29,7 +29,7 @@ public class SharingStore: ObservableObject {
         didSet {
             if let token {
                 fileClient = VOFile(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

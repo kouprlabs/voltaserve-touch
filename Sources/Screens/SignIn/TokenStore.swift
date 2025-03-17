@@ -19,7 +19,7 @@ public class TokenStore: ObservableObject {
     public init() {}
 
     private static func createClient() -> VOToken {
-        VOToken(baseURL: Config.production.idpURL)
+        VOToken(baseURL: Config.shared.idpURL)
     }
 
     public func recreateClient() {

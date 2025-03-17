@@ -25,7 +25,7 @@ public class TaskStore: ObservableObject {
         didSet {
             if let token {
                 taskClient = VOTask(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

@@ -36,11 +36,11 @@ public class InsightsStore: ObservableObject {
         didSet {
             if let token {
                 entityClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
                 snapshotClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

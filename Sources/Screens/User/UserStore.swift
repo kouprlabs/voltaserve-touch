@@ -33,7 +33,7 @@ public class UserStore: ObservableObject {
         didSet {
             if let token {
                 userClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }

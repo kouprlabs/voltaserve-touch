@@ -32,7 +32,7 @@ public class BrowserStore: ObservableObject {
         didSet {
             if let token {
                 fileClient = .init(
-                    baseURL: Config.production.apiURL,
+                    baseURL: Config.shared.apiURL,
                     accessToken: token.accessToken
                 )
             }
