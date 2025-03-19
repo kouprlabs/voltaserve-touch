@@ -9,7 +9,7 @@
 // AGPL-3.0-only in the root of this repository.
 
 extension VOTask.Entity {
-    var isPending: Bool {
+    public var isPending: Bool {
         status == .waiting || status == .running
     }
 }

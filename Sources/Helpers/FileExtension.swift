@@ -11,11 +11,11 @@
 import Foundation
 
 extension String {
-    func isPDF() -> Bool {
+    public func isPDF() -> Bool {
         self == ".pdf"
     }
 
-    func isImage() -> Bool {
+    public func isImage() -> Bool {
         let imageExtensions = [
             ".xpm", ".png", ".jpg", ".jpeg", ".jp2", ".gif", ".webp",
             ".tiff", ".tif", ".bmp", ".ico", ".heif", ".xcf", ".svg",
@@ -23,53 +23,53 @@ extension String {
         return imageExtensions.contains(self)
     }
 
-    func isText() -> Bool {
+    public func isText() -> Bool {
         self == ".txt"
     }
 
-    func isRichText() -> Bool {
+    public func isRichText() -> Bool {
         [".rtf"].contains(self)
     }
 
-    func isWord() -> Bool {
+    public func isWord() -> Bool {
         let wordExtensions = [".docx", ".doc"]
         return wordExtensions.contains(self)
     }
 
-    func isPowerPoint() -> Bool {
+    public func isPowerPoint() -> Bool {
         let powerPointExtensions = [".pptx", ".ppt"]
         return powerPointExtensions.contains(self)
     }
 
-    func isExcel() -> Bool {
+    public func isExcel() -> Bool {
         let excelExtensions = [".xlsx", ".xls"]
         return excelExtensions.contains(self)
     }
 
-    func isMicrosoftOffice() -> Bool {
+    public func isMicrosoftOffice() -> Bool {
         isWord() || isPowerPoint() || isExcel()
     }
 
-    func isOpenOffice() -> Bool {
+    public func isOpenOffice() -> Bool {
         isDocument() || isSpreadsheet() || isSlides()
     }
 
-    func isDocument() -> Bool {
+    public func isDocument() -> Bool {
         let documentExtensions = [".odt", ".ott", ".gdoc", ".pages"]
         return documentExtensions.contains(self)
     }
 
-    func isSpreadsheet() -> Bool {
+    public func isSpreadsheet() -> Bool {
         let spreadsheetExtensions = [".ods", ".ots", ".gsheet"]
         return spreadsheetExtensions.contains(self)
     }
 
-    func isSlides() -> Bool {
+    public func isSlides() -> Bool {
         let slidesExtensions = [".odp", ".otp", ".key", ".gslides"]
         return slidesExtensions.contains(self)
     }
 
-    func isVideo() -> Bool {
+    public func isVideo() -> Bool {
         let videoExtensions = [
             ".ogv", ".ogg", ".mpeg", ".mov", ".mqv", ".mp4", ".webm",
             ".3gp", ".3g2", ".avi", ".flv", ".mkv", ".asf", ".m4v",
@@ -77,7 +77,7 @@ extension String {
         return videoExtensions.contains(self)
     }
 
-    func isAudio() -> Bool {
+    public func isAudio() -> Bool {
         let audioExtensions = [
             ".oga", ".mp3", ".flac", ".midi", ".ape", ".mpc", ".amr",
             ".wav", ".aiff", ".au", ".aac", "voc", ".m4a", ".qcp",
@@ -85,16 +85,16 @@ extension String {
         return audioExtensions.contains(self)
     }
 
-    func isArchive() -> Bool {
+    public func isArchive() -> Bool {
         let archiveExtensions = [".zip", ".tar", ".7z", ".bz2", ".gz", ".rar"]
         return archiveExtensions.contains(self)
     }
 
-    func isFont() -> Bool {
+    public func isFont() -> Bool {
         [".ttf", ".woff"].contains(self)
     }
 
-    func isCode() -> Bool {
+    public func isCode() -> Bool {
         let codeExtensions = [
             ".html", ".js", "jsx", ".ts", ".tsx", ".css", ".sass",
             ".scss", ".go", ".py", ".rb", ".java", ".c", ".h", ".cpp",
@@ -103,11 +103,11 @@ extension String {
         return codeExtensions.contains(self)
     }
 
-    func isCSV() -> Bool {
+    public func isCSV() -> Bool {
         [".csv"].contains(self)
     }
 
-    func isGLB() -> Bool {
+    public func isGLB() -> Bool {
         self == ".glb"
     }
 }

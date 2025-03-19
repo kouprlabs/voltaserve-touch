@@ -15,7 +15,7 @@ import Foundation
 #endif
 
 extension URLRequest {
-    mutating func appendAuthorizationHeader(_ accessToken: String) {
+    mutating public func appendAuthorizationHeader(_ accessToken: String) {
         setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
     }
 }

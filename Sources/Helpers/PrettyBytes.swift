@@ -11,7 +11,7 @@
 import Foundation
 
 extension Int {
-    func prettyBytes() -> String {
+    public func prettyBytes() -> String {
         let units = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
 
         let isNegative = self < 0
@@ -33,7 +33,7 @@ extension Int {
 }
 
 extension Double {
-    func toPrecision(_ precision: Int) -> String {
+    public func toPrecision(_ precision: Int) -> String {
         String(format: "%.\(precision)g", self)
     }
 }

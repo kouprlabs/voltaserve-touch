@@ -11,23 +11,23 @@
 import Foundation
 
 extension String {
-    func hasMinLength(_ count: Int) -> Bool {
+    public func hasMinLength(_ count: Int) -> Bool {
         self.count >= count
     }
 
-    func hasMinLowerCase(_ count: Int) -> Bool {
+    public func hasMinLowerCase(_ count: Int) -> Bool {
         self.filter { $0.isLowercase }.count >= count
     }
 
-    func hasMinUpperCase(_ count: Int) -> Bool {
+    public func hasMinUpperCase(_ count: Int) -> Bool {
         self.filter { $0.isUppercase }.count >= count
     }
 
-    func hasMinNumbers(_ count: Int) -> Bool {
+    public func hasMinNumbers(_ count: Int) -> Bool {
         self.filter { $0.isNumber }.count >= count
     }
 
-    func hasMinSymbols(_ count: Int) -> Bool {
+    public func hasMinSymbols(_ count: Int) -> Bool {
         let symbols = CharacterSet.alphanumerics.union(.whitespaces).inverted
         return self.unicodeScalars.filter { symbols.contains($0) }.count >= count
     }

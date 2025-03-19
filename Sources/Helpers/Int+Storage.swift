@@ -11,31 +11,31 @@
 import Foundation
 
 extension Int {
-    func byteToMegabyte() -> Int {
+    public func byteToMegabyte() -> Int {
         self / Int(1e6)
     }
 
-    func byteToGigabyte() -> Int {
+    public func byteToGigabyte() -> Int {
         self / Int(1e9)
     }
 
-    func byteToTerabyte() -> Int {
+    public func byteToTerabyte() -> Int {
         self / Int(1e12)
     }
 
-    func terabyteToByte() -> Int {
+    public func terabyteToByte() -> Int {
         self * Int(1e12)
     }
 
-    func gigabyteToByte() -> Int {
+    public func gigabyteToByte() -> Int {
         self * Int(1e9)
     }
 
-    func megabyteToByte() -> Int {
+    public func megabyteToByte() -> Int {
         self * Int(1e6)
     }
 
-    var storageUnit: StorageUnit {
+    public var storageUnit: StorageUnit {
         if self >= Int(1e12) {
             .terabyte
         } else if self >= Int(1e9) {
@@ -47,7 +47,7 @@ extension Int {
         }
     }
 
-    func convertFromByte(to unit: StorageUnit) -> Int {
+    public func convertFromByte(to unit: StorageUnit) -> Int {
         switch unit {
         case .byte:
             self
@@ -60,7 +60,7 @@ extension Int {
         }
     }
 
-    func normalizeToByte(from unit: StorageUnit) -> Int {
+    public func normalizeToByte(from unit: StorageUnit) -> Int {
         switch unit {
         case .byte:
             self
@@ -74,7 +74,7 @@ extension Int {
     }
 }
 
-enum StorageUnit: String {
+public enum StorageUnit: String {
     case byte
     case megabyte
     case gigabyte

@@ -11,7 +11,7 @@
 import Foundation
 
 extension String {
-    func isValidURL() -> Bool {
+    public func isValidURL() -> Bool {
         guard !isEmpty else { return false }
         if let url = URL(string: self), let scheme = url.scheme, let host = url.host {
             return ["http", "https"].contains(scheme) && !host.isEmpty

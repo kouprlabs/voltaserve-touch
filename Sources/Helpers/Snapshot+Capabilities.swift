@@ -9,7 +9,7 @@
 // AGPL-3.0-only in the root of this repository.
 
 extension VOSnapshot.Entity {
-    var hasCapabilities: Bool {
+    public var hasCapabilities: Bool {
         capabilities.summary || capabilities.ocr || capabilities.entities || capabilities.mosaic
     }
 }

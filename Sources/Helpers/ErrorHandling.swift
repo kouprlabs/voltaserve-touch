@@ -10,7 +10,7 @@
 
 import Foundation
 
-func withErrorHandling(
+public func withErrorHandling(
     _ code: @escaping () async throws -> Bool,
     before: (() -> Void)? = nil,
     success: (() -> Void)? = nil,
@@ -53,7 +53,7 @@ func withErrorHandling(
     }
 }
 
-func withErrorHandling(
+public func withErrorHandling(
     delaySeconds: Double = 0,
     _ code: @escaping () async throws -> Bool,
     before: (() -> Void)? = nil,

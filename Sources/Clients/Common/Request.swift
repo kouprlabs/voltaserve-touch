@@ -17,7 +17,7 @@ import Foundation
 public struct VONoDataError: Error {}
 public struct VOInvalidResponseError: Error {}
 
-func handleJSONResponse<T: Decodable>(
+public func handleJSONResponse<T: Decodable>(
     continuation: CheckedContinuation<T, any Error>,
     response: URLResponse?,
     data: Data?,
@@ -61,7 +61,7 @@ func handleJSONResponse<T: Decodable>(
     }
 }
 
-func handleDataResponse(
+public func handleDataResponse(
     continuation: CheckedContinuation<Data, any Error>,
     response: URLResponse?,
     data: Data?,
@@ -86,7 +86,7 @@ func handleDataResponse(
     }
 }
 
-func handleEmptyResponse(
+public func handleEmptyResponse(
     continuation: CheckedContinuation<Void, any Error>,
     response: URLResponse?,
     data: Data?,
@@ -111,7 +111,7 @@ func handleEmptyResponse(
     }
 }
 
-func handleErrorResponse(continuation: CheckedContinuation<some Any, any Error>, data: Data) {
+public func handleErrorResponse(continuation: CheckedContinuation<some Any, any Error>, data: Data) {
     do {
         let result = try JSONDecoder().decode(VOErrorResponse.self, from: data)
         continuation.resume(throwing: result)

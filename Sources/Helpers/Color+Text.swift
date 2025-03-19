@@ -12,7 +12,7 @@ import Foundation
 import SwiftUI
 
 extension Color {
-    func textColor() -> Color {
+    public func textColor() -> Color {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0

@@ -11,7 +11,7 @@
 import SwiftUI
 
 extension Color {
-    init(hex: String) {
+    public init(hex: String) {
         let hex = hex.trimmingCharacters(in: .alphanumerics.inverted)
         var int = UInt64()
         Scanner(string: hex).scanHexInt64(&int)
@@ -35,7 +35,7 @@ extension Color {
         )
     }
 
-    func toHexString() -> String? {
+    public func toHexString() -> String? {
         let uiColor = UIColor(self)
         var red: CGFloat = 0
         var green: CGFloat = 0

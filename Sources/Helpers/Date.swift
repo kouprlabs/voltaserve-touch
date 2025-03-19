@@ -11,7 +11,7 @@
 import Foundation
 
 extension String {
-    func relativeDate() -> String {
+    public func relativeDate() -> String {
         let dateFormatter = ISO8601DateFormatter()
         guard let date = dateFormatter.date(from: self) else {
             return ""
@@ -36,13 +36,13 @@ extension String {
         }
     }
 
-    var date: Date? {
+    public var date: Date? {
         ISO8601DateFormatter().date(from: self)
     }
 }
 
 extension Date {
-    var pretty: String {
+    public var pretty: String {
         DateFormatter.localizedString(
             from: self,
             dateStyle: .medium,
@@ -51,24 +51,24 @@ extension Date {
     }
 }
 
-func timeAgo(from startDate: Date, to endDate: Date) -> String {
+public func timeAgo(from startDate: Date, to endDate: Date) -> String {
     let formatter = RelativeDateTimeFormatter()
     formatter.unitsStyle = .full
     return formatter.localizedString(for: startDate, relativeTo: endDate)
 }
 
-func formattedDate(_ date: Date, format: String) -> String {
+public func formattedDate(_ date: Date, format: String) -> String {
     let formatter = DateFormatter()
     formatter.dateFormat = format
     return formatter.string(from: date)
 }
 
 extension Int {
-    func unixTimestampToISO8601() -> String {
+    public func unixTimestampToISO8601() -> String {
         ISO8601DateFormatter().string(from: Date(timeIntervalSince1970: TimeInterval(self)))
     }
 
-    func unixTimestampToDurationString() -> String {
+    public func unixTimestampToDurationString() -> String {
         let hours = self / 3600
         let minutes = (self % 3600) / 60
         let seconds = (self % 3600) % 60
