@@ -59,7 +59,7 @@ public struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, TokenDi
                         }
                         .overlay {
                             RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                                .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                         }
                         .padding(.horizontal)
                         .modifierIfPad {

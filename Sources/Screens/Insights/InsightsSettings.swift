@@ -43,7 +43,7 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
                             }
                             .overlay {
                                 RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                                    .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                             }
                         } else {
                             VStack {
@@ -60,7 +60,7 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
                             }
                             .overlay {
                                 RoundedRectangle(cornerRadius: VOMetrics.borderRadius)
-                                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                                    .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                             }
                         }
                     }

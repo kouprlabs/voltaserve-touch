@@ -13,9 +13,11 @@ import SwiftUI
 public struct TaskRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let task: VOTask.Entity
+    private let enableSpacer: Bool
 
-    public init(_ task: VOTask.Entity) {
+    public init(_ task: VOTask.Entity, enableSpacer: Bool = true) {
         self.task = task
+        self.enableSpacer = enableSpacer
     }
 
     public var body: some View {
@@ -67,7 +69,9 @@ public struct TaskRow: View {
                             .foregroundStyle(Color.gray500)
                     }
                 }
-                Spacer()
+                if enableSpacer {
+                    Spacer()
+                }
             }
             if task.status == .running, !task.isIndeterminate {
                 ProgressView(value: CGFloat(task.percentage ?? 0), total: 100)

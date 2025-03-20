@@ -37,7 +37,7 @@ public struct VOColorBadge: View {
                     .foregroundStyle(color)
                     .overlay {
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(color, lineWidth: 1)
+                            .strokeBorder(color, lineWidth: 1)
                     }
             }
     }

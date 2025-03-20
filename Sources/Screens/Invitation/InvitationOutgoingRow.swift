@@ -13,9 +13,11 @@ import SwiftUI
 public struct InvitationOutgoingRow: View {
     @Environment(\.colorScheme) private var colorScheme
     private let invitation: VOInvitation.Entity
+    private let verticalStatus: Bool
 
-    public init(_ invitation: VOInvitation.Entity) {
+    public init(_ invitation: VOInvitation.Entity, verticalStatus: Bool = false) {
         self.invitation = invitation
+        self.verticalStatus = verticalStatus
     }
 
     public var body: some View {
@@ -31,10 +33,15 @@ public struct InvitationOutgoingRow: View {
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     InvitationStatusBadge(invitation.status)
                 }
+                if verticalStatus && UIDevice.current.userInterfaceIdiom == .pad {
+                    InvitationStatusBadge(invitation.status)
+                }
             }
-            Spacer()
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                InvitationStatusBadge(invitation.status)
+            if !verticalStatus {
+                Spacer()
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    InvitationStatusBadge(invitation.status)
+                }
             }
         }
     }

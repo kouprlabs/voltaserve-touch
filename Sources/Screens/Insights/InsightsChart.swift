@@ -60,7 +60,7 @@ public struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLif
                                             .clipShape(RoundedRectangle(cornerRadius: 10))
                                             .overlay {
                                                 RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(sectorMarkColor, lineWidth: 1)
+                                                    .strokeBorder(sectorMarkColor, lineWidth: 1)
                                             }
                                     }
                                 }
