@@ -24,7 +24,7 @@ public struct VOTextField: ViewModifier {
             .frame(height: 40)
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color(.systemGray4), lineWidth: 1)
+                    .strokeBorder(Color(.systemGray4), lineWidth: 1)
             )
     }
 }

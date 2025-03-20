@@ -36,7 +36,7 @@ public struct FileCellThumbnail<FallbackContent: View>: View {
                 .fileActions(file, fileStore: fileStore)
                 .overlay {
                     RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
-                        .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                        .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
                 }
                 .fileCellAdornments(file)
                 .overlay {

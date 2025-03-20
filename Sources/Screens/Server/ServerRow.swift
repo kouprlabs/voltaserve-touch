@@ -55,7 +55,7 @@ struct ServerRow: View {
             .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs))
             .overlay {
                 RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs)
-                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                    .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
             }
             .frame(width: 20, height: 20)
     }
@@ -67,7 +67,7 @@ struct ServerRow: View {
             .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs))
             .overlay {
                 RoundedRectangle(cornerRadius: VOMetrics.borderRadiusXs)
-                    .stroke(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+                    .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
             }
             .frame(width: 20, height: 20)
     }
