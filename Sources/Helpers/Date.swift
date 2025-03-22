@@ -52,6 +52,11 @@ extension Date {
 }
 
 public func timeAgo(from startDate: Date, to endDate: Date) -> String {
+    let diff = abs(endDate.timeIntervalSince(startDate))
+    if diff < 60 {
+        return "Just now"
+    }
+
     let formatter = RelativeDateTimeFormatter()
     formatter.unitsStyle = .full
     return formatter.localizedString(for: startDate, relativeTo: endDate)
