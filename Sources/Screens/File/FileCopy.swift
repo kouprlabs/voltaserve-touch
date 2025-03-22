@@ -13,7 +13,6 @@ import SwiftUI
 public struct FileCopy: View {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
@@ -44,7 +43,7 @@ public struct FileCopy: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voSecondaryButton(colorScheme: colorScheme)
+                .voSecondaryButton()
                 .padding(.horizontal)
             } else if errorIsPresented, errorSeverity == .partial {
                 VOWarningIcon()
@@ -56,7 +55,7 @@ public struct FileCopy: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voSecondaryButton(colorScheme: colorScheme)
+                .voSecondaryButton()
                 .padding(.horizontal)
             }
         }

@@ -37,7 +37,7 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
                                     } label: {
                                         VOButtonLabel("Delete Entities", systemImage: "trash", isLoading: isDeleting)
                                     }
-                                    .voButton(color: .red400, isDisabled: isProcessing || !canDelete)
+                                    .voDangerButton(isDisabled: isProcessing || !canDelete)
                                 }
                                 .padding()
                             }
@@ -54,7 +54,7 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
                                     } label: {
                                         VOButtonLabel("Collect Entities", systemImage: "bolt", isLoading: isPatching)
                                     }
-                                    .voSecondaryButton(colorScheme: colorScheme, isDisabled: isProcessing || !canCreate)
+                                    .voSecondaryButton(isDisabled: isProcessing || !canCreate)
                                 }
                                 .padding()
                             }

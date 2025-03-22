@@ -11,7 +11,6 @@
 import SwiftUI
 
 public struct VOErrorSheet: ViewModifier {
-    @Environment(\.colorScheme) private var colorScheme
     private let isPresented: Binding<Bool>
     private let message: String?
 
@@ -30,7 +29,7 @@ public struct VOErrorSheet: ViewModifier {
                     } label: {
                         VOButtonLabel("Dismiss")
                     }
-                    .voSecondaryButton(colorScheme: colorScheme)
+                    .voSecondaryButton()
                 }
                 .padding()
                 .presentationDetents([.fraction(0.25)])

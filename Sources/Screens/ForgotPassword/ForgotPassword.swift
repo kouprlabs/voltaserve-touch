@@ -26,8 +26,6 @@ public struct ForgotPassword: View, FormValidatable, ErrorPresentable {
         NavigationView {
             VStack(spacing: VOMetrics.spacing) {
                 VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-                Text("Forgot Password")
-                    .voHeading(fontSize: VOMetrics.headingFontSize)
                 Text("Please provide your account Email where we can send you the password recovery instructions.")
                     .voFormHintText()
                     .frame(width: VOMetrics.formWidth)
@@ -55,7 +53,7 @@ public struct ForgotPassword: View, FormValidatable, ErrorPresentable {
                     Button {
                         onSignIn?()
                     } label: {
-                        Text("Sign In")
+                        Text("Sign in")
                             .voFormHintLabel()
                     }
                     .disabled(isProcessing)

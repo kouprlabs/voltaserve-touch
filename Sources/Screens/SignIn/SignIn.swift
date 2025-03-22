@@ -27,8 +27,6 @@ public struct SignIn: View, ErrorPresentable {
         NavigationStack {
             VStack(spacing: VOMetrics.spacing) {
                 VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-                Text("Sign In to Voltaserve")
-                    .voHeading(fontSize: VOMetrics.headingFontSize)
                 TextField("Email", text: $email)
                     .voTextField(width: VOMetrics.formWidth)
                     .textInputAutocapitalization(.never)
@@ -56,7 +54,7 @@ public struct SignIn: View, ErrorPresentable {
                         Button {
                             signUpIsPresented = true
                         } label: {
-                            Text("Sign Up")
+                            Text("Sign up")
                                 .voFormHintLabel()
                         }
                         .disabled(isProcessing)
@@ -67,7 +65,7 @@ public struct SignIn: View, ErrorPresentable {
                         Button {
                             forgotPasswordIsPresented = true
                         } label: {
-                            Text("Reset Password")
+                            Text("Reset password")
                                 .voFormHintLabel()
                         }
                         .disabled(isProcessing)

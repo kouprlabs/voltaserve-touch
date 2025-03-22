@@ -13,7 +13,6 @@ import SwiftUI
 public struct FileDelete: View {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
@@ -42,7 +41,7 @@ public struct FileDelete: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voSecondaryButton(colorScheme: colorScheme)
+                .voSecondaryButton()
                 .padding(.horizontal)
             } else if errorIsPresented, errorSeverity == .partial {
                 VOWarningIcon()
@@ -54,7 +53,7 @@ public struct FileDelete: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voSecondaryButton(colorScheme: colorScheme)
+                .voSecondaryButton()
                 .padding(.horizontal)
             }
         }

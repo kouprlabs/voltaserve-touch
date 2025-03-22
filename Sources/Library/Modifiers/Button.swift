@@ -49,7 +49,9 @@ public struct VOButtonCommons: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .padding(.horizontal)
-            .foregroundColor(button.color.textColor())
+            .modifierIf(button.color != Color(.secondarySystemBackground)) {
+                $0.foregroundColor(button.color.textColor())
+            }
             .background(button.color)
             .clipShape(RoundedRectangle(cornerRadius: VOButtonMetrics.height / 2))
             .opacity(button.isDisabled ? 0.5 : 1)
@@ -71,18 +73,15 @@ extension View {
     }
 
     public func voPrimaryButton(width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
-        modifier(VOButton(color: .blue500, width: width, isDisabled: isDisabled))
+        modifier(VOButton(color: .accentColor, width: width, isDisabled: isDisabled))
     }
 
-    public func voSecondaryButton(colorScheme: ColorScheme, width: CGFloat? = nil, isDisabled: Bool = false)
-        -> some View
-    {
-        modifier(
-            VOButton(
-                color: colorScheme == .dark ? .gray700 : .gray200,
-                width: width,
-                isDisabled: isDisabled
-            ))
+    public func voSecondaryButton(width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
+        modifier(VOButton(color: Color(.secondarySystemBackground), width: width, isDisabled: isDisabled))
+    }
+
+    public func voDangerButton(width: CGFloat? = nil, isDisabled: Bool = false) -> some View {
+        modifier(VOButton(color: .red, width: width, isDisabled: isDisabled))
     }
 }
 
@@ -99,12 +98,17 @@ extension View {
         } label: {
             VOButtonLabel("Lorem Ipsum", isLoading: true)
         }
-        .voSecondaryButton(colorScheme: colorScheme, width: 200)
+        .voSecondaryButton(width: 150)
+        Button {
+        } label: {
+            VOButtonLabel("Lorem Ipsum", isLoading: true)
+        }
+        .voDangerButton(width: 250)
         Button {
         } label: {
             VOButtonLabel("Dolor Sit Amet")
         }
-        .voButton(color: .red300)
+        .voButton(color: .yellow)
         .padding(.horizontal)
     }
 }

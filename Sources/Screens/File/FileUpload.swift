@@ -14,7 +14,6 @@ public struct FileUpload: View {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
     @State private var isProcessing = true
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
@@ -46,7 +45,7 @@ public struct FileUpload: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voSecondaryButton(colorScheme: colorScheme)
+                .voSecondaryButton()
                 .padding(.horizontal)
             } else if errorIsPresented, errorSeverity == .partial {
                 VOWarningIcon()
@@ -58,7 +57,7 @@ public struct FileUpload: View {
                 } label: {
                     VOButtonLabel("Done")
                 }
-                .voSecondaryButton(colorScheme: colorScheme)
+                .voSecondaryButton()
                 .padding(.horizontal)
             }
         }
