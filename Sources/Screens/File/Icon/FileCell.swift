@@ -14,12 +14,10 @@ public struct FileCell: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var fileStore: FileStore
     private let file: VOFile.Entity
-    private let enforceHeight: Bool
 
-    public init(_ file: VOFile.Entity, fileStore: FileStore, enforceHeight: Bool = true) {
+    public init(_ file: VOFile.Entity, fileStore: FileStore) {
         self.file = file
         self.fileStore = fileStore
-        self.enforceHeight = enforceHeight
     }
 
     public var body: some View {
@@ -47,17 +45,10 @@ public struct FileCell: View {
                 Text(file.createTime.relativeDate())
                     .font(.footnote)
                     .foregroundStyle(Color.gray500)
-                if enforceHeight {
-                    Spacer()
-                }
+                Spacer()
             }
         }
-        .modifierIf(enforceHeight) {
-            $0.frame(width: FileCellMetrics.cellSize.width, height: FileCellMetrics.cellSize.height)
-        }
-        .modifierIf(!enforceHeight) {
-            $0.frame(width: FileCellMetrics.cellSize.width)
-        }
+        .frame(width: FileCellMetrics.cellSize.width, height: FileCellMetrics.cellSize.height)
     }
 
     private var fileIcon: some View {
