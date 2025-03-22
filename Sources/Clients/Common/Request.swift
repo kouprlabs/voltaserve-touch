@@ -14,8 +14,13 @@ import Foundation
     import FoundationNetworking
 #endif
 
-public struct VONoDataError: Error {}
-public struct VOInvalidResponseError: Error {}
+public struct VONoDataError: Error {
+    public init() {}
+}
+
+public struct VOInvalidResponseError: Error {
+    public init() {}
+}
 
 public func handleJSONResponse<T: Decodable>(
     continuation: CheckedContinuation<T, any Error>,
