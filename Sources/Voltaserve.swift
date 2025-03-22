@@ -14,6 +14,7 @@ import SwiftUI
 
 public struct Voltaserve: View {
     @EnvironmentObject private var tokenStore: TokenStore
+    @StateObject var appearanceStore = AppearanceStore()
     @Environment(\.modelContext) private var context
     @Query private var servers: [Server]
     @State private var timer: Timer?
@@ -131,6 +132,8 @@ public struct Voltaserve: View {
             }
             .font(.custom(VOMetrics.bodyFontFamily, size: VOMetrics.bodyFontSize))
             .environmentObject(extensions)
+            .environmentObject(appearanceStore)
+            .tint(appearanceStore.accentColor)
             .modelContainer(for: Server.self)
         }
     }

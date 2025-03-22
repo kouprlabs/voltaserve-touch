@@ -36,8 +36,6 @@ public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                     if let passwordRequirements = signUpStore.passwordRequirements {
                         VStack(spacing: VOMetrics.spacing) {
                             VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-                            Text("Sign Up to Voltaserve")
-                                .voHeading(fontSize: VOMetrics.headingFontSize)
                             TextField("Full name", text: $fullName)
                                 .voTextField(width: VOMetrics.formWidth)
                                 .textInputAutocapitalization(.never)
@@ -94,7 +92,7 @@ public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                 Button {
                                     onSignIn?()
                                 } label: {
-                                    Text("Sign In")
+                                    Text("Sign in")
                                         .voFormHintLabel()
                                 }
                                 .disabled(isProcessing)

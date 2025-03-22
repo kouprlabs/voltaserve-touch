@@ -25,8 +25,8 @@ public struct VONumberBadge: View {
             .fontWeight(.semibold)
             .frame(height: 24)
             .frame(minWidth: 24)
-            .foregroundStyle(colorScheme == .dark ? .black : .white)
-            .background(colorScheme == .dark ? .white : .black)
+            .foregroundStyle(Color.red.textColor())
+            .background(Color.red)
             .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

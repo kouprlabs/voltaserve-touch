@@ -12,6 +12,7 @@ import SwiftUI
 
 public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
+    @EnvironmentObject private var appearanceStore: AppearanceStore
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var deleteConfirmationIsPresented = false
@@ -75,6 +76,17 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorP
                             }
                         }
                         .disabled(isDeleting)
+                    }
+                    Section(header: VOSectionHeader("Appearance")) {
+                        NavigationLink(
+                            destination: AppearanceAccentColorPicker(appearanceStore: appearanceStore)
+                        ) {
+                            HStack {
+                                Text("Accent color")
+                                Spacer()
+                                AppearanceAccentColorCircle(appearanceStore.accentColor, size: 18)
+                            }
+                        }
                     }
                     Section(header: VOSectionHeader("Delete Account")) {
                         SecureField("Type your password to confirm", text: $password)

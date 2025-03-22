@@ -38,7 +38,7 @@ public struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLi
                                 VOButtonLabel("Delete Mosaic", systemImage: "trash", isLoading: isDeleting)
                                     .foregroundStyle(Color.red400.textColor())
                             }
-                            .voButton(color: .red400, isDisabled: isProcesssing || !canDelete)
+                            .voDangerButton(isDisabled: isProcesssing || !canDelete)
                         }
                         .padding()
                     }
@@ -53,6 +53,7 @@ public struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLi
                 } else {
                     ProgressView()
                 }
+                Spacer()
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Mosaic")
