@@ -12,7 +12,6 @@ import SwiftUI
 
 public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var sharingStore: SharingStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
@@ -20,6 +19,7 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
     @State private var isGranting = false
     @State private var isRevoking = false
     private let fileIDs: [String]
+    private let organization: VOOrganization.Entity
     private let predefinedUser: VOUser.Entity?
     private let defaultPermission: VOPermission.Value?
     private let enableCancel: Bool
@@ -27,16 +27,16 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
 
     public init(
         fileIDs: [String],
+        organization: VOOrganization.Entity,
         sharingStore: SharingStore,
-        workspaceStore: WorkspaceStore,
         predefinedUser: VOUser.Entity? = nil,
         defaultPermission: VOPermission.Value? = nil,
         enableCancel: Bool = false,
         enableRevoke: Bool = false
     ) {
         self.fileIDs = fileIDs
+        self.organization = organization
         self.sharingStore = sharingStore
-        self.workspaceStore = workspaceStore
         self.predefinedUser = predefinedUser
         self.defaultPermission = defaultPermission
         self.enableCancel = enableCancel
@@ -47,10 +47,8 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
         Form {
             Section(header: VOSectionHeader("User Permission")) {
                 NavigationLink {
-                    if let workspace = workspaceStore.current {
-                        UserSelector(organizationID: workspace.organization.id, excludeMe: true) { user in
-                            self.user = user
-                        }
+                    UserSelector(organizationID: organization.id, excludeMe: true) { user in
+                        self.user = user
                     }
                 } label: {
                     HStack {

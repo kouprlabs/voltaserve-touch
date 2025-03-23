@@ -12,25 +12,23 @@ import SwiftUI
 
 public struct FileSheetMove: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var destinationID: String?
 
-    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
-        self.workspaceStore = workspaceStore
     }
 
     public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.browserForMoveIsPresented) {
-                if let workspace = workspaceStore.current {
+                if let folder = fileStore.selectionFiles.first {
                     NavigationStack {
-                        BrowserOverview(workspaceStore: workspaceStore, confirmLabelText: "Move Here") { id in
+                        BrowserOverview(folder: folder, confirmLabelText: "Move Here") { id in
                             destinationID = id
                             fileStore.moveIsPresented = true
                         }
                         .navigationBarTitleDisplayMode(.inline)
-                        .navigationTitle(workspace.name)
+                        .navigationTitle(folder.workspace.name)
                     }
                 }
             }
@@ -43,7 +41,7 @@ public struct FileSheetMove: ViewModifier {
 }
 
 extension View {
-    public func fileSheetMove(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
-        modifier(FileSheetMove(fileStore: fileStore, workspaceStore: workspaceStore))
+    public func fileSheetMove(fileStore: FileStore) -> some View {
+        modifier(FileSheetMove(fileStore: fileStore))
     }
 }

@@ -13,7 +13,6 @@ import SwiftUI
 public struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var sharingStore = SharingStore()
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var selection: Tag = .users
     @State private var user: VOUser.Entity?
@@ -21,11 +20,10 @@ public struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerL
     @State private var permission: VOPermission.Value?
     @State private var userPermissionCount = 0
     @State private var groupPermissionCount = 0
-    private let fileID: String
+    private let file: VOFile.Entity
 
-    public init(_ fileID: String, workspaceStore: WorkspaceStore) {
-        self.fileID = fileID
-        self.workspaceStore = workspaceStore
+    public init(_ file: VOFile.Entity) {
+        self.file = file
     }
 
     public var body: some View {
@@ -34,17 +32,17 @@ public struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerL
                 TabView(selection: $selection) {
                     Tab("Users", systemImage: "person", value: Tag.users) {
                         SharingUserPermissions(
-                            fileID,
-                            sharingStore: sharingStore,
-                            workspaceStore: workspaceStore
+                            file.id,
+                            organization: file.workspace.organization,
+                            sharingStore: sharingStore
                         )
                     }
                     .badge(userPermissionCount)
                     Tab("Groups", systemImage: "person.2", value: Tag.groups) {
                         SharingGroupPermissions(
-                            fileID,
-                            sharingStore: sharingStore,
-                            workspaceStore: workspaceStore
+                            file.id,
+                            organization: file.workspace.organization,
+                            sharingStore: sharingStore
                         )
                     }
                     .badge(groupPermissionCount)
@@ -56,15 +54,15 @@ public struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerL
                         NavigationLink {
                             if selection == .users {
                                 SharingUserForm(
-                                    fileIDs: [fileID],
-                                    sharingStore: sharingStore,
-                                    workspaceStore: workspaceStore
+                                    fileIDs: [file.id],
+                                    organization: file.workspace.organization,
+                                    sharingStore: sharingStore
                                 )
                             } else if selection == .groups {
                                 SharingGroupForm(
-                                    fileIDs: [fileID],
-                                    sharingStore: sharingStore,
-                                    workspaceStore: workspaceStore
+                                    fileIDs: [file.id],
+                                    organization: file.workspace.organization,
+                                    sharingStore: sharingStore
                                 )
                             }
                         } label: {
@@ -80,7 +78,7 @@ public struct SharingOverview: View, ViewDataProvider, LoadStateProvider, TimerL
             }
         }
         .onAppear {
-            sharingStore.fileID = fileID
+            sharingStore.fileID = file.id
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()

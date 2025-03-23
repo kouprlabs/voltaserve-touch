@@ -12,15 +12,15 @@ import SwiftUI
 
 public struct SharingGroupPermissions: View {
     @ObservedObject private var sharingStore: SharingStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var group: VOGroup.Entity?
     @State private var permission: VOPermission.Value?
     private let fileID: String
+    private let organization: VOOrganization.Entity
 
-    public init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
+    public init(_ fileID: String, organization: VOOrganization.Entity, sharingStore: SharingStore) {
         self.fileID = fileID
+        self.organization = organization
         self.sharingStore = sharingStore
-        self.workspaceStore = workspaceStore
     }
 
     public var body: some View {
@@ -32,8 +32,8 @@ public struct SharingGroupPermissions: View {
                     NavigationLink {
                         SharingGroupForm(
                             fileIDs: [fileID],
+                            organization: organization,
                             sharingStore: sharingStore,
-                            workspaceStore: workspaceStore,
                             predefinedGroup: groupPermission.group,
                             defaultPermission: groupPermission.permission,
                             enableRevoke: true

@@ -12,18 +12,20 @@ import SwiftUI
 
 public struct FileUpload: View {
     @ObservedObject private var fileStore: FileStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var isProcessing = true
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
     private let urls: [URL]
+    private let file: VOFile.Entity?
+    private let workspace: VOWorkspace.Entity
 
-    public init(_ urls: [URL], fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(_ urls: [URL], file: VOFile.Entity? = nil, workspace: VOWorkspace.Entity, fileStore: FileStore) {
         self.urls = urls
+        self.file = file
+        self.workspace = workspace
         self.fileStore = fileStore
-        self.workspaceStore = workspaceStore
     }
 
     public var body: some View {
@@ -68,8 +70,6 @@ public struct FileUpload: View {
     }
 
     private func performUpload() {
-        guard let workspace = workspaceStore.current else { return }
-
         let dispatchGroup = DispatchGroup()
         var failedCount = 0
         for url in urls {
@@ -79,7 +79,11 @@ public struct FileUpload: View {
                     if !url.startAccessingSecurityScopedResource() {
                         throw FileAccessError.permissionError
                     }
-                    _ = try await fileStore.upload(url, workspaceID: workspace.id)
+                    if let file {
+                        _ = try await fileStore.upload(url, id: file.id)
+                    } else {
+                        _ = try await fileStore.upload(url, workspaceID: workspace.id)
+                    }
                     if fileStore.isLastPage() {
                         fileStore.fetchNextPage()
                     }

@@ -13,16 +13,16 @@ import SwiftUI
 public struct SharingUserPermissions: View, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var sharingStore: SharingStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var userStore = UserStore()
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
     private let fileID: String
+    private let organization: VOOrganization.Entity
 
-    public init(_ fileID: String, sharingStore: SharingStore, workspaceStore: WorkspaceStore) {
+    public init(_ fileID: String, organization: VOOrganization.Entity, sharingStore: SharingStore) {
         self.fileID = fileID
+        self.organization = organization
         self.sharingStore = sharingStore
-        self.workspaceStore = workspaceStore
     }
 
     public var body: some View {
@@ -35,8 +35,8 @@ public struct SharingUserPermissions: View, TokenDistributing {
                         NavigationLink {
                             SharingUserForm(
                                 fileIDs: [fileID],
+                                organization: organization,
                                 sharingStore: sharingStore,
-                                workspaceStore: workspaceStore,
                                 predefinedUser: userPermission.user,
                                 defaultPermission: userPermission.permission,
                                 enableRevoke: true
@@ -55,9 +55,7 @@ public struct SharingUserPermissions: View, TokenDistributing {
             }
         }
         .onAppear {
-            if let workspace = workspaceStore.current {
-                userStore.organizationID = workspace.organization.id
-            }
+            userStore.organizationID = organization.id
             if let token = tokenStore.token {
                 assignTokenToStores(token)
             }

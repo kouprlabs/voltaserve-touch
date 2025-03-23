@@ -31,7 +31,11 @@ public struct FileSheetUpload: ViewModifier {
             }
             .sheet(isPresented: $fileStore.uploadIsPresented) {
                 if let pickerURLs {
-                    FileUpload(pickerURLs, fileStore: fileStore, workspaceStore: workspaceStore)
+                    if let file = fileStore.selectionFiles.first {
+                        FileUpload(pickerURLs, file: file, workspace: file.workspace, fileStore: fileStore)
+                    } else if let workspace = workspaceStore.current {
+                        FileUpload(pickerURLs, workspace: workspace, fileStore: fileStore)
+                    }
                 }
             }
     }

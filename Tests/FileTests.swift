@@ -50,7 +50,7 @@ final class FileTests: XCTestCase {
         // Test creation
         for index in 0..<files.count {
             XCTAssertEqual(files[index].name, options[index].name)
-            XCTAssertEqual(files[index].workspaceID, options[index].workspaceID)
+            XCTAssertEqual(files[index].workspace.id, options[index].workspaceID)
             XCTAssertEqual(files[index].permission, .owner)
         }
 
@@ -74,7 +74,7 @@ final class FileTests: XCTestCase {
         // Test fetch
         let file = try await client.fetch(files[0].id)
         XCTAssertEqual(file.name, files[0].name)
-        XCTAssertEqual(file.workspaceID, files[0].workspaceID)
+        XCTAssertEqual(file.workspace.id, files[0].workspace.id)
         XCTAssertEqual(file.permission, .owner)
         XCTAssertEqual(file.snapshot!.original.size, options[0].data.count)
 

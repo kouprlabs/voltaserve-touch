@@ -12,7 +12,6 @@ import SwiftUI
 
 public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var sharingStore: SharingStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var group: VOGroup.Entity?
     @State private var permission: VOPermission.Value?
@@ -20,6 +19,7 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
     @State private var isRevoking = false
     @State private var revokeConfirmationIsPresented = false
     private let fileIDs: [String]
+    private let organization: VOOrganization.Entity
     private let predefinedGroup: VOGroup.Entity?
     private let defaultPermission: VOPermission.Value?
     private let enableCancel: Bool
@@ -27,16 +27,16 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
 
     public init(
         fileIDs: [String],
+        organization: VOOrganization.Entity,
         sharingStore: SharingStore,
-        workspaceStore: WorkspaceStore,
         predefinedGroup: VOGroup.Entity? = nil,
         defaultPermission: VOPermission.Value? = nil,
         enableCancel: Bool = false,
         enableRevoke: Bool = false
     ) {
         self.fileIDs = fileIDs
+        self.organization = organization
         self.sharingStore = sharingStore
-        self.workspaceStore = workspaceStore
         self.predefinedGroup = predefinedGroup
         self.defaultPermission = defaultPermission
         self.enableCancel = enableCancel
@@ -47,10 +47,8 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
         Form {
             Section(header: VOSectionHeader("Group Permission")) {
                 NavigationLink {
-                    if let workspace = workspaceStore.current {
-                        GroupSelector(organizationID: workspace.organization.id) { group in
-                            self.group = group
-                        }
+                    GroupSelector(organizationID: organization.id) { group in
+                        self.group = group
                     }
                 } label: {
                     HStack {

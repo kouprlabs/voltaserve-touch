@@ -13,7 +13,6 @@ import SwiftUI
 struct SharingBatch: View, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var sharingStore = SharingStore()
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var selection: Tag = .users
     @State private var user: VOUser.Entity?
@@ -24,10 +23,11 @@ struct SharingBatch: View, TokenDistributing {
     @State private var errorTitle: String?
     @State private var errorMessage: String?
     private let fileIDs: [String]
+    private let organization: VOOrganization.Entity
 
-    public init(_ files: [String], workspaceStore: WorkspaceStore) {
-        fileIDs = files
-        self.workspaceStore = workspaceStore
+    public init(_ fileIDs: [String], organization: VOOrganization.Entity) {
+        self.fileIDs = fileIDs
+        self.organization = organization
     }
 
     public var body: some View {
@@ -37,8 +37,8 @@ struct SharingBatch: View, TokenDistributing {
                     NavigationStack {
                         SharingUserForm(
                             fileIDs: fileIDs,
+                            organization: organization,
                             sharingStore: sharingStore,
-                            workspaceStore: workspaceStore,
                             enableCancel: true
                         )
                     }
@@ -47,8 +47,8 @@ struct SharingBatch: View, TokenDistributing {
                     NavigationStack {
                         SharingGroupForm(
                             fileIDs: fileIDs,
+                            organization: organization,
                             sharingStore: sharingStore,
-                            workspaceStore: workspaceStore,
                             enableCancel: true
                         )
                     }

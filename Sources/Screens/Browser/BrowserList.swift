@@ -15,24 +15,24 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
     ListItemScrollable
 {
     @EnvironmentObject private var tokenStore: TokenStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @StateObject private var browserStore = BrowserStore()
     @State private var tappedItem: VOFile.Entity?
     @State private var searchText = ""
     private let folderID: String
+    private let workspace: VOWorkspace.Entity
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
     private let onDismiss: (() -> Void)?
 
     public init(
         _ folderID: String,
-        workspaceStore: WorkspaceStore,
+        workspace: VOWorkspace.Entity,
         confirmLabelText: String?,
         onCompletion: ((String) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.folderID = folderID
-        self.workspaceStore = workspaceStore
+        self.workspace = workspace
         self.confirmLabelText = confirmLabelText
         self.onCompletion = onCompletion
         self.onDismiss = onDismiss
@@ -55,7 +55,7 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
                                     NavigationLink {
                                         BrowserList(
                                             file.id,
-                                            workspaceStore: workspaceStore,
+                                            workspace: workspace,
                                             confirmLabelText: confirmLabelText,
                                             onCompletion: onCompletion
                                         )
@@ -90,7 +90,7 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
                     onCompletion?(folderID)
                 }
             }
-            if let workspace = workspaceStore.current, folderID == workspace.rootID {
+            if folderID == workspace.rootID {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         onDismiss?()
@@ -124,11 +124,11 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
     // MARK: - LoadStateProvider
 
     public var isLoading: Bool {
-        workspaceStore.entitiesIsLoadingFirstTime && browserStore.folderIsLoading
+        browserStore.folderIsLoading
     }
 
     public var error: String? {
-        workspaceStore.entitiesError ?? browserStore.folderError
+        browserStore.folderError
     }
 
     // MARK: - ViewDataProvider

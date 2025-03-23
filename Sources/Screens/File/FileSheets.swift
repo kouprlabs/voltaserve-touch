@@ -21,11 +21,11 @@ public struct FileSheets: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .fileSheetMove(fileStore: fileStore, workspaceStore: workspaceStore)
-            .fileSheetCopy(fileStore: fileStore, workspaceStore: workspaceStore)
+            .fileSheetMove(fileStore: fileStore)
+            .fileSheetCopy(fileStore: fileStore)
             .fileSheetDownload(fileStore: fileStore)
             .fileSheetUpload(fileStore: fileStore, workspaceStore: workspaceStore)
-            .fileSheetSharing(fileStore: fileStore, workspaceStore: workspaceStore)
+            .fileSheetSharing(fileStore: fileStore)
             .fileSheetCreateFolder(fileStore: fileStore, workspaceStore: workspaceStore)
             .fileSheetMosaic(fileStore: fileStore)
             .fileSheetInsights(fileStore: fileStore)
