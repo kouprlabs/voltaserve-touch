@@ -19,33 +19,21 @@ public struct SnapshotRow: View {
 
     public var body: some View {
         HStack(spacing: VOMetrics.spacingSm) {
-            if snapshot.isActive {
-                checkmark
-            } else {
-                spacer
-            }
             VOAvatar(name: "V \(snapshot.version)", size: VOMetrics.avatarSize)
             VStack(alignment: .leading, spacing: VOMetrics.spacingXs) {
                 Text(snapshot.createTime.relativeDate())
-                HStack {
-                    VOColorBadge(snapshot.original.size.prettyBytes(), color: .gray400, style: .outline)
-                    if snapshot.hasCapabilities {
-                        SnapshotCapabilities(snapshot)
+                ScrollView(.horizontal) {
+                    LazyHStack {
+                        if snapshot.isActive {
+                            VOColorBadge("Active", color: .green, style: .outline)
+                        }
+                        VOColorBadge(snapshot.original.size.prettyBytes(), color: .gray400, style: .outline)
+                        if snapshot.hasCapabilities {
+                            SnapshotCapabilities(snapshot)
+                        }
                     }
                 }
             }
         }
-    }
-
-    private var checkmark: some View {
-        Image(systemName: "checkmark")
-            .foregroundStyle(.blue)
-            .fontWeight(.medium)
-            .frame(width: 20, height: 20)
-    }
-
-    private var spacer: some View {
-        Color.clear
-            .frame(width: 20, height: 20)
     }
 }
