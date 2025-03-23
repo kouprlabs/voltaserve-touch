@@ -32,6 +32,8 @@ public class TaskStore: ObservableObject {
         }
     }
 
+    public init() {}
+
     // MARK: - Fetch
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOTask.Probe? {
