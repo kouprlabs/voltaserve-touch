@@ -12,34 +12,34 @@ import SwiftUI
 
 public struct FileSheetSharing: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    @ObservedObject private var workspaceStore: WorkspaceStore
 
-    public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
+    public init(fileStore: FileStore) {
         self.fileStore = fileStore
-        self.workspaceStore = workspaceStore
     }
 
     public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.sharingIsPresented) {
-                if let fileID {
-                    SharingOverview(fileID, workspaceStore: workspaceStore)
-                } else if fileStore.selection.count > 1 {
-                    SharingBatch(Array(fileStore.selection), workspaceStore: workspaceStore)
+                if let file {
+                    SharingOverview(file)
+                } else if fileStore.selection.count > 1,
+                    let organization = fileStore.selectionFiles.first?.workspace.organization
+                {
+                    SharingBatch(Array(fileStore.selection), organization: organization)
                 }
             }
     }
 
-    private var fileID: String? {
-        if fileStore.selection.count == 1, let fileID = fileStore.selection.first {
-            return fileID
+    private var file: VOFile.Entity? {
+        if fileStore.selection.count == 1, let file = fileStore.selectionFiles.first {
+            return file
         }
         return nil
     }
 }
 
 extension View {
-    public func fileSheetSharing(fileStore: FileStore, workspaceStore: WorkspaceStore) -> some View {
-        modifier(FileSheetSharing(fileStore: fileStore, workspaceStore: workspaceStore))
+    public func fileSheetSharing(fileStore: FileStore) -> some View {
+        modifier(FileSheetSharing(fileStore: fileStore))
     }
 }

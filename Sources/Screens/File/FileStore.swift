@@ -260,7 +260,7 @@ public class FileStore: ObservableObject {
     // MARK: - Update
 
     public func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
-        try await fileClient?.createFolder(.init(workspaceID: workspaceID, parentID: parentID, name: name))
+        try await fileClient?.create(.init(workspaceID: workspaceID, parentID: parentID, name: name))
     }
 
     public func patchName(_ id: String, name: String) async throws -> VOFile.Entity? {
@@ -282,10 +282,22 @@ public class FileStore: ObservableObject {
     public func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
         guard let file else { return nil }
         if let data = try? Data(contentsOf: url) {
-            return try await fileClient?.createFile(
+            return try await fileClient?.create(
                 .init(
                     workspaceID: workspaceID,
                     parentID: file.id,
+                    name: url.lastPathComponent,
+                    data: data
+                ))
+        }
+        return nil
+    }
+
+    public func upload(_ url: URL, id: String) async throws -> VOFile.Entity? {
+        if let data = try? Data(contentsOf: url) {
+            return try await fileClient?.patch(
+                id,
+                options: .init(
                     name: url.lastPathComponent,
                     data: data
                 ))

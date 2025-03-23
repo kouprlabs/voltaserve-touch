@@ -155,13 +155,13 @@ public struct VOFile {
         }
     }
 
-    public func createFile(_ options: CreateFileOptions) async throws -> Entity {
-        try await upload(urlForCreateFile(options), method: "POST", data: options.data, fileName: options.name)
+    public func create(_ options: CreateFileOptions) async throws -> Entity {
+        try await upload(urlForCreate(options), method: "POST", data: options.data, fileName: options.name)
     }
 
-    public func createFolder(_ options: CreateFolderOptions) async throws -> Entity {
+    public func create(_ options: CreateFolderOptions) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
-            var request = URLRequest(url: urlForCreateFolder(options))
+            var request = URLRequest(url: urlForCreate(options))
             request.httpMethod = "POST"
             request.appendAuthorizationHeader(accessToken)
             request.setJSONBody(options, continuation: continuation)
@@ -489,7 +489,7 @@ public struct VOFile {
         }
     }
 
-    public func urlForCreateFile(_ options: CreateFileOptions) -> URL {
+    public func urlForCreate(_ options: CreateFileOptions) -> URL {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.file.rawValue),
@@ -503,7 +503,7 @@ public struct VOFile {
         return URL(string: "\(url())?" + query!)!
     }
 
-    public func urlForCreateFolder(_ options: CreateFolderOptions) -> URL {
+    public func urlForCreate(_ options: CreateFolderOptions) -> URL {
         var urlComponents = URLComponents()
         urlComponents.queryItems = [
             .init(name: "type", value: FileType.folder.rawValue),
@@ -568,9 +568,9 @@ public struct VOFile {
         public let data: Data
         public let onProgress: ((Double) -> Void)?
 
-        public init(data: Data, name: String, onProgress: ((Double) -> Void)? = nil) {
-            self.data = data
+        public init(name: String, data: Data, onProgress: ((Double) -> Void)? = nil) {
             self.name = name
+            self.data = data
             self.onProgress = onProgress
         }
     }

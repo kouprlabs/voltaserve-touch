@@ -12,37 +12,35 @@ import Foundation
 import SwiftUI
 
 public struct BrowserOverview: View {
-    @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
+    private let folder: VOFile.Entity
     private let confirmLabelText: String?
     private let onCompletion: ((String) -> Void)?
 
     public init(
-        workspaceStore: WorkspaceStore,
+        folder: VOFile.Entity,
         confirmLabelText: String?,
         onCompletion: ((String) -> Void)?
     ) {
-        self.workspaceStore = workspaceStore
+        self.folder = folder
         self.onCompletion = onCompletion
         self.confirmLabelText = confirmLabelText
     }
 
     public var body: some View {
-        if let workspace = workspaceStore.current {
-            NavigationStack {
-                BrowserList(
-                    workspace.rootID,
-                    workspaceStore: workspaceStore,
-                    confirmLabelText: confirmLabelText
-                ) { id in
-                    onCompletion?(id)
-                    dismiss()
-                } onDismiss: {
-                    dismiss()
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle(workspace.name)
+        NavigationStack {
+            BrowserList(
+                folder.workspace.rootID,
+                workspace: folder.workspace,
+                confirmLabelText: confirmLabelText
+            ) { id in
+                onCompletion?(id)
+                dismiss()
+            } onDismiss: {
+                dismiss()
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(folder.workspace.name)
         }
     }
 }
