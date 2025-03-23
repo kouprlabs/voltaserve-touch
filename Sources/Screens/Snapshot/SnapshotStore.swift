@@ -33,6 +33,8 @@ public class SnapshotStore: ObservableObject {
         }
     }
 
+    public init() {}
+
     // MARK: - Fetch
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOSnapshot.Probe? {
