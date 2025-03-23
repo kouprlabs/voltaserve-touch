@@ -814,49 +814,49 @@ public struct VOFile {
 
     public struct Entity: Codable, Equatable, Hashable {
         public let id: String
-        public let workspaceID: String
         public let name: String
         public let type: FileType
         public let parentID: String?
         public let permission: VOPermission.Value
         public let isShared: Bool?
         public let snapshot: VOSnapshot.Entity?
+        public let workspace: VOWorkspace.Entity
         public let createTime: String
         public let updateTime: String?
 
         public init(
             id: String,
-            workspaceID: String,
             name: String,
             type: FileType,
             parentID: String?,
             permission: VOPermission.Value,
             isShared: Bool? = nil,
             snapshot: VOSnapshot.Entity? = nil,
+            workspace: VOWorkspace.Entity,
             createTime: String,
             updateTime: String? = nil
         ) {
             self.id = id
-            self.workspaceID = workspaceID
             self.name = name
             self.type = type
             self.parentID = parentID
             self.permission = permission
             self.isShared = isShared
             self.snapshot = snapshot
+            self.workspace = workspace
             self.createTime = createTime
             self.updateTime = updateTime
         }
 
         enum CodingKeys: String, CodingKey {
             case id
-            case workspaceID = "workspaceId"
             case name
             case type
             case parentID = "parentId"
             case permission
             case isShared
             case snapshot
+            case workspace
             case createTime
             case updateTime
         }
