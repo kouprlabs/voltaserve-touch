@@ -47,6 +47,25 @@ public struct VOFile {
         }
     }
 
+    public func fetchMany(_ options: FindOptions) async throws -> [Entity] {
+        try await withCheckedThrowingContinuation { continuation in
+            var request = URLRequest(url: urlForFind())
+            request.httpMethod = "POST"
+            request.appendAuthorizationHeader(accessToken)
+            request.setJSONBody(options, continuation: continuation)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                handleJSONResponse(
+                    continuation: continuation,
+                    response: response,
+                    data: data,
+                    error: error,
+                    type: [Entity].self
+                )
+            }
+            task.resume()
+        }
+    }
+
     public func fetchPath(_ id: String) async throws -> [Entity] {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForPath(id))
@@ -445,6 +464,10 @@ public struct VOFile {
         URL(string: "\(url())/\(id)")!
     }
 
+    public func urlForFind() -> URL {
+        URL(string: "\(url())/find")!
+    }
+
     public func urlForPath(_ id: String) -> URL {
         URL(string: "\(urlForID(id))/path")!
     }
@@ -703,6 +726,14 @@ public struct VOFile {
 
         public init(name: String) {
             self.name = name
+        }
+    }
+
+    public struct FindOptions: Codable {
+        public let ids: [String]
+
+        public init(ids: [String]) {
+            self.ids = ids
         }
     }
 

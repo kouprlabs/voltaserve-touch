@@ -36,6 +36,9 @@ public class FileStore: ObservableObject {
             objectWillChange.send()
         }
     }
+    @Published public var ids: Set<String> = []
+    @Published public var idsIsLoading: Bool = false
+    @Published public var idsError: String?
 
     @Published public var renameIsPresented = false
     @Published public var deleteConfirmationIsPresented = false
@@ -146,6 +149,22 @@ public class FileStore: ObservableObject {
                 sortBy: .dateCreated,
                 sortOrder: .desc
             ))
+    }
+
+    public func fetchIds() {
+        guard !ids.isEmpty else { return }
+        withErrorHandling {
+            self.entities = try await self.fileClient?.fetchMany(.init(ids: Array(self.ids)))
+            return true
+        } before: {
+            self.idsIsLoading = true
+        } success: {
+            self.idsError = nil
+        } failure: { message in
+            self.idsError = message
+        } anyways: {
+            self.idsIsLoading = false
+        }
     }
 
     public func fetchNextPage(replace: Bool = false) {
