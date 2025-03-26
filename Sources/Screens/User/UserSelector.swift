@@ -49,22 +49,20 @@ public struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLife
                         if entities.count == 0 {
                             Text("There are no users.")
                         } else {
-                            List {
-                                ForEach(entities, id: \.id) { user in
-                                    Button {
-                                        dismiss()
-                                        onCompletion?(user)
-                                    } label: {
-                                        UserRow(
-                                            user,
-                                            pictureURL: userStore.urlForPicture(
-                                                user.id,
-                                                fileExtension: user.picture?.fileExtension
-                                            )
+                            List(entities, id: \.id) { user in
+                                Button {
+                                    dismiss()
+                                    onCompletion?(user)
+                                } label: {
+                                    UserRow(
+                                        user,
+                                        pictureURL: userStore.urlForPicture(
+                                            user.id,
+                                            fileExtension: user.picture?.fileExtension
                                         )
-                                        .onAppear {
-                                            onListItemAppear(user.id)
-                                        }
+                                    )
+                                    .onAppear {
+                                        onListItemAppear(user.id)
                                     }
                                 }
                             }

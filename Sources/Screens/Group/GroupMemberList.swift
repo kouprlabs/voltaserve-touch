@@ -36,18 +36,16 @@ public struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
                         if entities.count == 0 {
                             Text("There are no items.")
                         } else {
-                            List {
-                                ForEach(entities, id: \.id) { member in
-                                    UserRow(
-                                        member,
-                                        pictureURL: userStore.urlForPicture(
-                                            member.id,
-                                            fileExtension: member.picture?.fileExtension
-                                        )
+                            List(entities, id: \.id) { member in
+                                UserRow(
+                                    member,
+                                    pictureURL: userStore.urlForPicture(
+                                        member.id,
+                                        fileExtension: member.picture?.fileExtension
                                     )
-                                    .onAppear {
-                                        onListItemAppear(member.id)
-                                    }
+                                )
+                                .onAppear {
+                                    onListItemAppear(member.id)
                                 }
                             }
                         }

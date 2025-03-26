@@ -12,7 +12,7 @@ import SwiftUI
 
 public struct FileSheetDelete: ViewModifier {
     @ObservedObject private var fileStore: FileStore
-    @State private var deleteIsPresented: Bool = false
+    @State private var deleteIsPresented = false
 
     public init(fileStore: FileStore) {
         self.fileStore = fileStore

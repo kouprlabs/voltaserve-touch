@@ -37,16 +37,14 @@ public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLif
                             if entities.count == 0 {
                                 Text("There are no workspaces.")
                             } else {
-                                List {
-                                    ForEach(entities, id: \.id) { workspace in
-                                        NavigationLink {
-                                            WorkspaceOverview(workspace, workspaceStore: workspaceStore)
-                                        } label: {
-                                            WorkspaceRow(workspace)
-                                                .onAppear {
-                                                    onListItemAppear(workspace.id)
-                                                }
-                                        }
+                                List(entities, id: \.id) { workspace in
+                                    NavigationLink {
+                                        WorkspaceOverview(workspace, workspaceStore: workspaceStore)
+                                    } label: {
+                                        WorkspaceRow(workspace)
+                                            .onAppear {
+                                                onListItemAppear(workspace.id)
+                                            }
                                     }
                                 }
                             }

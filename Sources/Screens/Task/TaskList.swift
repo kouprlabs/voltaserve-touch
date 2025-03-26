@@ -32,16 +32,14 @@ public struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                             if entities.count == 0 {
                                 Text("There are no tasks.")
                             } else {
-                                List {
-                                    ForEach(entities, id: \.id) { task in
-                                        NavigationLink {
-                                            TaskOverview(task)
-                                        } label: {
-                                            TaskRow(task)
-                                                .onAppear {
-                                                    onListItemAppear(task.id)
-                                                }
-                                        }
+                                List(entities, id: \.id) { task in
+                                    NavigationLink {
+                                        TaskOverview(task)
+                                    } label: {
+                                        TaskRow(task)
+                                            .onAppear {
+                                                onListItemAppear(task.id)
+                                            }
                                     }
                                 }
                             }
@@ -119,7 +117,7 @@ public struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
 
     // MARK: - ErrorPresentable
 
-    @State public var errorIsPresented: Bool = false
+    @State public var errorIsPresented = false
     @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider

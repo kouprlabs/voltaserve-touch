@@ -143,7 +143,7 @@ public struct MosaicSettings: View, ViewDataProvider, LoadStateProvider, TimerLi
 
     // MARK: - ErrorPresentable
 
-    @State public var errorIsPresented: Bool = false
+    @State public var errorIsPresented = false
     @State public var errorMessage: String?
 
     // MARK: - ViewDataProvider

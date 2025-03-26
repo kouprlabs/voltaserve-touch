@@ -14,7 +14,7 @@ import Foundation
 @MainActor
 public class SignUpStore: ObservableObject {
     @Published public var passwordRequirements: VOAccount.PasswordRequirements?
-    @Published public var passwordRequirementsIsLoading: Bool = false
+    @Published public var passwordRequirementsIsLoading = false
     @Published public var passwordRequirementsError: String?
     private var timer: Timer?
     private var accountClient: VOAccount = .init(baseURL: Config.shared.idpURL)
@@ -53,11 +53,11 @@ public class SignUpStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.passwordRequirements != nil {
-                Task {
+            Task.detached {
+                if await self.passwordRequirements != nil {
                     let passwordRequirements = try await self.fetchPasswordRequirements()
                     if let passwordRequirements {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.passwordRequirements = passwordRequirements
                             self.passwordRequirementsError = nil
                         }

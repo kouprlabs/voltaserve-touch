@@ -146,7 +146,7 @@ struct InsightsSettings: View, TimerLifecycle, TokenDistributing, ErrorPresentab
 
     // MARK: - ErrorPresentable
 
-    @State public var errorIsPresented: Bool = false
+    @State public var errorIsPresented = false
     @State public var errorMessage: String?
 
     // MARK: - TimerLifecycle

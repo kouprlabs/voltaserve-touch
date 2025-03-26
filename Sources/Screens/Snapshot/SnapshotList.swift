@@ -35,17 +35,15 @@ public struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLife
                             if entities.count == 0 {
                                 Text("There are no snapshots.")
                             } else {
-                                List {
-                                    ForEach(entities, id: \.id) { snapshot in
-                                        NavigationLink {
-                                            SnapshotOverview(
-                                                snapshot, snapshotStore: snapshotStore)
-                                        } label: {
-                                            SnapshotRow(snapshot)
-                                                .onAppear {
-                                                    onListItemAppear(snapshot.id)
-                                                }
-                                        }
+                                List(entities, id: \.id) { snapshot in
+                                    NavigationLink {
+                                        SnapshotOverview(
+                                            snapshot, snapshotStore: snapshotStore)
+                                    } label: {
+                                        SnapshotRow(snapshot)
+                                            .onAppear {
+                                                onListItemAppear(snapshot.id)
+                                            }
                                     }
                                 }
                             }

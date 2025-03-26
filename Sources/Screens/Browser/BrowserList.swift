@@ -50,22 +50,20 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
                         if entities.count == 0 {
                             Text("There are no items.")
                         } else {
-                            List {
-                                ForEach(entities, id: \.id) { file in
-                                    NavigationLink {
-                                        BrowserList(
-                                            file.id,
-                                            workspace: workspace,
-                                            confirmLabelText: confirmLabelText,
-                                            onCompletion: onCompletion
-                                        )
-                                        .navigationTitle(file.name)
-                                    } label: {
-                                        FileRow(file)
-                                    }
-                                    .onAppear {
-                                        onListItemAppear(file.id)
-                                    }
+                            List(entities, id: \.id) { file in
+                                NavigationLink {
+                                    BrowserList(
+                                        file.id,
+                                        workspace: workspace,
+                                        confirmLabelText: confirmLabelText,
+                                        onCompletion: onCompletion
+                                    )
+                                    .navigationTitle(file.name)
+                                } label: {
+                                    FileRow(file)
+                                }
+                                .onAppear {
+                                    onListItemAppear(file.id)
                                 }
                             }
                             .listStyle(.inset)

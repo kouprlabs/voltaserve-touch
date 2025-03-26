@@ -15,14 +15,14 @@ import Foundation
 // swiftlint:disable:next type_body_length
 public class WorkspaceStore: ObservableObject {
     @Published public var entities: [VOWorkspace.Entity]?
-    @Published public var entitiesIsLoading: Bool = false
+    @Published public var entitiesIsLoading = false
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
     @Published public var root: VOFile.Entity?
-    @Published public var rootIsLoading: Bool = false
+    @Published public var rootIsLoading = false
     @Published public var rootError: String?
     @Published public var storageUsage: VOStorage.Usage?
-    @Published public var storageUsageIsLoading: Bool = false
+    @Published public var storageUsageIsLoading = false
     @Published public var storageUsageError: String?
     @Published public var current: VOWorkspace.Entity?
     @Published public var query: String?
@@ -256,38 +256,30 @@ public class WorkspaceStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.entities != nil {
-                Task {
-                    var size = Constants.pageSize
-                    if let list = self.list {
-                        size = Constants.pageSize * list.page
-                    }
-                    let list = try await self.fetchList(page: 1, size: size)
+            Task.detached {
+                if let entities = await self.entities {
+                    let list = try await self.fetchList(page: 1, size: entities.count)
                     if let list {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.entities = list.data
                             self.entitiesError = nil
                         }
                     }
                 }
-            }
-            if self.current != nil {
-                if self.root != nil {
-                    Task {
+                if await self.current != nil {
+                    if await self.root != nil {
                         let root = try await self.fetchRoot()
                         if let root {
-                            DispatchQueue.main.async {
+                            await MainActor.run {
                                 self.root = root
                                 self.rootError = nil
                             }
                         }
                     }
-                }
-                if self.storageUsage != nil {
-                    Task {
+                    if await self.storageUsage != nil {
                         let storageUsage = try await self.fetchStorageUsage()
                         if let storageUsage {
-                            DispatchQueue.main.async {
+                            await MainActor.run {
                                 self.storageUsage = storageUsage
                                 self.storageUsageError = nil
                             }

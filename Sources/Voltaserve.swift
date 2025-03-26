@@ -141,11 +141,11 @@ public struct Voltaserve: View {
     private func startTokenTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
-            guard tokenStore.token != nil else { return }
-            if let token = tokenStore.token, token.isExpired {
-                Task {
+            Task.detached {
+                guard await tokenStore.token != nil else { return }
+                if let token = await tokenStore.token, token.isExpired {
                     if let newToken = try await tokenStore.refreshTokenIfNecessary() {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             tokenStore.token = newToken
                             tokenStore.saveInKeychain(newToken)
                         }
