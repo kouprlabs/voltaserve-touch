@@ -13,7 +13,7 @@ import SwiftUI
 public struct ForgotPassword: View, FormValidatable, ErrorPresentable {
     @StateObject private var forgotPasswordStore = ForgotPasswordStore()
     @State private var email: String = ""
-    @State private var isProcessing: Bool = false
+    @State private var isProcessing = false
     private let onCompletion: (() -> Void)?
     private let onSignIn: (() -> Void)?
 
@@ -90,7 +90,7 @@ public struct ForgotPassword: View, FormValidatable, ErrorPresentable {
 
     // MARK: - ErrorPresentable
 
-    @State public var errorIsPresented: Bool = false
+    @State public var errorIsPresented = false
     @State public var errorMessage: String?
 
     // MARK: - FormValidatable

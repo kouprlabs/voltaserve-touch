@@ -14,11 +14,11 @@ import Foundation
 @MainActor
 public class BrowserStore: ObservableObject {
     @Published public var entities: [VOFile.Entity]?
-    @Published public var entitiesIsLoading: Bool = false
+    @Published public var entitiesIsLoading = false
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
     @Published public var folder: VOFile.Entity?
-    @Published public var folderIsLoading: Bool = false
+    @Published public var folderIsLoading = false
     @Published public var folderError: String?
     @Published public var query: VOFile.Query = .init(type: .folder)
     private var list: VOFile.List?
@@ -190,26 +190,20 @@ public class BrowserStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let current = self.folder, self.entities != nil {
-                Task {
-                    var size = Constants.pageSize
-                    if let list = self.list {
-                        size = Constants.pageSize * list.page
-                    }
-                    let list = try await self.fetchList(current.id, page: 1, size: size)
+            Task.detached {
+                if let current = await self.folder, let entities = await self.entities {
+                    let list = try await self.fetchList(current.id, page: 1, size: entities.count)
                     if let list {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.entities = list.data
                             self.entitiesError = nil
                         }
                     }
                 }
-            }
-            if self.folder != nil {
-                Task {
+                if await self.folder != nil {
                     let folder = try await self.fetchFolder()
                     if let folder {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.folder = folder
                             self.folderError = nil
                         }

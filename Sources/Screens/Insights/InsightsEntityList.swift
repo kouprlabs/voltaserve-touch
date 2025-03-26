@@ -37,13 +37,11 @@ public struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, Tim
                             if entities.count == 0 {
                                 Text("There are no entities.")
                             } else {
-                                List {
-                                    ForEach(entities, id: \.text) { entity in
-                                        InsightsEntityRow(entity)
-                                            .onAppear {
-                                                onListItemAppear(entity.text)
-                                            }
-                                    }
+                                List(entities, id: \.text) { entity in
+                                    InsightsEntityRow(entity)
+                                        .onAppear {
+                                            onListItemAppear(entity.text)
+                                        }
                                 }
                             }
                         }

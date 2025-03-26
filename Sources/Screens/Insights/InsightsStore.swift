@@ -14,11 +14,11 @@ import Foundation
 @MainActor
 public class InsightsStore: ObservableObject {
     @Published public var entities: [VOEntity.Entity]?
-    @Published public var entitiesIsLoading: Bool = false
+    @Published public var entitiesIsLoading = false
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
     @Published public var languages: [VOSnapshot.Language]?
-    @Published public var languagesIsLoading: Bool = false
+    @Published public var languagesIsLoading = false
     public var languagesIsLoadingFirstTime: Bool { languagesIsLoading && languages == nil }
     @Published public var languagesError: String?
     @Published public var query: String?
@@ -216,15 +216,11 @@ public class InsightsStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.entities != nil {
-                Task {
-                    var size = Constants.pageSize
-                    if let list = self.list {
-                        size = Constants.pageSize * list.page
-                    }
-                    let list = try await self.fetchEntityList(page: 1, size: size)
+            Task.detached {
+                if let entities = await self.entities {
+                    let list = try await self.fetchEntityList(page: 1, size: entities.count)
                     if let list {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.entities = list.data
                             self.entitiesError = nil
                         }

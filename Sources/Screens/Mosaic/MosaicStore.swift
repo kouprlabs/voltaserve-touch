@@ -14,7 +14,7 @@ import Foundation
 @MainActor
 public class MosaicStore: ObservableObject {
     @Published public var metadata: VOMosaic.Metadata?
-    @Published public var metadataIsLoading: Bool = false
+    @Published public var metadataIsLoading = false
     @Published public var metadataError: String?
     private var mosaicClient: VOMosaic?
     private var timer: Timer?
@@ -66,11 +66,11 @@ public class MosaicStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.metadata != nil {
-                Task {
+            Task.detached {
+                if await self.metadata != nil {
                     let metadata = try await self.fetchMetadata()
                     if let metadata {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.metadata = metadata
                             self.metadataError = nil
                         }

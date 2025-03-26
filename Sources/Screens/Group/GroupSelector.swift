@@ -37,17 +37,15 @@ public struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
                         if entities.count == 0 {
                             Text("There are no groups.")
                         } else {
-                            List {
-                                ForEach(entities, id: \.id) { group in
-                                    Button {
-                                        dismiss()
-                                        onCompletion?(group)
-                                    } label: {
-                                        GroupRow(group)
-                                            .onAppear {
-                                                onListItemAppear(group.id)
-                                            }
-                                    }
+                            List(entities, id: \.id) { group in
+                                Button {
+                                    dismiss()
+                                    onCompletion?(group)
+                                } label: {
+                                    GroupRow(group)
+                                        .onAppear {
+                                            onListItemAppear(group.id)
+                                        }
                                 }
                             }
                         }

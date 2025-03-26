@@ -12,7 +12,7 @@ import SwiftUI
 
 public struct Viewer: View {
     @Environment(\.presentationMode) private var presentationMode
-    @State private var isImmersiveMode: Bool = false
+    @State private var isImmersiveMode = false
     private let file: VOFile.Entity
 
     public init(_ file: VOFile.Entity) {

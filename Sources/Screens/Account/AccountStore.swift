@@ -14,10 +14,10 @@ import Foundation
 public class AccountStore: ObservableObject {
     @Published public var identityUser: VOIdentityUser.Entity?
     @Published public var identityUserError: String?
-    @Published public var identityUserIsLoading: Bool = false
+    @Published public var identityUserIsLoading = false
     @Published public var storageUsage: VOStorage.Usage?
     @Published public var storageUsageError: String?
-    @Published public var storageUsageIsLoading: Bool = false
+    @Published public var storageUsageIsLoading = false
     private var timer: Timer?
     private var accountClient: VOAccount = .init(baseURL: Config.shared.idpURL)
     private var identityUserClient: VOIdentityUser?
@@ -122,22 +122,20 @@ public class AccountStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.identityUser != nil {
-                Task {
+            Task.detached {
+                if await self.identityUser != nil {
                     let user = try await self.fetchIdentityUser()
                     if let user {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.identityUser = user
                             self.identityUserError = nil
                         }
                     }
                 }
-            }
-            if self.storageUsage != nil {
-                Task {
+                if await self.storageUsage != nil {
                     let storageUsage = try await self.fetchAccountStorageUsage()
                     if let storageUsage {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.storageUsage = storageUsage
                             self.storageUsageError = nil
                         }

@@ -15,20 +15,20 @@ import Foundation
 // swiftlint:disable:next type_body_length
 public class FileStore: ObservableObject {
     @Published public var entities: [VOFile.Entity]?
-    @Published public var entitiesIsLoading: Bool = false
+    @Published public var entitiesIsLoading = false
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
     @Published public var taskCount: Int?
-    @Published public var taskCountIsLoading: Bool = false
+    @Published public var taskCountIsLoading = false
     @Published public var taskCountError: String?
     @Published public var storageUsage: VOStorage.Usage?
-    @Published public var storageUsageIsLoading: Bool = false
+    @Published public var storageUsageIsLoading = false
     @Published public var storageUsageError: String?
     @Published public var itemCount: Int?
-    @Published public var itemCountIsLoading: Bool = false
+    @Published public var itemCountIsLoading = false
     @Published public var itemCountError: String?
     @Published public var file: VOFile.Entity?
-    @Published public var fileIsLoading: Bool = false
+    @Published public var fileIsLoading = false
     @Published public var fileError: String?
     @Published public var query: VOFile.Query?
     @Published public var selection = Set<String>() {
@@ -379,36 +379,28 @@ public class FileStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if let current = self.file, self.entities != nil {
-                Task {
-                    var size = Constants.pageSize
-                    if let list = self.list {
-                        size = Constants.pageSize * list.page
-                    }
-                    let list = try await self.fetchList(current.id, page: 1, size: size)
+            Task.detached {
+                if let current = await self.file, let entities = await self.entities {
+                    let list = try await self.fetchList(current.id, page: 1, size: entities.count)
                     if let list {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.entities = list.data
                             self.entitiesError = nil
                         }
                     }
                 }
-            }
-            if self.file != nil {
-                Task {
+                if await self.file != nil {
                     let file = try await self.fetchFile()
                     if let file {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.file = file
                             self.fileError = nil
                         }
                     }
                 }
-            }
-            if self.taskCount != nil {
-                Task {
+                if await self.taskCount != nil {
                     let taskCount = try await self.fetchTaskCount()
-                    DispatchQueue.main.async {
+                    await MainActor.run {
                         self.taskCount = taskCount
                         self.taskCountError = nil
                     }

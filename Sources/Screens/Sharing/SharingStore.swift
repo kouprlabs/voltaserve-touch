@@ -14,11 +14,11 @@ import Foundation
 @MainActor
 public class SharingStore: ObservableObject {
     @Published public var userPermissions: [VOFile.UserPermission]?
-    @Published public var userPermissionsIsLoading: Bool = false
+    @Published public var userPermissionsIsLoading = false
     public var userPermissionsIsLoadingFirstTime: Bool { userPermissionsIsLoading && userPermissions == nil }
     @Published public var userPermissionsError: String?
     @Published public var groupPermissions: [VOFile.GroupPermission]?
-    @Published public var groupPermissionsIsLoading: Bool = false
+    @Published public var groupPermissionsIsLoading = false
     public var groupPermissionsIsLoadingFirstTime: Bool { groupPermissionsIsLoading && groupPermissions == nil }
     @Published public var groupPermissionsError: String?
     private var timer: Timer?
@@ -112,23 +112,21 @@ public class SharingStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            guard let fileID = self.fileID else { return }
-            if self.userPermissions != nil {
-                Task {
+            Task.detached {
+                guard let fileID = await self.fileID else { return }
+                if await self.userPermissions != nil {
                     let values = try await self.fetchUserPermissions(fileID)
                     if let values {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.userPermissions = values
                             self.userPermissionsError = nil
                         }
                     }
                 }
-            }
-            if self.groupPermissions != nil {
-                Task {
+                if await self.groupPermissions != nil {
                     let values = try await self.fetchGroupPermissions(fileID)
                     if let values {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.groupPermissions = values
                             self.groupPermissionsError = nil
                         }

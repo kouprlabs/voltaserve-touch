@@ -14,7 +14,7 @@ public struct FileList: View, ListItemScrollable {
     @ObservedObject private var fileStore: FileStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var tappedItem: VOFile.Entity?
-    @State private var viewerIsPresented: Bool = false
+    @State private var viewerIsPresented = false
 
     public init(fileStore: FileStore, workspaceStore: WorkspaceStore) {
         self.fileStore = fileStore

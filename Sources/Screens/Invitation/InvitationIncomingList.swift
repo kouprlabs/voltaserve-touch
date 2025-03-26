@@ -30,20 +30,18 @@ public struct InvitationIncomingList: View, ViewDataProvider, LoadStateProvider,
                         if entities.isEmpty {
                             Text("There are no invitations.")
                         } else {
-                            List {
-                                ForEach(entities, id: \.id) { invitation in
-                                    NavigationLink {
-                                        InvitationOverview(
-                                            invitation,
-                                            invitationStore: invitationStore,
-                                            isAcceptableDeclinable: true
-                                        )
-                                    } label: {
-                                        InvitationIncomingRow(invitation)
-                                            .onAppear {
-                                                onListItemAppear(invitation.id)
-                                            }
-                                    }
+                            List(entities, id: \.id) { invitation in
+                                NavigationLink {
+                                    InvitationOverview(
+                                        invitation,
+                                        invitationStore: invitationStore,
+                                        isAcceptableDeclinable: true
+                                    )
+                                } label: {
+                                    InvitationIncomingRow(invitation)
+                                        .onAppear {
+                                            onListItemAppear(invitation.id)
+                                        }
                                 }
                             }
                         }

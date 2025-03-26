@@ -36,16 +36,14 @@ public struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                             if entities.count == 0 {
                                 Text("There are no groups.")
                             } else {
-                                List {
-                                    ForEach(entities, id: \.id) { group in
-                                        NavigationLink {
-                                            GroupOverview(group, groupStore: groupStore)
-                                        } label: {
-                                            GroupRow(group)
-                                                .onAppear {
-                                                    onListItemAppear(group.id)
-                                                }
-                                        }
+                                List(entities, id: \.id) { group in
+                                    NavigationLink {
+                                        GroupOverview(group, groupStore: groupStore)
+                                    } label: {
+                                        GroupRow(group)
+                                            .onAppear {
+                                                onListItemAppear(group.id)
+                                            }
                                     }
                                 }
                             }

@@ -13,7 +13,6 @@ import SwiftUI
 public struct FileDelete: View {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
-    @State private var isProcessing = true
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
@@ -24,37 +23,39 @@ public struct FileDelete: View {
 
     public var body: some View {
         VStack {
-            if isProcessing, !errorIsPresented {
+            if errorIsPresented {
+                if errorSeverity == .full {
+                    VOErrorIcon()
+                    if let errorMessage {
+                        Text(errorMessage)
+                    }
+                    Button {
+                        dismiss()
+                    } label: {
+                        VOButtonLabel("Done")
+                    }
+                    .voSecondaryButton()
+                    .padding(.horizontal)
+                } else if errorSeverity == .partial {
+                    VOWarningIcon()
+                    if let errorMessage {
+                        Text(errorMessage)
+                    }
+                    Button {
+                        dismiss()
+                    } label: {
+                        VOButtonLabel("Done")
+                    }
+                    .voSecondaryButton()
+                    .padding(.horizontal)
+                }
+            } else {
                 VOSheetProgressView()
                 if fileStore.selection.count > 1 {
-                    Text("Deleting (\(fileStore.selection.count)) items.")
+                    Text("Deleting \(fileStore.selection.count) items.")
                 } else {
                     Text("Deleting item.")
                 }
-            } else if errorIsPresented, errorSeverity == .full {
-                VOErrorIcon()
-                if let errorMessage {
-                    Text(errorMessage)
-                }
-                Button {
-                    dismiss()
-                } label: {
-                    VOButtonLabel("Done")
-                }
-                .voSecondaryButton()
-                .padding(.horizontal)
-            } else if errorIsPresented, errorSeverity == .partial {
-                VOWarningIcon()
-                if let errorMessage {
-                    Text(errorMessage)
-                }
-                Button {
-                    dismiss()
-                } label: {
-                    VOButtonLabel("Done")
-                }
-                .voSecondaryButton()
-                .padding(.horizontal)
             }
         }
         .onAppear {
@@ -73,7 +74,7 @@ public struct FileDelete: View {
                     return true
                 } else {
                     if result.failed.count > 1 {
-                        errorMessage = "Failed to delete (\(result.failed.count)) items."
+                        errorMessage = "Failed to delete \(result.failed.count) items."
                     } else {
                         errorMessage = "Failed to delete item."
                     }
@@ -89,17 +90,12 @@ public struct FileDelete: View {
         } success: {
             errorIsPresented = false
             dismiss()
-        } failure: { _ in
-            if fileStore.selection.count > 1 {
-                errorMessage = "Failed to delete (\(fileStore.selection.count)) items."
-            } else {
-                errorMessage = "Failed to delete item."
-            }
+        } failure: { message in
+            errorMessage = message
             errorSeverity = .full
             errorIsPresented = true
         } anyways: {
             fileStore.selection = []
-            isProcessing = false
         }
     }
 

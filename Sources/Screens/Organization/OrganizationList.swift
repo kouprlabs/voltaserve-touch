@@ -36,16 +36,14 @@ public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, Timer
                             if entities.count == 0 {
                                 Text("There are no organizations.")
                             } else {
-                                List {
-                                    ForEach(entities, id: \.id) { organization in
-                                        NavigationLink {
-                                            OrganizationOverview(organization, organizationStore: organizationStore)
-                                        } label: {
-                                            OrganizationRow(organization)
-                                                .onAppear {
-                                                    onListItemAppear(organization.id)
-                                                }
-                                        }
+                                List(entities, id: \.id) { organization in
+                                    NavigationLink {
+                                        OrganizationOverview(organization, organizationStore: organizationStore)
+                                    } label: {
+                                        OrganizationRow(organization)
+                                            .onAppear {
+                                                onListItemAppear(organization.id)
+                                            }
                                     }
                                 }
                             }

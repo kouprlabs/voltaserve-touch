@@ -92,7 +92,7 @@ public struct MosaicCreate: View, ErrorPresentable, TokenDistributing {
 
     // MARK: - ErrorPresentable
 
-    @State public var errorIsPresented: Bool = false
+    @State public var errorIsPresented = false
     @State public var errorMessage: String?
 
     // MARK: - TokenDistributing

@@ -14,7 +14,7 @@ import Foundation
 @MainActor
 public class GroupStore: ObservableObject {
     @Published public var entities: [VOGroup.Entity]?
-    @Published public var entitiesIsLoading: Bool = false
+    @Published public var entitiesIsLoading = false
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
     @Published public var current: VOGroup.Entity?
@@ -205,15 +205,11 @@ public class GroupStore: ObservableObject {
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if self.entities != nil {
-                Task {
-                    var size = Constants.pageSize
-                    if let list = self.list {
-                        size = Constants.pageSize * list.page
-                    }
-                    let list = try await self.fetchList(page: 1, size: size)
+            Task.detached {
+                if let entities = await self.entities {
+                    let list = try await self.fetchList(page: 1, size: entities.count)
                     if let list {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.entities = list.data
                             self.entitiesError = nil
                         }

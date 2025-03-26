@@ -11,6 +11,8 @@
 import SwiftUI
 
 public struct VOSheetProgressView: View {
+    public init() {}
+
     public var body: some View {
         ProgressView()
             .frame(width: 30, height: 30)
