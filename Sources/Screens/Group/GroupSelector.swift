@@ -35,7 +35,8 @@ public struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
                 if let entities = groupStore.entities {
                     Group {
                         if entities.count == 0 {
-                            Text("There are no groups.")
+                            Text("There are no items.")
+                                .foregroundStyle(.secondary)
                         } else {
                             List(entities, id: \.id) { group in
                                 Button {

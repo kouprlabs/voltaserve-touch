@@ -35,7 +35,8 @@ public struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, T
                     if let entities = organizationStore.entities {
                         Group {
                             if entities.count == 0 {
-                                Text("There are no organizations.")
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
                             } else {
                                 List(selection: $selection) {
                                     ForEach(entities, id: \.id) { organization in

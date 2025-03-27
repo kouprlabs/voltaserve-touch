@@ -49,6 +49,7 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
                     Group {
                         if entities.count == 0 {
                             Text("There are no items.")
+                                .foregroundStyle(.secondary)
                         } else {
                             List(entities, id: \.id) { file in
                                 NavigationLink {

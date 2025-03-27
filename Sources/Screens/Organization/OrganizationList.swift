@@ -34,7 +34,8 @@ public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, Timer
                     if let entities = organizationStore.entities {
                         Group {
                             if entities.count == 0 {
-                                Text("There are no organizations.")
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
                             } else {
                                 List(entities, id: \.id) { organization in
                                     NavigationLink {

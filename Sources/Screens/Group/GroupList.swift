@@ -34,7 +34,8 @@ public struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                     if let entities = groupStore.entities {
                         Group {
                             if entities.count == 0 {
-                                Text("There are no groups.")
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
                             } else {
                                 List(entities, id: \.id) { group in
                                     NavigationLink {

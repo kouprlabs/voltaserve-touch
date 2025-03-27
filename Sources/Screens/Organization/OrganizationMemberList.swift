@@ -33,7 +33,8 @@ public struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider,
                 if let entities = userStore.entities {
                     Group {
                         if entities.count == 0 {
-                            Text("There are no users.")
+                            Text("There are no items.")
+                                .foregroundStyle(.secondary)
                         } else {
                             List(entities, id: \.id) { member in
                                 UserRow(

@@ -34,7 +34,8 @@ public struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider,
                 if let entities = invitationStore.entities {
                     Group {
                         if entities.isEmpty {
-                            Text("There are no invitations.")
+                            Text("There are no items.")
+                                .foregroundStyle(.secondary)
                         } else {
                             List(entities, id: \.id) { invitation in
                                 NavigationLink {

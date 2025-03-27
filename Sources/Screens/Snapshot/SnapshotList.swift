@@ -33,7 +33,8 @@ public struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLife
                     if let entities = snapshotStore.entities {
                         Group {
                             if entities.count == 0 {
-                                Text("There are no snapshots.")
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
                             } else {
                                 List(entities, id: \.id) { snapshot in
                                     NavigationLink {

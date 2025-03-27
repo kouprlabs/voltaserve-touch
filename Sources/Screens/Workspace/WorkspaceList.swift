@@ -35,7 +35,8 @@ public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLif
                     if let entities = workspaceStore.entities {
                         Group {
                             if entities.count == 0 {
-                                Text("There are no workspaces.")
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
                             } else {
                                 List(entities, id: \.id) { workspace in
                                     NavigationLink {
