@@ -35,6 +35,7 @@ public struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
                     Group {
                         if entities.count == 0 {
                             Text("There are no items.")
+                                .foregroundStyle(.secondary)
                         } else {
                             List(entities, id: \.id) { member in
                                 UserRow(

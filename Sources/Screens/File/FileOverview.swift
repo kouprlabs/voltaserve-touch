@@ -35,6 +35,7 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
                     Group {
                         if entities.count == 0 {
                             Text("There are no items.")
+                                .foregroundStyle(.secondary)
                         } else {
                             if fileStore.viewMode == .list {
                                 FileList(fileStore: fileStore, workspaceStore: workspaceStore)

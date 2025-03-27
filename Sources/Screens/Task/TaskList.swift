@@ -30,7 +30,8 @@ public struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                     if let entities = taskStore.entities {
                         Group {
                             if entities.count == 0 {
-                                Text("There are no tasks.")
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
                             } else {
                                 List(entities, id: \.id) { task in
                                     NavigationLink {

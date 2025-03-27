@@ -35,7 +35,7 @@ public struct InsightsEntityList: View, ViewDataProvider, LoadStateProvider, Tim
                     if let entities = insightsStore.entities {
                         Group {
                             if entities.count == 0 {
-                                Text("There are no entities.")
+                                Text("There are no items.")
                             } else {
                                 List(entities, id: \.text) { entity in
                                     InsightsEntityRow(entity)

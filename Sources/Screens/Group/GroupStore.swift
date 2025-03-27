@@ -207,7 +207,10 @@ public class GroupStore: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
                 if let entities = await self.entities {
-                    let list = try await self.fetchList(page: 1, size: entities.count)
+                    let list = try await self.fetchList(
+                        page: 1,
+                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+                    )
                     if let list {
                         await MainActor.run {
                             self.entities = list.data
