@@ -70,11 +70,9 @@ public struct FileUpload: View {
     }
 
     private func performUpload() {
-        let dispatchGroup = DispatchGroup()
-        var failedCount = 0
-        for url in urls {
-            dispatchGroup.enter()
-            Task {
+        Task {
+            var failedCount = 0
+            for url in urls {
                 do {
                     if !url.startAccessingSecurityScopedResource() {
                         throw FileAccessError.permissionError
@@ -88,14 +86,10 @@ public struct FileUpload: View {
                         fileStore.fetchNextPage()
                     }
                     url.stopAccessingSecurityScopedResource()
-                    dispatchGroup.leave()
                 } catch {
                     failedCount += 1
-                    dispatchGroup.leave()
                 }
             }
-        }
-        dispatchGroup.notify(queue: .main) {
             if failedCount == 0 {
                 errorIsPresented = false
                 dismiss()
