@@ -34,8 +34,13 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
                 if let entities = fileStore.entities {
                     Group {
                         if entities.count == 0 {
-                            Text("There are no items.")
-                                .foregroundStyle(.secondary)
+                            VStack {
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
+                                FileUploadMenu(fileStore: fileStore) {
+                                    Label("New", systemImage: "plus")
+                                }
+                            }
                         } else {
                             if fileStore.viewMode == .list {
                                 FileList(fileStore: fileStore, workspaceStore: workspaceStore)

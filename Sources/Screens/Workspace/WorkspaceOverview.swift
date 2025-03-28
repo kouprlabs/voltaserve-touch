@@ -38,7 +38,7 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
                                     .navigationTitle(workspace.name)
                             }
                         } label: {
-                            Label("Files", systemImage: "folder")
+                            Label("Browse", systemImage: "folder")
                         }
                         NavigationLink {
                             WorkspaceSettings(workspaceStore: workspaceStore) {

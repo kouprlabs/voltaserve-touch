@@ -79,7 +79,7 @@ public struct Voltaserve: View {
                         }
                     }
                 }
-                Tab("Workspaces", systemImage: "internaldrive", value: TabType.workspaces) {
+                Tab("Files", systemImage: "internaldrive", value: TabType.workspaces) {
                     WorkspaceList()
                 }
                 Tab("Groups", systemImage: "person.2.fill", value: TabType.groups) {

@@ -39,7 +39,9 @@ public struct FileToolbar: ViewModifier {
                 }
                 if let file = fileStore.file, file.permission.ge(.editor) {
                     ToolbarItem(placement: .topBarLeading) {
-                        uploadMenu
+                        FileUploadMenu(fileStore: fileStore) {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
@@ -66,23 +68,6 @@ public struct FileToolbar: ViewModifier {
                     .frame(width: 10, height: 10)
                     .offset(x: 12, y: -10)
             }
-        }
-    }
-
-    private var uploadMenu: some View {
-        Menu {
-            Button {
-                fileStore.uploadDocumentPickerIsPresented = true
-            } label: {
-                Label("Upload Files", systemImage: "icloud.and.arrow.up")
-            }
-            Button {
-                fileStore.createFolderIsPresented = true
-            } label: {
-                Label("New Folder", systemImage: "folder.badge.plus")
-            }
-        } label: {
-            Image(systemName: "plus")
         }
     }
 
