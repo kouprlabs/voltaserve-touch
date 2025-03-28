@@ -60,7 +60,7 @@ public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLif
                     }
                 }
             }
-            .navigationTitle("Workspaces")
+            .navigationTitle("Files")
             .accountToolbar(accountStore: accountStore, invitationStore: invitationStore)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
