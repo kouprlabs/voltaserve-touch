@@ -56,7 +56,7 @@ public struct GroupSettings: View, ErrorPresentable {
                             }
                             .disabled(isDeleting)
                             .confirmationDialog("Delete Group", isPresented: $deleteConfirmationIsPresented) {
-                                Button("Delete Permanently", role: .destructive) {
+                                Button("Delete", role: .destructive) {
                                     performDelete()
                                 }
                             } message: {
