@@ -75,7 +75,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
                             }
                             .disabled(isDeleting)
                             .confirmationDialog("Delete Organization", isPresented: $deleteConfirmationIsPresented) {
-                                Button("Delete Permanently", role: .destructive) {
+                                Button("Delete", role: .destructive) {
                                     performDelete()
                                 }
                             } message: {
