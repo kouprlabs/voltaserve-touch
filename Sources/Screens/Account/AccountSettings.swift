@@ -10,15 +10,11 @@
 
 import SwiftUI
 
-public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorPresentable {
+public struct AccountSettings: View, ViewDataProvider, LoadStateProvider {
     @EnvironmentObject private var tokenStore: TokenStore
     @EnvironmentObject private var appearanceStore: AppearanceStore
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
-    @State private var deleteConfirmationIsPresented = false
-    @State private var deleteNoticeIsPresented = false
-    @State private var password = ""
-    @State private var isDeleting = false
     private let onDelete: (() -> Void)?
 
     public init(accountStore: AccountStore, onDelete: (() -> Void)? = nil) {
@@ -45,7 +41,6 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorP
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        .disabled(isDeleting)
                     }
                     Section(header: VOSectionHeader("Credentials")) {
                         NavigationLink(destination: AccountEditEmail(accountStore: accountStore)) {
@@ -58,7 +53,6 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorP
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        .disabled(isDeleting)
                         if identityUser.pendingEmail != nil {
                             HStack(spacing: VOMetrics.spacingXs) {
                                 Image(systemName: "exclamationmark.triangle")
@@ -75,7 +69,6 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorP
                                 Text(String(repeating: "•", count: 10))
                             }
                         }
-                        .disabled(isDeleting)
                     }
                     Section(header: VOSectionHeader("Appearance")) {
                         NavigationLink(
@@ -88,32 +81,10 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorP
                             }
                         }
                     }
-                    Section(header: VOSectionHeader("Delete Account")) {
-                        SecureField("Type your password to confirm", text: $password)
-                            .disabled(isDeleting)
-                        Button(role: .destructive) {
-                            if password.isEmpty {
-                                deleteNoticeIsPresented = true
-                            } else {
-                                deleteConfirmationIsPresented = true
-                            }
-                        } label: {
-                            VOFormButtonLabel("Delete Account", isLoading: isDeleting)
-                        }
-                        .disabled(isDeleting)
-                        .confirmationDialog("Delete Account", isPresented: $deleteConfirmationIsPresented) {
-                            Button("Delete Permanently", role: .destructive) {
-                                performDelete()
-                            }
-                        } message: {
-                            Text("Are you sure want to delete your account?")
-                        }
-                        .confirmationDialog(
-                            "Missing Password Confirmation",
-                            isPresented: $deleteNoticeIsPresented
-                        ) {
-                        } message: {
-                            Text("You need to enter your password to confirm the account deletion.")
+                    Section(header: VOSectionHeader("Advanced")) {
+                        NavigationLink(destination: AccountDelete(accountStore: accountStore, onDelete: onDelete)) {
+                            Text("Delete Account and Data")
+                                .foregroundStyle(Color.red)
                         }
                     }
                 }
@@ -132,30 +103,7 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider, ErrorP
                 onAppearOrChange()
             }
         }
-        .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
-
-    private func performDelete() {
-        withErrorHandling {
-            try await accountStore.deleteAccount(password: password)
-            return true
-        } before: {
-            isDeleting = true
-        } success: {
-            dismiss()
-            onDelete?()
-        } failure: { message in
-            errorMessage = message
-            errorIsPresented = true
-        } anyways: {
-            isDeleting = false
-        }
-    }
-
-    // MARK: - ErrorPresentable
-
-    @State public var errorIsPresented = false
-    @State public var errorMessage: String?
 
     // MARK: - LoadStateProvider
 
