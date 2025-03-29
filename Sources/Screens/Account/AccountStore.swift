@@ -123,7 +123,7 @@ public class AccountStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if await self.identityUser != nil {
+                if await self.identityUser != nil, await self.tokenStore?.token != nil {
                     let user = try await self.fetchIdentityUser()
                     if let user {
                         await MainActor.run {
