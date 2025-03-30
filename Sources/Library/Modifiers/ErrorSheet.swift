@@ -32,7 +32,7 @@ public struct VOErrorSheet: ViewModifier {
                     .voSecondaryButton()
                 }
                 .padding()
-                .presentationDetents([.fraction(0.25)])
+                .presentationDetents([.fraction(0.30)])
             }
     }
 }

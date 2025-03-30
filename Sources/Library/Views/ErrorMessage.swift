@@ -27,7 +27,7 @@ public struct VOErrorMessage: View {
             if let message {
                 Text(message)
                     .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .lineLimit(3)
             }
         }
     }
