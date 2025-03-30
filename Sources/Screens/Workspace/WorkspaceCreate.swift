@@ -15,7 +15,7 @@ public struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
     @Environment(\.dismiss) private var dismiss
     @State private var name: String = ""
     @State private var organization: VOOrganization.Entity?
-    @State private var storageCapacity: Int? = 100_000_000_000
+    @State private var storageCapacity: Int? = 30_000_000_000
     @State private var isProcessing = false
     private let onCompletion: ((VOWorkspace.Entity) -> Void)?
 
