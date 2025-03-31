@@ -9,13 +9,17 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 public struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, TokenDistributing {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject private var accountStore = AccountStore()
     @StateObject private var invitationStore = InvitationStore()
     @Environment(\.dismiss) private var dismiss
-    @State private var deleteIsPresented = false
+    @State private var picturePickerIsPresented = false
+    @State private var pictureUploadIsLoading = false
+    @State private var pictureErrorIsPresented = false
+    @State private var pictureErrorMessage: String?
 
     public var body: some View {
         NavigationStack {
@@ -36,15 +40,49 @@ public struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerL
                     }
                 } else {
                     if let identityUser = accountStore.identityUser {
-                        VOAvatar(
-                            name: identityUser.fullName,
-                            size: 100,
-                            url: accountStore.urlForUserPicture(
-                                identityUser.id,
-                                fileExtension: identityUser.picture?.fileExtension
-                            )
-                        )
-                        .padding()
+                        if pictureUploadIsLoading {
+                            ProgressView()
+                        } else {
+                            if identityUser.picture == nil {
+                                Button {
+                                    picturePickerIsPresented = true
+                                } label: {
+                                    VOAvatar(
+                                        name: identityUser.fullName,
+                                        size: 100,
+                                        url: accountStore.urlForUserPicture(
+                                            identityUser.id,
+                                            fileExtension: identityUser.picture?.fileExtension
+                                        )
+                                    )
+                                    .padding()
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                Menu {
+                                    Button {
+                                        picturePickerIsPresented = true
+                                    } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                    Button(role: .destructive) {
+                                        performDeletePicture()
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                } label: {
+                                    VOAvatar(
+                                        name: identityUser.fullName,
+                                        size: 100,
+                                        url: accountStore.urlForUserPicture(
+                                            identityUser.id,
+                                            fileExtension: identityUser.picture?.fileExtension
+                                        )
+                                    )
+                                    .padding()
+                                }
+                            }
+                        }
                     }
                     Form {
                         Section(header: VOSectionHeader("Storage Usage")) {
@@ -93,6 +131,11 @@ public struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerL
                     }
                 }
             }
+            .sheet(isPresented: $picturePickerIsPresented) {
+                AccountPhotoPicker { (data: Data, filename: String, mimeType: String) in
+                    performUpdatePicture(data: data, filename: filename, mimeType: mimeType)
+                }
+            }
         }
         .onAppear {
             accountStore.tokenStore = tokenStore
@@ -111,12 +154,45 @@ public struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerL
                 onAppearOrChange()
             }
         }
+        .voErrorSheet(isPresented: $pictureErrorIsPresented, message: pictureErrorMessage)
     }
 
     private func performSignOut() {
         tokenStore.token = nil
         tokenStore.deleteFromKeychain()
         dismiss()
+    }
+
+    private func performUpdatePicture(data: Data, filename: String, mimeType: String) {
+        pictureUploadIsLoading = true
+        withErrorHandling {
+            _ = try await accountStore.updatePicture(data: data, filename: filename, mimeType: mimeType)
+            return true
+        } before: {
+        } success: {
+            accountStore.fetchIdentityUser()
+        } failure: { message in
+            pictureErrorMessage = message
+            pictureErrorIsPresented = true
+        } anyways: {
+            pictureUploadIsLoading = false
+        }
+    }
+
+    private func performDeletePicture() {
+        pictureUploadIsLoading = true
+        withErrorHandling {
+            _ = try await accountStore.deletePicture()
+            return true
+        } before: {
+        } success: {
+            accountStore.fetchIdentityUser()
+        } failure: { message in
+            pictureErrorMessage = message
+            pictureErrorIsPresented = true
+        } anyways: {
+            pictureUploadIsLoading = false
+        }
     }
 
     // MARK: - LoadStateProvider
@@ -128,6 +204,7 @@ public struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerL
 
     public var error: String? {
         accountStore.identityUserError ?? accountStore.storageUsageError ?? invitationStore.incomingCountError
+            ?? pictureErrorMessage
     }
 
     // MARK: - ViewDataProvider

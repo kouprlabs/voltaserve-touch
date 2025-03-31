@@ -13,7 +13,7 @@ import SwiftUI
 public struct AccountToolbar: ViewModifier {
     @ObservedObject private var accountStore: AccountStore
     @ObservedObject private var invitationStore: InvitationStore
-    @State private var isPresented = false
+    @State private var overviewIsPresented = false
 
     public init(accountStore: AccountStore, invitationStore: InvitationStore) {
         self.accountStore = accountStore
@@ -32,7 +32,7 @@ public struct AccountToolbar: ViewModifier {
                     }
                 }
             }
-            .sheet(isPresented: $isPresented) {
+            .sheet(isPresented: $overviewIsPresented) {
                 AccountOverview()
             }
     }
@@ -40,7 +40,7 @@ public struct AccountToolbar: ViewModifier {
     private var accountButton: some View {
         ZStack {
             Button {
-                isPresented.toggle()
+                overviewIsPresented.toggle()
             } label: {
                 if let identityUser = accountStore.identityUser {
                     VOAvatar(

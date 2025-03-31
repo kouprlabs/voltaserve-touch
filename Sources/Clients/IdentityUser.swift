@@ -137,7 +137,12 @@ public struct VOIdentityUser {
         }
     }
 
-    public func updatePicture(data: Data, onProgress: ((Double) -> Void)? = nil) async throws -> Entity {
+    public func updatePicture(
+        data: Data,
+        filename: String,
+        mimeType: String,
+        onProgress: ((Double) -> Void)? = nil
+    ) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
             var request = URLRequest(url: urlForUpdatePicture())
             request.httpMethod = "POST"
@@ -151,8 +156,8 @@ public struct VOIdentityUser {
 
             var httpBody = Data()
             httpBody.append(Data("--\(boundary)\r\n".utf8))
-            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n".utf8))
-            httpBody.append(Data("Content-Type: application/octet-stream\r\n\r\n".utf8))
+            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".utf8))
+            httpBody.append(Data("Content-Type: \(mimeType)\r\n\r\n".utf8))
 
             httpBody.append(data)
             httpBody.append(Data("\r\n--\(boundary)--\r\n".utf8))
