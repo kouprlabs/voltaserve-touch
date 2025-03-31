@@ -156,7 +156,7 @@ public struct VOFile {
     }
 
     public func create(_ options: CreateFileOptions) async throws -> Entity {
-        try await upload(urlForCreate(options), method: "POST", data: options.data, fileName: options.name)
+        try await upload(urlForCreate(options), method: "POST", data: options.data, filename: options.name)
     }
 
     public func create(_ options: CreateFolderOptions) async throws -> Entity {
@@ -179,14 +179,14 @@ public struct VOFile {
     }
 
     public func patch(_ id: String, options: PatchOptions) async throws -> Entity {
-        try await upload(urlForID(id), method: "PATCH", data: options.data, fileName: options.name)
+        try await upload(urlForID(id), method: "PATCH", data: options.data, filename: options.name)
     }
 
     func upload(
         _ url: URL,
         method: String,
         data: Data,
-        fileName: String,
+        filename: String,
         onProgress: ((Double) -> Void)? = nil
     ) async throws -> Entity {
         try await withCheckedThrowingContinuation { continuation in
@@ -202,7 +202,7 @@ public struct VOFile {
 
             var httpBody = Data()
             httpBody.append(Data("--\(boundary)\r\n".utf8))
-            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".utf8))
+            httpBody.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".utf8))
             httpBody.append(Data("Content-Type: application/octet-stream\r\n\r\n".utf8))
 
             httpBody.append(data)

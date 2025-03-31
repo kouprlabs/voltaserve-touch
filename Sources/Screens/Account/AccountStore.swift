@@ -113,6 +113,14 @@ public class AccountStore: ObservableObject {
         try await identityUserClient?.updatePassword(.init(currentPassword: current, newPassword: new))
     }
 
+    public func updatePicture(data: Data, filename: String, mimeType: String) async throws -> VOIdentityUser.Entity? {
+        return try await identityUserClient?.updatePicture(data: data, filename: filename, mimeType: mimeType)
+    }
+
+    public func deletePicture() async throws -> VOIdentityUser.Entity? {
+        return try await identityUserClient?.deletePicture()
+    }
+
     public func deleteAccount(password: String) async throws {
         try await identityUserClient?.delete(.init(password: password))
     }
