@@ -6,5 +6,7 @@
 	<string>http://localhost:8080</string>
 	<key>idpURL</key>
 	<string>http://localhost:8081</string>
+	<key>idpStrategy</key>
+	<string>local</string>
 </dict>
 </plist>
