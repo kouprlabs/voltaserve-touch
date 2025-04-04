@@ -94,7 +94,7 @@ public struct SignInWithLocal: View, ErrorPresentable {
     private func performSignIn() {
         var token: VOToken.Value?
         withErrorHandling {
-            token = try await tokenStore.signIn(username: email, password: password)
+            token = try await tokenStore.signInWithLocal(username: email, password: password)
             return true
         } before: {
             isProcessing = true

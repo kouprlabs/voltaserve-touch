@@ -26,7 +26,7 @@ public class TokenStore: ObservableObject {
         client = TokenStore.createClient()
     }
 
-    public func signIn(username: String, password: String) async throws -> VOToken.Value {
+    public func signInWithLocal(username: String, password: String) async throws -> VOToken.Value {
         try await client.exchange(
             .init(
                 grantType: .password,
