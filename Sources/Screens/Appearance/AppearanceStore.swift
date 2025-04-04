@@ -17,7 +17,7 @@ public class AppearanceStore: ObservableObject {
         }
     }
 
-    private let colorKey = "accentColor"
+    private static let colorKey = "com.voltaserve.accentColor"
 
     init() {
         accentColor = Self.loadAccentColor() ?? .blue
@@ -25,12 +25,12 @@ public class AppearanceStore: ObservableObject {
 
     private func saveAccentColor() {
         if let archivedString = accentColor.archivedString {
-            UserDefaults.standard.set(archivedString, forKey: colorKey)
+            UserDefaults.standard.set(archivedString, forKey: Self.colorKey)
         }
     }
 
     private static func loadAccentColor() -> Color? {
-        if let archivedString = UserDefaults.standard.string(forKey: "accentColor") {
+        if let archivedString = UserDefaults.standard.string(forKey: colorKey) {
             return Color(archivedString: archivedString)
         }
         return nil

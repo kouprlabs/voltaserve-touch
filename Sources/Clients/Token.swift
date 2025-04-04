@@ -55,6 +55,8 @@ public struct VOToken {
         public let username: String?
         public let password: String?
         public let refreshToken: String?
+        public let appleJWT: String?
+        public let appleFullName: String?
         public let locale: String?
 
         public init(
@@ -62,12 +64,16 @@ public struct VOToken {
             username: String? = nil,
             password: String? = nil,
             refreshToken: String? = nil,
+            appleJWT: String? = nil,
+            appleFullName: String? = nil,
             locale: String? = nil
         ) {
             self.grantType = grantType
             self.username = username
             self.password = password
             self.refreshToken = refreshToken
+            self.appleJWT = appleJWT
+            self.appleFullName = appleFullName
             self.locale = locale
         }
 
@@ -81,6 +87,12 @@ public struct VOToken {
             }
             if let refreshToken {
                 params["refresh_token"] = refreshToken
+            }
+            if let appleJWT {
+                params["apple_jwt"] = appleJWT
+            }
+            if let appleFullName {
+                params["apple_full_name"] = appleFullName
             }
             if let locale {
                 params["locale"] = locale
@@ -107,6 +119,7 @@ public struct VOToken {
     public enum GrantType: String, Codable {
         case password
         case refreshToken = "refresh_token"
+        case apple
     }
 
     // MARK: - Types

@@ -35,6 +35,10 @@ public class TokenStore: ObservableObject {
             ))
     }
 
+    public func signInWithApple(jwt: String, fullName: String?) async throws -> VOToken.Value {
+        try await client.exchange(.init(grantType: .apple, appleJWT: jwt))
+    }
+
     public func refreshTokenIfNecessary() async throws -> VOToken.Value? {
         guard token != nil else { return nil }
         if let token, token.isExpired {

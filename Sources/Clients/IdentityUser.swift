@@ -43,12 +43,11 @@ public struct VOIdentityUser {
         }
     }
 
-    public func delete(_ options: DeleteOptions) async throws {
+    public func delete() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForMe())
             request.httpMethod = "DELETE"
             request.appendAuthorizationHeader(accessToken)
-            request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 handleEmptyResponse(
                     continuation: continuation,
@@ -277,14 +276,6 @@ public struct VOIdentityUser {
         public init(currentPassword: String, newPassword: String) {
             self.currentPassword = currentPassword
             self.newPassword = newPassword
-        }
-    }
-
-    public struct DeleteOptions: Codable {
-        public let password: String
-
-        public init(password: String) {
-            self.password = password
         }
     }
 

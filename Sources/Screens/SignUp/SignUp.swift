@@ -34,7 +34,7 @@ public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                     VOErrorMessage(error)
                 } else {
                     if let passwordRequirements = signUpStore.passwordRequirements {
-                        VStack(spacing: VOMetrics.spacing) {
+                        VStack(spacing: VOMetrics.spacingXl) {
                             VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
                             TextField("Full name", text: $fullName)
                                 .voTextField(width: VOMetrics.formWidth)

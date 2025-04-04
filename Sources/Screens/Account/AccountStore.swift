@@ -121,8 +121,8 @@ public class AccountStore: ObservableObject {
         return try await identityUserClient?.deletePicture()
     }
 
-    public func deleteAccount(password: String) async throws {
-        try await identityUserClient?.delete(.init(password: password))
+    public func deleteAccount() async throws {
+        try await identityUserClient?.delete()
     }
 
     // MARK: - Timer
