@@ -14,15 +14,15 @@ public struct AppearanceAccentColorPicker: View {
     @ObservedObject private var appearanceStore: AppearanceStore
 
     let colors: [Color] = [.blue, .purple, .pink, .red, .orange, .yellow, .green, .gray]
-    let columns = [
-        GridItem(.adaptive(minimum: AppearanceAccentColorCircle.defaultSize), spacing: VOMetrics.spacing)
-    ]
 
     public init(appearanceStore: AppearanceStore) {
         self.appearanceStore = appearanceStore
     }
 
     public var body: some View {
+        let columns = [
+            GridItem(.adaptive(minimum: AppearanceAccentColorCircle.defaultSize), spacing: VOMetrics.spacing)
+        ]
         HStack {
             LazyVGrid(columns: columns, spacing: VOMetrics.spacing) {
                 ForEach(colors, id: \.self) { color in

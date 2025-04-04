@@ -10,11 +10,11 @@
 
 import SwiftUI
 
-struct AccountDelete: View, ErrorPresentable, FormValidatable {
+struct AccountDelete: View, ErrorPresentable {
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
-    @State private var password = ""
     @State private var isProcessing = false
+    @State private var confirmationIsPresented = false
     private let onDelete: (() -> Void)?
 
     public init(accountStore: AccountStore, onDelete: (() -> Void)? = nil) {
@@ -23,33 +23,25 @@ struct AccountDelete: View, ErrorPresentable, FormValidatable {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                SecureField("Type your password to confirm", text: $password)
-                    .disabled(isProcessing)
-            }
+        Button(role: .destructive) {
+            confirmationIsPresented = true
+        } label: {
+            VOFormButtonLabel("Delete Account and Data", isLoading: isProcessing)
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Delete Account and Data")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                if isProcessing {
-                    ProgressView()
-                } else {
-                    Button("Delete") {
-                        performDelete()
-                    }
-                    .tint(.red)
-                    .disabled(!isValid())
-                }
+        .disabled(isProcessing)
+        .confirmationDialog("Delete Account and Data", isPresented: $confirmationIsPresented) {
+            Button("Delete Account and Data", role: .destructive) {
+                performDelete()
             }
+        } message: {
+            Text("Are you sure want to delete your account and data?")
         }
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 
     private func performDelete() {
         withErrorHandling {
-            try await accountStore.deleteAccount(password: password)
+            try await accountStore.deleteAccount()
             return true
         } before: {
             isProcessing = true
@@ -68,10 +60,4 @@ struct AccountDelete: View, ErrorPresentable, FormValidatable {
 
     @State public var errorIsPresented = false
     @State public var errorMessage: String?
-
-    // MARK: - FormValidatable
-
-    public func isValid() -> Bool {
-        !password.isEmpty
-    }
 }

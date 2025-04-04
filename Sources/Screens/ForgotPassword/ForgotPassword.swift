@@ -24,7 +24,7 @@ public struct ForgotPassword: View, FormValidatable, ErrorPresentable {
 
     public var body: some View {
         NavigationView {
-            VStack(spacing: VOMetrics.spacing) {
+            VStack(spacing: VOMetrics.spacingXl) {
                 VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
                 Text("Please provide your account Email where we can send you the password recovery instructions.")
                     .voFormHintText()

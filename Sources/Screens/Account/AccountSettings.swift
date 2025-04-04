@@ -42,31 +42,33 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider {
                             }
                         }
                     }
-                    Section(header: VOSectionHeader("Credentials")) {
-                        NavigationLink(destination: AccountEditEmail(accountStore: accountStore)) {
-                            HStack {
-                                Text("Email")
-                                Spacer()
-                                Text(identityUser.pendingEmail ?? identityUser.email)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
-                                    .foregroundStyle(.secondary)
+                    if Config.shared.isLocalStrategy() {
+                        Section(header: VOSectionHeader("Credentials")) {
+                            NavigationLink(destination: AccountEditEmail(accountStore: accountStore)) {
+                                HStack {
+                                    Text("Email")
+                                    Spacer()
+                                    Text(identityUser.pendingEmail ?? identityUser.email)
+                                        .lineLimit(1)
+                                        .truncationMode(.middle)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
-                        }
-                        if identityUser.pendingEmail != nil {
-                            HStack(spacing: VOMetrics.spacingXs) {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .foregroundStyle(Color.yellow400)
-                                Text("Please check your inbox to confirm your email.")
-                                    .foregroundStyle(.secondary)
+                            if identityUser.pendingEmail != nil {
+                                HStack(spacing: VOMetrics.spacingXs) {
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .foregroundStyle(Color.yellow400)
+                                    Text("Please check your inbox to confirm your email.")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .font(.footnote)
                             }
-                            .font(.footnote)
-                        }
-                        NavigationLink(destination: AccountEditPassword(accountStore: accountStore)) {
-                            HStack {
-                                Text("Password")
-                                Spacer()
-                                Text(String(repeating: "•", count: 10))
+                            NavigationLink(destination: AccountEditPassword(accountStore: accountStore)) {
+                                HStack {
+                                    Text("Password")
+                                    Spacer()
+                                    Text(String(repeating: "•", count: 10))
+                                }
                             }
                         }
                     }
@@ -82,10 +84,7 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider {
                         }
                     }
                     Section(header: VOSectionHeader("Advanced")) {
-                        NavigationLink(destination: AccountDelete(accountStore: accountStore, onDelete: onDelete)) {
-                            Text("Delete Account and Data")
-                                .foregroundStyle(Color.red)
-                        }
+                        AccountDelete(accountStore: accountStore, onDelete: onDelete)
                     }
                 }
             }

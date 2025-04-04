@@ -13,18 +13,32 @@ import Foundation
 public struct Config {
     public var apiURL: String
     public var idpURL: String
+    public var idpStrategy: IdPStrategy = .local
 
-    public static var shared: Config {
-        if let server = UserDefaults.standard.server {
-            Config(
-                apiURL: server.apiURL,
-                idpURL: server.idpURL
-            )
-        } else {
-            Config(
-                apiURL: "https://api.voltaserve.cloud",
-                idpURL: "https://idp.voltaserve.cloud"
-            )
+    public static let shared: Config = {
+        guard let localPath = Bundle.main.path(forResource: "Config", ofType: "plist"),
+            let dict = NSDictionary(contentsOfFile: localPath) as? [String: String]
+        else {
+            fatalError("Failed to load config.")
         }
+
+        return Config(
+            apiURL: dict["apiURL"]!,
+            idpURL: dict["idpURL"]!,
+            idpStrategy: dict["idpStrategy"].flatMap(IdPStrategy.init) ?? .local
+        )
+    }()
+
+    func isLocalStrategy() -> Bool {
+        idpStrategy == .local
+    }
+
+    func isAppleStrategy() -> Bool {
+        idpStrategy == .apple
+    }
+
+    public enum IdPStrategy: String, Codable {
+        case local
+        case apple
     }
 }

@@ -9,14 +9,11 @@
 // AGPL-3.0-only in the root of this repository.
 
 import Combine
-import SwiftData
 import SwiftUI
 
 public struct Voltaserve: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @StateObject var appearanceStore = AppearanceStore()
-    @Environment(\.modelContext) private var context
-    @Query private var servers: [Server]
     @State private var timer: Timer?
     @State private var signInIsPresented = false
     @State private var selection: TabType?
@@ -103,13 +100,6 @@ public struct Voltaserve: View {
                 }
 
                 startTokenTimer()
-
-                if !servers.contains(where: \.isCloud) {
-                    context.insert(Server.cloud)
-                }
-                if UserDefaults.standard.server == nil {
-                    UserDefaults.standard.server = Server.cloud
-                }
             }
             .onDisappear { stopTokenTimer() }
             .onChange(of: tokenStore.token) { oldToken, newToken in
@@ -134,7 +124,6 @@ public struct Voltaserve: View {
             .environmentObject(extensions)
             .environmentObject(appearanceStore)
             .tint(appearanceStore.accentColor)
-            .modelContainer(for: Server.self)
         }
     }
 
