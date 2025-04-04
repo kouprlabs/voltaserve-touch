@@ -14,10 +14,6 @@ import SwiftUI
 public struct SignInWithApple: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @State private var isProcessing = false
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var signUpIsPresented = false
-    @State private var forgotPasswordIsPresented = false
     @Environment(\.colorScheme) private var colorScheme
     private let onCompletion: (() -> Void)?
 
