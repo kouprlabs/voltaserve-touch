@@ -37,7 +37,7 @@ public struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                                 Text("There are no items.")
                                     .foregroundStyle(.secondary)
                             } else {
-                                List(entities, id: \.id) { group in
+                                List(entities, id: \.displayID) { group in
                                     NavigationLink {
                                         GroupOverview(group, groupStore: groupStore)
                                     } label: {
@@ -46,6 +46,7 @@ public struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                                                 onListItemAppear(group.id)
                                             }
                                     }
+                                    .tag(group.id)
                                 }
                             }
                         }

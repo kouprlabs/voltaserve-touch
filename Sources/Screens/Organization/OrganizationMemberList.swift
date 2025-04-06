@@ -36,7 +36,7 @@ public struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider,
                             Text("There are no items.")
                                 .foregroundStyle(.secondary)
                         } else {
-                            List(entities, id: \.id) { member in
+                            List(entities, id: \.displayID) { member in
                                 UserRow(
                                     member,
                                     pictureURL: userStore.urlForPicture(
@@ -47,6 +47,7 @@ public struct OrganizationMemberList: View, ViewDataProvider, LoadStateProvider,
                                 .onAppear {
                                     onListItemAppear(member.id)
                                 }
+                                .tag(member.id)
                             }
                         }
                     }

@@ -24,7 +24,7 @@ public struct FileList: View, ListItemScrollable {
     public var body: some View {
         if let entities = fileStore.entities {
             List(selection: $fileStore.selection) {
-                ForEach(entities, id: \.id) { file in
+                ForEach(entities, id: \.displayID) { file in
                     if file.type == .file {
                         Button {
                             if !(file.snapshot?.task?.isPending ?? false) {
@@ -38,6 +38,7 @@ public struct FileList: View, ListItemScrollable {
                         .onAppear {
                             onListItemAppear(file.id)
                         }
+                        .tag(file.id)
                     } else if file.type == .folder {
                         NavigationLink {
                             FileOverview(file, workspaceStore: workspaceStore)
@@ -49,6 +50,7 @@ public struct FileList: View, ListItemScrollable {
                         .onAppear {
                             onListItemAppear(file.id)
                         }
+                        .tag(file.id)
                     }
                 }
             }

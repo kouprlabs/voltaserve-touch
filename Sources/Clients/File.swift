@@ -824,6 +824,22 @@ public struct VOFile {
         public let createTime: String
         public let updateTime: String?
 
+        var displayID: String {
+            "\(id)-\(self.contentHash)"
+        }
+
+        var contentHash: Int {
+            var hasher = Hasher()
+            hasher.combine(id)
+            hasher.combine(name)
+            hasher.combine(snapshot?.id)
+            hasher.combine(snapshot?.task?.status)
+            hasher.combine(isShared)
+            hasher.combine(permission.rawValue)
+            hasher.combine(updateTime)
+            return hasher.finalize()
+        }
+
         public init(
             id: String,
             name: String,

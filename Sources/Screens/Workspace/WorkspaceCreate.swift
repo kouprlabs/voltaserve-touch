@@ -90,6 +90,9 @@ public struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
                 organization: organization,
                 storageCapacity: storageCapacity
             )
+            if workspaceStore.isLastPage() {
+                workspaceStore.fetchNextPage()
+            }
             return true
         } before: {
             isProcessing = true

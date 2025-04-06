@@ -35,9 +35,7 @@ public struct FileSheetDelete: ViewModifier {
                 }
             }
             .sheet(isPresented: $deleteIsPresented) {
-                if !fileStore.selection.isEmpty {
-                    FileDelete(fileStore: fileStore)
-                }
+                FileDelete(fileStore: fileStore)
             }
     }
 }

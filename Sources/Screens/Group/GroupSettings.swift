@@ -16,11 +16,11 @@ public struct GroupSettings: View, ErrorPresentable {
     @Environment(\.dismiss) private var dismiss
     @State private var deleteConfirmationIsPresented = false
     @State private var isDeleting = false
-    private var onCompletion: (() -> Void)?
+    @Binding private var shouldDismissParent: Bool
 
-    public init(groupStore: GroupStore, onCompletion: (() -> Void)? = nil) {
+    public init(groupStore: GroupStore, shouldDismissParent: Binding<Bool>) {
         self.groupStore = groupStore
-        self.onCompletion = onCompletion
+        self._shouldDismissParent = shouldDismissParent
     }
 
     public var body: some View {
@@ -83,7 +83,7 @@ public struct GroupSettings: View, ErrorPresentable {
             if let current {
                 reflectDeleteInStore(current.id)
             }
-            onCompletion?()
+            shouldDismissParent = true
         } failure: { message in
             errorMessage = message
             errorIsPresented = true

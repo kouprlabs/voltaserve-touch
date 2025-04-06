@@ -347,6 +347,19 @@ public struct VOGroup {
         public let createTime: String
         public let updateTime: String?
 
+        var displayID: String {
+            "\(id)-\(self.contentHash)"
+        }
+
+        var contentHash: Int {
+            var hasher = Hasher()
+            hasher.combine(id)
+            hasher.combine(name)
+            hasher.combine(permission.rawValue)
+            hasher.combine(updateTime)
+            return hasher.finalize()
+        }
+
         public init(
             id: String,
             name: String,

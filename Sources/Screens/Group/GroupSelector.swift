@@ -38,7 +38,7 @@ public struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
                             Text("There are no items.")
                                 .foregroundStyle(.secondary)
                         } else {
-                            List(entities, id: \.id) { group in
+                            List(entities, id: \.displayID) { group in
                                 Button {
                                     dismiss()
                                     onCompletion?(group)
@@ -48,6 +48,7 @@ public struct GroupSelector: View, ViewDataProvider, LoadStateProvider, TimerLif
                                             onListItemAppear(group.id)
                                         }
                                 }
+                                .tag(group.id)
                             }
                         }
                     }

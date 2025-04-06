@@ -37,7 +37,7 @@ public struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
                             Text("There are no items.")
                                 .foregroundStyle(.secondary)
                         } else {
-                            List(entities, id: \.id) { member in
+                            List(entities, id: \.displayID) { member in
                                 UserRow(
                                     member,
                                     pictureURL: userStore.urlForPicture(
@@ -48,6 +48,7 @@ public struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
                                 .onAppear {
                                     onListItemAppear(member.id)
                                 }
+                                .tag(member.id)
                             }
                         }
                     }

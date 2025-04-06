@@ -14,6 +14,7 @@ public struct OrganizationOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
+    @State private var shouldDismissSelf = false
     private let organization: VOOrganization.Entity
 
     public init(_ organization: VOOrganization.Entity, organizationStore: OrganizationStore) {
@@ -40,9 +41,8 @@ public struct OrganizationOverview: View {
                         }
                     }
                     NavigationLink {
-                        OrganizationSettings(organizationStore: organizationStore) {
-                            dismiss()
-                        }
+                        OrganizationSettings(
+                            organizationStore: organizationStore, shouldDismissParent: $shouldDismissSelf)
                     } label: {
                         Label("Settings", systemImage: "gear")
                     }
@@ -53,6 +53,11 @@ public struct OrganizationOverview: View {
         .navigationTitle(organization.name)
         .onAppear {
             organizationStore.current = organization
+        }
+        .onChange(of: shouldDismissSelf) { _, newValue in
+            if newValue {
+                dismiss()
+            }
         }
     }
 }

@@ -61,6 +61,7 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
         }
         .fileSheets(fileStore: fileStore, workspaceStore: workspaceStore)
         .fileToolbar(fileStore: fileStore)
+        .fileSelectionReset(fileStore: fileStore)
         .onAppear {
             fileStore.file = file
             fileStore.loadViewModeFromUserDefaults()

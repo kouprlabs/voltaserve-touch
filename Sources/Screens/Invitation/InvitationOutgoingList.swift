@@ -37,7 +37,7 @@ public struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider,
                             Text("There are no items.")
                                 .foregroundStyle(.secondary)
                         } else {
-                            List(entities, id: \.id) { invitation in
+                            List(entities, id: \.displayID) { invitation in
                                 NavigationLink {
                                     InvitationOverview(
                                         invitation,
@@ -50,6 +50,7 @@ public struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider,
                                             onListItemAppear(invitation.id)
                                         }
                                 }
+                                .tag(invitation.id)
                             }
                         }
                     }

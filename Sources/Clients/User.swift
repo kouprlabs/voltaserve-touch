@@ -211,6 +211,20 @@ public struct VOUser {
         public let createTime: String
         public let updateTime: String?
 
+        var displayID: String {
+            "\(id)-\(self.contentHash)"
+        }
+
+        var contentHash: Int {
+            var hasher = Hasher()
+            hasher.combine(id)
+            hasher.combine(username)
+            hasher.combine(email)
+            hasher.combine(fullName)
+            hasher.combine(updateTime)
+            return hasher.finalize()
+        }
+
         public init(
             id: String,
             username: String,

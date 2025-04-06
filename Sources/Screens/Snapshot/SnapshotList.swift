@@ -36,7 +36,7 @@ public struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLife
                                 Text("There are no items.")
                                     .foregroundStyle(.secondary)
                             } else {
-                                List(entities, id: \.id) { snapshot in
+                                List(entities, id: \.displayID) { snapshot in
                                     NavigationLink {
                                         SnapshotOverview(
                                             snapshot, snapshotStore: snapshotStore)
@@ -46,6 +46,7 @@ public struct SnapshotList: View, ViewDataProvider, LoadStateProvider, TimerLife
                                                 onListItemAppear(snapshot.id)
                                             }
                                     }
+                                    .tag(snapshot.id)
                                 }
                             }
                         }

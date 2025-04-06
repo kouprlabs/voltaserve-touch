@@ -37,7 +37,7 @@ public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, Timer
                                 Text("There are no items.")
                                     .foregroundStyle(.secondary)
                             } else {
-                                List(entities, id: \.id) { organization in
+                                List(entities, id: \.displayID) { organization in
                                     NavigationLink {
                                         OrganizationOverview(organization, organizationStore: organizationStore)
                                     } label: {
@@ -46,6 +46,7 @@ public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, Timer
                                                 onListItemAppear(organization.id)
                                             }
                                     }
+                                    .tag(organization.id)
                                 }
                             }
                         }

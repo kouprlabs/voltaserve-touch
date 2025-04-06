@@ -16,11 +16,11 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
     @Environment(\.dismiss) private var dismiss
     @State private var deleteConfirmationIsPresentable = false
     @State private var isDeleting = false
-    private var onCompletion: (() -> Void)?
+    @Binding private var shouldDismissParent: Bool
 
-    public init(workspaceStore: WorkspaceStore, onCompletion: (() -> Void)? = nil) {
-        self.onCompletion = onCompletion
+    public init(workspaceStore: WorkspaceStore, shouldDismissParent: Binding<Bool>) {
         self.workspaceStore = workspaceStore
+        self._shouldDismissParent = shouldDismissParent
     }
 
     public var body: some View {
@@ -123,7 +123,7 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
             if let current {
                 reflectDeleteInStore(current.id)
             }
-            onCompletion?()
+            shouldDismissParent = true
         } failure: { message in
             errorMessage = message
             errorIsPresented = true

@@ -200,6 +200,13 @@ public class GroupStore: ObservableObject {
         return false
     }
 
+    public func isLastPage() -> Bool {
+        if let list {
+            return list.page == list.totalPages
+        }
+        return false
+    }
+
     // MARK: - Timer
 
     public func startTimer() {

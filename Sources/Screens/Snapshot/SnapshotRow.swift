@@ -19,19 +19,14 @@ public struct SnapshotRow: View {
 
     public var body: some View {
         HStack(spacing: VOMetrics.spacingSm) {
-            VOAvatar(name: "V \(snapshot.version)", size: VOMetrics.avatarSize)
             VStack(alignment: .leading, spacing: VOMetrics.spacingXs) {
                 Text(snapshot.createTime.relativeDate())
-                ScrollView(.horizontal) {
-                    LazyHStack {
-                        if snapshot.isActive {
-                            VOColorBadge("Active", color: .green, style: .outline)
-                        }
-                        VOColorBadge(snapshot.original.size.prettyBytes(), color: .gray400, style: .outline)
-                        if snapshot.hasCapabilities {
-                            SnapshotCapabilities(snapshot)
-                        }
+                LazyHStack {
+                    if snapshot.isActive {
+                        VOColorBadge("Active", color: .green, style: .outline)
                     }
+                    VOColorBadge("Version \(snapshot.version)", color: .gray400, style: .outline)
+                    VOColorBadge(snapshot.original.size.prettyBytes(), color: .gray400, style: .outline)
                 }
             }
         }

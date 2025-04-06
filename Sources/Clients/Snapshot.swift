@@ -293,6 +293,31 @@ public struct VOSnapshot {
         public let createTime: String
         public let updateTime: String?
 
+        var displayID: String {
+            "\(id)-\(self.contentHash)"
+        }
+
+        var contentHash: Int {
+            var hasher = Hasher()
+            hasher.combine(id)
+            hasher.combine(version)
+            hasher.combine(language)
+            hasher.combine(summary)
+            hasher.combine(intent)
+            hasher.combine(capabilities.original)
+            hasher.combine(capabilities.preview)
+            hasher.combine(capabilities.ocr)
+            hasher.combine(capabilities.text)
+            hasher.combine(capabilities.summary)
+            hasher.combine(capabilities.entities)
+            hasher.combine(capabilities.mosaic)
+            hasher.combine(capabilities.thumbnail)
+            hasher.combine(isActive)
+            hasher.combine(task?.status)
+            hasher.combine(updateTime)
+            return hasher.finalize()
+        }
+
         public init(
             id: String,
             version: Int,

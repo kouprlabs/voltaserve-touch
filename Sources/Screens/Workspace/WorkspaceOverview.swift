@@ -14,6 +14,7 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
+    @State private var shouldDismissSelf = false
     private var workspace: VOWorkspace.Entity
 
     public init(_ workspace: VOWorkspace.Entity, workspaceStore: WorkspaceStore) {
@@ -41,9 +42,7 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
                             Label("Browse", systemImage: "folder")
                         }
                         NavigationLink {
-                            WorkspaceSettings(workspaceStore: workspaceStore) {
-                                dismiss()
-                            }
+                            WorkspaceSettings(workspaceStore: workspaceStore, shouldDismissParent: $shouldDismissSelf)
                         } label: {
                             Label("Settings", systemImage: "gear")
                         }
@@ -56,6 +55,11 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
         .onAppear {
             workspaceStore.current = workspace
             onAppearOrChange()
+        }
+        .onChange(of: shouldDismissSelf) { _, newValue in
+            if newValue {
+                dismiss()
+            }
         }
     }
 
