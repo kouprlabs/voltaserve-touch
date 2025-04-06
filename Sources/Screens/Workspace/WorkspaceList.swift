@@ -38,7 +38,7 @@ public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLif
                                 Text("There are no items.")
                                     .foregroundStyle(.secondary)
                             } else {
-                                List(entities, id: \.id) { workspace in
+                                List(entities, id: \.displayID) { workspace in
                                     NavigationLink {
                                         WorkspaceOverview(workspace, workspaceStore: workspaceStore)
                                     } label: {
@@ -47,6 +47,7 @@ public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLif
                                                 onListItemAppear(workspace.id)
                                             }
                                     }
+                                    .tag(workspace.id)
                                 }
                             }
                         }

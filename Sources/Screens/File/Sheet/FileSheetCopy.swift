@@ -33,7 +33,7 @@ public struct FileSheetCopy: ViewModifier {
                 }
             }
             .sheet(isPresented: $fileStore.copyIsPresented) {
-                if let destinationID, !fileStore.selection.isEmpty {
+                if let destinationID {
                     FileCopy(fileStore: fileStore, to: destinationID)
                 }
             }

@@ -39,7 +39,7 @@ public struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, T
                                     .foregroundStyle(.secondary)
                             } else {
                                 List(selection: $selection) {
-                                    ForEach(entities, id: \.id) { organization in
+                                    ForEach(entities, id: \.displayID) { organization in
                                         Button {
                                             dismiss()
                                             onCompletion?(organization)
@@ -49,6 +49,7 @@ public struct OrganizationSelector: View, ViewDataProvider, LoadStateProvider, T
                                                     onListItemAppear(organization.id)
                                                 }
                                         }
+                                        .tag(organization.id)
                                     }
                                 }
                             }

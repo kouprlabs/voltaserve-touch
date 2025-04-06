@@ -110,6 +110,7 @@ public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecy
             errorIsPresented = true
         } anyways: {
             isProcessing = false
+            fileStore.selection = []
         }
     }
 

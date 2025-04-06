@@ -33,7 +33,7 @@ public struct FileSheetMove: ViewModifier {
                 }
             }
             .sheet(isPresented: $fileStore.moveIsPresented) {
-                if let destinationID, !fileStore.selection.isEmpty {
+                if let destinationID {
                     FileMove(fileStore: fileStore, to: destinationID)
                 }
             }

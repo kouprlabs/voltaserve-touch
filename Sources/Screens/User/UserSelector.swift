@@ -50,7 +50,7 @@ public struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLife
                             Text("There are no items.")
                                 .foregroundStyle(.secondary)
                         } else {
-                            List(entities, id: \.id) { user in
+                            List(entities, id: \.displayID) { user in
                                 Button {
                                     dismiss()
                                     onCompletion?(user)
@@ -66,6 +66,7 @@ public struct UserSelector: View, ViewDataProvider, LoadStateProvider, TimerLife
                                         onListItemAppear(user.id)
                                     }
                                 }
+                                .tag(user.id)
                             }
                         }
                     }

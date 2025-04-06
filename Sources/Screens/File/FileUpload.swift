@@ -90,6 +90,9 @@ public struct FileUpload: View {
                     failedCount += 1
                 }
             }
+            if fileStore.isLastPage() {
+                fileStore.fetchNextPage()
+            }
             if failedCount == 0 {
                 errorIsPresented = false
                 dismiss()

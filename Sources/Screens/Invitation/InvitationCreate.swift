@@ -90,6 +90,9 @@ public struct InvitationCreate: View, FormValidatable, TokenDistributing, ErrorP
     private func performCreate() {
         withErrorHandling {
             _ = try await invitationStore.create(emails: emails)
+            if invitationStore.isLastPage() {
+                invitationStore.fetchNextPage()
+            }
             return true
         } before: {
             isProcessing = true

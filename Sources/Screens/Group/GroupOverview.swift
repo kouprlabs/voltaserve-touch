@@ -14,6 +14,7 @@ public struct GroupOverview: View {
     @EnvironmentObject private var tokenStore: TokenStore
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
+    @State private var shouldDismissSelf = false
     private let group: VOGroup.Entity
 
     public init(_ group: VOGroup.Entity, groupStore: GroupStore) {
@@ -33,9 +34,7 @@ public struct GroupOverview: View {
                         Label("Members", systemImage: "person.2")
                     }
                     NavigationLink {
-                        GroupSettings(groupStore: groupStore) {
-                            dismiss()
-                        }
+                        GroupSettings(groupStore: groupStore, shouldDismissParent: $shouldDismissSelf)
                     } label: {
                         Label("Settings", systemImage: "gear")
                     }
@@ -46,6 +45,11 @@ public struct GroupOverview: View {
         .navigationTitle(group.name)
         .onAppear {
             groupStore.current = group
+        }
+        .onChange(of: shouldDismissSelf) { _, newValue in
+            if newValue {
+                dismiss()
+            }
         }
     }
 }

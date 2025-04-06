@@ -33,7 +33,7 @@ public struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                                 Text("There are no items.")
                                     .foregroundStyle(.secondary)
                             } else {
-                                List(entities, id: \.id) { task in
+                                List(entities, id: \.displayID) { task in
                                     NavigationLink {
                                         TaskOverview(task)
                                     } label: {
@@ -42,6 +42,7 @@ public struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
                                                 onListItemAppear(task.id)
                                             }
                                     }
+                                    .tag(task.id)
                                 }
                             }
                         }

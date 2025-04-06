@@ -33,7 +33,7 @@ public struct FileGrid: View, ListItemScrollable {
                 )
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: VOMetrics.spacing) {
-                        ForEach(entities, id: \.id) { file in
+                        ForEach(entities, id: \.displayID) { file in
                             if file.type == .file {
                                 Button {
                                     if !(file.snapshot?.task?.isPending ?? false) {
@@ -47,6 +47,7 @@ public struct FileGrid: View, ListItemScrollable {
                                 .onAppear {
                                     onListItemAppear(file.id)
                                 }
+                                .tag(file.id)
                             } else if file.type == .folder {
                                 NavigationLink {
                                     FileOverview(file, workspaceStore: workspaceStore)
@@ -58,6 +59,7 @@ public struct FileGrid: View, ListItemScrollable {
                                 .onAppear {
                                     onListItemAppear(file.id)
                                 }
+                                .tag(file.id)
                             }
                         }
                     }

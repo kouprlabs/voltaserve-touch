@@ -18,11 +18,11 @@ public struct OrganizationSettings: View, ErrorPresentable {
     @State private var deleteConfirmationIsPresented = false
     @State private var isLeaving = false
     @State private var isDeleting = false
-    private var onCompletion: (() -> Void)?
+    @Binding private var shouldDismissParent: Bool
 
-    public init(organizationStore: OrganizationStore, onCompletion: (() -> Void)? = nil) {
+    public init(organizationStore: OrganizationStore, shouldDismissParent: Binding<Bool>) {
         self.organizationStore = organizationStore
-        self.onCompletion = onCompletion
+        self._shouldDismissParent = shouldDismissParent
     }
 
     public var body: some View {
@@ -102,7 +102,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
             if let current = organizationStore.current {
                 reflectLeaveInStore(current.id)
             }
-            onCompletion?()
+            shouldDismissParent = true
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
@@ -122,7 +122,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
             if let current = organizationStore.current {
                 reflectDeleteInStore(current.id)
             }
-            onCompletion?()
+            shouldDismissParent = true
         } failure: { message in
             errorMessage = message
             errorIsPresented = true

@@ -456,7 +456,8 @@ public class FileStore: ObservableObject {
         guard let snapshot = file.snapshot else { return false }
         return file.type == .file && !(file.snapshot?.task?.isPending ?? false)
             && (snapshot.capabilities.entities || snapshot.capabilities.summary || snapshot.intent == .document)
-            && (file.permission.ge(.viewer) || file.permission.ge(.editor))
+            && ((file.permission.ge(.viewer) && file.snapshot?.capabilities.entities ?? false)
+                || file.permission.ge(.editor))
     }
 
     public func isMosaicAuthorized(_ file: VOFile.Entity) -> Bool {

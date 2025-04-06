@@ -51,7 +51,7 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
                             Text("There are no items.")
                                 .foregroundStyle(.secondary)
                         } else {
-                            List(entities, id: \.id) { file in
+                            List(entities, id: \.displayID) { file in
                                 NavigationLink {
                                     BrowserList(
                                         file.id,
@@ -66,6 +66,7 @@ public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifec
                                 .onAppear {
                                     onListItemAppear(file.id)
                                 }
+                                .tag(file.id)
                             }
                             .listStyle(.inset)
                             .navigationDestination(item: $tappedItem) {
