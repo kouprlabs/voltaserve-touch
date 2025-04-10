@@ -12,7 +12,7 @@ import SwiftUI
 import VoltaserveCore
 
 @main
-struct VoltaserveCoreApp: App {
+struct VoltaserveApp: App {
     @StateObject private var tokenStore = TokenStore()
 
     var body: some Scene {
