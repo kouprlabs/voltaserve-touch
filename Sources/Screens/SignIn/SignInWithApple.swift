@@ -15,9 +15,14 @@ public struct SignInWithApple: View, ErrorPresentable {
     @EnvironmentObject private var tokenStore: TokenStore
     @State private var isProcessing = false
     @Environment(\.colorScheme) private var colorScheme
+    private let extensions: () -> AnyView
     private let onCompletion: (() -> Void)?
 
-    public init(_ onCompletion: (() -> Void)? = nil) {
+    public init(
+        @ViewBuilder extensions: @escaping () -> AnyView = { AnyView(EmptyView()) },
+        onCompletion: (() -> Void)? = nil
+    ) {
+        self.extensions = extensions
         self.onCompletion = onCompletion
     }
 
@@ -59,6 +64,7 @@ public struct SignInWithApple: View, ErrorPresentable {
                 .frame(width: VOMetrics.formWidth, height: VOButtonMetrics.height)
                 .clipShape(RoundedRectangle(cornerRadius: VOButtonMetrics.height / 2))
                 .disabled(isProcessing)
+                self.extensions()
             }
             .padding()
         }

@@ -17,9 +17,14 @@ public struct SignInWithLocal: View, ErrorPresentable {
     @State private var password: String = ""
     @State private var signUpIsPresented = false
     @State private var forgotPasswordIsPresented = false
+    private let extensions: () -> AnyView
     private let onCompletion: (() -> Void)?
 
-    public init(_ onCompletion: (() -> Void)? = nil) {
+    public init(
+        @ViewBuilder extensions: @escaping () -> AnyView = { AnyView(EmptyView()) },
+        onCompletion: (() -> Void)? = nil
+    ) {
+        self.extensions = extensions
         self.onCompletion = onCompletion
     }
 
@@ -71,6 +76,7 @@ public struct SignInWithLocal: View, ErrorPresentable {
                         .disabled(isProcessing)
                     }
                 }
+                self.extensions()
             }
             .fullScreenCover(isPresented: $signUpIsPresented) {
                 SignUp {

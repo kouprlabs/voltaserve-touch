@@ -42,6 +42,7 @@ public struct Voltaserve: View {
 
     public class Extensions: ObservableObject {
         @Published public var tabs = Tabs()
+        public var signIn: () -> AnyView
 
         public struct Tabs {
             public let selection: TabType?
@@ -53,10 +54,14 @@ public struct Voltaserve: View {
             }
         }
 
-        public init(tabs: Tabs? = nil) {
+        public init<SignInView: View>(
+            tabs: Tabs? = nil,
+            @ViewBuilder signIn: @escaping () -> SignInView = { EmptyView() }
+        ) {
             if let tabs = tabs {
                 self.tabs = tabs
             }
+            self.signIn = { AnyView(signIn()) }
         }
     }
 
@@ -115,7 +120,7 @@ public struct Voltaserve: View {
                 }
             }
             .fullScreenCover(isPresented: $signInIsPresented) {
-                SignIn {
+                SignIn(extensions: self.extensions.signIn) {
                     startTokenTimer()
                     signInIsPresented = false
                 }
