@@ -16,23 +16,29 @@ public struct Config {
     public var idpURL: String
     public var signInStrategy: SignInStrategy
 
+    private static let fallbackConfig = Config(
+        apiURL: "http://localhost:8080",
+        idpURL: "http://localhost:8081",
+        signInStrategy: .local
+    )
+
     public static let shared: Config = {
-        let container = try! ModelContainer(for: Server.self)
-        let context = ModelContext(container)
-        let descriptor = FetchDescriptor<Server>()
-        if let server = try! context.fetch(descriptor).first(where: { $0.isActive == true }) {
-            return Config(
-                apiURL: server.apiURL,
-                idpURL: server.idpURL,
-                signInStrategy: SignInStrategy(rawValue: server.signInStrategy)!
-            )
-        } else {
-            return Config(
-                apiURL: "http://localhost:8080",
-                idpURL: "http://localhost:8081",
-                signInStrategy: .local
-            )
+        guard let container = try? ModelContainer(for: Server.self) else {
+            return fallbackConfig
         }
+        guard
+            let server = try? ModelContext(container)
+                .fetch(FetchDescriptor<Server>())
+                .first(where: { $0.isActive })
+        else {
+            return fallbackConfig
+        }
+
+        return Config(
+            apiURL: server.apiURL,
+            idpURL: server.idpURL,
+            signInStrategy: SignInStrategy(rawValue: server.signInStrategy)!
+        )
     }()
 
     func isLocalSignIn() -> Bool {
