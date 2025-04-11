@@ -11,17 +11,21 @@
 import SwiftUI
 
 public struct SignIn: View {
+    private let extensions: () -> AnyView
     private let onCompletion: (() -> Void)?
 
-    public init(_ onCompletion: (() -> Void)? = nil) {
+    public init(
+        @ViewBuilder extensions: @escaping () -> AnyView = { AnyView(EmptyView()) }, onCompletion: (() -> Void)? = nil
+    ) {
+        self.extensions = extensions
         self.onCompletion = onCompletion
     }
 
     public var body: some View {
         if Config.shared.isLocalStrategy() {
-            SignInWithLocal(onCompletion)
+            SignInWithLocal(extensions: extensions, onCompletion: onCompletion)
         } else if Config.shared.isAppleStrategy() {
-            SignInWithApple(onCompletion)
+            SignInWithApple(extensions: extensions, onCompletion: onCompletion)
         }
     }
 }
