@@ -8,11 +8,17 @@
 // by the GNU Affero General Public License v3.0 only, included in the file
 // AGPL-3.0-only in the root of this repository.
 
+import SwiftData
 import SwiftUI
 
 public struct SignIn: View {
+    @Query(filter: #Predicate<Server> { $0.isActive == true }) private var servers: [Server]
     private let extensions: () -> AnyView
     private let onCompletion: (() -> Void)?
+
+    private var activeServer: Server? {
+        servers.first
+    }
 
     public init(
         @ViewBuilder extensions: @escaping () -> AnyView = { AnyView(EmptyView()) },
@@ -23,10 +29,25 @@ public struct SignIn: View {
     }
 
     public var body: some View {
-        if Config.shared.isLocalStrategy() {
-            SignInWithLocal(extensions: extensions, onCompletion: onCompletion)
-        } else if Config.shared.isAppleStrategy() {
-            SignInWithApple(extensions: extensions, onCompletion: onCompletion)
+        NavigationStack {
+            Group {
+                if let activeServer {
+                    if activeServer.isLocalSignIn() {
+                        SignInWithLocal(extensions: extensions, onCompletion: onCompletion)
+                    } else if activeServer.isAppleSignIn() {
+                        SignInWithApple(extensions: extensions, onCompletion: onCompletion)
+                    }
+                } else {
+                    SignInPlaceholder(extensions: extensions)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: ServerList()) {
+                        Label("Servers", systemImage: "gear")
+                    }
+                }
+            }
         }
     }
 }

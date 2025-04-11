@@ -27,47 +27,45 @@ public struct SignInWithApple: View, ErrorPresentable {
     }
 
     public var body: some View {
-        NavigationStack {
-            VStack(spacing: VOMetrics.spacingXl) {
-                VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-                SignInWithAppleButton(
-                    .signIn,
-                    onRequest: { request in
-                        request.requestedScopes = [.email, .fullName]
-                    },
-                    onCompletion: { result in
-                        switch result {
-                        case .success(let authResults):
-                            if let credential = authResults.credential as? ASAuthorizationAppleIDCredential,
-                                let identityTokenData = credential.identityToken,
-                                let identityToken = String(data: identityTokenData, encoding: .utf8)
-                            {
-                                Task {
-                                    await performSignIn(
-                                        identityToken,
-                                        fullName: [credential.fullName?.givenName, credential.fullName?.familyName]
-                                            .compactMap { $0 }
-                                            .joined(separator: " ")
-                                    )
-                                }
-                            } else {
-                                errorMessage = "Failed to parse Apple credentials."
-                                errorIsPresented = true
+        VStack(spacing: VOMetrics.spacingXl) {
+            VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
+            SignInWithAppleButton(
+                .signIn,
+                onRequest: { request in
+                    request.requestedScopes = [.email, .fullName]
+                },
+                onCompletion: { result in
+                    switch result {
+                    case .success(let authResults):
+                        if let credential = authResults.credential as? ASAuthorizationAppleIDCredential,
+                            let identityTokenData = credential.identityToken,
+                            let identityToken = String(data: identityTokenData, encoding: .utf8)
+                        {
+                            Task {
+                                await performSignIn(
+                                    identityToken,
+                                    fullName: [credential.fullName?.givenName, credential.fullName?.familyName]
+                                        .compactMap { $0 }
+                                        .joined(separator: " ")
+                                )
                             }
-                        case .failure(let error):
-                            errorMessage = error.localizedDescription
+                        } else {
+                            errorMessage = "Failed to parse Apple credentials."
                             errorIsPresented = true
                         }
+                    case .failure(let error):
+                        errorMessage = error.localizedDescription
+                        errorIsPresented = true
                     }
-                )
-                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                .frame(width: VOMetrics.formWidth, height: VOButtonMetrics.height)
-                .clipShape(RoundedRectangle(cornerRadius: VOButtonMetrics.height / 2))
-                .disabled(isProcessing)
-                self.extensions()
-            }
-            .padding()
+                }
+            )
+            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+            .frame(width: VOMetrics.formWidth, height: VOButtonMetrics.height)
+            .clipShape(RoundedRectangle(cornerRadius: VOButtonMetrics.height / 2))
+            .disabled(isProcessing)
+            self.extensions()
         }
+        .padding()
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
 

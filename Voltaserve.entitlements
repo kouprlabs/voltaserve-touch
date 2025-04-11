@@ -2,11 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>apiURL</key>
-	<string>http://localhost:8080</string>
-	<key>idpURL</key>
-	<string>http://localhost:8081</string>
-	<key>idpStrategy</key>
-	<string>local</string>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 </dict>
 </plist>
