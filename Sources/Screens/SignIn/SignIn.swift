@@ -15,7 +15,8 @@ public struct SignIn: View {
     private let onCompletion: (() -> Void)?
 
     public init(
-        @ViewBuilder extensions: @escaping () -> AnyView = { AnyView(EmptyView()) }, onCompletion: (() -> Void)? = nil
+        @ViewBuilder extensions: @escaping () -> AnyView = { AnyView(EmptyView()) },
+        onCompletion: (() -> Void)? = nil
     ) {
         self.extensions = extensions
         self.onCompletion = onCompletion
