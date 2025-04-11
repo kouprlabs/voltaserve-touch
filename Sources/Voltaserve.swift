@@ -55,7 +55,8 @@ public struct Voltaserve: View {
         }
 
         public init<SignInView: View>(
-            tabs: Tabs? = nil, @ViewBuilder signIn: @escaping () -> SignInView = { EmptyView() }
+            tabs: Tabs? = nil,
+            @ViewBuilder signIn: @escaping () -> SignInView = { EmptyView() }
         ) {
             if let tabs = tabs {
                 self.tabs = tabs
