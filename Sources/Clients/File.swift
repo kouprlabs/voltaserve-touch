@@ -619,7 +619,7 @@ public struct VOFile {
         }
     }
 
-    public enum SortBy: String, Codable, CustomStringConvertible {
+    public enum SortBy: String, Codable, CustomStringConvertible, CaseIterable {
         case name
         case kind
         case size
@@ -640,11 +640,35 @@ public struct VOFile {
                 "date_modified"
             }
         }
+
+        public var label: String {
+            switch self {
+            case .name:
+                return "Sort By Name"
+            case .kind:
+                return "Sort By Kind"
+            case .size:
+                return "Sort By Size"
+            case .dateCreated:
+                return "Sort By Date Created"
+            case .dateModified:
+                return "Sort By Date Modified"
+            }
+        }
     }
 
-    public enum SortOrder: String, Codable {
+    public enum SortOrder: String, Codable, CaseIterable {
         case asc
         case desc
+
+        public var label: String {
+            switch self {
+            case .asc:
+                return "Sort Asceding"
+            case .desc:
+                return "Sort Descending"
+            }
+        }
     }
 
     public struct CreateFileOptions {
