@@ -9,36 +9,46 @@
 // AGPL-3.0-only in the root of this repository.
 
 import Foundation
+import SwiftData
 
 public struct Config {
     public var apiURL: String
     public var idpURL: String
-    public var idpStrategy: IdPStrategy = .local
+    public var murphURL: String
+    public var signInStrategy: SignInStrategy
+
+    private static let fallbackConfig = Config(
+        apiURL: "http://localhost:8080",
+        idpURL: "http://localhost:8081",
+        murphURL: "http://localhost:8087",
+        signInStrategy: .local
+    )
 
     public static let shared: Config = {
-        guard let localPath = Bundle.main.path(forResource: "Config", ofType: "plist"),
-            let dict = NSDictionary(contentsOfFile: localPath) as? [String: String]
+        guard let container = try? ModelContainer(for: Server.self) else {
+            return fallbackConfig
+        }
+        guard
+            let server = try? ModelContext(container)
+                .fetch(FetchDescriptor<Server>())
+                .first(where: { $0.isActive })
         else {
-            fatalError("Failed to load config.")
+            return fallbackConfig
         }
 
         return Config(
-            apiURL: dict["apiURL"]!,
-            idpURL: dict["idpURL"]!,
-            idpStrategy: dict["idpStrategy"].flatMap(IdPStrategy.init) ?? .local
+            apiURL: server.apiURL,
+            idpURL: server.idpURL,
+            murphURL: server.murphURL,
+            signInStrategy: SignInStrategy(rawValue: server.signInStrategy)!
         )
     }()
 
-    func isLocalStrategy() -> Bool {
-        idpStrategy == .local
+    func isLocalSignIn() -> Bool {
+        signInStrategy == .local
     }
 
-    func isAppleStrategy() -> Bool {
-        idpStrategy == .apple
-    }
-
-    public enum IdPStrategy: String, Codable {
-        case local
-        case apple
+    func isAppleSignIn() -> Bool {
+        signInStrategy == .apple
     }
 }

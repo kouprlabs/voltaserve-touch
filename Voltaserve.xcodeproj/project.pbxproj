@@ -18,14 +18,13 @@
 		89300BB62D8761AA0083E871 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 89300BB52D8761AA0083E871 /* VoltaserveCore */; };
 		893CA8BF2D876A910003CFC9 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 893CA8BE2D876A910003CFC9 /* VoltaserveCore */; };
 		893CA8CA2D876B300003CFC9 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 893CA8C92D876B300003CFC9 /* VoltaserveCore */; };
-		89C3D36C2DA037E400D3FA1F /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 89C3D36B2DA037E400D3FA1F /* Config.plist */; };
 		89FDB5672D87737000EF8593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89FDB5662D87737000EF8593 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		892D8B3E2D87684600FCA879 /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
-		89C3D36B2DA037E400D3FA1F /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
+		898493C92DA9DC31009946BF /* Voltaserve.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Voltaserve.entitlements; sourceTree = "<group>"; };
 		89FDB5662D87737000EF8593 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,7 +57,7 @@
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
-				89C3D36B2DA037E400D3FA1F /* Config.plist */,
+				898493C92DA9DC31009946BF /* Voltaserve.entitlements */,
 				89695FFB2D8776CA000DE6EA /* Fonts */,
 				89FDB5662D87737000EF8593 /* Assets.xcassets */,
 				89FDB5692D87739100EF8593 /* Preview Content */,
@@ -119,7 +118,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					649066DD2C5E35AD00BA3CCD = {
 						CreatedOnToolsVersion = 15.4;
@@ -153,7 +152,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89C3D36C2DA037E400D3FA1F /* Config.plist in Resources */,
 				89FDB5672D87737000EF8593 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,6 +205,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -270,6 +269,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -297,10 +297,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Voltaserve.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
-				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -333,10 +333,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Voltaserve.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
-				DEVELOPMENT_TEAM = 945C8BFVW3;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;

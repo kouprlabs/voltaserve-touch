@@ -42,7 +42,7 @@ public struct AccountSettings: View, ViewDataProvider, LoadStateProvider {
                             }
                         }
                     }
-                    if Config.shared.isLocalStrategy() {
+                    if Config.shared.isLocalSignIn() {
                         Section(header: VOSectionHeader("Credentials")) {
                             NavigationLink(destination: AccountEditEmail(accountStore: accountStore)) {
                                 HStack {
