@@ -61,12 +61,22 @@ public struct ServerOverview: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                NavigationLink(destination: ServerEditIdentityProviderURL(server)) {
+                    HStack {
+                        Text("Murph")
+                        Spacer()
+                        Text(server.murphURL)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             NavigationLink(destination: ServerEditSignInStrategy(server)) {
                 HStack {
                     Text("Sign In Strategy")
                     Spacer()
-                    Text(server.signInStrategy)
+                    Text(SignInStrategy(rawValue: server.signInStrategy)!.label)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -163,6 +173,7 @@ public struct ServerOverview: View {
             name: "Local",
             apiURL: "http://localhost:8080",
             idpURL: "http://localhost:8081",
+            murphURL: "http://localhost:8087",
             signInStrategy: SignInStrategy.local.rawValue,
             isActive: true
         ))

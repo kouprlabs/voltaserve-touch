@@ -14,11 +14,13 @@ import SwiftData
 public struct Config {
     public var apiURL: String
     public var idpURL: String
+    public var murphURL: String
     public var signInStrategy: SignInStrategy
 
     private static let fallbackConfig = Config(
         apiURL: "http://localhost:8080",
         idpURL: "http://localhost:8081",
+        murphURL: "http://localhost:8087",
         signInStrategy: .local
     )
 
@@ -37,6 +39,7 @@ public struct Config {
         return Config(
             apiURL: server.apiURL,
             idpURL: server.idpURL,
+            murphURL: server.murphURL,
             signInStrategy: SignInStrategy(rawValue: server.signInStrategy)!
         )
     }()

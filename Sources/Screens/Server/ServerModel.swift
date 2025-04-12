@@ -17,6 +17,7 @@ public class Server: Codable {
     public var name: String
     public var apiURL: String
     public var idpURL: String
+    public var murphURL: String
     public var signInStrategy: String
     public var isActive: Bool
 
@@ -24,11 +25,20 @@ public class Server: Codable {
         SignInStrategy(rawValue: signInStrategy)!
     }
 
-    public init(id: String, name: String, apiURL: String, idpURL: String, signInStrategy: String, isActive: Bool) {
+    public init(
+        id: String,
+        name: String,
+        apiURL: String,
+        idpURL: String,
+        murphURL: String,
+        signInStrategy: String,
+        isActive: Bool
+    ) {
         self.id = id
         self.name = name
         self.apiURL = apiURL
         self.idpURL = idpURL
+        self.murphURL = murphURL
         self.signInStrategy = signInStrategy
         self.isActive = isActive
     }
@@ -39,6 +49,7 @@ public class Server: Codable {
         name = try container.decode(String.self, forKey: .name)
         apiURL = try container.decode(String.self, forKey: .apiURL)
         idpURL = try container.decode(String.self, forKey: .idpURL)
+        murphURL = try container.decode(String.self, forKey: .murphURL)
         signInStrategy = try container.decode(String.self, forKey: .signInStrategy)
         isActive = try container.decode(Bool.self, forKey: .isActive)
     }
@@ -49,6 +60,7 @@ public class Server: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(apiURL, forKey: .apiURL)
         try container.encode(idpURL, forKey: .idpURL)
+        try container.encode(murphURL, forKey: .murphURL)
         try container.encode(signInStrategy, forKey: .signInStrategy)
         try container.encode(isActive, forKey: .isActive)
     }
@@ -58,6 +70,7 @@ public class Server: Codable {
         case name
         case apiURL
         case idpURL
+        case murphURL
         case signInStrategy
         case isActive
     }

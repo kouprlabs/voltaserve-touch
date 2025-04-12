@@ -19,6 +19,7 @@ public struct ServerCreate: View, FormValidatable {
     @State private var name = ""
     @State private var apiURL = ""
     @State private var idpURL = ""
+    @State private var murphURL = ""
     @State private var signInStrategy = SignInStrategy.apple
     @State private var isProcessing = false
 
@@ -39,6 +40,10 @@ public struct ServerCreate: View, FormValidatable {
                     .autocorrectionDisabled()
                     .disabled(isProcessing)
                 TextField("Identity Provider URL", text: $idpURL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .disabled(isProcessing)
+                TextField("Murph URL", text: $murphURL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .disabled(isProcessing)
@@ -73,6 +78,7 @@ public struct ServerCreate: View, FormValidatable {
                 name: normalizedName,
                 apiURL: apiURL,
                 idpURL: idpURL,
+                murphURL: murphURL,
                 signInStrategy: signInStrategy.rawValue,
                 isActive: servers.count == 0
             )
