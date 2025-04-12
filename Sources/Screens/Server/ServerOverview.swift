@@ -170,7 +170,7 @@ public struct ServerOverview: View {
     ServerOverview(
         Server(
             id: UUID().uuidString,
-            name: "Local",
+            name: "Localhost",
             apiURL: "http://localhost:8080",
             idpURL: "http://localhost:8081",
             murphURL: "http://localhost:8087",
