@@ -64,7 +64,6 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
         .fileSelectionReset(fileStore: fileStore)
         .onAppear {
             fileStore.file = file
-            fileStore.loadViewModeFromUserDefaults()
             if let token = tokenStore.token {
                 assignTokenToStores(token)
                 startTimers()

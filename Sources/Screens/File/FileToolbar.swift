@@ -32,10 +32,66 @@ public struct FileToolbar: ViewModifier {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    viewModeToggleButton
-                }
-                ToolbarItem(placement: .topBarTrailing) {
                     tasksButton
+                }
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    ToolbarItem(placement: .bottomBar) {
+                        Menu {
+                            ForEach(VOFile.SortBy.allCases, id: \.self) { sortBy in
+                                Button {
+                                    fileStore.entitiesSortBy = sortBy
+                                } label: {
+                                    Label(
+                                        sortBy.label,
+                                        systemImage: fileStore.entitiesSortBy == sortBy ? "checkmark" : ""
+                                    )
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "line.3.horizontal.decrease.circle")
+                        }
+                    }
+                    ToolbarItem(placement: .bottomBar) {
+                        Menu {
+                            ForEach(VOFile.SortOrder.allCases, id: \.self) { sortOrder in
+                                Button {
+                                    fileStore.entitiesSortOrder = sortOrder
+                                } label: {
+                                    Label(
+                                        sortOrder.label,
+                                        systemImage: fileStore.entitiesSortOrder == sortOrder ? "checkmark" : ""
+                                    )
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down.square")
+                        }
+                    }
+                } else {
+                    ToolbarItem(placement: .bottomBar) {
+                        Picker(
+                            selection: $fileStore.entitiesSortBy,
+                            label: Image(systemName: "line.3.horizontal.decrease.circle")
+                        ) {
+                            ForEach(VOFile.SortBy.allCases, id: \.self) { sortBy in
+                                Text(sortBy.label).tag(sortBy)
+                            }
+                        }
+                    }
+                    ToolbarItem(placement: .bottomBar) {
+                        Picker(
+                            selection: $fileStore.entitiesSortOrder,
+                            label: Image(systemName: "arrow.up.arrow.down.square")
+                        ) {
+                            ForEach(VOFile.SortOrder.allCases, id: \.self) { sortOrder in
+                                Text(sortOrder.label).tag(sortOrder)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    }
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    viewModeToggleButton
                 }
                 if let file = fileStore.file, file.permission.ge(.editor) {
                     ToolbarItem(placement: .topBarLeading) {

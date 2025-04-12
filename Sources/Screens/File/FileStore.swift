@@ -18,6 +18,22 @@ public class FileStore: ObservableObject {
     @Published public var entitiesIsLoading = false
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
+    @Published public var entitiesSortBy: VOFile.SortBy = .dateCreated {
+        didSet {
+            UserDefaults.standard.set(
+                entitiesSortBy.rawValue,
+                forKey: Constants.userDefaultEntitiesSortByKey
+            )
+        }
+    }
+    @Published public var entitiesSortOrder: VOFile.SortOrder = .desc {
+        didSet {
+            UserDefaults.standard.set(
+                entitiesSortOrder.rawValue,
+                forKey: Constants.userDefaultEntitiesSortOrderKey
+            )
+        }
+    }
     @Published public var taskCount: Int?
     @Published public var taskCountIsLoading = false
     @Published public var taskCountError: String?
@@ -54,7 +70,14 @@ public class FileStore: ObservableObject {
     @Published public var mosaicIsPresented = false
     @Published public var insightsIsPresented = false
     @Published public var infoIsPresented = false
-    @Published public var viewMode: ViewMode = .grid
+    @Published public var viewMode: ViewMode = .grid {
+        didSet {
+            UserDefaults.standard.set(
+                viewMode.rawValue,
+                forKey: Constants.userDefaultViewModeKey
+            )
+        }
+    }
     private var list: VOFile.List?
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?
@@ -94,7 +117,19 @@ public class FileStore: ObservableObject {
     }
 
     public init() {
-        loadViewModeFromUserDefaults()
+        if let savedViewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
+            self.viewMode = ViewMode(rawValue: savedViewMode)!
+        }
+        if let savedSortBy = UserDefaults.standard.string(forKey: Constants.userDefaultEntitiesSortByKey),
+            let sortBy = VOFile.SortBy(rawValue: savedSortBy)
+        {
+            entitiesSortBy = sortBy
+        }
+        if let savedSortOrder = UserDefaults.standard.string(forKey: Constants.userDefaultEntitiesSortOrderKey),
+            let sortOrder = VOFile.SortOrder(rawValue: savedSortOrder)
+        {
+            entitiesSortOrder = sortOrder
+        }
         searchPublisher
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -143,8 +178,8 @@ public class FileStore: ObservableObject {
                 query: query,
                 page: page,
                 size: size,
-                sortBy: .dateCreated,
-                sortOrder: .desc
+                sortBy: entitiesSortBy,
+                sortOrder: entitiesSortOrder
             ))
     }
 
@@ -533,13 +568,6 @@ public class FileStore: ObservableObject {
 
     public func toggleViewMode() {
         viewMode = viewMode == .list ? .grid : .list
-        UserDefaults.standard.set(viewMode.rawValue, forKey: Constants.userDefaultViewModeKey)
-    }
-
-    public func loadViewModeFromUserDefaults() {
-        if let viewMode = UserDefaults.standard.string(forKey: Constants.userDefaultViewModeKey) {
-            self.viewMode = ViewMode(rawValue: viewMode)!
-        }
     }
 
     public enum ViewMode: String {
@@ -552,5 +580,7 @@ public class FileStore: ObservableObject {
     private enum Constants {
         static let pageSize = 50
         static let userDefaultViewModeKey = "com.voltaserve.files.viewMode"
+        static let userDefaultEntitiesSortByKey = "com.voltaserve.files.sortBy"
+        static let userDefaultEntitiesSortOrderKey = "com.voltaserve.files.sortOrder"
     }
 }
