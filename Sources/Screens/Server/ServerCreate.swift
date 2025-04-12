@@ -98,5 +98,6 @@ public struct ServerCreate: View, FormValidatable {
 
     public func isValid() -> Bool {
         !normalizedName.isEmpty && apiURL.isValidURL() && idpURL.isValidURL()
+            && (murphURL.isEmpty || murphURL.isValidURL())
     }
 }
