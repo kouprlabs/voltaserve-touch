@@ -43,7 +43,7 @@ public struct FileToolbar: ViewModifier {
                                 } label: {
                                     Label(
                                         sortBy.label,
-                                        systemImage: fileStore.sortBy == sortBy ? "checkmark" : ""
+                                        systemImage: fileStore.sortBy == sortBy ? "checkmark" : String()
                                     )
                                 }
                             }
@@ -59,7 +59,7 @@ public struct FileToolbar: ViewModifier {
                                 } label: {
                                     Label(
                                         sortOrder.label,
-                                        systemImage: fileStore.sortOrder == sortOrder ? "checkmark" : ""
+                                        systemImage: fileStore.sortOrder == sortOrder ? "checkmark" : String()
                                     )
                                 }
                             }
