@@ -29,35 +29,37 @@ public struct ServerCreate: View, FormValidatable {
     }
 
     public var body: some View {
-        HStack {
-            Image(systemName: "info.circle")
-                .foregroundStyle(.tint)
-            Link(
-                "Learn how to host your own Voltaserve instance.",
-                destination: URL(string: "https://github.com/kouprlabs/voltaserve")!
-            )
-        }
-        .padding()
-        Form {
-            Section(header: VOSectionHeader("Details")) {
-                TextField("Name", text: $name)
-                    .disabled(isProcessing)
+        VStack {
+            HStack {
+                Image(systemName: "info.circle")
+                    .foregroundStyle(.tint)
+                Link(
+                    "Learn how to host your own Voltaserve instance.",
+                    destination: URL(string: "https://github.com/kouprlabs/voltaserve")!
+                )
             }
-            Section(header: VOSectionHeader("URLs")) {
-                TextField("API URL", text: $apiURL)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .disabled(isProcessing)
-                TextField("Identity Provider URL", text: $idpURL)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .disabled(isProcessing)
-                TextField("Murph URL", text: $murphURL)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .disabled(isProcessing)
+            .padding(.horizontal)
+            Form {
+                Section(header: VOSectionHeader("Details")) {
+                    TextField("Name", text: $name)
+                        .disabled(isProcessing)
+                }
+                Section(header: VOSectionHeader("URLs")) {
+                    TextField("API URL", text: $apiURL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .disabled(isProcessing)
+                    TextField("Identity Provider URL", text: $idpURL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .disabled(isProcessing)
+                    TextField("Murph URL", text: $murphURL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .disabled(isProcessing)
+                }
+                SignInStrategyPicker(selected: $signInStrategy)
             }
-            SignInStrategyPicker(selected: $signInStrategy)
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("New Server")

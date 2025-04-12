@@ -153,10 +153,10 @@ public struct ServerOverview: View {
     private func performDelete() {
         isDeleting = true
         Task {
+            try? context.delete(model: Server.self, where: #Predicate { $0.id == server.id })
             if server.isActive {
                 servers.first?.isActive = true
             }
-            try? context.delete(model: Server.self, where: #Predicate { $0.id == server.id })
             try? context.save()
             DispatchQueue.main.async {
                 isDeleting = false
