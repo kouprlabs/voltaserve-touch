@@ -29,6 +29,15 @@ public struct ServerCreate: View, FormValidatable {
     }
 
     public var body: some View {
+        HStack {
+            Image(systemName: "info.circle")
+                .foregroundStyle(.tint)
+            Link(
+                "Learn how to host your own Voltaserve instance.",
+                destination: URL(string: "https://github.com/kouprlabs/voltaserve")!
+            )
+        }
+        .padding()
         Form {
             Section(header: VOSectionHeader("Details")) {
                 TextField("Name", text: $name)
