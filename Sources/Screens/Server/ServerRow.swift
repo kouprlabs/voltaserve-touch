@@ -33,7 +33,7 @@ struct ServerRow: View {
 
     private var checkmark: some View {
         Image(systemName: "checkmark")
-            .foregroundStyle(.blue)
+            .foregroundStyle(.tint)
             .fontWeight(.medium)
             .frame(width: 20, height: 20)
     }
