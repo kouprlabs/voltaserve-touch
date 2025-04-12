@@ -39,11 +39,11 @@ public struct FileToolbar: ViewModifier {
                         Menu {
                             ForEach(VOFile.SortBy.allCases, id: \.self) { sortBy in
                                 Button {
-                                    fileStore.entitiesSortBy = sortBy
+                                    fileStore.sortBy = sortBy
                                 } label: {
                                     Label(
                                         sortBy.label,
-                                        systemImage: fileStore.entitiesSortBy == sortBy ? "checkmark" : ""
+                                        systemImage: fileStore.sortBy == sortBy ? "checkmark" : ""
                                     )
                                 }
                             }
@@ -55,11 +55,11 @@ public struct FileToolbar: ViewModifier {
                         Menu {
                             ForEach(VOFile.SortOrder.allCases, id: \.self) { sortOrder in
                                 Button {
-                                    fileStore.entitiesSortOrder = sortOrder
+                                    fileStore.sortOrder = sortOrder
                                 } label: {
                                     Label(
                                         sortOrder.label,
-                                        systemImage: fileStore.entitiesSortOrder == sortOrder ? "checkmark" : ""
+                                        systemImage: fileStore.sortOrder == sortOrder ? "checkmark" : ""
                                     )
                                 }
                             }
@@ -70,7 +70,7 @@ public struct FileToolbar: ViewModifier {
                 } else {
                     ToolbarItem(placement: .bottomBar) {
                         Picker(
-                            selection: $fileStore.entitiesSortBy,
+                            selection: $fileStore.sortBy,
                             label: Image(systemName: "line.3.horizontal.decrease.circle")
                         ) {
                             ForEach(VOFile.SortBy.allCases, id: \.self) { sortBy in
@@ -80,7 +80,7 @@ public struct FileToolbar: ViewModifier {
                     }
                     ToolbarItem(placement: .bottomBar) {
                         Picker(
-                            selection: $fileStore.entitiesSortOrder,
+                            selection: $fileStore.sortOrder,
                             label: Image(systemName: "arrow.up.arrow.down.square")
                         ) {
                             ForEach(VOFile.SortOrder.allCases, id: \.self) { sortOrder in
