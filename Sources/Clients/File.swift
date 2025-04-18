@@ -518,23 +518,23 @@ public struct VOFile {
     }
 
     public func urlForOriginal(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/original.\(fileExtension)?session_key=\(accessKey)")!
+        URL(string: "\(urlForID(id))/original.\(fileExtension)?access_key=\(accessKey)")!
     }
 
     public func urlForPreview(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/preview.\(fileExtension)?session_key=\(accessKey)")!
+        URL(string: "\(urlForID(id))/preview.\(fileExtension)?access_key=\(accessKey)")!
     }
 
     public func urlForText(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/text.\(fileExtension)?session_key=\(accessKey)")!
+        URL(string: "\(urlForID(id))/text.\(fileExtension)?access_key=\(accessKey)")!
     }
 
     public func urlForOCR(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/ocr.\(fileExtension)?session_key=\(accessKey)")!
+        URL(string: "\(urlForID(id))/ocr.\(fileExtension)?access_key=\(accessKey)")!
     }
 
     public func urlForThumbnail(_ id: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?session_key=\(accessKey)")!
+        URL(string: "\(urlForID(id))/thumbnail.\(fileExtension)?access_key=\(accessKey)")!
     }
 
     public func urlForUserPermissions(_ id: String) -> URL {
