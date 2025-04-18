@@ -95,7 +95,7 @@ public struct VOUser {
         invitationID: String? = nil
     ) -> URL {
         var items: [URLQueryItem] = []
-        items.append(.init(name: "session_key", value: accessKey))
+        items.append(.init(name: "access_key", value: accessKey))
         if let organizationID {
             items.append(.init(name: "organization_id", value: organizationID))
         }

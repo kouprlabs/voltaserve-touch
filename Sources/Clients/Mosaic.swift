@@ -131,7 +131,7 @@ public struct VOMosaic {
     ) -> URL {
         // swift-format-ignore
         // swiftlint:disable:next line_length
-        URL(string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)/row/\(row)/column/\(column)/extension/\(fileExtension)?session_key=\(accessKey)")!
+        URL(string: "\(urlForFile(id))/zoom_level/\(zoomLevel.index)/row/\(row)/column/\(column)/extension/\(fileExtension)?access_key=\(accessKey)")!
     }
 
     // MARK: - Types

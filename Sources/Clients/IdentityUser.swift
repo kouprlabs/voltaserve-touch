@@ -240,7 +240,7 @@ public struct VOIdentityUser {
     }
 
     public func urlForPicture(_: String, fileExtension: String) -> URL {
-        URL(string: "\(urlForMe())/picture\(fileExtension)?session_key=\(accessKey)")!
+        URL(string: "\(urlForMe())/picture\(fileExtension)?access_key=\(accessKey)")!
     }
 
     // MARK: - Payloads
