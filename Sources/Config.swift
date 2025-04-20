@@ -24,7 +24,7 @@ public struct Config {
         signInStrategy: .local
     )
 
-    public static let shared: Config = {
+    public static var shared: Config {
         guard let container = try? ModelContainer(for: Server.self) else {
             return fallbackConfig
         }
@@ -42,7 +42,7 @@ public struct Config {
             murphURL: server.murphURL,
             signInStrategy: SignInStrategy(rawValue: server.signInStrategy)!
         )
-    }()
+    }
 
     func isLocalSignIn() -> Bool {
         signInStrategy == .local
