@@ -29,7 +29,7 @@ public struct SignInWithLocal: View, ErrorPresentable {
     }
 
     public var body: some View {
-        VStack(spacing: VOMetrics.spacing) {
+        VStack(spacing: VOMetrics.spacingXl) {
             VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
             TextField("Email", text: $email)
                 .voTextField(width: VOMetrics.formWidth)
@@ -96,6 +96,7 @@ public struct SignInWithLocal: View, ErrorPresentable {
     }
 
     private func performSignIn() {
+        sessionStore.recreateClient()
         var session: VOSession.Value?
         withErrorHandling {
             session = try await sessionStore.signInWithLocal(username: email, password: password)

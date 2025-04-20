@@ -70,6 +70,7 @@ public struct SignInWithApple: View, ErrorPresentable {
     }
 
     private func performSignIn(_ appleKey: String, fullName: String?) async {
+        sessionStore.recreateClient()
         var session: VOSession.Value?
         withErrorHandling {
             session = try await sessionStore.signInWithApple(appleKey: appleKey, fullName: fullName)

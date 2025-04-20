@@ -19,7 +19,7 @@ struct SignInPlaceholder: View {
     }
 
     var body: some View {
-        VStack(spacing: VOMetrics.spacing) {
+        VStack(spacing: VOMetrics.spacingXl) {
             VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
             Button {
                 serverCreateIsPresented = true
