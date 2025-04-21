@@ -495,6 +495,8 @@ public class FileStore: ObservableObject {
         guard let snapshot = file.snapshot else { return false }
         guard let fileExtension = snapshot.original.fileExtension else { return false }
         return file.type == .file && !(snapshot.task?.isPending ?? false) && fileExtension.isImage()
+            && ((file.permission.ge(.viewer) && file.snapshot?.capabilities.mosaic ?? false)
+                || file.permission.ge(.editor))
     }
 
     public func isSharingAuthorized(_ file: VOFile.Entity) -> Bool {
