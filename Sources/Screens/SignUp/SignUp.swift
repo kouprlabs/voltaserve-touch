@@ -36,69 +36,70 @@ public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                     if let passwordRequirements = signUpStore.passwordRequirements {
                         VStack(spacing: VOMetrics.spacingXl) {
                             VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-                            TextField("Full name", text: $fullName)
-                                .voTextField(width: VOMetrics.formWidth)
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled()
-                                .disabled(isProcessing)
-                            TextField("Email", text: $email)
-                                .voTextField(width: VOMetrics.formWidth)
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled()
-                                .disabled(isProcessing)
-                            SecureField("Password", text: $password)
-                                .voTextField(width: VOMetrics.formWidth)
-                                .disabled(isProcessing)
-                            VStack(alignment: .listRowSeparatorLeading) {
-                                SignUpPasswordHint(
-                                    "\(passwordRequirements.minLength) characters.",
-                                    isFulfilled: password.hasMinLength(passwordRequirements.minLength))
-                                SignUpPasswordHint(
-                                    "\(passwordRequirements.minLowercase) lowercase character.",
-                                    isFulfilled: password.hasMinLowerCase(passwordRequirements.minLowercase))
-                                SignUpPasswordHint(
-                                    "\(passwordRequirements.minUppercase) uppercase character.",
-                                    isFulfilled: password.hasMinUpperCase(passwordRequirements.minUppercase))
-                                SignUpPasswordHint(
-                                    "\(passwordRequirements.minNumbers) number.",
-                                    isFulfilled: password.hasMinNumbers(passwordRequirements.minNumbers))
-                                SignUpPasswordHint(
-                                    "\(passwordRequirements.minSymbols) special character(s) (!#$%).",
-                                    isFulfilled: password.hasMinSymbols(passwordRequirements.minSymbols))
-                                SignUpPasswordHint(
-                                    "Passwords match.",
-                                    isFulfilled: !password.isEmpty && !confirmPassword.isEmpty
-                                        && password == confirmPassword)
-                            }
-                            .frame(width: VOMetrics.formWidth)
-                            SecureField("Confirm password", text: $confirmPassword)
-                                .voTextField(width: VOMetrics.formWidth)
-                                .disabled(isProcessing)
-                            Button {
-                                if isValid() {
-                                    performSignUp()
+                            VStack(spacing: VOMetrics.spacing) {
+                                TextField("Full name", text: $fullName)
+                                    .voTextField(width: VOMetrics.formWidth)
+                                    .textInputAutocapitalization(.never)
+                                    .autocorrectionDisabled()
+                                    .disabled(isProcessing)
+                                TextField("Email", text: $email)
+                                    .voTextField(width: VOMetrics.formWidth)
+                                    .textInputAutocapitalization(.never)
+                                    .autocorrectionDisabled()
+                                    .disabled(isProcessing)
+                                SecureField("Password", text: $password)
+                                    .voTextField(width: VOMetrics.formWidth)
+                                    .disabled(isProcessing)
+                                VStack(alignment: .listRowSeparatorLeading) {
+                                    SignUpPasswordHint(
+                                        "\(passwordRequirements.minLength) characters.",
+                                        isFulfilled: password.hasMinLength(passwordRequirements.minLength))
+                                    SignUpPasswordHint(
+                                        "\(passwordRequirements.minLowercase) lowercase character.",
+                                        isFulfilled: password.hasMinLowerCase(passwordRequirements.minLowercase))
+                                    SignUpPasswordHint(
+                                        "\(passwordRequirements.minUppercase) uppercase character.",
+                                        isFulfilled: password.hasMinUpperCase(passwordRequirements.minUppercase))
+                                    SignUpPasswordHint(
+                                        "\(passwordRequirements.minNumbers) number.",
+                                        isFulfilled: password.hasMinNumbers(passwordRequirements.minNumbers))
+                                    SignUpPasswordHint(
+                                        "\(passwordRequirements.minSymbols) special character(s) (!#$%).",
+                                        isFulfilled: password.hasMinSymbols(passwordRequirements.minSymbols))
+                                    SignUpPasswordHint(
+                                        "Passwords match.",
+                                        isFulfilled: !password.isEmpty && !confirmPassword.isEmpty
+                                            && password == confirmPassword)
                                 }
-                            } label: {
-                                VOButtonLabel(
-                                    "Sign Up",
-                                    isLoading: isProcessing,
-                                    progressViewTint: .white
-                                )
-                            }
-                            .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
-                            HStack {
-                                Text("Already a member?")
-                                    .voFormHintText()
+                                .frame(width: VOMetrics.formWidth)
+                                SecureField("Confirm password", text: $confirmPassword)
+                                    .voTextField(width: VOMetrics.formWidth)
+                                    .disabled(isProcessing)
                                 Button {
-                                    onSignIn?()
+                                    if isValid() {
+                                        performSignUp()
+                                    }
                                 } label: {
-                                    Text("Sign in")
-                                        .voFormHintLabel()
+                                    VOButtonLabel(
+                                        "Sign Up",
+                                        isLoading: isProcessing,
+                                        progressViewTint: .white
+                                    )
                                 }
-                                .disabled(isProcessing)
+                                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
+                                HStack {
+                                    Text("Already a member?")
+                                        .voFormHintText()
+                                    Button {
+                                        onSignIn?()
+                                    } label: {
+                                        Text("Sign in")
+                                            .voFormHintLabel()
+                                    }
+                                    .disabled(isProcessing)
+                                }
                             }
                         }
-
                     }
                 }
             }

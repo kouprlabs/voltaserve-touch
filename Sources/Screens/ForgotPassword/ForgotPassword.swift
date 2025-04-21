@@ -26,37 +26,39 @@ public struct ForgotPassword: View, FormValidatable, ErrorPresentable {
         NavigationView {
             VStack(spacing: VOMetrics.spacingXl) {
                 VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-                Text("Please provide your account Email where we can send you the password recovery instructions.")
-                    .voFormHintText()
-                    .frame(width: VOMetrics.formWidth)
-                    .multilineTextAlignment(.center)
-                TextField("Email", text: $email)
-                    .voTextField(width: VOMetrics.formWidth)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .disabled(isProcessing)
-                Button {
-                    if isValid() {
-                        performSendResetPasswordEmail()
-                    }
-                } label: {
-                    VOButtonLabel(
-                        "Send Recovery Instructions",
-                        isLoading: isProcessing,
-                        progressViewTint: .white
-                    )
-                }
-                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
-                HStack {
-                    Text("Password recovered?")
+                VStack(spacing: VOMetrics.spacing) {
+                    Text("Please provide your account Email where we can send you the password recovery instructions.")
                         .voFormHintText()
+                        .frame(width: VOMetrics.formWidth)
+                        .multilineTextAlignment(.center)
+                    TextField("Email", text: $email)
+                        .voTextField(width: VOMetrics.formWidth)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .disabled(isProcessing)
                     Button {
-                        onSignIn?()
+                        if isValid() {
+                            performSendResetPasswordEmail()
+                        }
                     } label: {
-                        Text("Sign in")
-                            .voFormHintLabel()
+                        VOButtonLabel(
+                            "Send Recovery Instructions",
+                            isLoading: isProcessing,
+                            progressViewTint: .white
+                        )
                     }
-                    .disabled(isProcessing)
+                    .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
+                    HStack {
+                        Text("Password recovered?")
+                            .voFormHintText()
+                        Button {
+                            onSignIn?()
+                        } label: {
+                            Text("Sign in")
+                                .voFormHintLabel()
+                        }
+                        .disabled(isProcessing)
+                    }
                 }
             }
             .toolbar {

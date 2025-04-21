@@ -31,48 +31,50 @@ public struct SignInWithLocal: View, ErrorPresentable {
     public var body: some View {
         VStack(spacing: VOMetrics.spacingXl) {
             VOLogo(isGlossy: true, size: .init(width: 100, height: 100))
-            TextField("Email", text: $email)
-                .voTextField(width: VOMetrics.formWidth)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .disabled(isProcessing)
-            SecureField("Password", text: $password)
-                .voTextField(width: VOMetrics.formWidth)
-                .disabled(isProcessing)
-            Button {
-                if !email.isEmpty && !password.isEmpty {
-                    performSignIn()
-                }
-            } label: {
-                VOButtonLabel(
-                    "Sign In",
-                    isLoading: isProcessing,
-                    progressViewTint: .white
-                )
-            }
-            .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
-            VStack {
-                HStack {
-                    Text("Don't have an account yet?")
-                        .voFormHintText()
-                    Button {
-                        signUpIsPresented = true
-                    } label: {
-                        Text("Sign up")
-                            .voFormHintLabel()
-                    }
+            VStack(spacing: VOMetrics.spacing) {
+                TextField("Email", text: $email)
+                    .voTextField(width: VOMetrics.formWidth)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
                     .disabled(isProcessing)
-                }
-                HStack {
-                    Text("Cannot sign in?")
-                        .voFormHintText()
-                    Button {
-                        forgotPasswordIsPresented = true
-                    } label: {
-                        Text("Reset password")
-                            .voFormHintLabel()
-                    }
+                SecureField("Password", text: $password)
+                    .voTextField(width: VOMetrics.formWidth)
                     .disabled(isProcessing)
+                Button {
+                    if !email.isEmpty && !password.isEmpty {
+                        performSignIn()
+                    }
+                } label: {
+                    VOButtonLabel(
+                        "Sign In",
+                        isLoading: isProcessing,
+                        progressViewTint: .white
+                    )
+                }
+                .voPrimaryButton(width: VOMetrics.formWidth, isDisabled: isProcessing)
+                VStack {
+                    HStack {
+                        Text("Don't have an account yet?")
+                            .voFormHintText()
+                        Button {
+                            signUpIsPresented = true
+                        } label: {
+                            Text("Sign up")
+                                .voFormHintLabel()
+                        }
+                        .disabled(isProcessing)
+                    }
+                    HStack {
+                        Text("Cannot sign in?")
+                            .voFormHintText()
+                        Button {
+                            forgotPasswordIsPresented = true
+                        } label: {
+                            Text("Reset password")
+                                .voFormHintLabel()
+                        }
+                        .disabled(isProcessing)
+                    }
                 }
             }
             self.extensions()
