@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-public struct SignUpPasswordHint: View {
+public struct PasswordHint: View {
     private var text: String
     private var isFulfilled: Bool
 

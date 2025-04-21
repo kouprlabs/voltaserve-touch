@@ -51,22 +51,22 @@ public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
                                     .voTextField(width: VOMetrics.formWidth)
                                     .disabled(isProcessing)
                                 VStack(alignment: .listRowSeparatorLeading) {
-                                    SignUpPasswordHint(
+                                    PasswordHint(
                                         "\(passwordRequirements.minLength) characters.",
                                         isFulfilled: password.hasMinLength(passwordRequirements.minLength))
-                                    SignUpPasswordHint(
+                                    PasswordHint(
                                         "\(passwordRequirements.minLowercase) lowercase character.",
                                         isFulfilled: password.hasMinLowerCase(passwordRequirements.minLowercase))
-                                    SignUpPasswordHint(
+                                    PasswordHint(
                                         "\(passwordRequirements.minUppercase) uppercase character.",
                                         isFulfilled: password.hasMinUpperCase(passwordRequirements.minUppercase))
-                                    SignUpPasswordHint(
+                                    PasswordHint(
                                         "\(passwordRequirements.minNumbers) number.",
                                         isFulfilled: password.hasMinNumbers(passwordRequirements.minNumbers))
-                                    SignUpPasswordHint(
+                                    PasswordHint(
                                         "\(passwordRequirements.minSymbols) special character(s) (!#$%).",
                                         isFulfilled: password.hasMinSymbols(passwordRequirements.minSymbols))
-                                    SignUpPasswordHint(
+                                    PasswordHint(
                                         "Passwords match.",
                                         isFulfilled: !password.isEmpty && !confirmPassword.isEmpty
                                             && password == confirmPassword)
@@ -144,7 +144,7 @@ public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
     @State public var errorIsPresented = false
     @State public var errorMessage: String?
 
-    // MARK: - ViewDataProvider
+    // MARK: - LoadStateProvider
 
     public var isLoading: Bool {
         signUpStore.passwordRequirementsIsLoading

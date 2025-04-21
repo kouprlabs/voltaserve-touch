@@ -18,6 +18,9 @@ public class AccountStore: ObservableObject {
     @Published public var storageUsage: VOStorage.Usage?
     @Published public var storageUsageError: String?
     @Published public var storageUsageIsLoading = false
+    @Published public var passwordRequirements: VOAccount.PasswordRequirements?
+    @Published public var passwordRequirementsIsLoading = false
+    @Published public var passwordRequirementsError: String?
     private var timer: Timer?
     private var accountClient: VOAccount = .init(baseURL: Config.shared.idpURL)
     private var identityUserClient: VOIdentityUser?
@@ -96,6 +99,27 @@ public class AccountStore: ObservableObject {
             self.storageUsageError = message
         } anyways: {
             self.storageUsageIsLoading = false
+        }
+    }
+
+    private func fetchPasswordRequirements() async throws -> VOAccount.PasswordRequirements? {
+        return try await accountClient.fetchPasswordRequirements()
+    }
+
+    public func fetchPasswordRequirements() {
+        var passwordRequirements: VOAccount.PasswordRequirements?
+        withErrorHandling {
+            passwordRequirements = try await self.fetchPasswordRequirements()
+            return true
+        } before: {
+            self.passwordRequirementsIsLoading = true
+        } success: {
+            self.passwordRequirements = passwordRequirements
+            self.passwordRequirementsError = nil
+        } failure: { message in
+            self.passwordRequirementsError = message
+        } anyways: {
+            self.passwordRequirementsIsLoading = false
         }
     }
 

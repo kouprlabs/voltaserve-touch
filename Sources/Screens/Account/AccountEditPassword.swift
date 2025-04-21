@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-public struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
+public struct AccountEditPassword: View, FormValidatable, ViewDataProvider, LoadStateProvider, ErrorPresentable {
     @ObservedObject private var accountStore: AccountStore
     @Environment(\.dismiss) private var dismiss
     @State private var currentValue = ""
@@ -27,6 +27,25 @@ public struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
                 .disabled(isProcessing)
             SecureField("New Password", text: $newValue)
                 .disabled(isProcessing)
+            if let passwordRequirements = accountStore.passwordRequirements {
+                VStack(alignment: .listRowSeparatorLeading) {
+                    PasswordHint(
+                        "\(passwordRequirements.minLength) characters.",
+                        isFulfilled: newValue.hasMinLength(passwordRequirements.minLength))
+                    PasswordHint(
+                        "\(passwordRequirements.minLowercase) lowercase character.",
+                        isFulfilled: newValue.hasMinLowerCase(passwordRequirements.minLowercase))
+                    PasswordHint(
+                        "\(passwordRequirements.minUppercase) uppercase character.",
+                        isFulfilled: newValue.hasMinUpperCase(passwordRequirements.minUppercase))
+                    PasswordHint(
+                        "\(passwordRequirements.minNumbers) number.",
+                        isFulfilled: newValue.hasMinNumbers(passwordRequirements.minNumbers))
+                    PasswordHint(
+                        "\(passwordRequirements.minSymbols) special character(s) (!#$%).",
+                        isFulfilled: newValue.hasMinSymbols(passwordRequirements.minSymbols))
+                }
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Change Password")
@@ -41,6 +60,9 @@ public struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
                     .disabled(!isValid())
                 }
             }
+        }
+        .onAppear {
+            onAppearOrChange()
         }
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
     }
@@ -70,5 +92,25 @@ public struct AccountEditPassword: View, FormValidatable, ErrorPresentable {
 
     public func isValid() -> Bool {
         !currentValue.isEmpty && !newValue.isEmpty
+    }
+
+    // MARK: - ViewDataProvider
+
+    public func onAppearOrChange() {
+        fetchData()
+    }
+
+    public func fetchData() {
+        accountStore.fetchPasswordRequirements()
+    }
+
+    // MARK: - LoadStateProvider
+
+    public var isLoading: Bool {
+        accountStore.passwordRequirementsIsLoading
+    }
+
+    public var error: String? {
+        accountStore.passwordRequirementsError
     }
 }
