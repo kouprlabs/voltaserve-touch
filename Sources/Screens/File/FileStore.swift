@@ -179,6 +179,22 @@ public class FileStore: ObservableObject {
             ))
     }
 
+    public func fetchEntities() async throws {
+        if let current = await self.file, let entities = await self.entities {
+            let list = try await self.fetchList(
+                current.id,
+                page: 1,
+                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
     public func fetchNextPage(replace: Bool = false) {
         guard let file else { return }
         guard !entitiesIsLoading else { return }
@@ -411,19 +427,7 @@ public class FileStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let current = await self.file, let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        current.id,
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
+                try await self.fetchEntities()
                 if await self.file != nil {
                     let file = try await self.fetchFile()
                     if let file {
