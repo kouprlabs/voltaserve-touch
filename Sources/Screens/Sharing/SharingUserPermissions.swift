@@ -36,7 +36,19 @@ public struct SharingUserPermissions: View, SessionDistributing {
         VStack {
             if let userPermissions = sharingStore.userPermissions {
                 if userPermissions.isEmpty {
-                    Text("Not shared with any users.")
+                    VStack {
+                        Text("Not shared with any users.")
+                        NavigationLink {
+                            SharingUserForm(
+                                fileIDs: [fileID],
+                                organization: organization,
+                                sharingStore: sharingStore,
+                                fileStore: fileStore
+                            )
+                        } label: {
+                            Label("Share", systemImage: "plus")
+                        }
+                    }
                 } else {
                     List(userPermissions, id: \.id) { userPermission in
                         NavigationLink {

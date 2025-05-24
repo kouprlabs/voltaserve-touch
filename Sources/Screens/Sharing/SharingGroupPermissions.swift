@@ -33,7 +33,19 @@ public struct SharingGroupPermissions: View {
     public var body: some View {
         if let groupPermissions = sharingStore.groupPermissions {
             if groupPermissions.isEmpty {
-                Text("Not shared with any groups.")
+                VStack {
+                    Text("Not shared with any groups.")
+                    NavigationLink {
+                        SharingGroupForm(
+                            fileIDs: [fileID],
+                            organization: organization,
+                            sharingStore: sharingStore,
+                            fileStore: fileStore
+                        )
+                    } label: {
+                        Label("Share", systemImage: "plus")
+                    }
+                }
             } else {
                 List(groupPermissions, id: \.id) { groupPermission in
                     NavigationLink {
