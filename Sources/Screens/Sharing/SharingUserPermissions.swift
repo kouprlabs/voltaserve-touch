@@ -38,6 +38,7 @@ public struct SharingUserPermissions: View, SessionDistributing {
                 if userPermissions.isEmpty {
                     VStack {
                         Text("Not shared with any users.")
+                            .foregroundStyle(.secondary)
                         NavigationLink {
                             SharingUserForm(
                                 fileIDs: [fileID],

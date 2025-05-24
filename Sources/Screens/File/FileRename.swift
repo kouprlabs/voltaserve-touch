@@ -10,10 +10,7 @@
 
 import SwiftUI
 
-public struct FileRename: View, LoadStateProvider, SessionDistributing,
-    FormValidatable,
-    ErrorPresentable
-{
+public struct FileRename: View, LoadStateProvider, SessionDistributing, FormValidatable, ErrorPresentable {
     @EnvironmentObject private var sessionStore: SessionStore
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss

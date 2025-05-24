@@ -35,6 +35,7 @@ public struct SharingGroupPermissions: View {
             if groupPermissions.isEmpty {
                 VStack {
                     Text("Not shared with any groups.")
+                        .foregroundStyle(.secondary)
                     NavigationLink {
                         SharingGroupForm(
                             fileIDs: [fileID],
