@@ -139,6 +139,7 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
         guard let user, let permission else { return }
         withErrorHandling {
             try await sharingStore.grantUserPermission(ids: fileIDs, userID: user.id, permission: permission)
+            try await sharingStore.syncUserPermissions()
             return true
         } before: {
             isGranting = true
@@ -156,6 +157,7 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
         guard let user, fileIDs.count == 1, let fileID = fileIDs.first else { return }
         withErrorHandling {
             try await sharingStore.revokeUserPermission(id: fileID, userID: user.id)
+            try await sharingStore.syncUserPermissions()
             return true
         } before: {
             isRevoking = true

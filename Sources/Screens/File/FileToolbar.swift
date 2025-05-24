@@ -41,7 +41,7 @@ public struct FileToolbar: ViewModifier {
                                 Button {
                                     fileStore.sortBy = sortBy
                                     Task.detached {
-                                        await try fileStore.fetchEntities()
+                                        await try fileStore.syncEntities()
                                     }
                                 } label: {
                                     Label(
@@ -60,7 +60,7 @@ public struct FileToolbar: ViewModifier {
                                 Button {
                                     fileStore.sortOrder = sortOrder
                                     Task.detached {
-                                        await try fileStore.fetchEntities()
+                                        await try fileStore.syncEntities()
                                     }
                                 } label: {
                                     Label(
@@ -86,7 +86,7 @@ public struct FileToolbar: ViewModifier {
                         .pickerStyle(.menu)
                         .onChange(of: fileStore.sortBy) { _ in
                             Task.detached {
-                                await try fileStore.fetchEntities()
+                                await try fileStore.syncEntities()
                             }
                         }
                     }
@@ -102,7 +102,7 @@ public struct FileToolbar: ViewModifier {
                         .pickerStyle(.menu)
                         .onChange(of: fileStore.sortOrder) { _ in
                             Task.detached {
-                                await try fileStore.fetchEntities()
+                                await try fileStore.syncEntities()
                             }
                         }
                     }

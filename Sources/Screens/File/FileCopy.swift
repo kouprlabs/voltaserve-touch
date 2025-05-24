@@ -72,7 +72,7 @@ public struct FileCopy: View {
             result = try await fileStore.copy(Array(fileStore.selection), to: destinationID)
             if let result {
                 if !result.succeeded.isEmpty {
-                    await try fileStore.fetchEntities()
+                    await try fileStore.syncEntities()
                     if fileStore.isLastPage() {
                         fileStore.fetchNextPage()
                     }

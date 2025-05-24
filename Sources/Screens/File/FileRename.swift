@@ -88,7 +88,7 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing,
             updatedFile = try await fileStore.patchName(file.id, name: normalizedValue)
             if let updatedFile, updatedFile.name != file.name {
                 reflectRenameInStore(updatedFile)
-                await try fileStore.fetchEntities()
+                await try fileStore.syncEntities()
             }
             return true
         } before: {
