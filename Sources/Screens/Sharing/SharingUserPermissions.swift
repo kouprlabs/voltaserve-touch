@@ -13,16 +13,23 @@ import SwiftUI
 public struct SharingUserPermissions: View, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore
     @ObservedObject private var sharingStore: SharingStore
+    @ObservedObject private var fileStore: FileStore
     @StateObject private var userStore = UserStore()
     @State private var user: VOUser.Entity?
     @State private var permission: VOPermission.Value?
     private let fileID: String
     private let organization: VOOrganization.Entity
 
-    public init(_ fileID: String, organization: VOOrganization.Entity, sharingStore: SharingStore) {
+    public init(
+        _ fileID: String,
+        organization: VOOrganization.Entity,
+        sharingStore: SharingStore,
+        fileStore: FileStore
+    ) {
         self.fileID = fileID
         self.organization = organization
         self.sharingStore = sharingStore
+        self.fileStore = fileStore
     }
 
     public var body: some View {
@@ -37,6 +44,7 @@ public struct SharingUserPermissions: View, SessionDistributing {
                                 fileIDs: [fileID],
                                 organization: organization,
                                 sharingStore: sharingStore,
+                                fileStore: fileStore,
                                 predefinedUser: userPermission.user,
                                 defaultPermission: userPermission.permission,
                                 enableRevoke: true

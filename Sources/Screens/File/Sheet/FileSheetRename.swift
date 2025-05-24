@@ -21,7 +21,7 @@ public struct FileSheetRename: ViewModifier {
         content
             .sheet(isPresented: $fileStore.renameIsPresented) {
                 if !fileStore.selection.isEmpty, let file = fileStore.selectionFiles.first {
-                    FileRename(fileStore: fileStore, file: file)
+                    FileRename(file, fileStore: fileStore)
                 }
             }
     }

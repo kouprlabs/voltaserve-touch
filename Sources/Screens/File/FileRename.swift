@@ -22,7 +22,7 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing,
     private let file: VOFile.Entity
     private let onCompletion: ((VOFile.Entity) -> Void)?
 
-    public init(fileStore: FileStore, file: VOFile.Entity, onCompletion: ((VOFile.Entity) -> Void)? = nil) {
+    public init(_ file: VOFile.Entity, fileStore: FileStore, onCompletion: ((VOFile.Entity) -> Void)? = nil) {
         self.fileStore = fileStore
         self.file = file
         self.onCompletion = onCompletion
