@@ -149,30 +149,40 @@ public class AccountStore: ObservableObject {
         try await identityUserClient?.delete()
     }
 
+    // MARK: - Sync
+
+    public func syncIdentityUser() async throws {
+        if await self.identityUser != nil, await self.sessionStore?.session != nil {
+            let user = try await self.fetchIdentityUser()
+            if let user {
+                await MainActor.run {
+                    self.identityUser = user
+                    self.identityUserError = nil
+                }
+            }
+        }
+    }
+
+    public func syncStorageUsage() async throws {
+        if await self.storageUsage != nil {
+            let storageUsage = try await self.fetchAccountStorageUsage()
+            if let storageUsage {
+                await MainActor.run {
+                    self.storageUsage = storageUsage
+                    self.storageUsageError = nil
+                }
+            }
+        }
+    }
+
     // MARK: - Timer
 
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if await self.identityUser != nil, await self.sessionStore?.session != nil {
-                    let user = try await self.fetchIdentityUser()
-                    if let user {
-                        await MainActor.run {
-                            self.identityUser = user
-                            self.identityUserError = nil
-                        }
-                    }
-                }
-                if await self.storageUsage != nil {
-                    let storageUsage = try await self.fetchAccountStorageUsage()
-                    if let storageUsage {
-                        await MainActor.run {
-                            self.storageUsage = storageUsage
-                            self.storageUsageError = nil
-                        }
-                    }
-                }
+                try await self.syncIdentityUser()
+                try await self.syncStorageUsage()
             }
         }
     }

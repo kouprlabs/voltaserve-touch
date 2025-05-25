@@ -56,13 +56,13 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
                         }
                         Section(header: VOSectionHeader("Basics")) {
                             NavigationLink {
-                                WorkspaceEditName(workspaceStore: workspaceStore) { updatedWorkspace in
-                                    workspaceStore.current = updatedWorkspace
-                                    if let index = workspaceStore.entities?.firstIndex(where: {
-                                        $0.id == updatedWorkspace.id
-                                    }) {
-                                        workspaceStore.entities?[index] = updatedWorkspace
-                                    }
+                                WorkspaceEditName(workspaceStore: workspaceStore) { workspace in
+                                    //                                    workspaceStore.current = workspace
+                                    //                                    if let index = workspaceStore.entities?.firstIndex(where: {
+                                    //                                        $0.id == workspace.id
+                                    //                                    }) {
+                                    //                                        workspaceStore.entities?[index] = workspace
+                                    //                                    }
                                 }
                             } label: {
                                 HStack {
@@ -119,10 +119,10 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
         } before: {
             isDeleting = true
         } success: {
-            dismiss()
             if let current {
                 reflectDeleteInStore(current.id)
             }
+            dismiss()
             shouldDismissParent = true
         } failure: { message in
             errorMessage = message

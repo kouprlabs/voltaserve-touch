@@ -143,7 +143,9 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
         withErrorHandling {
             try await sharingStore.grantUserPermission(ids: fileIDs, userID: user.id, permission: permission)
             try await sharingStore.syncUserPermissions()
-            try await fileStore.syncEntities()
+            for fileID in fileIDs {
+                try await fileStore.syncFile(id: fileID)
+            }
             return true
         } before: {
             isGranting = true

@@ -137,6 +137,36 @@ public class BrowserStore: ObservableObject {
         }
     }
 
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let current = await self.folder, let entities = await self.entities {
+            let list = try await self.fetchList(
+                current.id,
+                page: 1,
+                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
+    public func syncFolder() async throws {
+        if await self.folder != nil {
+            let folder = try await self.fetchFolder()
+            if let folder {
+                await MainActor.run {
+                    self.folder = folder
+                    self.folderError = nil
+                }
+            }
+        }
+    }
+
     // MARK: - Entities
 
     public func append(_ newEntities: [VOFile.Entity]) {
@@ -191,28 +221,8 @@ public class BrowserStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let current = await self.folder, let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        current.id,
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
-                if await self.folder != nil {
-                    let folder = try await self.fetchFolder()
-                    if let folder {
-                        await MainActor.run {
-                            self.folder = folder
-                            self.folderError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncFolder()
             }
         }
     }

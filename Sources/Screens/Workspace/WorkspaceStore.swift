@@ -25,6 +25,8 @@ public class WorkspaceStore: ObservableObject {
     @Published public var storageUsageIsLoading = false
     @Published public var storageUsageError: String?
     @Published public var current: VOWorkspace.Entity?
+    @Published public var currentIsLoading = false
+    @Published public var currentError: String?
     @Published public var query: String?
     private var list: VOWorkspace.List?
     private var cancellables = Set<AnyCancellable>()
@@ -65,9 +67,25 @@ public class WorkspaceStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch() async throws -> VOWorkspace.Entity? {
-        guard let current else { return nil }
-        return try await workspaceClient?.fetch(current.id)
+    private func fetchCurrent(id: String) async throws -> VOWorkspace.Entity? {
+        return try await workspaceClient?.fetch(id)
+    }
+
+    public func fetchCurrent(id: String) {
+        var workspace: VOWorkspace.Entity?
+        withErrorHandling {
+            workspace = try await self.fetchCurrent(id: id)
+            return true
+        } before: {
+            self.currentIsLoading = true
+        } success: {
+            self.current = workspace
+            self.currentError = nil
+        } failure: { message in
+            self.currentError = message
+        } anyways: {
+            self.currentIsLoading = false
+        }
     }
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOWorkspace.Probe? {
@@ -203,6 +221,68 @@ public class WorkspaceStore: ObservableObject {
         try await workspaceClient?.delete(current.id)
     }
 
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            let list = try await self.fetchList(
+                page: 1,
+                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
+    public func syncRoot() async throws {
+        if await self.current != nil, await self.root != nil {
+            let root = try await self.fetchRoot()
+            if let root {
+                await MainActor.run {
+                    self.root = root
+                    self.rootError = nil
+                }
+            }
+        }
+    }
+
+    public func syncStorageUsage() async throws {
+        if await self.current != nil, await self.storageUsage != nil {
+            let storageUsage = try await self.fetchStorageUsage()
+            if let storageUsage {
+                await MainActor.run {
+                    self.storageUsage = storageUsage
+                    self.storageUsageError = nil
+                }
+            }
+        }
+    }
+
+    public func syncCurrent() async throws {
+        if let current = self.current {
+            let workspace = try await self.workspaceClient?.fetch(current.id)
+            if let workspace {
+                try await syncCurrent(workspace: workspace)
+            }
+        }
+    }
+
+    public func syncCurrent(workspace: VOWorkspace.Entity) async throws {
+        if let current = self.current {
+            await MainActor.run {
+                let index = entities?.firstIndex(where: { $0.id == workspace.id })
+                if let index {
+                    self.current = workspace
+                    entities?[index] = workspace
+                }
+            }
+        }
+    }
+
     // MARK: - Entities
 
     public func append(_ newEntities: [VOWorkspace.Entity]) {
@@ -264,38 +344,10 @@ public class WorkspaceStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
-                if await self.current != nil {
-                    if await self.root != nil {
-                        let root = try await self.fetchRoot()
-                        if let root {
-                            await MainActor.run {
-                                self.root = root
-                                self.rootError = nil
-                            }
-                        }
-                    }
-                    if await self.storageUsage != nil {
-                        let storageUsage = try await self.fetchStorageUsage()
-                        if let storageUsage {
-                            await MainActor.run {
-                                self.storageUsage = storageUsage
-                                self.storageUsageError = nil
-                            }
-                        }
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncRoot()
+                try await self.syncStorageUsage()
+                try await self.syncCurrent()
             }
         }
     }

@@ -39,7 +39,7 @@ public struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
                             } else {
                                 List(entities, id: \.displayID) { group in
                                     NavigationLink {
-                                        GroupOverview(group, groupStore: groupStore)
+                                        GroupOverview(group.id, groupStore: groupStore)
                                     } label: {
                                         GroupRow(group)
                                             .onAppear {
@@ -79,7 +79,7 @@ public struct GroupList: View, ViewDataProvider, LoadStateProvider, TimerLifecyc
             }
             .navigationDestination(isPresented: $overviewIsPresented) {
                 if let newGroup {
-                    GroupOverview(newGroup, groupStore: groupStore)
+                    GroupOverview(newGroup.id, groupStore: groupStore)
                 }
             }
         }

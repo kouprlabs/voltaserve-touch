@@ -13,15 +13,16 @@ import SwiftUI
 
 public struct InvitationCreate: View, FormValidatable, SessionDistributing, ErrorPresentable {
     @EnvironmentObject private var sessionStore: SessionStore
-    @StateObject private var invitationStore = InvitationStore()
+    @ObservedObject private var invitationStore: InvitationStore
     @Environment(\.dismiss) private var dismiss
     @State private var commaSeparated = ""
     @State private var emails: [String] = []
     @State private var isProcessing = false
     private let organizationID: String
 
-    public init(_ organizationID: String) {
+    public init(_ organizationID: String, invitationStore: InvitationStore) {
         self.organizationID = organizationID
+        self.invitationStore = invitationStore
     }
 
     public var body: some View {
@@ -50,6 +51,11 @@ public struct InvitationCreate: View, FormValidatable, SessionDistributing, Erro
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("New Invitations")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     if isProcessing {
                         ProgressView()
@@ -89,7 +95,10 @@ public struct InvitationCreate: View, FormValidatable, SessionDistributing, Erro
 
     private func performCreate() {
         withErrorHandling {
-            _ = try await invitationStore.create(emails: emails)
+            let invitations = try await invitationStore.create(emails: emails)
+            if let invitations, !invitations.isEmpty {
+                try await invitationStore.syncEntities()
+            }
             if invitationStore.isLastPage() {
                 invitationStore.fetchNextPage()
             }

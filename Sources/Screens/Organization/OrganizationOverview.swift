@@ -10,54 +10,82 @@
 
 import SwiftUI
 
-public struct OrganizationOverview: View {
+public struct OrganizationOverview: View, ViewDataProvider, LoadStateProvider {
     @EnvironmentObject private var sessionStore: SessionStore
     @ObservedObject private var organizationStore: OrganizationStore
     @Environment(\.dismiss) private var dismiss
     @State private var shouldDismissSelf = false
-    private let organization: VOOrganization.Entity
+    private let id: String
 
-    public init(_ organization: VOOrganization.Entity, organizationStore: OrganizationStore) {
-        self.organization = organization
+    public init(_ id: String, organizationStore: OrganizationStore) {
+        self.id = id
         self.organizationStore = organizationStore
     }
 
     public var body: some View {
         VStack {
-            VStack {
-                VOAvatar(name: organization.name, size: 100)
-                    .padding()
-                Form {
-                    NavigationLink {
-                        OrganizationMemberList(organizationStore: organizationStore)
-                    } label: {
-                        Label("Members", systemImage: "person.2")
-                    }
-                    if organization.permission.ge(.owner) {
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else if let current = organizationStore.current {
+                VStack {
+                    VOAvatar(name: current.name, size: 100)
+                        .padding()
+                    Form {
                         NavigationLink {
-                            InvitationOutgoingList(organization.id)
+                            OrganizationMemberList(organizationStore: organizationStore)
                         } label: {
-                            Label("Invitations", systemImage: "paperplane")
+                            Label("Members", systemImage: "person.2")
                         }
-                    }
-                    NavigationLink {
-                        OrganizationSettings(
-                            organizationStore: organizationStore, shouldDismissParent: $shouldDismissSelf)
-                    } label: {
-                        Label("Settings", systemImage: "gear")
+                        if current.permission.ge(.owner) {
+                            NavigationLink {
+                                InvitationOutgoingList(current.id)
+                            } label: {
+                                Label("Invitations", systemImage: "paperplane")
+                            }
+                        }
+                        NavigationLink {
+                            OrganizationSettings(
+                                organizationStore: organizationStore, shouldDismissParent: $shouldDismissSelf)
+                        } label: {
+                            Label("Settings", systemImage: "gear")
+                        }
                     }
                 }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(organization.name)
+        .modifierIf(organizationStore.current != nil) {
+            $0.navigationTitle(organizationStore.current!.name)
+        }
         .onAppear {
-            organizationStore.current = organization
+            onAppearOrChange()
         }
         .onChange(of: shouldDismissSelf) { _, newValue in
             if newValue {
                 dismiss()
             }
         }
+    }
+
+    // MARK: - LoadStateProvider
+
+    public var isLoading: Bool {
+        organizationStore.currentIsLoading
+    }
+
+    public var error: String? {
+        organizationStore.currentError
+    }
+
+    // MARK: - ViewDataProvider
+
+    public func onAppearOrChange() {
+        fetchData()
+    }
+
+    public func fetchData() {
+        organizationStore.fetchCurrent(id: id)
     }
 }

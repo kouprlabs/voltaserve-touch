@@ -34,8 +34,15 @@ public struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider,
                 if let entities = invitationStore.entities {
                     Group {
                         if entities.isEmpty {
-                            Text("There are no items.")
-                                .foregroundStyle(.secondary)
+                            VStack {
+                                Text("There are no items.")
+                                    .foregroundStyle(.secondary)
+                                Button {
+                                    createIsPresented = true
+                                } label: {
+                                    Label("New", systemImage: "plus")
+                                }
+                            }
                         } else {
                             List(entities, id: \.displayID) { invitation in
                                 NavigationLink {
@@ -71,7 +78,7 @@ public struct InvitationOutgoingList: View, ViewDataProvider, LoadStateProvider,
             }
         }
         .sheet(isPresented: $createIsPresented) {
-            InvitationCreate(organizationID)
+            InvitationCreate(organizationID, invitationStore: invitationStore)
         }
         .onAppear {
             invitationStore.organizationID = organizationID

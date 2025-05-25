@@ -57,7 +57,10 @@ public struct WorkspaceEditStorageCapacity: View, FormValidatable, ErrorPresenta
     private func performSave() {
         guard let value else { return }
         withErrorHandling {
-            _ = try await workspaceStore.patchStorageCapacity(storageCapacity: value)
+            let workspace = try await workspaceStore.patchStorageCapacity(storageCapacity: value)
+            if let workspace {
+                try await workspaceStore.syncCurrent(workspace: workspace)
+            }
             return true
         } before: {
             isProcessing = true

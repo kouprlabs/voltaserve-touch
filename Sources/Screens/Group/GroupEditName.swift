@@ -62,17 +62,20 @@ public struct GroupEditName: View, FormValidatable, ErrorPresentable {
 
     private func performSave() {
         guard let current = groupStore.current else { return }
-        var updatedGroup: VOGroup.Entity?
+        var group: VOGroup.Entity?
 
         withErrorHandling {
-            updatedGroup = try await groupStore.patchName(current.id, name: value)
+            group = try await groupStore.patchName(current.id, name: value)
+            if let group {
+                try await groupStore.syncCurrent(group: group)
+            }
             return true
         } before: {
             isProcessing = true
         } success: {
             dismiss()
-            if let onCompletion, let updatedGroup {
-                onCompletion(updatedGroup)
+            if let onCompletion, let group {
+                onCompletion(group)
             }
         } failure: { message in
             errorMessage = message

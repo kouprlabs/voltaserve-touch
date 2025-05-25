@@ -18,6 +18,8 @@ public class OrganizationStore: ObservableObject {
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
     @Published public var current: VOOrganization.Entity?
+    @Published public var currentIsLoading = false
+    @Published public var currentError: String?
     @Published public var query: String?
     private var list: VOOrganization.List?
     private var cancellables = Set<AnyCancellable>()
@@ -48,8 +50,25 @@ public class OrganizationStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch(_ id: String) async throws -> VOOrganization.Entity? {
-        try await organizationClient?.fetch(id)
+    private func fetchCurrent(id: String) async throws -> VOOrganization.Entity? {
+        return try await organizationClient?.fetch(id)
+    }
+
+    public func fetchCurrent(id: String) {
+        var organization: VOOrganization.Entity?
+        withErrorHandling {
+            organization = try await self.fetchCurrent(id: id)
+            return true
+        } before: {
+            self.currentIsLoading = true
+        } success: {
+            self.current = organization
+            self.currentError = nil
+        } failure: { message in
+            self.currentError = message
+        } anyways: {
+            self.currentIsLoading = false
+        }
     }
 
     private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOOrganization.Probe? {
@@ -129,6 +148,44 @@ public class OrganizationStore: ObservableObject {
         try await organizationClient?.delete(current.id)
     }
 
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            let list = try await self.fetchList(
+                page: 1,
+                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
+    public func syncCurrent() async throws {
+        if let current = self.current {
+            let organization = try await self.organizationClient?.fetch(current.id)
+            if let organization {
+                try await syncCurrent(organization: organization)
+            }
+        }
+    }
+
+    public func syncCurrent(organization: VOOrganization.Entity) async throws {
+        if let current = self.current {
+            await MainActor.run {
+                let index = entities?.firstIndex(where: { $0.id == organization.id })
+                if let index {
+                    self.current = organization
+                    entities?[index] = organization
+                }
+            }
+        }
+    }
+
     // MARK: - Entities
 
     public func append(_ newEntities: [VOOrganization.Entity]) {
@@ -190,18 +247,8 @@ public class OrganizationStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncCurrent()
             }
         }
     }

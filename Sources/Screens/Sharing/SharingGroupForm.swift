@@ -140,7 +140,9 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
         withErrorHandling {
             try await sharingStore.grantGroupPermission(ids: fileIDs, groupID: group.id, permission: permission)
             try await sharingStore.syncGroupPermissions()
-            try await fileStore.syncEntities()
+            for fileID in fileIDs {
+                try await fileStore.syncFile(id: fileID)
+            }
             return true
         } before: {
             isGranting = true

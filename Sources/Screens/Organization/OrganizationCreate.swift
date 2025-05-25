@@ -59,6 +59,9 @@ public struct OrganizationCreate: View, FormValidatable, ErrorPresentable {
         var organization: VOOrganization.Entity?
         withErrorHandling {
             organization = try await organizationStore.create(name: normalizedName)
+            if let organization {
+                try await organizationStore.syncEntities()
+            }
             if organizationStore.isLastPage() {
                 organizationStore.fetchNextPage()
             }

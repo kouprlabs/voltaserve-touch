@@ -79,10 +79,10 @@ public struct GroupSettings: View, ErrorPresentable {
         } before: {
             isDeleting = true
         } success: {
-            dismiss()
             if let current {
                 reflectDeleteInStore(current.id)
             }
+            dismiss()
             shouldDismissParent = true
         } failure: { message in
             errorMessage = message

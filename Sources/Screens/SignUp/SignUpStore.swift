@@ -48,21 +48,27 @@ public class SignUpStore: ObservableObject {
         return try await accountClient.create(options)
     }
 
+    // MARK: - Sync
+
+    public func syncPasswordRequirements() async throws {
+        if await self.passwordRequirements != nil {
+            let passwordRequirements = try await self.fetchPasswordRequirements()
+            if let passwordRequirements {
+                await MainActor.run {
+                    self.passwordRequirements = passwordRequirements
+                    self.passwordRequirementsError = nil
+                }
+            }
+        }
+    }
+
     // MARK: - Timer
 
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if await self.passwordRequirements != nil {
-                    let passwordRequirements = try await self.fetchPasswordRequirements()
-                    if let passwordRequirements {
-                        await MainActor.run {
-                            self.passwordRequirements = passwordRequirements
-                            self.passwordRequirementsError = nil
-                        }
-                    }
-                }
+                try await self.syncPasswordRequirements()
             }
         }
     }

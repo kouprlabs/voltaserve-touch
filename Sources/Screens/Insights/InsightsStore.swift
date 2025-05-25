@@ -163,6 +163,23 @@ public class InsightsStore: ObservableObject {
         return try await entityClient?.delete(file.id)
     }
 
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            let list = try await self.fetchEntityList(
+                page: 1,
+                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
     // MARK: - Entities
 
     public func append(_ newEntities: [VOEntity.Entity]) {
@@ -217,18 +234,7 @@ public class InsightsStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchEntityList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
             }
         }
     }

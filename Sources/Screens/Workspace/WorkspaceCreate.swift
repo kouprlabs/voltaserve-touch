@@ -90,6 +90,9 @@ public struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
                 organization: organization,
                 storageCapacity: storageCapacity
             )
+            if let workspace {
+                try await workspaceStore.syncEntities()
+            }
             if workspaceStore.isLastPage() {
                 workspaceStore.fetchNextPage()
             }

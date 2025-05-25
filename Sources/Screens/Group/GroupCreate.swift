@@ -79,6 +79,9 @@ public struct GroupCreate: View, FormValidatable, ErrorPresentable {
 
         withErrorHandling {
             group = try await groupStore.create(name: normalizedName, organization: organization)
+            if let group {
+                try await groupStore.syncEntities()
+            }
             if groupStore.isLastPage() {
                 groupStore.fetchNextPage()
             }

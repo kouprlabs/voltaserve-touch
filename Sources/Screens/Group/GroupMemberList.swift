@@ -76,7 +76,7 @@ public struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
             }
         }
         .sheet(isPresented: $addMemberIsPresentable) {
-            GroupMemberAdd(groupStore: groupStore)
+            GroupMemberAdd(groupStore: groupStore, userStore: userStore)
         }
         .onAppear {
             if let group = groupStore.current {

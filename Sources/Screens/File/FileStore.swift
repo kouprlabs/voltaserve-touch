@@ -366,6 +366,18 @@ public class FileStore: ObservableObject {
         }
     }
 
+    public func syncFile(id: String) async throws {
+        let file = try await fileClient?.fetch(id)
+        if let file {
+            await MainActor.run {
+                let index = entities?.firstIndex(where: { $0.id == id })
+                if let index {
+                    entities?[index] = file
+                }
+            }
+        }
+    }
+
     public func syncTaskCount() async throws {
         if await self.taskCount != nil {
             let taskCount = try await self.fetchTaskCount()

@@ -151,6 +151,35 @@ public class InvitationStore: ObservableObject {
         try await invitationClient?.delete(id)
     }
 
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            let list = try await self.fetchList(
+                page: 1,
+                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
+    public func syncIncomingCount() async throws {
+        if await self.incomingCount != nil {
+            let incomingCount = try await self.fetchIncomingCount()
+            if let incomingCount {
+                DispatchQueue.main.async {
+                    self.incomingCount = incomingCount
+                    self.incomingCountError = nil
+                }
+            }
+        }
+    }
+
     // MARK: - Entities
 
     public func append(_ newEntities: [VOInvitation.Entity]) {
@@ -212,27 +241,8 @@ public class InvitationStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
-                if await self.incomingCount != nil {
-                    let incomingCount = try await self.fetchIncomingCount()
-                    if let incomingCount {
-                        DispatchQueue.main.async {
-                            self.incomingCount = incomingCount
-                            self.incomingCountError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncIncomingCount()
             }
         }
     }

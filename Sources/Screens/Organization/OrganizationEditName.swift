@@ -62,17 +62,20 @@ public struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
 
     private func performSave() {
         guard let current = organizationStore.current else { return }
-        var updatedOrganization: VOOrganization.Entity?
+        var organization: VOOrganization.Entity?
 
         withErrorHandling {
-            updatedOrganization = try await organizationStore.patchName(current.id, name: nornalizedValue)
+            organization = try await organizationStore.patchName(current.id, name: nornalizedValue)
+            if let organization {
+                try await organizationStore.syncCurrent(organization: organization)
+            }
             return true
         } before: {
             isProcessing = true
         } success: {
             dismiss()
-            if let onCompletion, let updatedOrganization {
-                onCompletion(updatedOrganization)
+            if let onCompletion, let organization {
+                onCompletion(organization)
             }
         } failure: { message in
             errorMessage = message

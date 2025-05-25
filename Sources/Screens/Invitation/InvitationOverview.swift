@@ -155,6 +155,7 @@ public struct InvitationOverview: View, SessionDistributing, ErrorPresentable {
     private func performAccept() {
         withErrorHandling {
             try await invitationStore.accept(invitation.id)
+            try await invitationStore.syncEntities()
             return true
         } before: {
             isAccepting = true
@@ -171,6 +172,7 @@ public struct InvitationOverview: View, SessionDistributing, ErrorPresentable {
     private func performDecline() {
         withErrorHandling {
             try await invitationStore.decline(invitation.id)
+            try await invitationStore.syncEntities()
             return true
         } before: {
             isDeclining = true
@@ -191,6 +193,7 @@ public struct InvitationOverview: View, SessionDistributing, ErrorPresentable {
         } before: {
             isDeleting = true
         } success: {
+            self.reflectDeleteInStore(invitation.id)
             dismiss()
         } failure: { message in
             errorMessage = message
@@ -198,6 +201,10 @@ public struct InvitationOverview: View, SessionDistributing, ErrorPresentable {
         } anyways: {
             isDeleting = false
         }
+    }
+
+    private func reflectDeleteInStore(_ id: String) {
+        invitationStore.entities?.removeAll(where: { $0.id == id })
     }
 
     // MARK: - ErrorPresentable
