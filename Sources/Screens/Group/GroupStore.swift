@@ -280,6 +280,7 @@ public class GroupStore: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
                 try await self.syncEntities()
+                try await self.syncCurrent()
             }
         }
     }
