@@ -175,6 +175,11 @@ public class GroupStore: ObservableObject {
         try await groupClient?.addMember(current.id, options: .init(userID: userID))
     }
 
+    public func removeMember(userID: String) async throws {
+        guard let current else { return }
+        try await groupClient?.removeMember(current.id, options: .init(userID: userID))
+    }
+
     // MARK: - Sync
 
     public func syncEntities() async throws {

@@ -31,22 +31,31 @@ public struct GroupMemberList: View, ViewDataProvider, LoadStateProvider, TimerL
             } else if let error {
                 VOErrorMessage(error)
             } else {
-                if let entities = userStore.entities {
+                if let entities = userStore.entities, let group = groupStore.current {
                     Group {
                         if entities.count == 0 {
                             Text("There are no items.")
                                 .foregroundStyle(.secondary)
                         } else {
                             List(entities, id: \.displayID) { member in
-                                UserRow(
-                                    member,
-                                    pictureURL: userStore.urlForPicture(
-                                        member.id,
-                                        fileExtension: member.picture?.fileExtension
+                                NavigationLink {
+                                    GroupUserOverview(
+                                        member,
+                                        groupID: group.id,
+                                        groupStore: groupStore,
+                                        userStore: userStore
                                     )
-                                )
-                                .onAppear {
-                                    onListItemAppear(member.id)
+                                } label: {
+                                    UserRow(
+                                        member,
+                                        pictureURL: userStore.urlForPicture(
+                                            member.id,
+                                            fileExtension: member.picture?.fileExtension
+                                        )
+                                    )
+                                    .onAppear {
+                                        onListItemAppear(member.id)
+                                    }
                                 }
                                 .tag(member.id)
                             }

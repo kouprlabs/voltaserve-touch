@@ -148,6 +148,11 @@ public class OrganizationStore: ObservableObject {
         try await organizationClient?.delete(current.id)
     }
 
+    public func removeMember(userID: String) async throws {
+        guard let current else { return }
+        try await organizationClient?.removeMember(current.id, options: .init(userID: userID))
+    }
+
     // MARK: - Sync
 
     public func syncEntities() async throws {

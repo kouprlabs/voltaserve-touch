@@ -155,7 +155,7 @@ public struct VOGroup {
     public func removeMember(_ id: String, options: AddMemberOptions) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             var request = URLRequest(url: urlForMembers(id))
-            request.httpMethod = "POST"
+            request.httpMethod = "DELETE"
             request.appendAuthorizationHeader(accessKey)
             request.setJSONBody(options, continuation: continuation)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
