@@ -77,6 +77,7 @@ struct GroupUserOverview: View, ErrorPresentable {
         } before: {
             isRemovingMember = true
         } success: {
+            reflectDeleteInStore(user.id)
             dismiss()
         } failure: { message in
             errorMessage = message
@@ -84,6 +85,10 @@ struct GroupUserOverview: View, ErrorPresentable {
         } anyways: {
             isRemovingMember = false
         }
+    }
+
+    private func reflectDeleteInStore(_ id: String) {
+        userStore.entities?.removeAll(where: { $0.id == id })
     }
 
     // MARK: - ErrorPresentable

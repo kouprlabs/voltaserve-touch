@@ -80,11 +80,11 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing, FormVali
     }
 
     private func performRename() {
-        var updatedFile: VOFile.Entity?
+        var file: VOFile.Entity?
         withErrorHandling {
-            updatedFile = try await fileStore.patchName(file.id, name: normalizedValue)
-            if let updatedFile, updatedFile.name != file.name {
-                reflectRenameInStore(updatedFile)
+            file = try await fileStore.patchName(self.file.id, name: normalizedValue)
+            if let file, file.name != file.name {
+                reflectRenameInStore(file)
                 await try fileStore.syncEntities()
             }
             return true
@@ -92,8 +92,8 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing, FormVali
             isProcessing = true
         } success: {
             dismiss()
-            if let onCompletion, let updatedFile {
-                onCompletion(updatedFile)
+            if let onCompletion, let file {
+                onCompletion(file)
             }
         } failure: { message in
             errorMessage = message
@@ -104,9 +104,9 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing, FormVali
         }
     }
 
-    private func reflectRenameInStore(_ updatedFile: VOFile.Entity) {
-        if let index = fileStore.entities?.firstIndex(where: { $0.id == updatedFile.id }) {
-            fileStore.entities?[index] = updatedFile
+    private func reflectRenameInStore(_ file: VOFile.Entity) {
+        if let index = fileStore.entities?.firstIndex(where: { $0.id == file.id }) {
+            fileStore.entities?[index] = file
         }
     }
 
