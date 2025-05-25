@@ -29,12 +29,7 @@ public struct GroupSettings: View, ErrorPresentable {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink {
-                            GroupEditName(groupStore: groupStore) { updatedGroup in
-                                groupStore.current = updatedGroup
-                                if let index = groupStore.entities?.firstIndex(where: { $0.id == updatedGroup.id }) {
-                                    groupStore.entities?[index] = updatedGroup
-                                }
-                            }
+                            GroupEditName(groupStore: groupStore)
                         } label: {
                             HStack {
                                 Text("Name")

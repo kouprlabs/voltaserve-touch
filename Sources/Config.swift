@@ -17,7 +17,7 @@ public struct Config {
     public var murphURL: String
     public var signInStrategy: SignInStrategy
 
-    private static let fallbackConfig = Config(
+    private static let fallback = Config(
         apiURL: "http://localhost:8080",
         idpURL: "http://localhost:8081",
         murphURL: "http://localhost:8087",
@@ -26,14 +26,14 @@ public struct Config {
 
     public static var shared: Config {
         guard let container = try? ModelContainer(for: Server.self) else {
-            return fallbackConfig
+            return fallback
         }
         guard
             let server = try? ModelContext(container)
                 .fetch(FetchDescriptor<Server>())
                 .first(where: { $0.isActive })
         else {
-            return fallbackConfig
+            return fallback
         }
 
         return Config(

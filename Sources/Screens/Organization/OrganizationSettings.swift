@@ -31,14 +31,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink {
-                            OrganizationEditName(organizationStore: organizationStore) { updatedOranization in
-                                organizationStore.current = updatedOranization
-                                if let index = organizationStore.entities?.firstIndex(where: {
-                                    $0.id == updatedOranization.id
-                                }) {
-                                    organizationStore.entities?[index] = updatedOranization
-                                }
-                            }
+                            OrganizationEditName(organizationStore: organizationStore)
                         } label: {
                             HStack {
                                 Text("Name")

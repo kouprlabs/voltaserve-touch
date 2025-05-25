@@ -96,7 +96,7 @@ public class TaskStore: ObservableObject {
         try await taskClient?.dismiss(id)
     }
 
-    // MARK - Sync
+    // MARK: - Sync
 
     public func syncEntities() async throws {
         if let entities = await self.entities {

@@ -56,14 +56,7 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
                         }
                         Section(header: VOSectionHeader("Basics")) {
                             NavigationLink {
-                                WorkspaceEditName(workspaceStore: workspaceStore) { workspace in
-                                    //                                    workspaceStore.current = workspace
-                                    //                                    if let index = workspaceStore.entities?.firstIndex(where: {
-                                    //                                        $0.id == workspace.id
-                                    //                                    }) {
-                                    //                                        workspaceStore.entities?[index] = workspace
-                                    //                                    }
-                                }
+                                WorkspaceEditName(workspaceStore: workspaceStore)
                             } label: {
                                 HStack {
                                     Text("Name")
