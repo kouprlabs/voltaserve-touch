@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-public struct FileRename: View, LoadStateProvider, SessionDistributing, FormValidatable, ErrorPresentable {
+public struct FileRename: View, SessionDistributing, FormValidatable, ErrorPresentable {
     @EnvironmentObject private var sessionStore: SessionStore
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
@@ -28,16 +28,10 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing, FormVali
     public var body: some View {
         NavigationView {
             VStack {
-                if isLoading {
-                    ProgressView()
-                } else if let error {
-                    VOErrorMessage(error)
-                } else {
-                    if !value.isEmpty {
-                        Form {
-                            TextField("Name", text: $value)
-                                .disabled(isProcessing)
-                        }
+                if !value.isEmpty {
+                    Form {
+                        TextField("Name", text: $value)
+                            .disabled(isProcessing)
                     }
                 }
             }
@@ -83,7 +77,7 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing, FormVali
         var file: VOFile.Entity?
         withErrorHandling {
             file = try await fileStore.patchName(self.file.id, name: normalizedValue)
-            if let file, file.name != file.name {
+            if let file {
                 reflectRenameInStore(file)
                 await try fileStore.syncEntities()
             }
@@ -110,16 +104,6 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing, FormVali
         }
     }
 
-    // MARK: - LoadStateProvider
-
-    public var isLoading: Bool {
-        fileStore.fileIsLoading
-    }
-
-    public var error: String? {
-        fileStore.fileError
-    }
-
     // MARK: - ErrorPresentable
 
     @State public var errorIsPresented = false
@@ -134,9 +118,6 @@ public struct FileRename: View, LoadStateProvider, SessionDistributing, FormVali
     // MARK: - FormValidatable
 
     public func isValid() -> Bool {
-        if let file = fileStore.file {
-            return !normalizedValue.isEmpty && normalizedValue != file.name
-        }
-        return false
+        !normalizedValue.isEmpty && normalizedValue != file.name
     }
 }

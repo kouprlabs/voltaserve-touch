@@ -55,19 +55,6 @@ public class MosaicStore: ObservableObject {
         }
     }
 
-    // MARK: - Sync
-    public func syncMetadata() async throws {
-        if await self.metadata != nil {
-            let metadata = try await self.fetchMetadata()
-            if let metadata {
-                await MainActor.run {
-                    self.metadata = metadata
-                    self.metadataError = nil
-                }
-            }
-        }
-    }
-
     // MARK: - Update
 
     public func create() async throws -> VOTask.Entity? {
@@ -78,6 +65,19 @@ public class MosaicStore: ObservableObject {
     public func delete() async throws -> VOTask.Entity? {
         guard let fileID else { return nil }
         return try await mosaicClient?.delete(fileID)
+    }
+
+    // MARK: - Sync
+    public func syncMetadata() async throws {
+        if await metadata != nil {
+            let metadata = try await fetchMetadata()
+            if let metadata {
+                await MainActor.run {
+                    self.metadata = metadata
+                    self.metadataError = nil
+                }
+            }
+        }
     }
 
     // MARK: - Timer

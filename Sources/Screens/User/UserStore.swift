@@ -145,7 +145,7 @@ public class UserStore: ObservableObject {
 
     public func syncEntities() async throws {
         if let entities = await self.entities {
-            let list = try await self.fetchList(
+            let list = try await fetchList(
                 page: 1,
                 size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
             )

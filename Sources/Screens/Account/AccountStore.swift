@@ -152,8 +152,8 @@ public class AccountStore: ObservableObject {
     // MARK: - Sync
 
     public func syncIdentityUser() async throws {
-        if await self.identityUser != nil, await self.sessionStore?.session != nil {
-            let user = try await self.fetchIdentityUser()
+        if await identityUser != nil, await sessionStore?.session != nil {
+            let user = try await fetchIdentityUser()
             if let user {
                 await MainActor.run {
                     self.identityUser = user
@@ -164,8 +164,8 @@ public class AccountStore: ObservableObject {
     }
 
     public func syncStorageUsage() async throws {
-        if await self.storageUsage != nil {
-            let storageUsage = try await self.fetchAccountStorageUsage()
+        if await storageUsage != nil {
+            let storageUsage = try await fetchAccountStorageUsage()
             if let storageUsage {
                 await MainActor.run {
                     self.storageUsage = storageUsage

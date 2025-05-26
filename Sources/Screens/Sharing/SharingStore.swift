@@ -111,8 +111,8 @@ public class SharingStore: ObservableObject {
 
     public func syncUserPermissions() async throws {
         guard let fileID = await self.fileID else { return }
-        if await self.userPermissions != nil {
-            let values = try await self.fetchUserPermissions(fileID)
+        if await userPermissions != nil {
+            let values = try await fetchUserPermissions(fileID)
             if let values {
                 await MainActor.run {
                     self.userPermissions = values
@@ -124,8 +124,8 @@ public class SharingStore: ObservableObject {
 
     public func syncGroupPermissions() async throws {
         guard let fileID = await self.fileID else { return }
-        if await self.groupPermissions != nil {
-            let values = try await self.fetchGroupPermissions(fileID)
+        if await groupPermissions != nil {
+            let values = try await fetchGroupPermissions(fileID)
             if let values {
                 await MainActor.run {
                     self.groupPermissions = values

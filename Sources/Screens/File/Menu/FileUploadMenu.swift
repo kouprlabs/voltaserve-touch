@@ -20,7 +20,7 @@ public struct FileUploadMenu: View {
     }
 
     public var body: some View {
-        if let folder = fileStore.file, folder.permission.ge(.editor) {
+        if let current = fileStore.current, current.permission.ge(.editor) {
             Menu {
                 Button {
                     fileStore.uploadDocumentPickerIsPresented = true

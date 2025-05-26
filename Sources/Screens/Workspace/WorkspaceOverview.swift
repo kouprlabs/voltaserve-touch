@@ -82,7 +82,6 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
     }
 
     public func fetchData() {
-        workspaceStore.fetchCurrent(id: id)
-        workspaceStore.fetchRoot()
+        workspaceStore.fetchCurrent(id)
     }
 }

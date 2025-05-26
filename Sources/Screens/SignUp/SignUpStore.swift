@@ -51,8 +51,8 @@ public class SignUpStore: ObservableObject {
     // MARK: - Sync
 
     public func syncPasswordRequirements() async throws {
-        if await self.passwordRequirements != nil {
-            let passwordRequirements = try await self.fetchPasswordRequirements()
+        if await passwordRequirements != nil {
+            let passwordRequirements = try await fetchPasswordRequirements()
             if let passwordRequirements {
                 await MainActor.run {
                     self.passwordRequirements = passwordRequirements

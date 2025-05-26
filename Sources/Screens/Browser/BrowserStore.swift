@@ -140,9 +140,9 @@ public class BrowserStore: ObservableObject {
     // MARK: - Sync
 
     public func syncEntities() async throws {
-        if let current = await self.folder, let entities = await self.entities {
-            let list = try await self.fetchList(
-                current.id,
+        if let folder = await self.folder, let entities = await self.entities {
+            let list = try await fetchList(
+                folder.id,
                 page: 1,
                 size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
             )
@@ -157,7 +157,7 @@ public class BrowserStore: ObservableObject {
 
     public func syncFolder() async throws {
         if await self.folder != nil {
-            let folder = try await self.fetchFolder()
+            let folder = try await fetchFolder()
             if let folder {
                 await MainActor.run {
                     self.folder = folder

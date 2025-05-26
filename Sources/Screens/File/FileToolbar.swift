@@ -110,7 +110,7 @@ public struct FileToolbar: ViewModifier {
                 ToolbarItem(placement: .bottomBar) {
                     viewModeToggleButton
                 }
-                if let file = fileStore.file, file.permission.ge(.editor) {
+                if let current = fileStore.current, current.permission.ge(.editor) {
                     ToolbarItem(placement: .topBarLeading) {
                         FileUploadMenu(fileStore: fileStore) {
                             Image(systemName: "plus")

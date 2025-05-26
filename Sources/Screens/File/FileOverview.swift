@@ -17,10 +17,10 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
     @StateObject private var fileStore = FileStore()
     @ObservedObject private var workspaceStore: WorkspaceStore
     @State private var searchText = ""
-    private let file: VOFile.Entity
+    private let folder: VOFile.Entity
 
-    public init(_ file: VOFile.Entity, workspaceStore: WorkspaceStore) {
-        self.file = file
+    public init(_ folder: VOFile.Entity, workspaceStore: WorkspaceStore) {
+        self.folder = folder
         self.workspaceStore = workspaceStore
     }
 
@@ -63,7 +63,7 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
         .fileToolbar(fileStore: fileStore)
         .fileSelectionReset(fileStore: fileStore)
         .onAppear {
-            fileStore.file = file
+            fileStore.current = folder
             if let session = sessionStore.session {
                 assignSessionToStores(session)
                 startTimers()
@@ -88,11 +88,11 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
     // MARK: - LoadStateProvider
 
     public var isLoading: Bool {
-        fileStore.entitiesIsLoadingFirstTime || fileStore.fileIsLoading || fileStore.taskCountIsLoading
+        fileStore.entitiesIsLoadingFirstTime || fileStore.currentIsLoading || fileStore.taskCountIsLoading
     }
 
     public var error: String? {
-        fileStore.entitiesError ?? fileStore.fileError ?? fileStore.taskCountError
+        fileStore.entitiesError ?? fileStore.currentError ?? fileStore.taskCountError
     }
 
     // MARK: - ViewDataProvider
@@ -102,7 +102,7 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
     }
 
     public func fetchData() {
-        fileStore.fetchFile()
+        fileStore.fetchCurrent()
         fileStore.fetchNextPage(replace: true)
         fileStore.fetchTaskCount()
     }

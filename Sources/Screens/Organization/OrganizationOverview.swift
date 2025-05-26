@@ -86,6 +86,6 @@ public struct OrganizationOverview: View, ViewDataProvider, LoadStateProvider {
     }
 
     public func fetchData() {
-        organizationStore.fetchCurrent(id: id)
+        organizationStore.fetchCurrent(id)
     }
 }

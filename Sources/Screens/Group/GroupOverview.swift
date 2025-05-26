@@ -78,6 +78,6 @@ public struct GroupOverview: View, ViewDataProvider, LoadStateProvider {
     }
 
     public func fetchData() {
-        groupStore.fetchCurrent(id: id)
+        groupStore.fetchCurrent(id)
     }
 }

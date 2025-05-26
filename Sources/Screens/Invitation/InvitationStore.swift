@@ -155,7 +155,7 @@ public class InvitationStore: ObservableObject {
 
     public func syncEntities() async throws {
         if let entities = await self.entities {
-            let list = try await self.fetchList(
+            let list = try await fetchList(
                 page: 1,
                 size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
             )
@@ -169,8 +169,8 @@ public class InvitationStore: ObservableObject {
     }
 
     public func syncIncomingCount() async throws {
-        if await self.incomingCount != nil {
-            let incomingCount = try await self.fetchIncomingCount()
+        if await incomingCount != nil {
+            let incomingCount = try await fetchIncomingCount()
             if let incomingCount {
                 DispatchQueue.main.async {
                     self.incomingCount = incomingCount

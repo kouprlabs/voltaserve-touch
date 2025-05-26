@@ -52,14 +52,14 @@ public class GroupStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchCurrent(id: String) async throws -> VOGroup.Entity? {
-        return try await groupClient?.fetch(id)
+    private func fetch(_ id: String) async throws -> VOGroup.Entity? {
+        try await groupClient?.fetch(id)
     }
 
-    public func fetchCurrent(id: String) {
+    public func fetchCurrent(_ id: String) {
         var group: VOGroup.Entity?
         withErrorHandling {
-            group = try await self.fetchCurrent(id: id)
+            group = try await self.fetch(id)
             return true
         } before: {
             self.currentIsLoading = true
@@ -184,7 +184,7 @@ public class GroupStore: ObservableObject {
 
     public func syncEntities() async throws {
         if let entities = await self.entities {
-            let list = try await self.fetchList(
+            let list = try await fetchList(
                 page: 1,
                 size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
             )
@@ -199,7 +199,7 @@ public class GroupStore: ObservableObject {
 
     public func syncCurrent() async throws {
         if let current = self.current {
-            let group = try await self.groupClient?.fetch(current.id)
+            let group = try await fetch(current.id)
             if let group {
                 try await syncCurrent(group: group)
             }
@@ -209,7 +209,7 @@ public class GroupStore: ObservableObject {
     public func syncCurrent(group: VOGroup.Entity) async throws {
         if let current = self.current {
             await MainActor.run {
-                let index = entities?.firstIndex(where: { $0.id == group.id })
+                let index = entities?.firstIndex(where: { $0.id == current.id })
                 if let index {
                     self.current = group
                     entities?[index] = group

@@ -22,8 +22,8 @@ public struct FileSheetCreateFolder: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.createFolderIsPresented) {
-                if let parent = fileStore.file, let workspace = workspaceStore.current {
-                    FolderCreate(parentID: parent.id, workspaceId: workspace.id, fileStore: fileStore)
+                if let current = fileStore.current, let workspace = workspaceStore.current {
+                    FolderCreate(parentID: current.id, workspaceId: workspace.id, fileStore: fileStore)
                 }
             }
     }

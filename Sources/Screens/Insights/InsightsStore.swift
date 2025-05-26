@@ -167,7 +167,7 @@ public class InsightsStore: ObservableObject {
 
     public func syncEntities() async throws {
         if let entities = await self.entities {
-            let list = try await self.fetchEntityList(
+            let list = try await fetchEntityList(
                 page: 1,
                 size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
             )

@@ -50,14 +50,14 @@ public class OrganizationStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchCurrent(id: String) async throws -> VOOrganization.Entity? {
-        return try await organizationClient?.fetch(id)
+    private func fetch(_ id: String) async throws -> VOOrganization.Entity? {
+        try await organizationClient?.fetch(id)
     }
 
-    public func fetchCurrent(id: String) {
+    public func fetchCurrent(_ id: String) {
         var organization: VOOrganization.Entity?
         withErrorHandling {
-            organization = try await self.fetchCurrent(id: id)
+            organization = try await self.fetch(id)
             return true
         } before: {
             self.currentIsLoading = true
@@ -157,7 +157,7 @@ public class OrganizationStore: ObservableObject {
 
     public func syncEntities() async throws {
         if let entities = await self.entities {
-            let list = try await self.fetchList(
+            let list = try await fetchList(
                 page: 1,
                 size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
             )
@@ -172,7 +172,7 @@ public class OrganizationStore: ObservableObject {
 
     public func syncCurrent() async throws {
         if let current = self.current {
-            let organization = try await self.organizationClient?.fetch(current.id)
+            let organization = try await fetch(current.id)
             if let organization {
                 try await syncCurrent(organization: organization)
             }

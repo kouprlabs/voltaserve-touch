@@ -27,9 +27,9 @@ public class FileStore: ObservableObject {
     @Published public var itemCount: Int?
     @Published public var itemCountIsLoading = false
     @Published public var itemCountError: String?
-    @Published public var file: VOFile.Entity?
-    @Published public var fileIsLoading = false
-    @Published public var fileError: String?
+    @Published public var current: VOFile.Entity?
+    @Published public var currentIsLoading = false
+    @Published public var currentError: String?
     @Published public var query: VOFile.Query?
     @Published public var selection = Set<String>() {
         willSet {
@@ -141,25 +141,26 @@ public class FileStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchFile() async throws -> VOFile.Entity? {
-        guard let file else { return nil }
-        return try await fileClient?.fetch(file.id)
+    private func fetch(_ id: String) async throws -> VOFile.Entity? {
+        try await fileClient?.fetch(id)
     }
 
-    public func fetchFile() {
-        var folder: VOFile.Entity?
+    public func fetchCurrent() {
+        guard let current else { return }
+        var file: VOFile.Entity?
+
         withErrorHandling {
-            folder = try await self.fetchFile()
+            file = try await self.fetch(current.id)
             return true
         } before: {
-            self.fileIsLoading = true
+            self.currentIsLoading = true
         } success: {
-            self.file = folder
-            self.fileError = nil
+            self.current = file
+            self.currentError = nil
         } failure: { message in
-            self.fileError = message
+            self.currentError = message
         } anyways: {
-            self.fileIsLoading = false
+            self.currentIsLoading = false
         }
     }
 
@@ -180,7 +181,7 @@ public class FileStore: ObservableObject {
     }
 
     public func fetchNextPage(replace: Bool = false) {
-        guard let file else { return }
+        guard let current else { return }
         guard !entitiesIsLoading else { return }
 
         var nextPage = -1
@@ -188,7 +189,7 @@ public class FileStore: ObservableObject {
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(file.id, size: Constants.pageSize)
+                let probe = try await self.fetchProbe(current.id, size: Constants.pageSize)
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -202,7 +203,7 @@ public class FileStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(file.id, page: nextPage)
+            list = try await self.fetchList(current.id, page: nextPage)
             self.entitiesError = nil
             return true
         } before: {
@@ -245,8 +246,8 @@ public class FileStore: ObservableObject {
     }
 
     private func fetchStorageUsage() async throws -> VOStorage.Usage? {
-        guard let file else { return nil }
-        return try await storageClient?.fetchFileUsage(file.id)
+        guard let current else { return nil }
+        return try await storageClient?.fetchFileUsage(current.id)
     }
 
     public func fetchStorageUsage() {
@@ -267,8 +268,8 @@ public class FileStore: ObservableObject {
     }
 
     private func fetchItemCount() async throws -> Int? {
-        guard let file else { return nil }
-        return try await fileClient?.fetchCount(file.id)
+        guard let current else { return nil }
+        return try await fileClient?.fetchCount(current.id)
     }
 
     public func fetchItemCount() {
@@ -311,12 +312,12 @@ public class FileStore: ObservableObject {
     }
 
     public func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
-        guard let file else { return nil }
+        guard let current else { return nil }
         if let data = try? Data(contentsOf: url) {
             return try await fileClient?.create(
                 .init(
                     workspaceID: workspaceID,
-                    parentID: file.id,
+                    parentID: current.id,
                     name: url.lastPathComponent,
                     data: data
                 ))
@@ -339,8 +340,8 @@ public class FileStore: ObservableObject {
     // MARK: - Sync
 
     public func syncEntities() async throws {
-        if let current = await self.file, let entities = await self.entities {
-            let list = try await self.fetchList(
+        if let current = await self.current, let entities = await self.entities {
+            let list = try await fetchList(
                 current.id,
                 page: 1,
                 size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
@@ -355,19 +356,19 @@ public class FileStore: ObservableObject {
     }
 
     public func syncFile() async throws {
-        if await self.file != nil {
-            let file = try await self.fetchFile()
+        if let current = await current {
+            let file = try await fetch(current.id)
             if let file {
                 await MainActor.run {
-                    self.file = file
-                    self.fileError = nil
+                    self.current = file
+                    self.currentError = nil
                 }
             }
         }
     }
 
     public func syncFile(id: String) async throws {
-        let file = try await fileClient?.fetch(id)
+        let file = try await fetch(id)
         if let file {
             await MainActor.run {
                 let index = entities?.firstIndex(where: { $0.id == id })
@@ -379,8 +380,8 @@ public class FileStore: ObservableObject {
     }
 
     public func syncTaskCount() async throws {
-        if await self.taskCount != nil {
-            let taskCount = try await self.fetchTaskCount()
+        if await taskCount != nil {
+            let taskCount = try await fetchTaskCount()
             await MainActor.run {
                 self.taskCount = taskCount
                 self.taskCountError = nil
