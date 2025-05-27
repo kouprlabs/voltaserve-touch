@@ -41,7 +41,7 @@ struct AccountDelete: View, ErrorPresentable {
 
     private func performDelete() {
         withErrorHandling {
-            try await accountStore.deleteAccount()
+            try await accountStore.delete()
             return true
         } before: {
             isProcessing = true

@@ -76,7 +76,7 @@ public struct FileRename: View, SessionDistributing, FormValidatable, ErrorPrese
     private func performRename() {
         var file: VOFile.Entity?
         withErrorHandling {
-            file = try await fileStore.patchName(self.file.id, name: normalizedValue)
+            file = try await fileStore.patchName(self.file.id, options: .init(name: normalizedValue))
             if let file {
                 reflectRenameInStore(file)
                 await try fileStore.syncEntities()

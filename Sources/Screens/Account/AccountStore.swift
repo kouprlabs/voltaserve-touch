@@ -55,16 +55,12 @@ public class AccountStore: ObservableObject {
         return nil
     }
 
-    private func fetchIdentityUser() async throws -> VOIdentityUser.Entity? {
-        try await identityUserClient?.fetch()
-    }
-
     // MARK: - Fetch
 
     public func fetchIdentityUser() {
         var identityUser: VOIdentityUser.Entity?
         withErrorHandling {
-            identityUser = try await self.fetchIdentityUser()
+            identityUser = try await self.identityUserClient?.fetch()
             return true
         } before: {
             self.identityUserIsLoading = true
@@ -81,14 +77,10 @@ public class AccountStore: ObservableObject {
         }
     }
 
-    private func fetchAccountStorageUsage() async throws -> VOStorage.Usage? {
-        try await storageClient?.fetchAccountUsage()
-    }
-
     public func fetchAccountStorageUsage() {
         var storageUsage: VOStorage.Usage?
         withErrorHandling {
-            storageUsage = try await self.fetchAccountStorageUsage()
+            storageUsage = try await self.storageClient?.fetchAccountUsage()
             return true
         } before: {
             self.storageUsageIsLoading = true
@@ -102,14 +94,10 @@ public class AccountStore: ObservableObject {
         }
     }
 
-    private func fetchPasswordRequirements() async throws -> VOAccount.PasswordRequirements? {
-        return try await accountClient.fetchPasswordRequirements()
-    }
-
     public func fetchPasswordRequirements() {
         var passwordRequirements: VOAccount.PasswordRequirements?
         withErrorHandling {
-            passwordRequirements = try await self.fetchPasswordRequirements()
+            passwordRequirements = try await self.accountClient.fetchPasswordRequirements()
             return true
         } before: {
             self.passwordRequirementsIsLoading = true
@@ -125,16 +113,22 @@ public class AccountStore: ObservableObject {
 
     // MARK: - Update
 
-    public func updateEmail(_ email: String) async throws -> VOIdentityUser.Entity? {
-        try await identityUserClient?.updateEmailRequest(.init(email: email))
+    public func updateEmail(
+        _ options: VOIdentityUser.UpdateEmailRequestOptions
+    ) async throws -> VOIdentityUser.Entity? {
+        try await identityUserClient?.updateEmailRequest(options)
     }
 
-    public func updateFullName(_ fullName: String) async throws -> VOIdentityUser.Entity? {
-        try await identityUserClient?.updateFullName(.init(fullName: fullName))
+    public func updateFullName(
+        _ options: VOIdentityUser.UpdateFullNameOptions
+    ) async throws -> VOIdentityUser.Entity? {
+        try await identityUserClient?.updateFullName(options)
     }
 
-    public func updatePassword(current: String, new: String) async throws -> VOIdentityUser.Entity? {
-        try await identityUserClient?.updatePassword(.init(currentPassword: current, newPassword: new))
+    public func updatePassword(
+        _ options: VOIdentityUser.UpdatePasswordOptions
+    ) async throws -> VOIdentityUser.Entity? {
+        try await identityUserClient?.updatePassword(options)
     }
 
     public func updatePicture(data: Data, filename: String, mimeType: String) async throws -> VOIdentityUser.Entity? {
@@ -142,10 +136,10 @@ public class AccountStore: ObservableObject {
     }
 
     public func deletePicture() async throws -> VOIdentityUser.Entity? {
-        return try await identityUserClient?.deletePicture()
+        try await identityUserClient?.deletePicture()
     }
 
-    public func deleteAccount() async throws {
+    public func delete() async throws {
         try await identityUserClient?.delete()
     }
 
@@ -153,7 +147,7 @@ public class AccountStore: ObservableObject {
 
     public func syncIdentityUser() async throws {
         if await identityUser != nil, await sessionStore?.session != nil {
-            let user = try await fetchIdentityUser()
+            let user = try await identityUserClient?.fetch()
             if let user {
                 await MainActor.run {
                     self.identityUser = user
@@ -165,7 +159,7 @@ public class AccountStore: ObservableObject {
 
     public func syncStorageUsage() async throws {
         if await storageUsage != nil {
-            let storageUsage = try await fetchAccountStorageUsage()
+            let storageUsage = try await storageClient?.fetchAccountUsage()
             if let storageUsage {
                 await MainActor.run {
                     self.storageUsage = storageUsage

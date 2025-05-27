@@ -67,21 +67,14 @@ public class WorkspaceStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch(_ id: String) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.fetch(id)
-    }
-
-    private func fetchRoot(_ rootID: String) async throws -> VOFile.Entity? {
-        return try await fileClient?.fetch(rootID)
-    }
-
     public func fetchCurrent(_ id: String) {
         var workspace: VOWorkspace.Entity?
         var root: VOFile.Entity?
+
         withErrorHandling {
-            workspace = try await self.fetch(id)
+            workspace = try await self.workspaceClient?.fetch(id)
             if let workspace {
-                root = try await self.fetchRoot(workspace.rootID)
+                root = try await self.fileClient?.fetch(workspace.rootID)
             }
             return true
         } before: {
@@ -102,30 +95,18 @@ public class WorkspaceStore: ObservableObject {
         }
     }
 
-    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOWorkspace.Probe? {
-        try await workspaceClient?.fetchProbe(.init(query: query, size: size))
-    }
-
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
-        try await workspaceClient?.fetchList(
-            .init(
-                query: query,
-                page: page,
-                size: size,
-                sortBy: .dateCreated,
-                sortOrder: .desc
-            ))
-    }
-
     public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOWorkspace.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                let probe = try await self.workspaceClient?.fetchProbe(
+                    .init(
+                        query: self.query,
+                        size: Constants.pageSize
+                    ))
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -138,7 +119,14 @@ public class WorkspaceStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(page: nextPage)
+            list = try await self.workspaceClient?.fetchList(
+                .init(
+                    query: self.query,
+                    page: nextPage,
+                    size: Constants.pageSize,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
+                ))
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -159,15 +147,12 @@ public class WorkspaceStore: ObservableObject {
         }
     }
 
-    private func fetchStorageUsage() async throws -> VOStorage.Usage? {
-        guard let current else { return nil }
-        return try await storageClient?.fetchWorkspaceUsage(current.id)
-    }
-
     public func fetchStorageUsage() {
+        guard let current else { return }
         var storageUsage: VOStorage.Usage?
+
         withErrorHandling {
-            storageUsage = try await self.fetchStorageUsage()
+            storageUsage = try await self.storageClient?.fetchWorkspaceUsage(current.id)
             return true
         } before: {
             self.storageUsageIsLoading = true
@@ -183,43 +168,37 @@ public class WorkspaceStore: ObservableObject {
 
     // MARK: - Update
 
-    public func create(
-        name: String,
-        organization: VOOrganization.Entity,
-        storageCapacity: Int
+    public func create(_ options: VOWorkspace.CreateOptions) async throws -> VOWorkspace.Entity? {
+        try await workspaceClient?.create(options)
+    }
+
+    public func patchName(_ id: String, options: VOWorkspace.PatchNameOptions) async throws -> VOWorkspace.Entity? {
+        try await workspaceClient?.patchName(id, options: options)
+    }
+
+    public func patchStorageCapacity(
+        _ id: String,
+        options: VOWorkspace.PatchStorageCapacityOptions
     ) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.create(
-            .init(
-                name: name,
-                organizationID: organization.id,
-                storageCapacity: storageCapacity
-            ))
+        return try await workspaceClient?.patchStorageCapacity(id, options: options)
     }
 
-    public func patchName(_ id: String, name: String) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.patchName(id, options: .init(name: name))
-    }
-
-    public func patchStorageCapacity(_ id: String, storageCapacity: Int) async throws -> VOWorkspace.Entity? {
-        return try await workspaceClient?.patchStorageCapacity(
-            id,
-            options: .init(storageCapacity: storageCapacity)
-        )
-    }
-
-    public func delete() async throws {
-        guard let current else { return }
-        try await workspaceClient?.delete(current.id)
+    public func delete(_ id: String) async throws {
+        try await workspaceClient?.delete(id)
     }
 
     // MARK: - Sync
 
     public func syncEntities() async throws {
         if let entities = await self.entities {
-            let list = try await fetchList(
-                page: 1,
-                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-            )
+            let list = try await self.workspaceClient?.fetchList(
+                .init(
+                    query: self.query,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
+                ))
             if let list {
                 await MainActor.run {
                     self.entities = list.data
@@ -231,7 +210,7 @@ public class WorkspaceStore: ObservableObject {
 
     public func syncRoot() async throws {
         if let current = await current, await root != nil {
-            let root = try await fetchRoot(current.rootID)
+            let root = try await self.fileClient?.fetch(current.rootID)
             if let root {
                 await MainActor.run {
                     self.root = root
@@ -242,8 +221,8 @@ public class WorkspaceStore: ObservableObject {
     }
 
     public func syncStorageUsage() async throws {
-        if await current != nil, await storageUsage != nil {
-            let storageUsage = try await fetchStorageUsage()
+        if let current = await current, await storageUsage != nil {
+            let storageUsage = try await self.storageClient?.fetchWorkspaceUsage(current.id)
             if let storageUsage {
                 await MainActor.run {
                     self.storageUsage = storageUsage
@@ -255,7 +234,7 @@ public class WorkspaceStore: ObservableObject {
 
     public func syncCurrent() async throws {
         if let current = self.current {
-            let workspace = try await fetch(current.id)
+            let workspace = try await self.workspaceClient?.fetch(current.id)
             if let workspace {
                 try await syncCurrent(workspace: workspace)
             }

@@ -59,7 +59,10 @@ public struct WorkspaceEditStorageCapacity: View, FormValidatable, ErrorPresenta
         guard let current = workspaceStore.current else { return }
 
         withErrorHandling {
-            let workspace = try await workspaceStore.patchStorageCapacity(current.id, storageCapacity: value)
+            let workspace = try await workspaceStore.patchStorageCapacity(
+                current.id,
+                options: .init(storageCapacity: value)
+            )
             if let workspace {
                 try await workspaceStore.syncCurrent(workspace: workspace)
             }

@@ -102,9 +102,11 @@ public struct InsightsCreate: View, ViewDataProvider, LoadStateProvider, Session
     }
 
     private func performCreate() {
+        guard let file = insightsStore.file else { return }
         guard let language else { return }
+
         withErrorHandling {
-            _ = try await insightsStore.create(language: language.id)
+            _ = try await insightsStore.create(file.id, options: .init(language: language.id))
             return true
         } before: {
             isCreating = true

@@ -65,7 +65,7 @@ public struct GroupEditName: View, FormValidatable, ErrorPresentable {
         var group: VOGroup.Entity?
 
         withErrorHandling {
-            group = try await groupStore.patchName(current.id, name: value)
+            group = try await groupStore.patchName(current.id, options: .init(name: value))
             if let group {
                 try await groupStore.syncCurrent(group: group)
             }

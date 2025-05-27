@@ -58,7 +58,7 @@ public struct OrganizationCreate: View, FormValidatable, ErrorPresentable {
     private func performCreate() {
         var organization: VOOrganization.Entity?
         withErrorHandling {
-            organization = try await organizationStore.create(name: normalizedName)
+            organization = try await organizationStore.create(.init(name: normalizedName))
             if let organization {
                 try await organizationStore.syncEntities()
             }

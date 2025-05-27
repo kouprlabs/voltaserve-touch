@@ -65,7 +65,10 @@ public struct OrganizationEditName: View, FormValidatable, ErrorPresentable {
         var organization: VOOrganization.Entity?
 
         withErrorHandling {
-            organization = try await organizationStore.patchName(current.id, name: nornalizedValue)
+            organization = try await organizationStore.patchName(
+                current.id,
+                options: .init(name: nornalizedValue)
+            )
             if let organization {
                 try await organizationStore.syncCurrent(organization: organization)
             }

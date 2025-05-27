@@ -36,23 +36,14 @@ public class TaskStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOTask.Probe? {
-        try await taskClient?.fetchProbe(.init(size: size))
-    }
-
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOTask.List? {
-        try await taskClient?.fetchList(.init(page: page, size: size, sortBy: .status, sortOrder: .desc))
-    }
-
     public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOTask.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                let probe = try await self.taskClient?.fetchProbe(.init(size: Constants.pageSize))
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -65,7 +56,14 @@ public class TaskStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(page: nextPage)
+            list = try await self.taskClient?.fetchList(
+                .init(
+                    page: nextPage,
+                    size: Constants.pageSize,
+                    sortBy: .status,
+                    sortOrder: .desc
+                )
+            )
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -100,9 +98,13 @@ public class TaskStore: ObservableObject {
 
     public func syncEntities() async throws {
         if let entities = await self.entities {
-            let list = try await fetchList(
-                page: 1,
-                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+            let list = try await self.taskClient?.fetchList(
+                .init(
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: .status,
+                    sortOrder: .desc
+                )
             )
             if let list {
                 await MainActor.run {

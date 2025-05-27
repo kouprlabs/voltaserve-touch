@@ -33,15 +33,12 @@ public class MosaicStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchMetadata() async throws -> VOMosaic.Metadata? {
-        guard let fileID else { return nil }
-        return try await mosaicClient?.fetchMetadata(fileID)
-    }
-
     public func fetchMetadata() {
+        guard let fileID = self.fileID else { return }
         var metadata: VOMosaic.Metadata?
+
         withErrorHandling {
-            metadata = try await self.fetchMetadata()
+            metadata = try await self.mosaicClient?.fetchMetadata(fileID)
             return true
         } before: {
             self.metadataIsLoading = true
@@ -69,8 +66,8 @@ public class MosaicStore: ObservableObject {
 
     // MARK: - Sync
     public func syncMetadata() async throws {
-        if await metadata != nil {
-            let metadata = try await fetchMetadata()
+        if await metadata != nil, let fileID = self.fileID {
+            let metadata = try await self.mosaicClient?.fetchMetadata(fileID)
             if let metadata {
                 await MainActor.run {
                     self.metadata = metadata

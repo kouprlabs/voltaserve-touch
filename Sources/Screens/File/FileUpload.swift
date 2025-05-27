@@ -78,9 +78,25 @@ public struct FileUpload: View {
                         throw FileAccessError.permissionError
                     }
                     if let file {
-                        _ = try await fileStore.upload(url, id: file.id)
+                        if let data = try? Data(contentsOf: url) {
+                            try await fileStore.patch(
+                                file.id,
+                                options: .init(
+                                    name: url.lastPathComponent,
+                                    data: data
+                                )
+                            )
+                        }
                     } else {
-                        _ = try await fileStore.upload(url, workspaceID: workspace.id)
+                        if let current = fileStore.current, let data = try? Data(contentsOf: url) {
+                            try await fileStore.create(
+                                .init(
+                                    workspaceID: workspace.id,
+                                    parentID: current.id,
+                                    name: url.lastPathComponent,
+                                    data: data
+                                ))
+                        }
                     }
                     if fileStore.isLastPage() {
                         fileStore.fetchNextPage()

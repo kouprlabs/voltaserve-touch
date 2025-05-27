@@ -73,8 +73,10 @@ public struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
 
     private func performAdd() {
         guard let user else { return }
+        guard let current = groupStore.current else { return }
+
         withErrorHandling {
-            try await groupStore.addMember(userID: user.id)
+            try await groupStore.addMember(current.id, options: .init(userID: user.id))
             try await userStore.syncEntities()
             return true
         } before: {

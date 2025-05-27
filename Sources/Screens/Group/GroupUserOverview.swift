@@ -70,8 +70,9 @@ struct GroupUserOverview: View, ErrorPresentable {
     }
 
     private func performRemoveMember() {
+        guard let current = groupStore.current else { return }
         withErrorHandling {
-            try await groupStore.removeMember(userID: user.id)
+            try await groupStore.removeMember(current.id, options: .init(userID: user.id))
             try await userStore.syncEntities()
             return true
         } before: {

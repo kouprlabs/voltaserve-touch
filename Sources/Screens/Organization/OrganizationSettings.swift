@@ -85,8 +85,9 @@ public struct OrganizationSettings: View, ErrorPresentable {
     }
 
     private func performLeave() {
+        guard let current = organizationStore.current else { return }
         withErrorHandling {
-            try await organizationStore.leave()
+            try await organizationStore.leave(current.id)
             return true
         } before: {
             isLeaving = true
@@ -105,8 +106,9 @@ public struct OrganizationSettings: View, ErrorPresentable {
     }
 
     private func performDelete() {
+        guard let current = organizationStore.current else { return }
         withErrorHandling {
-            try await organizationStore.delete()
+            try await organizationStore.delete(current.id)
             return true
         } before: {
             isDeleting = true

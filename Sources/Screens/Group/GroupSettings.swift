@@ -67,16 +67,14 @@ public struct GroupSettings: View, ErrorPresentable {
     }
 
     private func performDelete() {
-        let current = groupStore.current
+        guard let current = groupStore.current else { return }
         withErrorHandling {
-            try await groupStore.delete()
+            try await groupStore.delete(current.id)
             return true
         } before: {
             isDeleting = true
         } success: {
-            if let current {
-                reflectDeleteInStore(current.id)
-            }
+            reflectDeleteInStore(current.id)
             dismiss()
             shouldDismissParent = true
         } failure: { message in

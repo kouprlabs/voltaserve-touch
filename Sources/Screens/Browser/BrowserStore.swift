@@ -55,15 +55,12 @@ public class BrowserStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchFolder() async throws -> VOFile.Entity? {
-        guard let folderID else { return nil }
-        return try await fileClient?.fetch(folderID)
-    }
-
     public func fetchFolder() {
+        guard let folderID = self.folderID else { return }
         var folder: VOFile.Entity?
+
         withErrorHandling {
-            folder = try await self.fetchFolder()
+            folder = try await self.fileClient?.fetch(folderID)
             return true
         } before: {
             self.folderIsLoading = true
@@ -77,32 +74,21 @@ public class BrowserStore: ObservableObject {
         }
     }
 
-    private func fetchProbe(_ id: String, size: Int = Constants.pageSize) async throws -> VOFile.Probe? {
-        try await fileClient?.fetchProbe(id, options: .init(query: query, size: size))
-    }
-
-    private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await fileClient?.fetchList(
-            id,
-            options: .init(
-                query: query,
-                page: page,
-                size: size,
-                sortBy: .dateCreated,
-                sortOrder: .desc
-            ))
-    }
-
     public func fetchNextPage(replace: Bool = false) {
         guard let folderID else { return }
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOFile.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(folderID, size: Constants.pageSize)
+                let probe = try await self.fileClient?.fetchProbe(
+                    folderID,
+                    options: .init(
+                        query: self.query,
+                        size: Constants.pageSize
+                    )
+                )
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -116,7 +102,18 @@ public class BrowserStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(folderID, page: nextPage)
+            if let folderID = self.folderID {
+                list = try await self.fileClient?.fetchList(
+                    folderID,
+                    options: .init(
+                        query: self.query,
+                        page: nextPage,
+                        size: Constants.pageSize,
+                        sortBy: .dateCreated,
+                        sortOrder: .desc
+                    )
+                )
+            }
             self.entitiesError = nil
             return true
         } before: {
@@ -141,10 +138,15 @@ public class BrowserStore: ObservableObject {
 
     public func syncEntities() async throws {
         if let folder = await self.folder, let entities = await self.entities {
-            let list = try await fetchList(
+            let list = try await fileClient?.fetchList(
                 folder.id,
-                page: 1,
-                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+                options: .init(
+                    query: query,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
+                )
             )
             if let list {
                 await MainActor.run {
@@ -156,11 +158,11 @@ public class BrowserStore: ObservableObject {
     }
 
     public func syncFolder() async throws {
-        if await self.folder != nil {
-            let folder = try await fetchFolder()
-            if let folder {
+        if let folder = self.folder {
+            let file = try await self.fileClient?.fetch(folder.id)
+            if let file {
                 await MainActor.run {
-                    self.folder = folder
+                    self.folder = file
                     self.folderError = nil
                 }
             }

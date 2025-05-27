@@ -105,16 +105,14 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
     }
 
     private func performDelete() {
-        let current = workspaceStore.current
+        guard let current = workspaceStore.current else { return }
         withErrorHandling {
-            try await workspaceStore.delete()
+            try await workspaceStore.delete(current.id)
             return true
         } before: {
             isDeleting = true
         } success: {
-            if let current {
-                reflectDeleteInStore(current.id)
-            }
+            reflectDeleteInStore(current.id)
             dismiss()
             shouldDismissParent = true
         } failure: { message in

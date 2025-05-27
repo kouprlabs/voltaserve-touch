@@ -66,7 +66,7 @@ public struct AccountEditFullName: View, LoadStateProvider, FormValidatable, Err
 
     private func performSave() {
         withErrorHandling {
-            _ = try await accountStore.updateFullName(normalizedValue)
+            _ = try await accountStore.updateFullName(.init(fullName: normalizedValue))
             return true
         } before: {
             isProcessing = true

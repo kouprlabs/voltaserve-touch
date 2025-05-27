@@ -69,7 +69,12 @@ public struct AccountEditPassword: View, FormValidatable, ViewDataProvider, Load
 
     private func performSave() {
         withErrorHandling {
-            _ = try await accountStore.updatePassword(current: currentValue, new: newValue)
+            _ = try await accountStore.updatePassword(
+                .init(
+                    currentPassword: currentValue,
+                    newPassword: newValue
+                )
+            )
             return true
         } before: {
             isProcessing = true

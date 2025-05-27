@@ -94,8 +94,11 @@ public struct InvitationCreate: View, FormValidatable, SessionDistributing, Erro
     }
 
     private func performCreate() {
+        guard let organizationID = invitationStore.organizationID else { return }
         withErrorHandling {
-            let invitations = try await invitationStore.create(emails: emails)
+            let invitations = try await invitationStore.create(
+                .init(organizationID: organizationID, emails: emails)
+            )
             if let invitations, !invitations.isEmpty {
                 try await invitationStore.syncEntities()
             }

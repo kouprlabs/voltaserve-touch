@@ -70,8 +70,9 @@ struct OrganizationUserOverview: View, ErrorPresentable {
     }
 
     private func performRemoveMember() {
+        guard let current = organizationStore.current else { return }
         withErrorHandling {
-            try await organizationStore.removeMember(userID: user.id)
+            try await organizationStore.removeMember(current.id, options: .init(userID: user.id))
             try await userStore.syncEntities()
             return true
         } before: {

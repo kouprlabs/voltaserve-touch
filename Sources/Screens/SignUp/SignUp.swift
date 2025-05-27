@@ -125,7 +125,7 @@ public struct SignUp: View, ViewDataProvider, LoadStateProvider, TimerLifecycle,
 
     private func performSignUp() {
         withErrorHandling {
-            _ = try await signUpStore.signUp(.init(email: email, password: password, fullName: fullName))
+            _ = try await signUpStore.createAccount(.init(email: email, password: password, fullName: fullName))
             return true
         } before: {
             isProcessing = true

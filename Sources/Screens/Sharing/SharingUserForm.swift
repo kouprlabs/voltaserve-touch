@@ -141,7 +141,13 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
     private func performGrant() {
         guard let user, let permission else { return }
         withErrorHandling {
-            try await sharingStore.grantUserPermission(ids: fileIDs, userID: user.id, permission: permission)
+            try await sharingStore.grantUserPermission(
+                .init(
+                    ids: fileIDs,
+                    userID: user.id,
+                    permission: permission
+                )
+            )
             try await sharingStore.syncUserPermissions()
             for fileID in fileIDs {
                 try await fileStore.syncFile(id: fileID)
@@ -162,7 +168,7 @@ public struct SharingUserForm: View, FormValidatable, ErrorPresentable {
     private func performRevoke() {
         guard let user, fileIDs.count == 1, let fileID = fileIDs.first else { return }
         withErrorHandling {
-            try await sharingStore.revokeUserPermission(id: fileID, userID: user.id)
+            try await sharingStore.revokeUserPermission(.init(ids: [fileID], userID: user.id))
             try await sharingStore.syncUserPermissions()
             try await fileStore.syncEntities()
             return true

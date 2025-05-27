@@ -65,7 +65,7 @@ public struct WorkspaceEditName: View, FormValidatable, ErrorPresentable {
         var workspace: VOWorkspace.Entity?
 
         withErrorHandling {
-            workspace = try await workspaceStore.patchName(current.id, name: normalizedValue)
+            workspace = try await workspaceStore.patchName(current.id, options: .init(name: normalizedValue))
             if let workspace {
                 try await self.workspaceStore.syncCurrent(workspace: workspace)
             }

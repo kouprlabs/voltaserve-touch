@@ -61,14 +61,10 @@ public class InsightsStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchLanguages() async throws -> [VOSnapshot.Language]? {
-        try await snapshotClient?.fetchLanguages()
-    }
-
     public func fetchLanguages() {
         var languages: [VOSnapshot.Language]?
         withErrorHandling {
-            languages = try await self.fetchLanguages()
+            languages = try await self.snapshotClient?.fetchLanguages()
             return true
         } before: {
             self.languagesIsLoading = true
@@ -82,42 +78,22 @@ public class InsightsStore: ObservableObject {
         }
     }
 
-    private func fetchEntityProbe(size: Int = Constants.pageSize) async throws -> VOEntity.Probe? {
-        guard let file else { return nil }
-        return try await entityClient?.fetchProbe(
-            file.id,
-            options: .init(
-                query: query,
-                size: pageSize ?? size,
-                sortBy: .frequency,
-                sortOrder: .desc
-            )
-        )
-    }
-
-    private func fetchEntityList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOEntity.List? {
-        guard let file else { return nil }
-        return try await entityClient?.fetchList(
-            file.id,
-            options: .init(
-                query: query,
-                page: page,
-                size: pageSize ?? size,
-                sortBy: .frequency,
-                sortOrder: .desc
-            )
-        )
-    }
-
     public func fetchEntityNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOEntity.List?
 
         withErrorHandling {
-            if let list = self.list {
-                let probe = try await self.fetchEntityProbe(size: Constants.pageSize)
+            if let list = self.list, let file = self.file {
+                let probe = try await self.entityClient?.fetchProbe(
+                    file.id,
+                    options: .init(
+                        query: self.query,
+                        size: self.pageSize ?? Constants.pageSize,
+                        sortBy: .frequency,
+                        sortOrder: .desc
+                    )
+                )
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -130,7 +106,18 @@ public class InsightsStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchEntityList(page: nextPage)
+            if let file = self.file {
+                list = try await self.entityClient?.fetchList(
+                    file.id,
+                    options: .init(
+                        query: self.query,
+                        page: nextPage,
+                        size: self.pageSize ?? Constants.pageSize,
+                        sortBy: .frequency,
+                        sortOrder: .desc
+                    )
+                )
+            }
             self.entitiesError = nil
             return true
         } before: {
@@ -153,23 +140,27 @@ public class InsightsStore: ObservableObject {
 
     // MARK: - Update
 
-    public func create(language: String) async throws -> VOTask.Entity? {
-        guard let file else { return nil }
-        return try await entityClient?.create(file.id, options: .init(language: language))
+    public func create(_ id: String, options: VOEntity.CreateOptions) async throws -> VOTask.Entity? {
+        try await entityClient?.create(id, options: options)
     }
 
-    public func delete() async throws -> VOTask.Entity? {
-        guard let file else { return nil }
-        return try await entityClient?.delete(file.id)
+    public func delete(_ id: String) async throws -> VOTask.Entity? {
+        try await entityClient?.delete(id)
     }
 
     // MARK: - Sync
 
     public func syncEntities() async throws {
-        if let entities = await self.entities {
-            let list = try await fetchEntityList(
-                page: 1,
-                size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+        if let entities = await self.entities, let file = self.file {
+            let list = try await self.entityClient?.fetchList(
+                file.id,
+                options: .init(
+                    query: self.query,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: .frequency,
+                    sortOrder: .desc
+                )
             )
             if let list {
                 await MainActor.run {
