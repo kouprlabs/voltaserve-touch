@@ -59,11 +59,12 @@ public struct FolderCreate: View, ErrorPresentable, FormValidatable {
 
     private func performCreate() {
         withErrorHandling {
-            _ = try await fileStore.createFolder(
-                name: normalizedName,
-                workspaceID: workspaceId,
-                parentID: parentID
-            )
+            _ = try await fileStore.create(
+                .init(
+                    workspaceID: workspaceId,
+                    parentID: parentID,
+                    name: normalizedName,
+                ))
             if fileStore.isLastPage() {
                 fileStore.fetchNextPage()
             }

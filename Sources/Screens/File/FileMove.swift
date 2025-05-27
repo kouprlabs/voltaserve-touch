@@ -69,9 +69,16 @@ public struct FileMove: View {
     private func performMove() {
         var result: VOFile.MoveResult?
         withErrorHandling(delaySeconds: 1) {
-            result = try await fileStore.move(Array(fileStore.selection), to: destinationID)
+            result = try await fileStore.move(
+                .init(
+                    sourceIDs: Array(fileStore.selection),
+                    targetID: destinationID
+                )
+            )
             if let result {
-                reflectMoveInStore(result)
+                if !result.succeeded.isEmpty {
+                    reflectMoveInStore(result)
+                }
                 if result.failed.isEmpty {
                     return true
                 } else {

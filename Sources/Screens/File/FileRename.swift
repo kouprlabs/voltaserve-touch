@@ -10,19 +10,17 @@
 
 import SwiftUI
 
-public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, SessionDistributing,
-    FormValidatable,
-    ErrorPresentable
-{
+public struct FileRename: View, SessionDistributing, FormValidatable, ErrorPresentable {
     @EnvironmentObject private var sessionStore: SessionStore
-    @StateObject private var fileStore = FileStore()
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var isProcessing = false
     @State private var value = ""
     private let file: VOFile.Entity
     private let onCompletion: ((VOFile.Entity) -> Void)?
 
-    public init(_ file: VOFile.Entity, onCompletion: ((VOFile.Entity) -> Void)? = nil) {
+    public init(_ file: VOFile.Entity, fileStore: FileStore, onCompletion: ((VOFile.Entity) -> Void)? = nil) {
+        self.fileStore = fileStore
         self.file = file
         self.onCompletion = onCompletion
     }
@@ -30,16 +28,10 @@ public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecy
     public var body: some View {
         NavigationView {
             VStack {
-                if isLoading {
-                    ProgressView()
-                } else if let error {
-                    VOErrorMessage(error)
-                } else {
-                    if !value.isEmpty {
-                        Form {
-                            TextField("Name", text: $value)
-                                .disabled(isProcessing)
-                        }
+                if !value.isEmpty {
+                    Form {
+                        TextField("Name", text: $value)
+                            .disabled(isProcessing)
                     }
                 }
             }
@@ -64,25 +56,14 @@ public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecy
             }
         }
         .onAppear {
-            fileStore.file = file
+            value = file.name
             if let session = sessionStore.session {
                 assignSessionToStores(session)
-                startTimers()
-                onAppearOrChange()
             }
-        }
-        .onDisappear {
-            stopTimers()
         }
         .onChange(of: sessionStore.session) { _, newSession in
             if let newSession {
                 assignSessionToStores(newSession)
-                onAppearOrChange()
-            }
-        }
-        .onChange(of: fileStore.file) { _, file in
-            if let file {
-                value = file.name
             }
         }
         .voErrorSheet(isPresented: $errorIsPresented, message: errorMessage)
@@ -93,18 +74,20 @@ public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecy
     }
 
     private func performRename() {
-        guard let file = fileStore.file else { return }
-        var updatedFile: VOFile.Entity?
-
+        var file: VOFile.Entity?
         withErrorHandling {
-            updatedFile = try await fileStore.patchName(file.id, name: normalizedValue)
+            file = try await fileStore.patchName(self.file.id, options: .init(name: normalizedValue))
+            if let file {
+                reflectRenameInStore(file)
+                await try fileStore.syncEntities()
+            }
             return true
         } before: {
             isProcessing = true
         } success: {
             dismiss()
-            if let onCompletion, let updatedFile {
-                onCompletion(updatedFile)
+            if let onCompletion, let file {
+                onCompletion(file)
             }
         } failure: { message in
             errorMessage = message
@@ -115,40 +98,16 @@ public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecy
         }
     }
 
-    // MARK: - LoadStateProvider
-
-    public var isLoading: Bool {
-        fileStore.fileIsLoading
-    }
-
-    public var error: String? {
-        fileStore.fileError
+    private func reflectRenameInStore(_ file: VOFile.Entity) {
+        if let index = fileStore.entities?.firstIndex(where: { $0.id == file.id }) {
+            fileStore.entities?[index] = file
+        }
     }
 
     // MARK: - ErrorPresentable
 
     @State public var errorIsPresented = false
     @State public var errorMessage: String?
-
-    // MARK: - ViewDataProvider
-
-    public func onAppearOrChange() {
-        fetchData()
-    }
-
-    public func fetchData() {
-        fileStore.fetchFile()
-    }
-
-    // MARK: - TimerLifecycle
-
-    public func startTimers() {
-        fileStore.startTimer()
-    }
-
-    public func stopTimers() {
-        fileStore.stopTimer()
-    }
 
     // MARK: - SessionDistributing
 
@@ -159,9 +118,6 @@ public struct FileRename: View, ViewDataProvider, LoadStateProvider, TimerLifecy
     // MARK: - FormValidatable
 
     public func isValid() -> Bool {
-        if let file = fileStore.file {
-            return !normalizedValue.isEmpty && normalizedValue != file.name
-        }
-        return false
+        !normalizedValue.isEmpty && normalizedValue != file.name
     }
 }

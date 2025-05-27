@@ -15,10 +15,11 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
     @ObservedObject private var workspaceStore: WorkspaceStore
     @Environment(\.dismiss) private var dismiss
     @State private var shouldDismissSelf = false
-    private var workspace: VOWorkspace.Entity
+    @State private var workspaceIsLoading = false
+    private var id: String
 
-    public init(_ workspace: VOWorkspace.Entity, workspaceStore: WorkspaceStore) {
-        self.workspace = workspace
+    public init(_ id: String, workspaceStore: WorkspaceStore) {
+        self.id = id
         self.workspaceStore = workspaceStore
     }
 
@@ -28,15 +29,15 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
                 ProgressView()
             } else if let error {
                 VOErrorMessage(error)
-            } else {
+            } else if let current = workspaceStore.current {
                 VStack {
-                    VOAvatar(name: workspace.name, size: 100)
+                    VOAvatar(name: current.name, size: 100)
                         .padding()
                     Form {
                         NavigationLink {
                             if let root = workspaceStore.root {
                                 FileOverview(root, workspaceStore: workspaceStore)
-                                    .navigationTitle(workspace.name)
+                                    .navigationTitle(current.name)
                             }
                         } label: {
                             Label("Browse", systemImage: "folder")
@@ -51,9 +52,10 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(workspace.name)
+        .modifierIf(workspaceStore.current != nil) {
+            $0.navigationTitle(workspaceStore.current!.name)
+        }
         .onAppear {
-            workspaceStore.current = workspace
             onAppearOrChange()
         }
         .onChange(of: shouldDismissSelf) { _, newValue in
@@ -66,11 +68,11 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
     // MARK: - LoadStateProvider
 
     public var isLoading: Bool {
-        workspaceStore.rootIsLoading
+        workspaceStore.currentIsLoading || workspaceStore.rootIsLoading
     }
 
     public var error: String? {
-        workspaceStore.rootError
+        workspaceStore.currentError ?? workspaceStore.rootError
     }
 
     // MARK: - ViewDataProvider
@@ -80,6 +82,6 @@ public struct WorkspaceOverview: View, ViewDataProvider, LoadStateProvider {
     }
 
     public func fetchData() {
-        workspaceStore.fetchRoot()
+        workspaceStore.fetchCurrent(id)
     }
 }

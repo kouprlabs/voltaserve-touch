@@ -40,6 +40,9 @@ public struct FileToolbar: ViewModifier {
                             ForEach(VOFile.SortBy.allCases, id: \.self) { sortBy in
                                 Button {
                                     fileStore.sortBy = sortBy
+                                    Task.detached {
+                                        await try fileStore.syncEntities()
+                                    }
                                 } label: {
                                     Label(
                                         sortBy.label,
@@ -56,6 +59,9 @@ public struct FileToolbar: ViewModifier {
                             ForEach(VOFile.SortOrder.allCases, id: \.self) { sortOrder in
                                 Button {
                                     fileStore.sortOrder = sortOrder
+                                    Task.detached {
+                                        await try fileStore.syncEntities()
+                                    }
                                 } label: {
                                     Label(
                                         sortOrder.label,
@@ -77,6 +83,12 @@ public struct FileToolbar: ViewModifier {
                                 Text(sortBy.label).tag(sortBy)
                             }
                         }
+                        .pickerStyle(.menu)
+                        .onChange(of: fileStore.sortBy) { _ in
+                            Task.detached {
+                                await try fileStore.syncEntities()
+                            }
+                        }
                     }
                     ToolbarItem(placement: .bottomBar) {
                         Picker(
@@ -88,12 +100,17 @@ public struct FileToolbar: ViewModifier {
                             }
                         }
                         .pickerStyle(.menu)
+                        .onChange(of: fileStore.sortOrder) { _ in
+                            Task.detached {
+                                await try fileStore.syncEntities()
+                            }
+                        }
                     }
                 }
                 ToolbarItem(placement: .bottomBar) {
                     viewModeToggleButton
                 }
-                if let file = fileStore.file, file.permission.ge(.editor) {
+                if let current = fileStore.current, current.permission.ge(.editor) {
                     ToolbarItem(placement: .topBarLeading) {
                         FileUploadMenu(fileStore: fileStore) {
                             Image(systemName: "plus")

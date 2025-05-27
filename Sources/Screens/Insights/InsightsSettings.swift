@@ -111,10 +111,12 @@ struct InsightsSettings: View, TimerLifecycle, SessionDistributing, ErrorPresent
     }
 
     private func performCreate() {
+        guard let file = insightsStore.file else { return }
         guard let snapshot = file.snapshot else { return }
         guard let language = snapshot.language else { return }
+
         withErrorHandling {
-            _ = try await insightsStore.create(language: language)
+            _ = try await insightsStore.create(file.id, options: .init(language: language))
             return true
         } before: {
             isPatching = true
@@ -129,8 +131,9 @@ struct InsightsSettings: View, TimerLifecycle, SessionDistributing, ErrorPresent
     }
 
     private func performDelete() {
+        guard let file = insightsStore.file else { return }
         withErrorHandling {
-            _ = try await insightsStore.delete()
+            _ = try await insightsStore.delete(file.id)
             return true
         } before: {
             isDeleting = true

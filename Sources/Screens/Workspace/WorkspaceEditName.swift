@@ -62,17 +62,20 @@ public struct WorkspaceEditName: View, FormValidatable, ErrorPresentable {
 
     private func performSave() {
         guard let current = workspaceStore.current else { return }
-        var updatedWorkspace: VOWorkspace.Entity?
+        var workspace: VOWorkspace.Entity?
 
         withErrorHandling {
-            updatedWorkspace = try await workspaceStore.patchName(current.id, name: normalizedValue)
+            workspace = try await workspaceStore.patchName(current.id, options: .init(name: normalizedValue))
+            if let workspace {
+                try await self.workspaceStore.syncCurrent(workspace: workspace)
+            }
             return true
         } before: {
             isProcessing = true
         } success: {
             dismiss()
-            if let onCompletion, let updatedWorkspace {
-                onCompletion(updatedWorkspace)
+            if let onCompletion, let workspace {
+                onCompletion(workspace)
             }
         } failure: { message in
             errorMessage = message

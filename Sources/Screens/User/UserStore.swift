@@ -67,38 +67,6 @@ public class UserStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOUser.Probe? {
-        if let organizationID {
-            return try await userClient?.fetchProbe(
-                .init(
-                    query: query,
-                    organizationID: organizationID,
-                    size: size
-                ))
-        } else if let groupID {
-            return try await userClient?.fetchProbe(
-                .init(
-                    query: query,
-                    groupID: groupID,
-                    size: size
-                ))
-        }
-        return nil
-    }
-
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOUser.List? {
-        try await userClient?.fetchList(
-            .init(
-                query: query,
-                organizationID: organizationID,
-                groupID: groupID,
-                excludeGroupMembers: excludeGroupMembers,
-                excludeMe: excludeMe,
-                page: page,
-                size: size
-            ))
-    }
-
     public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
 
@@ -107,7 +75,14 @@ public class UserStore: ObservableObject {
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                let probe = try await self.userClient?.fetchProbe(
+                    .init(
+                        query: self.query,
+                        organizationID: self.organizationID,
+                        groupID: self.groupID,
+                        size: Constants.pageSize
+                    )
+                )
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -120,7 +95,17 @@ public class UserStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(page: nextPage)
+            list = try await self.userClient?.fetchList(
+                .init(
+                    query: self.query,
+                    organizationID: self.organizationID,
+                    groupID: self.groupID,
+                    excludeGroupMembers: self.excludeGroupMembers,
+                    excludeMe: self.excludeMe,
+                    page: nextPage,
+                    size: Constants.pageSize
+                )
+            )
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -138,6 +123,30 @@ public class UserStore: ObservableObject {
             self.entitiesError = message
         } anyways: {
             self.entitiesIsLoading = false
+        }
+    }
+
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            let list = try await self.userClient?.fetchList(
+                .init(
+                    query: self.query,
+                    organizationID: self.organizationID,
+                    groupID: self.groupID,
+                    excludeGroupMembers: self.excludeGroupMembers,
+                    excludeMe: self.excludeMe,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
+                )
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
         }
     }
 
@@ -195,18 +204,7 @@ public class UserStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
             }
         }
     }

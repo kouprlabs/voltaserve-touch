@@ -29,12 +29,7 @@ public struct GroupSettings: View, ErrorPresentable {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink {
-                            GroupEditName(groupStore: groupStore) { updatedGroup in
-                                groupStore.current = updatedGroup
-                                if let index = groupStore.entities?.firstIndex(where: { $0.id == updatedGroup.id }) {
-                                    groupStore.entities?[index] = updatedGroup
-                                }
-                            }
+                            GroupEditName(groupStore: groupStore)
                         } label: {
                             HStack {
                                 Text("Name")
@@ -56,7 +51,7 @@ public struct GroupSettings: View, ErrorPresentable {
                             }
                             .disabled(isDeleting)
                             .confirmationDialog("Delete Group", isPresented: $deleteConfirmationIsPresented) {
-                                Button("Delete", role: .destructive) {
+                                Button("Delete Group", role: .destructive) {
                                     performDelete()
                                 }
                             } message: {
@@ -72,17 +67,15 @@ public struct GroupSettings: View, ErrorPresentable {
     }
 
     private func performDelete() {
-        let current = groupStore.current
+        guard let current = groupStore.current else { return }
         withErrorHandling {
-            try await groupStore.delete()
+            try await groupStore.delete(current.id)
             return true
         } before: {
             isDeleting = true
         } success: {
+            reflectDeleteInStore(current.id)
             dismiss()
-            if let current {
-                reflectDeleteInStore(current.id)
-            }
             shouldDismissParent = true
         } failure: { message in
             errorMessage = message

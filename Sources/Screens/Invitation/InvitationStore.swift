@@ -40,44 +40,26 @@ public class InvitationStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOInvitation.Probe? {
-        if let organizationID {
-            try await invitationClient?.fetchOutgoingProbe(.init(organizationID: organizationID, size: size))
-        } else {
-            try await invitationClient?.fetchIncomingProbe(.init(size: size))
-        }
-    }
-
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOInvitation.List? {
-        if let organizationID {
-            try await invitationClient?.fetchOutgoingList(
-                .init(
-                    organizationID: organizationID,
-                    page: page,
-                    size: size,
-                    sortBy: .dateCreated,
-                    sortOrder: .desc
-                ))
-        } else {
-            try await invitationClient?.fetchIncomingList(
-                .init(
-                    page: page,
-                    size: size,
-                    sortBy: .dateCreated,
-                    sortOrder: .desc
-                ))
-        }
-    }
-
     public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOInvitation.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                var probe: VOInvitation.Probe?
+                if let organizationID = self.organizationID {
+                    probe = try await self.invitationClient?.fetchOutgoingProbe(
+                        .init(
+                            organizationID: organizationID,
+                            size: Constants.pageSize
+                        )
+                    )
+                } else {
+                    probe = try await self.invitationClient?.fetchIncomingProbe(
+                        .init(size: Constants.pageSize)
+                    )
+                }
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -90,7 +72,24 @@ public class InvitationStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(page: nextPage)
+            if let organizationID = self.organizationID {
+                list = try await self.invitationClient?.fetchOutgoingList(
+                    .init(
+                        organizationID: organizationID,
+                        page: nextPage,
+                        size: Constants.pageSize,
+                        sortBy: .dateCreated,
+                        sortOrder: .desc
+                    ))
+            } else {
+                list = try await self.invitationClient?.fetchIncomingList(
+                    .init(
+                        page: nextPage,
+                        size: Constants.pageSize,
+                        sortBy: .dateCreated,
+                        sortOrder: .desc
+                    ))
+            }
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -111,14 +110,10 @@ public class InvitationStore: ObservableObject {
         }
     }
 
-    private func fetchIncomingCount() async throws -> Int? {
-        try await invitationClient?.fetchIncomingCount()
-    }
-
     public func fetchIncomingCount() {
         var incomingCount: Int?
         withErrorHandling {
-            incomingCount = try await self.fetchIncomingCount()
+            incomingCount = try await self.invitationClient?.fetchIncomingCount()
             return true
         } before: {
             self.incomingCountIsLoading = true
@@ -134,9 +129,8 @@ public class InvitationStore: ObservableObject {
 
     // MARK: - Update
 
-    public func create(emails: [String]) async throws -> [VOInvitation.Entity]? {
-        guard let organizationID else { return nil }
-        return try await invitationClient?.create(.init(organizationID: organizationID, emails: emails))
+    public func create(_ options: VOInvitation.CreateOptions) async throws -> [VOInvitation.Entity]? {
+        return try await invitationClient?.create(options)
     }
 
     public func accept(_ id: String) async throws {
@@ -149,6 +143,50 @@ public class InvitationStore: ObservableObject {
 
     public func delete(_ id: String) async throws {
         try await invitationClient?.delete(id)
+    }
+
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            var list: VOInvitation.List?
+            if let organizationID {
+                list = try await invitationClient?.fetchOutgoingList(
+                    .init(
+                        organizationID: organizationID,
+                        page: 1,
+                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                        sortBy: .dateCreated,
+                        sortOrder: .desc
+                    ))
+            } else {
+                list = try await invitationClient?.fetchIncomingList(
+                    .init(
+                        page: 1,
+                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                        sortBy: .dateCreated,
+                        sortOrder: .desc
+                    ))
+            }
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
+    public func syncIncomingCount() async throws {
+        if await incomingCount != nil {
+            let incomingCount = try await self.invitationClient?.fetchIncomingCount()
+            if let incomingCount {
+                DispatchQueue.main.async {
+                    self.incomingCount = incomingCount
+                    self.incomingCountError = nil
+                }
+            }
+        }
     }
 
     // MARK: - Entities
@@ -212,27 +250,8 @@ public class InvitationStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
-                if await self.incomingCount != nil {
-                    let incomingCount = try await self.fetchIncomingCount()
-                    if let incomingCount {
-                        DispatchQueue.main.async {
-                            self.incomingCount = incomingCount
-                            self.incomingCountError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncIncomingCount()
             }
         }
     }

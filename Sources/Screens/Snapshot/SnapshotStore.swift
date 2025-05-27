@@ -37,32 +37,19 @@ public class SnapshotStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOSnapshot.Probe? {
-        guard let fileID else { return nil }
-        return try await snapshotClient?.fetchProbe(.init(fileID: fileID, size: size))
-    }
-
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOSnapshot.List? {
-        guard let fileID else { return nil }
-        return try await snapshotClient?.fetchList(
-            .init(
-                fileID: fileID,
-                page: page,
-                size: size,
-                sortBy: .version,
-                sortOrder: .desc
-            ))
-    }
-
     public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOSnapshot.List?
 
         withErrorHandling {
-            if let list = self.list {
-                let probe = try await self.fetchProbe(size: Constants.pageSize)
+            if let list = self.list, let fileID = self.fileID {
+                let probe = try await self.snapshotClient?.fetchProbe(
+                    .init(
+                        fileID: fileID,
+                        size: Constants.pageSize
+                    )
+                )
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -75,7 +62,17 @@ public class SnapshotStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(page: nextPage)
+            if let fileID = self.fileID {
+                list = try await self.snapshotClient?.fetchList(
+                    .init(
+                        fileID: fileID,
+                        page: nextPage,
+                        size: Constants.pageSize,
+                        sortBy: .version,
+                        sortOrder: .desc
+                    )
+                )
+            }
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -104,6 +101,28 @@ public class SnapshotStore: ObservableObject {
 
     public func detach(_ id: String) async throws {
         try await snapshotClient?.detach(id)
+    }
+
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities, let fileID = self.fileID {
+            let list = try await self.snapshotClient?.fetchList(
+                .init(
+                    fileID: fileID,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: .version,
+                    sortOrder: .desc
+                )
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
     }
 
     // MARK: - Entities
@@ -160,18 +179,7 @@ public class SnapshotStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
             }
         }
     }

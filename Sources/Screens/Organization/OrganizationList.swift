@@ -39,7 +39,7 @@ public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, Timer
                             } else {
                                 List(entities, id: \.displayID) { organization in
                                     NavigationLink {
-                                        OrganizationOverview(organization, organizationStore: organizationStore)
+                                        OrganizationOverview(organization.id, organizationStore: organizationStore)
                                     } label: {
                                         OrganizationRow(organization)
                                             .onAppear {
@@ -79,7 +79,7 @@ public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, Timer
             }
             .navigationDestination(isPresented: $overviewIsPresented) {
                 if let newOrganization {
-                    OrganizationOverview(newOrganization, organizationStore: organizationStore)
+                    OrganizationOverview(newOrganization.id, organizationStore: organizationStore)
                 }
             }
         }

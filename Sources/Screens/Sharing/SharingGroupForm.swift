@@ -12,6 +12,7 @@ import SwiftUI
 
 public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var sharingStore: SharingStore
+    @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var group: VOGroup.Entity?
     @State private var permission: VOPermission.Value?
@@ -29,6 +30,7 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
         fileIDs: [String],
         organization: VOOrganization.Entity,
         sharingStore: SharingStore,
+        fileStore: FileStore,
         predefinedGroup: VOGroup.Entity? = nil,
         defaultPermission: VOPermission.Value? = nil,
         enableCancel: Bool = false,
@@ -37,6 +39,7 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
         self.fileIDs = fileIDs
         self.organization = organization
         self.sharingStore = sharingStore
+        self.fileStore = fileStore
         self.predefinedGroup = predefinedGroup
         self.defaultPermission = defaultPermission
         self.enableCancel = enableCancel
@@ -135,7 +138,17 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
     private func performGrant() {
         guard let group, let permission else { return }
         withErrorHandling {
-            try await sharingStore.grantGroupPermission(ids: fileIDs, groupID: group.id, permission: permission)
+            try await sharingStore.grantGroupPermission(
+                .init(
+                    ids: fileIDs,
+                    groupID: group.id,
+                    permission: permission
+                )
+            )
+            try await sharingStore.syncGroupPermissions()
+            for fileID in fileIDs {
+                try await fileStore.syncFile(id: fileID)
+            }
             return true
         } before: {
             isGranting = true
@@ -152,7 +165,9 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
     private func performRevoke() {
         guard let group, fileIDs.count == 1, let fileID = fileIDs.first else { return }
         withErrorHandling {
-            try await sharingStore.revokeGroupPermission(id: fileID, groupID: group.id)
+            try await sharingStore.revokeGroupPermission(.init(ids: [fileID], groupID: group.id))
+            try await sharingStore.syncGroupPermissions()
+            try await fileStore.syncEntities()
             return true
         } before: {
             isRevoking = true

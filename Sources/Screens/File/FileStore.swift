@@ -27,9 +27,9 @@ public class FileStore: ObservableObject {
     @Published public var itemCount: Int?
     @Published public var itemCountIsLoading = false
     @Published public var itemCountError: String?
-    @Published public var file: VOFile.Entity?
-    @Published public var fileIsLoading = false
-    @Published public var fileError: String?
+    @Published public var current: VOFile.Entity?
+    @Published public var currentIsLoading = false
+    @Published public var currentError: String?
     @Published public var query: VOFile.Query?
     @Published public var selection = Set<String>() {
         willSet {
@@ -141,54 +141,37 @@ public class FileStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchFile() async throws -> VOFile.Entity? {
-        guard let file else { return nil }
-        return try await fileClient?.fetch(file.id)
-    }
+    public func fetchCurrent() {
+        guard let current else { return }
+        var file: VOFile.Entity?
 
-    public func fetchFile() {
-        var folder: VOFile.Entity?
         withErrorHandling {
-            folder = try await self.fetchFile()
+            file = try await self.fileClient?.fetch(current.id)
             return true
         } before: {
-            self.fileIsLoading = true
+            self.currentIsLoading = true
         } success: {
-            self.file = folder
-            self.fileError = nil
+            self.current = file
+            self.currentError = nil
         } failure: { message in
-            self.fileError = message
+            self.currentError = message
         } anyways: {
-            self.fileIsLoading = false
+            self.currentIsLoading = false
         }
     }
 
-    private func fetchProbe(_ id: String, size: Int = Constants.pageSize) async throws -> VOFile.Probe? {
-        try await fileClient?.fetchProbe(id, options: .init(size: size))
-    }
-
-    private func fetchList(_ id: String, page: Int = 1, size: Int = Constants.pageSize) async throws -> VOFile.List? {
-        try await fileClient?.fetchList(
-            id,
-            options: .init(
-                query: query,
-                page: page,
-                size: size,
-                sortBy: sortBy,
-                sortOrder: sortOrder
-            ))
-    }
-
     public func fetchNextPage(replace: Bool = false) {
-        guard let file else { return }
+        guard let current else { return }
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOFile.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(file.id, size: Constants.pageSize)
+                let probe = try await self.fileClient?.fetchProbe(
+                    current.id,
+                    options: .init(size: Constants.pageSize)
+                )
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -202,7 +185,15 @@ public class FileStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(file.id, page: nextPage)
+            list = try await self.fileClient?.fetchList(
+                current.id,
+                options: .init(
+                    query: self.query,
+                    page: nextPage,
+                    size: Constants.pageSize,
+                    sortBy: self.sortBy,
+                    sortOrder: self.sortOrder
+                ))
             self.entitiesError = nil
             return true
         } before: {
@@ -223,14 +214,10 @@ public class FileStore: ObservableObject {
         }
     }
 
-    private func fetchTaskCount() async throws -> Int? {
-        try await taskClient?.fetchCount()
-    }
-
     public func fetchTaskCount() {
         var taskCount: Int?
         withErrorHandling {
-            taskCount = try await self.fetchTaskCount()
+            taskCount = try await self.taskClient?.fetchCount()
             self.taskCountError = nil
             return true
         } before: {
@@ -244,15 +231,12 @@ public class FileStore: ObservableObject {
         }
     }
 
-    private func fetchStorageUsage() async throws -> VOStorage.Usage? {
-        guard let file else { return nil }
-        return try await storageClient?.fetchFileUsage(file.id)
-    }
-
     public func fetchStorageUsage() {
+        guard let current else { return }
         var storageUsage: VOStorage.Usage?
+
         withErrorHandling {
-            storageUsage = try await self.fetchStorageUsage()
+            storageUsage = try await self.storageClient?.fetchFileUsage(current.id)
             self.storageUsageError = nil
             return true
         } before: {
@@ -266,15 +250,12 @@ public class FileStore: ObservableObject {
         }
     }
 
-    private func fetchItemCount() async throws -> Int? {
-        guard let file else { return nil }
-        return try await fileClient?.fetchCount(file.id)
-    }
-
     public func fetchItemCount() {
+        guard let current else { return }
         var itemCount: Int?
+
         withErrorHandling {
-            itemCount = try await self.fetchItemCount()
+            itemCount = try await self.fileClient?.fetchCount(current.id)
             self.itemCountError = nil
             return true
         } before: {
@@ -290,50 +271,88 @@ public class FileStore: ObservableObject {
 
     // MARK: - Update
 
-    public func createFolder(name: String, workspaceID: String, parentID: String) async throws -> VOFile.Entity? {
-        try await fileClient?.create(.init(workspaceID: workspaceID, parentID: parentID, name: name))
+    public func create(_ options: VOFile.CreateFolderOptions) async throws -> VOFile.Entity? {
+        try await fileClient?.create(options)
     }
 
-    public func patchName(_ id: String, name: String) async throws -> VOFile.Entity? {
-        try await fileClient?.patchName(id, options: .init(name: name))
+    public func create(_ options: VOFile.CreateFileOptions) async throws -> VOFile.Entity? {
+        try await fileClient?.create(options)
     }
 
-    public func copy(_ ids: [String], to targetID: String) async throws -> VOFile.CopyResult? {
-        try await fileClient?.copy(.init(sourceIDs: ids, targetID: targetID))
+    public func patch(_ id: String, options: VOFile.PatchOptions) async throws -> VOFile.Entity? {
+        try await fileClient?.patch(id, options: options)
     }
 
-    public func move(_ ids: [String], to targetID: String) async throws -> VOFile.MoveResult? {
-        try await fileClient?.move(.init(sourceIDs: ids, targetID: targetID))
+    public func patchName(_ id: String, options: VOFile.PatchNameOptions) async throws -> VOFile.Entity? {
+        try await fileClient?.patchName(id, options: options)
+    }
+
+    public func copy(_ options: VOFile.CopyOptions) async throws -> VOFile.CopyResult? {
+        try await fileClient?.copy(options)
+    }
+
+    public func move(_ options: VOFile.MoveOptions) async throws -> VOFile.MoveResult? {
+        try await fileClient?.move(options)
     }
 
     public func delete(_ ids: [String]) async throws -> VOFile.DeleteResult? {
         try await fileClient?.delete(.init(ids: ids))
     }
 
-    public func upload(_ url: URL, workspaceID: String) async throws -> VOFile.Entity? {
-        guard let file else { return nil }
-        if let data = try? Data(contentsOf: url) {
-            return try await fileClient?.create(
-                .init(
-                    workspaceID: workspaceID,
-                    parentID: file.id,
-                    name: url.lastPathComponent,
-                    data: data
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let current = await self.current, let entities = await self.entities {
+            let list = try await self.fileClient?.fetchList(
+                current.id,
+                options: .init(
+                    query: self.query,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: self.sortBy,
+                    sortOrder: self.sortOrder
                 ))
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
         }
-        return nil
     }
 
-    public func upload(_ url: URL, id: String) async throws -> VOFile.Entity? {
-        if let data = try? Data(contentsOf: url) {
-            return try await fileClient?.patch(
-                id,
-                options: .init(
-                    name: url.lastPathComponent,
-                    data: data
-                ))
+    public func syncFile() async throws {
+        if let current = await current {
+            let file = try await self.fileClient?.fetch(current.id)
+            if let file {
+                await MainActor.run {
+                    self.current = file
+                    self.currentError = nil
+                }
+            }
         }
-        return nil
+    }
+
+    public func syncFile(id: String) async throws {
+        let file = try await self.fileClient?.fetch(id)
+        if let file {
+            await MainActor.run {
+                let index = entities?.firstIndex(where: { $0.id == id })
+                if let index {
+                    entities?[index] = file
+                }
+            }
+        }
+    }
+
+    public func syncTaskCount() async throws {
+        if await taskCount != nil {
+            let taskCount = try await taskClient?.fetchCount()
+            await MainActor.run {
+                self.taskCount = taskCount
+                self.taskCountError = nil
+            }
+        }
     }
 
     // MARK: - URL
@@ -411,35 +430,9 @@ public class FileStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let current = await self.file, let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        current.id,
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
-                if await self.file != nil {
-                    let file = try await self.fetchFile()
-                    if let file {
-                        await MainActor.run {
-                            self.file = file
-                            self.fileError = nil
-                        }
-                    }
-                }
-                if await self.taskCount != nil {
-                    let taskCount = try await self.fetchTaskCount()
-                    await MainActor.run {
-                        self.taskCount = taskCount
-                        self.taskCountError = nil
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncFile()
+                try await self.syncTaskCount()
             }
         }
     }

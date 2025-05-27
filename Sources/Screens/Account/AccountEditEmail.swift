@@ -68,7 +68,7 @@ public struct AccountEditEmail: View, LoadStateProvider, FormValidatable, ErrorP
 
     private func performSave() {
         withErrorHandling {
-            _ = try await accountStore.updateEmail(normalizedValue)
+            _ = try await accountStore.updateEmail(.init(email: normalizedValue))
             return true
         } before: {
             isProcessing = true

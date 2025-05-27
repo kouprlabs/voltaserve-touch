@@ -38,21 +38,12 @@ public class SharingStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch() async throws -> VOFile.Entity? {
-        guard let fileID else { return nil }
-        return try await fileClient?.fetch(fileID)
-    }
-
-    private func fetchUserPermissions(_ id: String) async throws -> [VOFile.UserPermission]? {
-        try await fileClient?.fetchUserPermissions(id)
-    }
-
     public func fetchUserPermissions() {
         guard let fileID else { return }
         var userPermissions: [VOFile.UserPermission]?
 
         withErrorHandling {
-            userPermissions = try await self.fetchUserPermissions(fileID)
+            userPermissions = try await self.fileClient?.fetchUserPermissions(fileID)
             return true
         } before: {
             self.userPermissionsIsLoading = true
@@ -66,16 +57,12 @@ public class SharingStore: ObservableObject {
         }
     }
 
-    private func fetchGroupPermissions(_ id: String) async throws -> [VOFile.GroupPermission]? {
-        try await fileClient?.fetchGroupPermissions(id)
-    }
-
     public func fetchGroupPermissions() {
         guard let fileID else { return }
         var groupPermissions: [VOFile.GroupPermission]?
 
         withErrorHandling {
-            groupPermissions = try await self.fetchGroupPermissions(fileID)
+            groupPermissions = try await self.fileClient?.fetchGroupPermissions(fileID)
             self.groupPermissionsError = nil
             return true
         } before: {
@@ -91,20 +78,48 @@ public class SharingStore: ObservableObject {
 
     // MARK: - Update
 
-    public func grantUserPermission(ids: [String], userID: String, permission: VOPermission.Value) async throws {
-        try await fileClient?.grantUserPermission(.init(ids: ids, userID: userID, permission: permission))
+    public func grantUserPermission(_ options: VOFile.GrantUserPermissionOptions) async throws {
+        try await fileClient?.grantUserPermission(options)
     }
 
-    public func revokeUserPermission(id: String, userID: String) async throws {
-        try await fileClient?.revokeUserPermission(.init(ids: [id], userID: userID))
+    public func revokeUserPermission(_ options: VOFile.RevokeUserPermissionOptions) async throws {
+        try await fileClient?.revokeUserPermission(options)
     }
 
-    public func grantGroupPermission(ids: [String], groupID: String, permission: VOPermission.Value) async throws {
-        try await fileClient?.grantGroupPermission(.init(ids: ids, groupID: groupID, permission: permission))
+    public func grantGroupPermission(_ options: VOFile.GrantGroupPermissionOptions) async throws {
+        try await fileClient?.grantGroupPermission(options)
     }
 
-    public func revokeGroupPermission(id: String, groupID: String) async throws {
-        try await fileClient?.revokeGroupPermission(.init(ids: [id], groupID: groupID))
+    public func revokeGroupPermission(_ options: VOFile.RevokeGroupPermissionOptions) async throws {
+        try await fileClient?.revokeGroupPermission(options)
+    }
+
+    // MARK: - Sync
+
+    public func syncUserPermissions() async throws {
+        guard let fileID = await self.fileID else { return }
+        if await userPermissions != nil {
+            let values = try await fileClient?.fetchUserPermissions(fileID)
+            if let values {
+                await MainActor.run {
+                    self.userPermissions = values
+                    self.userPermissionsError = nil
+                }
+            }
+        }
+    }
+
+    public func syncGroupPermissions() async throws {
+        guard let fileID = await self.fileID else { return }
+        if await groupPermissions != nil {
+            let values = try await self.fileClient?.fetchGroupPermissions(fileID)
+            if let values {
+                await MainActor.run {
+                    self.groupPermissions = values
+                    self.groupPermissionsError = nil
+                }
+            }
+        }
     }
 
     // MARK: - Timer
@@ -113,25 +128,8 @@ public class SharingStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                guard let fileID = await self.fileID else { return }
-                if await self.userPermissions != nil {
-                    let values = try await self.fetchUserPermissions(fileID)
-                    if let values {
-                        await MainActor.run {
-                            self.userPermissions = values
-                            self.userPermissionsError = nil
-                        }
-                    }
-                }
-                if await self.groupPermissions != nil {
-                    let values = try await self.fetchGroupPermissions(fileID)
-                    if let values {
-                        await MainActor.run {
-                            self.groupPermissions = values
-                            self.groupPermissionsError = nil
-                        }
-                    }
-                }
+                try await self.syncUserPermissions()
+                try await self.syncGroupPermissions()
             }
         }
     }

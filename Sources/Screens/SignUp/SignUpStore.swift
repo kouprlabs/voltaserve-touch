@@ -21,14 +21,10 @@ public class SignUpStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchPasswordRequirements() async throws -> VOAccount.PasswordRequirements? {
-        return try await accountClient.fetchPasswordRequirements()
-    }
-
     public func fetchPasswordRequirements() {
         var passwordRequirements: VOAccount.PasswordRequirements?
         withErrorHandling {
-            passwordRequirements = try await self.fetchPasswordRequirements()
+            passwordRequirements = try await self.accountClient.fetchPasswordRequirements()
             return true
         } before: {
             self.passwordRequirementsIsLoading = true
@@ -44,8 +40,20 @@ public class SignUpStore: ObservableObject {
 
     // MARK: - Update
 
-    public func signUp(_ options: VOAccount.CreateOptions) async throws -> VOIdentityUser.Entity {
+    public func createAccount(_ options: VOAccount.CreateOptions) async throws -> VOIdentityUser.Entity {
         return try await accountClient.create(options)
+    }
+
+    // MARK: - Sync
+
+    public func syncPasswordRequirements() async throws {
+        if await passwordRequirements != nil {
+            let passwordRequirements = try await self.accountClient.fetchPasswordRequirements()
+            await MainActor.run {
+                self.passwordRequirements = passwordRequirements
+                self.passwordRequirementsError = nil
+            }
+        }
     }
 
     // MARK: - Timer
@@ -54,15 +62,7 @@ public class SignUpStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if await self.passwordRequirements != nil {
-                    let passwordRequirements = try await self.fetchPasswordRequirements()
-                    if let passwordRequirements {
-                        await MainActor.run {
-                            self.passwordRequirements = passwordRequirements
-                            self.passwordRequirementsError = nil
-                        }
-                    }
-                }
+                try await self.syncPasswordRequirements()
             }
         }
     }

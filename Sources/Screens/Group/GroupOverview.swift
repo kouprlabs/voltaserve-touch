@@ -10,46 +10,74 @@
 
 import SwiftUI
 
-public struct GroupOverview: View {
+public struct GroupOverview: View, ViewDataProvider, LoadStateProvider {
     @EnvironmentObject private var sessionStore: SessionStore
     @ObservedObject private var groupStore: GroupStore
     @Environment(\.dismiss) private var dismiss
     @State private var shouldDismissSelf = false
-    private let group: VOGroup.Entity
+    private let id: String
 
-    public init(_ group: VOGroup.Entity, groupStore: GroupStore) {
-        self.group = group
+    public init(_ id: String, groupStore: GroupStore) {
+        self.id = id
         self.groupStore = groupStore
     }
 
     public var body: some View {
         VStack {
-            VStack {
-                VOAvatar(name: group.name, size: 100)
-                    .padding()
-                Form {
-                    NavigationLink {
-                        GroupMemberList(groupStore: groupStore)
-                    } label: {
-                        Label("Members", systemImage: "person.2")
-                    }
-                    NavigationLink {
-                        GroupSettings(groupStore: groupStore, shouldDismissParent: $shouldDismissSelf)
-                    } label: {
-                        Label("Settings", systemImage: "gear")
+            if isLoading {
+                ProgressView()
+            } else if let error {
+                VOErrorMessage(error)
+            } else if let current = groupStore.current {
+                VStack {
+                    VOAvatar(name: current.name, size: 100)
+                        .padding()
+                    Form {
+                        NavigationLink {
+                            GroupMemberList(groupStore: groupStore)
+                        } label: {
+                            Label("Members", systemImage: "person.2")
+                        }
+                        NavigationLink {
+                            GroupSettings(groupStore: groupStore, shouldDismissParent: $shouldDismissSelf)
+                        } label: {
+                            Label("Settings", systemImage: "gear")
+                        }
                     }
                 }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(group.name)
+        .modifierIf(groupStore.current != nil) {
+            $0.navigationTitle(groupStore.current!.name)
+        }
         .onAppear {
-            groupStore.current = group
+            onAppearOrChange()
         }
         .onChange(of: shouldDismissSelf) { _, newValue in
             if newValue {
                 dismiss()
             }
         }
+    }
+
+    // MARK: - LoadStateProvider
+
+    public var isLoading: Bool {
+        groupStore.currentIsLoading
+    }
+
+    public var error: String? {
+        groupStore.currentError
+    }
+
+    // MARK: - ViewDataProvider
+
+    public func onAppearOrChange() {
+        fetchData()
+    }
+
+    public func fetchData() {
+        groupStore.fetchCurrent(id)
     }
 }

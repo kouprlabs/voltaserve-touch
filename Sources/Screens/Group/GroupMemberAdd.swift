@@ -12,12 +12,14 @@ import SwiftUI
 
 public struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
     @ObservedObject private var groupStore: GroupStore
+    @ObservedObject private var userStore: UserStore
     @Environment(\.dismiss) private var dismiss
     @State private var user: VOUser.Entity?
     @State private var isProcessing = false
 
-    public init(groupStore: GroupStore) {
+    public init(groupStore: GroupStore, userStore: UserStore) {
         self.groupStore = groupStore
+        self.userStore = userStore
     }
 
     public var body: some View {
@@ -71,8 +73,11 @@ public struct GroupMemberAdd: View, FormValidatable, ErrorPresentable {
 
     private func performAdd() {
         guard let user else { return }
+        guard let current = groupStore.current else { return }
+
         withErrorHandling {
-            try await groupStore.addMember(userID: user.id)
+            try await groupStore.addMember(current.id, options: .init(userID: user.id))
+            try await userStore.syncEntities()
             return true
         } before: {
             isProcessing = true

@@ -18,6 +18,8 @@ public class GroupStore: ObservableObject {
     public var entitiesIsLoadingFirstTime: Bool { entitiesIsLoading && entities == nil }
     @Published public var entitiesError: String?
     @Published public var current: VOGroup.Entity?
+    @Published public var currentIsLoading = false
+    @Published public var currentError: String?
     @Published public var query: String?
     private var list: VOGroup.List?
     private var cancellables = Set<AnyCancellable>()
@@ -50,55 +52,36 @@ public class GroupStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOGroup.Probe? {
-        if let organizationID {
-            try await groupClient?.fetchProbe(
-                .init(
-                    query: query,
-                    organizationID: organizationID,
-                    size: size
-                ))
-        } else {
-            try await groupClient?.fetchProbe(
-                .init(
-                    query: query,
-                    size: size
-                ))
-        }
-    }
-
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOGroup.List? {
-        if let organizationID {
-            try await groupClient?.fetchList(
-                .init(
-                    query: query,
-                    organizationID: organizationID,
-                    page: page,
-                    size: size,
-                    sortBy: .dateCreated,
-                    sortOrder: .desc
-                ))
-        } else {
-            try await groupClient?.fetchList(
-                .init(
-                    query: query,
-                    page: page,
-                    size: size,
-                    sortBy: .dateCreated,
-                    sortOrder: .desc
-                ))
+    public func fetchCurrent(_ id: String) {
+        var group: VOGroup.Entity?
+        withErrorHandling {
+            group = try await self.groupClient?.fetch(id)
+            return true
+        } before: {
+            self.currentIsLoading = true
+        } success: {
+            self.current = group
+            self.currentError = nil
+        } failure: { message in
+            self.currentError = message
+        } anyways: {
+            self.currentIsLoading = false
         }
     }
 
     public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOGroup.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                let probe = try await self.groupClient?.fetchProbe(
+                    .init(
+                        query: self.query,
+                        organizationID: self.organizationID,
+                        size: Constants.pageSize
+                    ))
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -111,7 +94,16 @@ public class GroupStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(page: nextPage)
+            list = try await self.groupClient?.fetchList(
+                .init(
+                    query: self.query,
+                    organizationID: self.organizationID,
+                    page: nextPage,
+                    size: Constants.pageSize,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
+                )
+            )
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -134,22 +126,68 @@ public class GroupStore: ObservableObject {
 
     // MARK: - Update
 
-    public func create(name: String, organization: VOOrganization.Entity) async throws -> VOGroup.Entity? {
-        try await groupClient?.create(.init(name: name, organizationID: organization.id))
+    public func create(_ options: VOGroup.CreateOptions) async throws -> VOGroup.Entity? {
+        try await groupClient?.create(options)
     }
 
-    public func patchName(_ id: String, name: String) async throws -> VOGroup.Entity? {
-        try await groupClient?.patchName(id, options: .init(name: name))
+    public func patchName(_ id: String, options: VOGroup.PatchNameOptions) async throws -> VOGroup.Entity? {
+        try await groupClient?.patchName(id, options: options)
     }
 
-    public func delete() async throws {
-        guard let current else { return }
-        try await groupClient?.delete(current.id)
+    public func delete(_ id: String) async throws {
+        try await groupClient?.delete(id)
     }
 
-    public func addMember(userID: String) async throws {
-        guard let current else { return }
-        try await groupClient?.addMember(current.id, options: .init(userID: userID))
+    public func addMember(_ id: String, options: VOGroup.AddMemberOptions) async throws {
+        try await groupClient?.addMember(id, options: options)
+    }
+
+    public func removeMember(_ id: String, options: VOGroup.RemoveMemberOptions) async throws {
+        try await groupClient?.removeMember(id, options: options)
+    }
+
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            let list = try await self.groupClient?.fetchList(
+                .init(
+                    query: query,
+                    organizationID: organizationID,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
+                )
+            )
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
+    }
+
+    public func syncCurrent() async throws {
+        if let current = self.current {
+            let group = try await self.groupClient?.fetch(current.id)
+            if let group {
+                try await syncCurrent(group: group)
+            }
+        }
+    }
+
+    public func syncCurrent(group: VOGroup.Entity) async throws {
+        if let current = self.current {
+            await MainActor.run {
+                let index = entities?.firstIndex(where: { $0.id == current.id })
+                if let index {
+                    self.current = group
+                    entities?[index] = group
+                }
+            }
+        }
     }
 
     // MARK: - Entities
@@ -213,18 +251,8 @@ public class GroupStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncCurrent()
             }
         }
     }

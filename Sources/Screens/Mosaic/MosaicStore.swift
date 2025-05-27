@@ -31,15 +31,14 @@ public class MosaicStore: ObservableObject {
         }
     }
 
-    private func fetchMetadata() async throws -> VOMosaic.Metadata? {
-        guard let fileID else { return nil }
-        return try await mosaicClient?.fetchMetadata(fileID)
-    }
+    // MARK: - Fetch
 
     public func fetchMetadata() {
+        guard let fileID = self.fileID else { return }
         var metadata: VOMosaic.Metadata?
+
         withErrorHandling {
-            metadata = try await self.fetchMetadata()
+            metadata = try await self.mosaicClient?.fetchMetadata(fileID)
             return true
         } before: {
             self.metadataIsLoading = true
@@ -53,6 +52,8 @@ public class MosaicStore: ObservableObject {
         }
     }
 
+    // MARK: - Update
+
     public func create() async throws -> VOTask.Entity? {
         guard let fileID else { return nil }
         return try await mosaicClient?.create(fileID)
@@ -63,19 +64,26 @@ public class MosaicStore: ObservableObject {
         return try await mosaicClient?.delete(fileID)
     }
 
+    // MARK: - Sync
+    public func syncMetadata() async throws {
+        if await metadata != nil, let fileID = self.fileID {
+            let metadata = try await self.mosaicClient?.fetchMetadata(fileID)
+            if let metadata {
+                await MainActor.run {
+                    self.metadata = metadata
+                    self.metadataError = nil
+                }
+            }
+        }
+    }
+
+    // MARK: - Timer
+
     public func startTimer() {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if await self.metadata != nil {
-                    let metadata = try await self.fetchMetadata()
-                    if let metadata {
-                        await MainActor.run {
-                            self.metadata = metadata
-                            self.metadataError = nil
-                        }
-                    }
-                }
+                try await self.syncMetadata()
             }
         }
     }

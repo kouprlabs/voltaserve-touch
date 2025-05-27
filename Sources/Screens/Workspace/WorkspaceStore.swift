@@ -25,6 +25,8 @@ public class WorkspaceStore: ObservableObject {
     @Published public var storageUsageIsLoading = false
     @Published public var storageUsageError: String?
     @Published public var current: VOWorkspace.Entity?
+    @Published public var currentIsLoading = false
+    @Published public var currentError: String?
     @Published public var query: String?
     private var list: VOWorkspace.List?
     private var cancellables = Set<AnyCancellable>()
@@ -65,35 +67,46 @@ public class WorkspaceStore: ObservableObject {
 
     // MARK: - Fetch
 
-    private func fetch() async throws -> VOWorkspace.Entity? {
-        guard let current else { return nil }
-        return try await workspaceClient?.fetch(current.id)
-    }
+    public func fetchCurrent(_ id: String) {
+        var workspace: VOWorkspace.Entity?
+        var root: VOFile.Entity?
 
-    private func fetchProbe(size: Int = Constants.pageSize) async throws -> VOWorkspace.Probe? {
-        try await workspaceClient?.fetchProbe(.init(query: query, size: size))
-    }
+        withErrorHandling {
+            workspace = try await self.workspaceClient?.fetch(id)
+            if let workspace {
+                root = try await self.fileClient?.fetch(workspace.rootID)
+            }
+            return true
+        } before: {
+            self.currentIsLoading = true
+            self.rootIsLoading = true
+        } success: {
+            self.current = workspace
+            self.currentError = nil
 
-    private func fetchList(page: Int = 1, size: Int = Constants.pageSize) async throws -> VOWorkspace.List? {
-        try await workspaceClient?.fetchList(
-            .init(
-                query: query,
-                page: page,
-                size: size,
-                sortBy: .dateCreated,
-                sortOrder: .desc
-            ))
+            self.root = root
+            self.rootError = nil
+        } failure: { message in
+            self.currentError = message
+            self.rootError = message
+        } anyways: {
+            self.currentIsLoading = false
+            self.rootIsLoading = false
+        }
     }
 
     public func fetchNextPage(replace: Bool = false) {
         guard !entitiesIsLoading else { return }
-
         var nextPage = -1
         var list: VOWorkspace.List?
 
         withErrorHandling {
             if let list = self.list {
-                let probe = try await self.fetchProbe(size: Constants.pageSize)
+                let probe = try await self.workspaceClient?.fetchProbe(
+                    .init(
+                        query: self.query,
+                        size: Constants.pageSize
+                    ))
                 if let probe {
                     self.list = .init(
                         data: list.data,
@@ -106,7 +119,14 @@ public class WorkspaceStore: ObservableObject {
             }
             if !self.hasNextPage() { return false }
             nextPage = self.nextPage()
-            list = try await self.fetchList(page: nextPage)
+            list = try await self.workspaceClient?.fetchList(
+                .init(
+                    query: self.query,
+                    page: nextPage,
+                    size: Constants.pageSize,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
+                ))
             return true
         } before: {
             self.entitiesIsLoading = true
@@ -127,43 +147,18 @@ public class WorkspaceStore: ObservableObject {
         }
     }
 
-    private func fetchRoot() async throws -> VOFile.Entity? {
-        guard let current else { return nil }
-        return try await fileClient?.fetch(current.rootID)
-    }
-
-    public func fetchRoot() {
-        var root: VOFile.Entity?
-        withErrorHandling {
-            root = try await self.fetchRoot()
-            self.rootError = nil
-            return true
-        } before: {
-            self.rootIsLoading = true
-        } success: {
-            self.root = root
-        } failure: { message in
-            self.rootError = message
-        } anyways: {
-            self.rootIsLoading = false
-        }
-    }
-
-    private func fetchStorageUsage() async throws -> VOStorage.Usage? {
-        guard let current else { return nil }
-        return try await storageClient?.fetchWorkspaceUsage(current.id)
-    }
-
     public func fetchStorageUsage() {
+        guard let current else { return }
         var storageUsage: VOStorage.Usage?
+
         withErrorHandling {
-            storageUsage = try await self.fetchStorageUsage()
-            self.storageUsageError = nil
+            storageUsage = try await self.storageClient?.fetchWorkspaceUsage(current.id)
             return true
         } before: {
             self.storageUsageIsLoading = true
         } success: {
             self.storageUsage = storageUsage
+            self.storageUsageError = nil
         } failure: { message in
             self.storageUsageError = message
         } anyways: {
@@ -173,34 +168,89 @@ public class WorkspaceStore: ObservableObject {
 
     // MARK: - Update
 
-    public func create(
-        name: String,
-        organization: VOOrganization.Entity,
-        storageCapacity: Int
+    public func create(_ options: VOWorkspace.CreateOptions) async throws -> VOWorkspace.Entity? {
+        try await workspaceClient?.create(options)
+    }
+
+    public func patchName(_ id: String, options: VOWorkspace.PatchNameOptions) async throws -> VOWorkspace.Entity? {
+        try await workspaceClient?.patchName(id, options: options)
+    }
+
+    public func patchStorageCapacity(
+        _ id: String,
+        options: VOWorkspace.PatchStorageCapacityOptions
     ) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.create(
-            .init(
-                name: name,
-                organizationID: organization.id,
-                storageCapacity: storageCapacity
-            ))
+        return try await workspaceClient?.patchStorageCapacity(id, options: options)
     }
 
-    public func patchName(_ id: String, name: String) async throws -> VOWorkspace.Entity? {
-        try await workspaceClient?.patchName(id, options: .init(name: name))
+    public func delete(_ id: String) async throws {
+        try await workspaceClient?.delete(id)
     }
 
-    public func patchStorageCapacity(storageCapacity: Int) async throws -> VOWorkspace.Entity? {
-        guard let current else { return nil }
-        return try await workspaceClient?.patchStorageCapacity(
-            current.id,
-            options: .init(storageCapacity: storageCapacity)
-        )
+    // MARK: - Sync
+
+    public func syncEntities() async throws {
+        if let entities = await self.entities {
+            let list = try await self.workspaceClient?.fetchList(
+                .init(
+                    query: self.query,
+                    page: 1,
+                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    sortBy: .dateCreated,
+                    sortOrder: .desc
+                ))
+            if let list {
+                await MainActor.run {
+                    self.entities = list.data
+                    self.entitiesError = nil
+                }
+            }
+        }
     }
 
-    public func delete() async throws {
-        guard let current else { return }
-        try await workspaceClient?.delete(current.id)
+    public func syncRoot() async throws {
+        if let current = await current, await root != nil {
+            let root = try await self.fileClient?.fetch(current.rootID)
+            if let root {
+                await MainActor.run {
+                    self.root = root
+                    self.rootError = nil
+                }
+            }
+        }
+    }
+
+    public func syncStorageUsage() async throws {
+        if let current = await current, await storageUsage != nil {
+            let storageUsage = try await self.storageClient?.fetchWorkspaceUsage(current.id)
+            if let storageUsage {
+                await MainActor.run {
+                    self.storageUsage = storageUsage
+                    self.storageUsageError = nil
+                }
+            }
+        }
+    }
+
+    public func syncCurrent() async throws {
+        if let current = self.current {
+            let workspace = try await self.workspaceClient?.fetch(current.id)
+            if let workspace {
+                try await syncCurrent(workspace: workspace)
+            }
+        }
+    }
+
+    public func syncCurrent(workspace: VOWorkspace.Entity) async throws {
+        if let current = self.current {
+            await MainActor.run {
+                let index = entities?.firstIndex(where: { $0.id == workspace.id })
+                if let index {
+                    self.current = workspace
+                    self.entities?[index] = workspace
+                }
+            }
+        }
     }
 
     // MARK: - Entities
@@ -264,38 +314,10 @@ public class WorkspaceStore: ObservableObject {
         guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             Task.detached {
-                if let entities = await self.entities {
-                    let list = try await self.fetchList(
-                        page: 1,
-                        size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize
-                    )
-                    if let list {
-                        await MainActor.run {
-                            self.entities = list.data
-                            self.entitiesError = nil
-                        }
-                    }
-                }
-                if await self.current != nil {
-                    if await self.root != nil {
-                        let root = try await self.fetchRoot()
-                        if let root {
-                            await MainActor.run {
-                                self.root = root
-                                self.rootError = nil
-                            }
-                        }
-                    }
-                    if await self.storageUsage != nil {
-                        let storageUsage = try await self.fetchStorageUsage()
-                        if let storageUsage {
-                            await MainActor.run {
-                                self.storageUsage = storageUsage
-                                self.storageUsageError = nil
-                            }
-                        }
-                    }
-                }
+                try await self.syncEntities()
+                try await self.syncRoot()
+                try await self.syncStorageUsage()
+                try await self.syncCurrent()
             }
         }
     }

@@ -56,14 +56,7 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
                         }
                         Section(header: VOSectionHeader("Basics")) {
                             NavigationLink {
-                                WorkspaceEditName(workspaceStore: workspaceStore) { updatedWorkspace in
-                                    workspaceStore.current = updatedWorkspace
-                                    if let index = workspaceStore.entities?.firstIndex(where: {
-                                        $0.id == updatedWorkspace.id
-                                    }) {
-                                        workspaceStore.entities?[index] = updatedWorkspace
-                                    }
-                                }
+                                WorkspaceEditName(workspaceStore: workspaceStore)
                             } label: {
                                 HStack {
                                     Text("Name")
@@ -85,7 +78,7 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
                                 }
                                 .disabled(isDeleting)
                                 .confirmationDialog("Delete Workspace", isPresented: $deleteConfirmationIsPresentable) {
-                                    Button("Delete", role: .destructive) {
+                                    Button("Delete Workspace", role: .destructive) {
                                         performDelete()
                                     }
                                 } message: {
@@ -112,17 +105,15 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
     }
 
     private func performDelete() {
-        let current = workspaceStore.current
+        guard let current = workspaceStore.current else { return }
         withErrorHandling {
-            try await workspaceStore.delete()
+            try await workspaceStore.delete(current.id)
             return true
         } before: {
             isDeleting = true
         } success: {
+            reflectDeleteInStore(current.id)
             dismiss()
-            if let current {
-                reflectDeleteInStore(current.id)
-            }
             shouldDismissParent = true
         } failure: { message in
             errorMessage = message

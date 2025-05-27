@@ -144,7 +144,7 @@ public struct FileInfo: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
             }
         }
         .onAppear {
-            fileStore.file = file
+            fileStore.current = file
             if let session = sessionStore.session {
                 assignSessionToStores(session)
                 startTimers()

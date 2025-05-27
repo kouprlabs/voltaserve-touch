@@ -40,7 +40,7 @@ public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLif
                             } else {
                                 List(entities, id: \.displayID) { workspace in
                                     NavigationLink {
-                                        WorkspaceOverview(workspace, workspaceStore: workspaceStore)
+                                        WorkspaceOverview(workspace.id, workspaceStore: workspaceStore)
                                     } label: {
                                         WorkspaceRow(workspace)
                                             .onAppear {
@@ -80,7 +80,7 @@ public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLif
             }
             .navigationDestination(isPresented: $overviewIsPresented) {
                 if let newWorkspace {
-                    WorkspaceOverview(newWorkspace, workspaceStore: workspaceStore)
+                    WorkspaceOverview(newWorkspace.id, workspaceStore: workspaceStore)
                 }
             }
         }

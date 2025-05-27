@@ -86,10 +86,14 @@ public struct WorkspaceCreate: View, FormValidatable, ErrorPresentable {
 
         withErrorHandling {
             workspace = try await workspaceStore.create(
-                name: normalizedName,
-                organization: organization,
-                storageCapacity: storageCapacity
-            )
+                .init(
+                    name: normalizedName,
+                    organizationID: organization.id,
+                    storageCapacity: storageCapacity
+                ))
+            if let workspace {
+                try await workspaceStore.syncEntities()
+            }
             if workspaceStore.isLastPage() {
                 workspaceStore.fetchNextPage()
             }

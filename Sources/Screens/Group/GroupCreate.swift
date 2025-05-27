@@ -78,7 +78,15 @@ public struct GroupCreate: View, FormValidatable, ErrorPresentable {
         var group: VOGroup.Entity?
 
         withErrorHandling {
-            group = try await groupStore.create(name: normalizedName, organization: organization)
+            group = try await groupStore.create(
+                .init(
+                    name: normalizedName,
+                    organizationID: organization.id
+                )
+            )
+            if let group {
+                try await groupStore.syncEntities()
+            }
             if groupStore.isLastPage() {
                 groupStore.fetchNextPage()
             }

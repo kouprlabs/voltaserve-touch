@@ -31,14 +31,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
                 Form {
                     Section(header: VOSectionHeader("Basics")) {
                         NavigationLink {
-                            OrganizationEditName(organizationStore: organizationStore) { updatedOranization in
-                                organizationStore.current = updatedOranization
-                                if let index = organizationStore.entities?.firstIndex(where: {
-                                    $0.id == updatedOranization.id
-                                }) {
-                                    organizationStore.entities?[index] = updatedOranization
-                                }
-                            }
+                            OrganizationEditName(organizationStore: organizationStore)
                         } label: {
                             HStack {
                                 Text("Name")
@@ -59,7 +52,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
                         }
                         .disabled(isLeaving)
                         .confirmationDialog("Leave Organization", isPresented: $leaveConfirmationIsPresented) {
-                            Button("Leave", role: .destructive) {
+                            Button("Leave Organization", role: .destructive) {
                                 performLeave()
                             }
                         } message: {
@@ -75,7 +68,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
                             }
                             .disabled(isDeleting)
                             .confirmationDialog("Delete Organization", isPresented: $deleteConfirmationIsPresented) {
-                                Button("Delete", role: .destructive) {
+                                Button("Delete Organization", role: .destructive) {
                                     performDelete()
                                 }
                             } message: {
@@ -92,8 +85,9 @@ public struct OrganizationSettings: View, ErrorPresentable {
     }
 
     private func performLeave() {
+        guard let current = organizationStore.current else { return }
         withErrorHandling {
-            try await organizationStore.leave()
+            try await organizationStore.leave(current.id)
             return true
         } before: {
             isLeaving = true
@@ -112,16 +106,17 @@ public struct OrganizationSettings: View, ErrorPresentable {
     }
 
     private func performDelete() {
+        guard let current = organizationStore.current else { return }
         withErrorHandling {
-            try await organizationStore.delete()
+            try await organizationStore.delete(current.id)
             return true
         } before: {
             isDeleting = true
         } success: {
-            dismiss()
             if let current = organizationStore.current {
                 reflectDeleteInStore(current.id)
             }
+            dismiss()
             shouldDismissParent = true
         } failure: { message in
             errorMessage = message
