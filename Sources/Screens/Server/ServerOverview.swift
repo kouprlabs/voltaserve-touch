@@ -95,7 +95,7 @@ public struct ServerOverview: View {
                     }
                     .disabled(isProcessing)
                     .confirmationDialog("Activate Server", isPresented: $activateConfirmationIsPresented) {
-                        Button("Activate") {
+                        Button("Activate Server") {
                             performActivate()
                         }
                     } message: {
@@ -115,7 +115,7 @@ public struct ServerOverview: View {
                 }
                 .disabled(isProcessing)
                 .confirmationDialog("Delete Server", isPresented: $deleteConfirmationsIsPresented) {
-                    Button("Delete", role: .destructive) {
+                    Button("Delete Server", role: .destructive) {
                         performDelete()
                         dismiss()
                     }

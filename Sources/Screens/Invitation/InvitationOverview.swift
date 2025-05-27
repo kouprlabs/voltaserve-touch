@@ -90,7 +90,7 @@ public struct InvitationOverview: View, SessionDistributing, ErrorPresentable {
                     }
                     .disabled(isProcessing)
                     .confirmationDialog("Delete Invitation", isPresented: $deleteConfirmationIsPresented) {
-                        Button("Delete", role: .destructive) {
+                        Button("Delete Invitation", role: .destructive) {
                             performDelete()
                         }
                     } message: {
@@ -123,7 +123,7 @@ public struct InvitationOverview: View, SessionDistributing, ErrorPresentable {
                     }
                     .disabled(isProcessing)
                     .confirmationDialog("Decline Invitation", isPresented: $declineConfirmationIsPresented) {
-                        Button("Decline", role: .destructive) {
+                        Button("Decline Invitation", role: .destructive) {
                             performDecline()
                         }
                     } message: {

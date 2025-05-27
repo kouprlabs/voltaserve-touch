@@ -52,7 +52,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
                         }
                         .disabled(isLeaving)
                         .confirmationDialog("Leave Organization", isPresented: $leaveConfirmationIsPresented) {
-                            Button("Leave", role: .destructive) {
+                            Button("Leave Organization", role: .destructive) {
                                 performLeave()
                             }
                         } message: {
@@ -68,7 +68,7 @@ public struct OrganizationSettings: View, ErrorPresentable {
                             }
                             .disabled(isDeleting)
                             .confirmationDialog("Delete Organization", isPresented: $deleteConfirmationIsPresented) {
-                                Button("Delete", role: .destructive) {
+                                Button("Delete Organization", role: .destructive) {
                                     performDelete()
                                 }
                             } message: {

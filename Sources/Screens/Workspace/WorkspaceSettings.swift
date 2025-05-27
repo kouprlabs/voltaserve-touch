@@ -78,7 +78,7 @@ public struct WorkspaceSettings: View, ViewDataProvider, LoadStateProvider, Erro
                                 }
                                 .disabled(isDeleting)
                                 .confirmationDialog("Delete Workspace", isPresented: $deleteConfirmationIsPresentable) {
-                                    Button("Delete", role: .destructive) {
+                                    Button("Delete Workspace", role: .destructive) {
                                         performDelete()
                                     }
                                 } message: {

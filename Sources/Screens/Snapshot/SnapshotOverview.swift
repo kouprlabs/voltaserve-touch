@@ -76,7 +76,7 @@ public struct SnapshotOverview: View, ErrorPresentable {
                     }
                     .disabled(isProcessing)
                     .confirmationDialog("Activate Snapshot", isPresented: $activateConfirmationIsPresentable) {
-                        Button("Activate") {
+                        Button("Activate Snapshot") {
                             performActivate()
                         }
                     } message: {
@@ -95,7 +95,7 @@ public struct SnapshotOverview: View, ErrorPresentable {
                     }
                     .disabled(snapshot.isActive || isProcessing)
                     .confirmationDialog("Detach Snapshot", isPresented: $detachConfirmationIsPresentable) {
-                        Button("Detach", role: .destructive) {
+                        Button("Detach Snapshot", role: .destructive) {
                             performDetach()
                             dismiss()
                         }
