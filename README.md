@@ -1,8 +1,33 @@
-# Voltaserve iOS
+<!-- markdownlint-disable MD033 MD041 -->
+<p align="center">
+  <img height="70" src=".assets/brand-20250421130000.svg" />
+  <h1 align="center">Voltaserve for iOS</h1>
+</p>
 
-Optimized for iPhone and iPad, runs great on the Mac.
+<h3 align="center">Cloud Storage for Creators</h2>
 
-Watch the [demo video](https://youtu.be/RpHp0OEa_o8?feature=shared).
+<p align="center">
+  <a href="https://apps.apple.com/app/id6744360805">
+    <img height="40" src=".assets/app-store-20250424234000.svg" />
+  </a>
+  <a href="https://apps.apple.com/mac/app/id6744360805">
+    <img height="40" src=".assets/mac-app-store-20250424234000.svg" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/sCfvdj49WBw">▶ Talk to your files and manilulate them</a>
+  <br/>
+  <a href="https://youtu.be/Uf3EWb2hDfs">▶ Your creative private cloud</a>
+  <br/>
+  <a href="https://youtu.be/RpHp0OEa_o8">▶ iOS app walkthtough</a>
+</p>
+
+[![Join our Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white&label=Join%20us&style=for-the-badge)](https://discord.gg/qYXtsMpqMR)
+
+This is Voltaserve's iOS app, it’s fully native, optimized for iPad and iPhone, runs beautifully on the Mac, features a slick user interface with real-time updates, and is built using Apple’s flagship framework, SwiftUI.
+
+<img src=".assets/collage-20250528000000.png">
 
 ## Usage
 
