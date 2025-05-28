@@ -23,7 +23,7 @@ public struct FileSheetCreateFolder: ViewModifier {
         content
             .sheet(isPresented: $fileStore.createFolderIsPresented) {
                 if let current = fileStore.current, let workspace = workspaceStore.current {
-                    FolderCreate(parentID: current.id, workspaceId: workspace.id, fileStore: fileStore)
+                    FileCreate(parentID: current.id, workspaceId: workspace.id, fileStore: fileStore)
                 }
             }
     }
