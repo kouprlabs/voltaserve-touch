@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-public struct FolderCreate: View, ErrorPresentable, FormValidatable {
+public struct FileCreate: View, ErrorPresentable, FormValidatable {
     @ObservedObject private var fileStore: FileStore
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -65,6 +65,7 @@ public struct FolderCreate: View, ErrorPresentable, FormValidatable {
                     parentID: parentID,
                     name: normalizedName,
                 ))
+            try await fileStore.syncEntities()
             if fileStore.isLastPage() {
                 fileStore.fetchNextPage()
             }
