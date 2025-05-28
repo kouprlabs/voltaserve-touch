@@ -97,7 +97,7 @@ public struct TaskOverview: View, ErrorPresentable, SessionDistributing {
                         isPresented: $dismissConfirmationIsPresented,
                         titleVisibility: .visible
                     ) {
-                        Button("Dismiss", role: .destructive) {
+                        Button("Dismiss Task", role: .destructive) {
                             performDismiss()
                         }
                     } message: {

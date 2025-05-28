@@ -90,7 +90,7 @@ public struct SharingGroupForm: View, FormValidatable, ErrorPresentable {
                     .confirmationDialog(
                         "Revoke Permission", isPresented: $revokeConfirmationIsPresented, titleVisibility: .visible
                     ) {
-                        Button("Revoke", role: .destructive) {
+                        Button("Revoke Permission", role: .destructive) {
                             performRevoke()
                         }
                     } message: {

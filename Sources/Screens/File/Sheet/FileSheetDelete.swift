@@ -20,19 +20,20 @@ public struct FileSheetDelete: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .alert(
-                fileStore.selection.count > 1 ? "Delete (\(fileStore.selection.count)) Items" : "Delete Item",
-                isPresented: $fileStore.deleteConfirmationIsPresented
+            .confirmationDialog(
+                fileStore.selection.count == 1
+                    ? "Are you sure you want to delete this item?"
+                    : "Are you sure you want to delete \(fileStore.selection.count) items?",
+                isPresented: $fileStore.deleteConfirmationIsPresented,
+                titleVisibility: .visible
             ) {
-                Button("Delete", role: .destructive) {
+                Button(
+                    fileStore.selection.count == 1 ? "Delete Item" : "Delete \(fileStore.selection.count) Items",
+                    role: .destructive
+                ) {
                     deleteIsPresented = true
                 }
-            } message: {
-                if fileStore.selection.count > 1 {
-                    Text("Are you sure you want to delete these items?")
-                } else {
-                    Text("Are you sure you want to delete this item?")
-                }
+                Button("Cancel", role: .cancel) {}
             }
             .sheet(isPresented: $deleteIsPresented) {
                 FileDelete(fileStore: fileStore)
