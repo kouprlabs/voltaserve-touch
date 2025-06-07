@@ -98,7 +98,6 @@ public struct TaskList: View, ViewDataProvider, LoadStateProvider, TimerLifecycl
             isDismissingAll = true
         } success: {
             taskStore.fetchNextPage(replace: true)
-            dismiss()
         } failure: { message in
             errorMessage = message
             errorIsPresented = true
