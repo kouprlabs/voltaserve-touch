@@ -61,7 +61,7 @@ public struct ServerOverview: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                NavigationLink(destination: ServerEditIdentityProviderURL(server)) {
+                NavigationLink(destination: ServerEditMurphURL(server)) {
                     HStack {
                         Text("Murph")
                         Spacer()
