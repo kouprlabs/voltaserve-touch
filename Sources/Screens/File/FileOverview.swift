@@ -64,6 +64,9 @@ public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLife
         .fileSelectionReset(fileStore: fileStore)
         .onAppear {
             fileStore.current = folder
+            Task {
+                try await fileStore.syncEntities()
+            }
             if let session = sessionStore.session {
                 assignSessionToStores(session)
                 startTimers()
