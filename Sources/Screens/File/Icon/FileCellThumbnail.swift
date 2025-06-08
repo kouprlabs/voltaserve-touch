@@ -8,7 +8,17 @@
 // by the GNU Affero General Public License v3.0 only, included in the file
 // AGPL-3.0-only in the root of this repository.
 
+import Kingfisher
 import SwiftUI
+
+private let customKingfisherManager: KingfisherManager = {
+    let config = URLSessionConfiguration.default
+    config.timeoutIntervalForRequest = 30
+    config.timeoutIntervalForResource = 60
+    let downloader = ImageDownloader(name: "custom.downloader")
+    downloader.sessionConfiguration = config
+    return KingfisherManager(downloader: downloader, cache: .default)
+}()
 
 public struct FileCellThumbnail<FallbackContent: View>: View {
     @ObservedObject private var fileStore: FileStore
@@ -27,29 +37,30 @@ public struct FileCellThumbnail<FallbackContent: View>: View {
     }
 
     public var body: some View {
-        AsyncImage(url: url) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
-                .fileActions(file, fileStore: fileStore)
-                .overlay {
-                    RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
-                        .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+        KFImage(url)
+            .cacheOriginalImage()
+            .placeholder {
+                fallback()
+            }
+            .cancelOnDisappear(true)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+            .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm))
+            .fileActions(file, fileStore: fileStore)
+            .overlay {
+                RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
+                    .strokeBorder(Color.borderColor(colorScheme: colorScheme), lineWidth: 1)
+            }
+            .fileCellAdornments(file)
+            .overlay {
+                if let fileExtension = file.snapshot?.original.fileExtension, fileExtension.isVideo() {
+                    Image(systemName: "play.fill")
+                        .foregroundStyle(.white)
+                        .font(.largeTitle)
+                        .opacity(0.5)
                 }
-                .fileCellAdornments(file)
-                .overlay {
-                    if let fileExtension = file.snapshot?.original.fileExtension, fileExtension.isVideo() {
-                        Image(systemName: "play.fill")
-                            .foregroundStyle(.white)
-                            .font(.largeTitle)
-                            .opacity(0.5)
-                    }
-                }
-                .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
-        } placeholder: {
-            fallback()
-        }
+            }
+            .frame(maxWidth: FileCellMetrics.frameSize.width, maxHeight: FileCellMetrics.frameSize.height)
     }
 }
