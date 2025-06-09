@@ -13,6 +13,7 @@ import SwiftUI
 public struct ViewerImage: View, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore
     @StateObject private var viewerImageStore = ViewerImageStore()
+    @StateObject private var downloadManager = DownloadManager()
     private let file: VOFile.Entity
 
     public init(_ file: VOFile.Entity) {
@@ -27,8 +28,19 @@ public struct ViewerImage: View, SessionDistributing {
                 let fileExtension = downloadable.fileExtension, fileExtension.isImage(),
                 let url = viewerImageStore.url
             {
-                ViewerImageWebView(url: url)
-                    .edgesIgnoringSafeArea(.horizontal)
+                if let data = downloadManager.downloadedData {
+                    ViewerImageWebView(data: data, fileExtension: downloadable.fileExtension)
+                        .edgesIgnoringSafeArea(.horizontal)
+                } else {
+                    VStack(spacing: VOMetrics.spacingSm) {
+                        Text("Downloading…")
+                            .foregroundStyle(.secondary)
+                        ProgressView(value: downloadManager.progress)
+                            .progressViewStyle(LinearProgressViewStyle())
+                    }
+                    .frame(maxWidth: VOMetrics.formWidth)
+                    .padding()
+                }
             }
         }
         .onAppear {
@@ -38,6 +50,9 @@ public struct ViewerImage: View, SessionDistributing {
             }
             if let session = sessionStore.session {
                 assignSessionToStores(session)
+            }
+            if viewerImageStore.url != nil && downloadManager.downloadedData == nil {
+                downloadManager.startDownload(from: viewerImageStore.url!)
             }
         }
         .onChange(of: sessionStore.session) { _, newSession in

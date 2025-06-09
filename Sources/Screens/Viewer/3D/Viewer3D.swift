@@ -15,6 +15,7 @@ import SwiftUI
 public struct Viewer3D: View, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore
     @StateObject private var viewer3DStore = Viewer3DStore()
+    @StateObject private var downloadManager = DownloadManager()
     private let file: VOFile.Entity
 
     public init(_ file: VOFile.Entity) {
@@ -29,8 +30,19 @@ public struct Viewer3D: View, SessionDistributing {
                 let fileExtension = downloadable.fileExtension, fileExtension.isGLB(),
                 let url = viewer3DStore.url
             {
-                Viewer3DRenderer(file: file, url: url)
-                    .edgesIgnoringSafeArea(.horizontal)
+                if let data = downloadManager.downloadedData {
+                    Viewer3DRenderer(file: file, data: data)
+                        .edgesIgnoringSafeArea(.horizontal)
+                } else {
+                    VStack(spacing: VOMetrics.spacingSm) {
+                        Text("Downloading…")
+                            .foregroundStyle(.secondary)
+                        ProgressView(value: downloadManager.progress)
+                            .progressViewStyle(LinearProgressViewStyle())
+                    }
+                    .frame(maxWidth: VOMetrics.formWidth)
+                    .padding()
+                }
             }
         }
         .onAppear {
@@ -38,6 +50,12 @@ public struct Viewer3D: View, SessionDistributing {
             if let session = sessionStore.session {
                 assignSessionToStores(session)
             }
+            if viewer3DStore.url != nil && downloadManager.downloadedData == nil {
+                downloadManager.startDownload(from: viewer3DStore.url!)
+            }
+        }
+        .onDisappear {
+            downloadManager.downloadedData = nil
         }
         .onChange(of: sessionStore.session) { _, newSession in
             if let newSession {

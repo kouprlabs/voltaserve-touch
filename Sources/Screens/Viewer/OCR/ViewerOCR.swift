@@ -13,6 +13,7 @@ import SwiftUI
 public struct ViewerOCR: View, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore
     @StateObject private var viewerOCRStore = ViewerOCRStore()
+    @StateObject private var downloadManager = DownloadManager()
     private let file: VOFile.Entity
 
     public init(_ file: VOFile.Entity) {
@@ -27,14 +28,28 @@ public struct ViewerOCR: View, SessionDistributing {
                 let fileExtension = downloadable.fileExtension, fileExtension.isPDF(),
                 let url = viewerOCRStore.url
             {
-                ViewerOCRWebView(url: url)
-                    .edgesIgnoringSafeArea(.horizontal)
+                if let data = downloadManager.downloadedData {
+                    ViewerOCRWebView(data: data, fileExtension: downloadable.fileExtension)
+                        .edgesIgnoringSafeArea(.horizontal)
+                } else {
+                    VStack(spacing: VOMetrics.spacingSm) {
+                        Text("Downloading…")
+                            .foregroundStyle(.secondary)
+                        ProgressView(value: downloadManager.progress)
+                            .progressViewStyle(LinearProgressViewStyle())
+                    }
+                    .frame(maxWidth: VOMetrics.formWidth)
+                    .padding()
+                }
             }
         }
         .onAppear {
             viewerOCRStore.id = file.id
             if let session = sessionStore.session {
                 assignSessionToStores(session)
+            }
+            if viewerOCRStore.url != nil && downloadManager.downloadedData == nil {
+                downloadManager.startDownload(from: viewerOCRStore.url!)
             }
         }
         .onChange(of: sessionStore.session) { _, newSession in
