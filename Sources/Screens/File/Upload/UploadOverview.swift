@@ -10,8 +10,9 @@
 
 import SwiftUI
 
-public struct FileUpload: View {
+public struct UploadOverview: View {
     @ObservedObject private var fileStore: FileStore
+    @StateObject private var uploadStore = UploadStore()
     @Environment(\.dismiss) private var dismiss
     @State private var isProcessing = true
     @State private var errorIsPresented = false
@@ -26,6 +27,9 @@ public struct FileUpload: View {
         self.file = file
         self.workspace = workspace
         self.fileStore = fileStore
+        for url in urls {
+            uploadStore.append([UploadStore.Entity(url)])
+        }
     }
 
     public var body: some View {
@@ -85,7 +89,10 @@ public struct FileUpload: View {
                                     name: url.lastPathComponent,
                                     data: data
                                 )
-                            )
+                            ) { progress in
+                                uploadStore.patch(url: url, progress: progress)
+                                print("Upload(\(url.lastPathComponent) progress: \(progress)")
+                            }
                         }
                     } else {
                         if let current = fileStore.current, let data = try? Data(contentsOf: url) {
@@ -95,7 +102,11 @@ public struct FileUpload: View {
                                     parentID: current.id,
                                     name: url.lastPathComponent,
                                     data: data
-                                ))
+                                )
+                            ) { progress in
+                                uploadStore.patch(url: url, progress: progress)
+                                print("Upload(\(url.lastPathComponent) progress: \(progress)")
+                            }
                         }
                     }
                     if fileStore.isLastPage() {

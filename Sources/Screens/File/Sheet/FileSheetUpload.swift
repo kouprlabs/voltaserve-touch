@@ -23,7 +23,7 @@ public struct FileSheetUpload: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .sheet(isPresented: $fileStore.uploadDocumentPickerIsPresented) {
-                FileUploadPicker { urls in
+                UploadPicker { urls in
                     pickerURLs = urls
                     fileStore.uploadDocumentPickerIsPresented = false
                     fileStore.uploadIsPresented = true
@@ -32,9 +32,9 @@ public struct FileSheetUpload: ViewModifier {
             .sheet(isPresented: $fileStore.uploadIsPresented) {
                 if let pickerURLs {
                     if let file = fileStore.selectionFiles.first {
-                        FileUpload(pickerURLs, file: file, workspace: file.workspace, fileStore: fileStore)
+                        UploadOverview(pickerURLs, file: file, workspace: file.workspace, fileStore: fileStore)
                     } else if let workspace = workspaceStore.current {
-                        FileUpload(pickerURLs, workspace: workspace, fileStore: fileStore)
+                        UploadOverview(pickerURLs, workspace: workspace, fileStore: fileStore)
                     }
                 }
             }
