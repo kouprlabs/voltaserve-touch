@@ -12,46 +12,84 @@ import Foundation
 import SwiftUI
 import WebKit
 
-struct ViewerImageWebView: UIViewRepresentable {
-    var url: URL
+struct ViewerImageWebView: UIViewControllerRepresentable {
+    let data: Data
+    let fileExtension: String?
 
-    func makeUIView(context _: Context) -> WKWebView {
-        let webView = WKWebView()
-        webView.loadHTMLString(
-            """
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-                    <style>
-                        body, html {
-                            margin: 0;
-                            padding: 0;
-                            background: #000;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            flex-grow: 1;
-                            width: 100%;
-                            height: 100%;
-                            overflow: scroll;
-                        }
-                        img {
-                            object-fit: contain;
-                            max-width: 100%;
-                            max-height: 100%;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <img src="\(url.absoluteString)" />
-                </body>
-            </html>
-            """,
-            baseURL: nil
-        )
-        return webView
+    func makeUIViewController(context: Context) -> UIViewController {
+        let tempFile = FileManager.default.temporaryDirectory.appendingPathComponent(
+            UUID().uuidString + (fileExtension ?? ""))
+        do {
+            try data.write(to: tempFile)
+        } catch {
+            print("Failed to write image to disk: \(error.localizedDescription)")
+        }
+
+        return WebViewController(fileURL: tempFile)
     }
 
-    func updateUIView(_: WKWebView, context _: Context) {}
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+
+    class WebViewController: UIViewController {
+        let fileURL: URL
+        let webView = WKWebView()
+
+        init(fileURL: URL) {
+            self.fileURL = fileURL
+            super.init(nibName: nil, bundle: nil)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            view.addSubview(webView)
+            webView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                webView.topAnchor.constraint(equalTo: view.topAnchor),
+                webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            ])
+
+            let html = """
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                        <style>
+                            body, html {
+                                margin: 0;
+                                padding: 0;
+                                background: #000;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                flex-grow: 1;
+                                width: 100%;
+                                height: 100%;
+                                overflow: scroll;
+                            }
+                            img {
+                                object-fit: contain;
+                                max-width: 100%;
+                                max-height: 100%;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <img src="\(fileURL.absoluteString)" />
+                    </body>
+                </html>
+                """
+            webView.loadHTMLString(html, baseURL: fileURL.deletingLastPathComponent())
+        }
+
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            try? FileManager.default.removeItem(at: fileURL)
+        }
+    }
 }
