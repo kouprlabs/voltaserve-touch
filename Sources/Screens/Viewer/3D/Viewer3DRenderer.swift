@@ -15,11 +15,11 @@ import SwiftUI
 struct Viewer3DRenderer: UIViewRepresentable {
     @State private var isLoading = true
     private let file: VOFile.Entity
-    private let url: URL
+    private let data: Data
 
-    init(file: VOFile.Entity, url: URL) {
+    init(file: VOFile.Entity, data: Data) {
         self.file = file
-        self.url = url
+        self.data = data
     }
 
     func makeUIView(context: Context) -> UIView {
@@ -60,11 +60,11 @@ struct Viewer3DRenderer: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(sceneView: SCNView(), url: url, isLoading: $isLoading)
+        Coordinator(sceneView: SCNView(), data: data, isLoading: $isLoading)
     }
 
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var url: URL
+        var data: Data
         var asset: GLTFAsset?
         var sceneView: SCNView
         var animations = [GLTFSCNAnimation]()
@@ -72,9 +72,9 @@ struct Viewer3DRenderer: UIViewRepresentable {
         var spinner: UIActivityIndicatorView?
         @Binding var isLoading: Bool
 
-        init(sceneView: SCNView, url: URL, isLoading: Binding<Bool>) {
+        init(sceneView: SCNView, data: Data, isLoading: Binding<Bool>) {
             self.sceneView = sceneView
-            self.url = url
+            self.data = data
             _isLoading = isLoading
 
             let camera = SCNCamera()
@@ -92,7 +92,7 @@ struct Viewer3DRenderer: UIViewRepresentable {
         }
 
         func loadAsset() {
-            loadAsset(url: url) { [self] asset, _ in
+            loadAsset(data: data) { [self] asset, _ in
                 if let asset {
                     self.asset = asset
                     setupScene()
@@ -101,10 +101,10 @@ struct Viewer3DRenderer: UIViewRepresentable {
             }
         }
 
-        func loadAsset(url: URL, completion: @escaping (GLTFAsset?, Error?) -> Void) {
+        func loadAsset(data: Data, completion: @escaping (GLTFAsset?, Error?) -> Void) {
             DispatchQueue.global(qos: .userInitiated).async {
                 GLTFAsset.load(
-                    with: url,
+                    with: data,
                     options: [:]
                 ) { _, status, maybeAsset, maybeError, _ in
                     DispatchQueue.main.async {
