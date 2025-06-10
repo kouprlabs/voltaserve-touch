@@ -15,19 +15,40 @@ public class UploadStore: ObservableObject {
 
     public struct Entity {
         let url: URL
-        var progress: Double = 0
-        var status: Status = .waiting
+        var progress: Double
+        var status: Status
+        var message: String
 
-        init(_ url: URL) {
+        var id: String {
+            url.absoluteString
+        }
+
+        var displayID: String {
+            "\(id)-\(self.objectCode)"
+        }
+
+        var objectCode: Int {
+            var builder = Hasher()
+            builder.combine(id)
+            builder.combine(progress)
+            builder.combine(status.rawValue)
+            return builder.finalize()
+        }
+
+        init(_ url: URL, progress: Double = 0, status: Status = .waiting, message: String = "") {
             self.url = url
+            self.progress = progress
+            self.status = status
+            self.message = message
         }
     }
 
-    public enum Status {
+    public enum Status: String, Codable {
         case waiting
         case running
         case success
         case error
+        case cancelled
     }
 
     public func append(_ newEntities: [Entity]) {
@@ -40,19 +61,25 @@ public class UploadStore: ObservableObject {
         }
     }
 
-    public func remove(url: URL) {
+    public func remove(_ url: URL) {
         entities.removeAll(where: { $0.url.absoluteURL == url.absoluteURL })
     }
 
-    public func patch(url: URL, progress: Double) {
+    public func patch(_ url: URL, status: Status? = nil, progress: Double? = nil, message: String? = nil) {
         if let index = entities.firstIndex(where: { $0.url.absoluteString == url.absoluteString }) {
-            entities[index].progress = progress
+            if let status {
+                entities[index].status = status
+            }
+            if let progress {
+                entities[index].progress = progress
+            }
+            if let message {
+                entities[index].message = message
+            }
         }
     }
 
-    public func patch(url: URL, status: Status) {
-        if let index = entities.firstIndex(where: { $0.url.absoluteString == url.absoluteString }) {
-            entities[index].status = status
-        }
+    public func clear() {
+        entities = []
     }
 }

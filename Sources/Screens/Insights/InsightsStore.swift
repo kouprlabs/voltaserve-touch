@@ -157,7 +157,7 @@ public class InsightsStore: ObservableObject {
                 options: .init(
                     query: self.query,
                     page: 1,
-                    size: entities.count > Constants.pageSize ? entities.count : Constants.pageSize,
+                    size: entities.count > Constants.pageSize ? entities.count : (self.pageSize ?? Constants.pageSize),
                     sortBy: .frequency,
                     sortOrder: .desc
                 )

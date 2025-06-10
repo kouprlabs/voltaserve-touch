@@ -16,6 +16,7 @@ public struct FileMove: View {
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
+    @State private var isDone = false
     private let destinationID: String
 
     public init(fileStore: FileStore, to destinationID: String) {
@@ -64,6 +65,7 @@ public struct FileMove: View {
             performMove()
         }
         .presentationDetents([.fraction(0.25)])
+        .interactiveDismissDisabled(!isDone)
     }
 
     private func performMove() {
@@ -105,6 +107,7 @@ public struct FileMove: View {
             errorIsPresented = true
         } anyways: {
             fileStore.selection = []
+            isDone = true
         }
     }
 
