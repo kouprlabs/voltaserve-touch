@@ -39,6 +39,7 @@ public struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLif
                         if let entities = insightsStore.entities {
                             if entities.count < 5 {
                                 Text("Not enough data to render the chart.")
+                                    .foregroundStyle(.secondary)
                             } else {
                                 Chart(entities) { entity in
                                     SectorMark(

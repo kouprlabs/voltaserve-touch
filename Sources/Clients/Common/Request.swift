@@ -45,13 +45,13 @@ public func handleJSONResponse<T: Decodable>(
             do {
                 let result = try JSONDecoder().decode(T.self, from: data)
                 continuation.resume(returning: result)
-            } catch {
+            } catch let jsonError {
                 if let stringData {
-                    print("Failed to decode JSON: \(stringData), error: \(error.localizedDescription)")
+                    print("Failed to decode JSON: \(stringData), error: \(jsonError.localizedDescription)")
                 } else {
-                    print("Failed to decode JSON with error: \(error.localizedDescription)")
+                    print("Failed to decode JSON with error: \(jsonError.localizedDescription)")
                 }
-                continuation.resume(throwing: error)
+                continuation.resume(throwing: jsonError)
             }
         } else {
             if let stringData {

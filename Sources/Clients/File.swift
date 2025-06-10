@@ -155,8 +155,17 @@ public struct VOFile {
         }
     }
 
-    public func create(_ options: CreateFileOptions) async throws -> Entity {
-        try await upload(urlForCreate(options), method: "POST", data: options.data, filename: options.name)
+    public func create(
+        _ options: CreateFileOptions,
+        onProgress: ((Double) -> Void)? = nil
+    ) async throws -> Entity {
+        try await upload(
+            urlForCreate(options),
+            method: "POST",
+            data: options.data,
+            filename: options.name,
+            onProgress: onProgress
+        )
     }
 
     public func create(_ options: CreateFolderOptions) async throws -> Entity {
@@ -178,8 +187,18 @@ public struct VOFile {
         }
     }
 
-    public func patch(_ id: String, options: PatchOptions) async throws -> Entity {
-        try await upload(urlForID(id), method: "PATCH", data: options.data, filename: options.name)
+    public func patch(
+        _ id: String,
+        options: PatchOptions,
+        onProgress: ((Double) -> Void)? = nil
+    ) async throws -> Entity {
+        try await upload(
+            urlForID(id),
+            method: "PATCH",
+            data: options.data,
+            filename: options.name,
+            onProgress: onProgress
+        )
     }
 
     func upload(
@@ -217,20 +236,11 @@ public struct VOFile {
                     type: Entity.self
                 )
             }
-            task.resume()
-
+            var progressObserver: UploadProgressObserver?
             if let onProgress {
-                let progressHandler = {
-                    onProgress(task.progress.fractionCompleted * 100)
-                }
-                let timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
-                    progressHandler()
-                    if task.progress.isFinished {
-                        timer.invalidate()
-                    }
-                }
-                RunLoop.main.add(timer, forMode: .default)
+                progressObserver = UploadProgressObserver(progress: task.progress, handler: onProgress)
             }
+            task.resume()
         }
     }
 
@@ -1034,6 +1044,19 @@ public struct VOFile {
         public init(succeeded: [String], failed: [String]) {
             self.succeeded = succeeded
             self.failed = failed
+        }
+    }
+
+    private final class UploadProgressObserver {
+        private var observation: NSKeyValueObservation?
+
+        init(progress: Progress, handler: @escaping (Double) -> Void) {
+            observation = progress.observe(\.fractionCompleted, options: [.new]) { progress, _ in
+                handler(progress.fractionCompleted * 100)
+                if progress.isFinished {
+                    self.observation = nil
+                }
+            }
         }
     }
 }

@@ -33,10 +33,10 @@ public struct FileCell: View {
                         fileIcon
                     }
                 } else {
-                    fileIcon
+                    fileCell
                 }
             } else if file.type == .folder {
-                folderIcon
+                folderCell
             }
             VStack {
                 Text(file.name)
@@ -53,13 +53,17 @@ public struct FileCell: View {
     }
 
     private var fileIcon: some View {
+        Image(file.iconForFile(colorScheme: colorScheme))
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
+    }
+
+    private var fileCell: some View {
         VStack {
             VStack {
-                Image(file.iconForFile(colorScheme: colorScheme))
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                fileIcon
                     .fileCellAdornments(file)
-                    .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
             }
             .frame(
                 width: FileCellMetrics.iconSize.width + VOMetrics.spacingLg,
@@ -73,13 +77,17 @@ public struct FileCell: View {
     }
 
     private var folderIcon: some View {
+        Image("icon-folder")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
+    }
+
+    private var folderCell: some View {
         VStack {
             VStack {
-                Image("icon-folder")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                folderIcon
                     .fileCellAdornments(file)
-                    .frame(width: FileCellMetrics.iconSize.width, height: FileCellMetrics.iconSize.height)
             }
             .frame(
                 width: FileCellMetrics.iconSize.width + VOMetrics.spacing2Xl,

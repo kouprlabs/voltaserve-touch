@@ -16,6 +16,7 @@ public struct FileDelete: View {
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
+    @State private var isDone = false
 
     public init(fileStore: FileStore) {
         self.fileStore = fileStore
@@ -62,6 +63,7 @@ public struct FileDelete: View {
             performDelete()
         }
         .presentationDetents([.fraction(0.25)])
+        .interactiveDismissDisabled(!isDone)
     }
 
     private func performDelete() {
@@ -98,6 +100,7 @@ public struct FileDelete: View {
             errorIsPresented = true
         } anyways: {
             fileStore.selection = []
+            isDone = true
         }
     }
 

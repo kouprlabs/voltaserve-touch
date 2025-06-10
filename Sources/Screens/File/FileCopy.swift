@@ -16,6 +16,7 @@ public struct FileCopy: View {
     @State private var errorIsPresented = false
     @State private var errorSeverity: ErrorSeverity?
     @State private var errorMessage: String?
+    @State private var isDone = false
     private let destinationID: String
 
     public init(fileStore: FileStore, to destinationID: String) {
@@ -64,6 +65,7 @@ public struct FileCopy: View {
             performCopy()
         }
         .presentationDetents([.fraction(0.25)])
+        .interactiveDismissDisabled(!isDone)
     }
 
     private func performCopy() {
@@ -108,6 +110,7 @@ public struct FileCopy: View {
             errorIsPresented = true
         } anyways: {
             fileStore.selection = []
+            isDone = true
         }
     }
 

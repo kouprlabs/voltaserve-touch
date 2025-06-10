@@ -11,7 +11,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct FileUploadPicker: UIViewControllerRepresentable {
+struct UploadPicker: UIViewControllerRepresentable {
     var onFilesPicked: ([URL]) -> Void
 
     func makeCoordinator() -> Coordinator {
@@ -28,9 +28,9 @@ struct FileUploadPicker: UIViewControllerRepresentable {
     func updateUIViewController(_: UIDocumentPickerViewController, context _: Context) {}
 
     class Coordinator: NSObject, UIDocumentPickerDelegate {
-        var parent: FileUploadPicker
+        var parent: UploadPicker
 
-        init(parent: FileUploadPicker) {
+        init(parent: UploadPicker) {
             self.parent = parent
         }
 

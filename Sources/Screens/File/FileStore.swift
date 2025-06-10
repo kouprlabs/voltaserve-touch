@@ -275,12 +275,19 @@ public class FileStore: ObservableObject {
         try await fileClient?.create(options)
     }
 
-    public func create(_ options: VOFile.CreateFileOptions) async throws -> VOFile.Entity? {
-        try await fileClient?.create(options)
+    public func create(
+        _ options: VOFile.CreateFileOptions,
+        onProgress: ((Double) -> Void)? = nil
+    ) async throws -> VOFile.Entity? {
+        try await fileClient?.create(options, onProgress: onProgress)
     }
 
-    public func patch(_ id: String, options: VOFile.PatchOptions) async throws -> VOFile.Entity? {
-        try await fileClient?.patch(id, options: options)
+    public func patch(
+        _ id: String,
+        options: VOFile.PatchOptions,
+        onProgress: ((Double) -> Void)? = nil
+    ) async throws -> VOFile.Entity? {
+        try await fileClient?.patch(id, options: options, onProgress: onProgress)
     }
 
     public func patchName(_ id: String, options: VOFile.PatchNameOptions) async throws -> VOFile.Entity? {
