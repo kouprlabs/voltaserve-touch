@@ -10,6 +10,7 @@
 
 import SwiftData
 import SwiftUI
+import VoltaserveCore
 
 public struct SignIn: View {
     @Query(filter: #Predicate<Server> { $0.isActive == true }) private var servers: [Server]

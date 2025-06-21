@@ -10,6 +10,7 @@
 
 import AuthenticationServices
 import SwiftUI
+import VoltaserveCore
 
 public struct SignInWithApple: View, ErrorPresentable {
     @EnvironmentObject private var sessionStore: SessionStore

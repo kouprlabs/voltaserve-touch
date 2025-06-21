@@ -11,6 +11,7 @@
 import Combine
 import SwiftData
 import SwiftUI
+import VoltaserveCore
 
 public struct Voltaserve: View {
     @EnvironmentObject private var sessionStore: SessionStore

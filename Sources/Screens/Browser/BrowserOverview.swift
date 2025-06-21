@@ -10,6 +10,7 @@
 
 import Foundation
 import SwiftUI
+import VoltaserveCore
 
 public struct BrowserOverview: View {
     @Environment(\.dismiss) private var dismiss

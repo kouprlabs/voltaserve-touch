@@ -10,6 +10,7 @@
 
 import Kingfisher
 import SwiftUI
+import VoltaserveCore
 
 public struct FileCell: View {
     @Environment(\.colorScheme) private var colorScheme

@@ -10,6 +10,7 @@
 
 import SwiftData
 import SwiftUI
+import VoltaserveCore
 
 public struct ServerList: View {
     @Environment(\.modelContext) private var context

@@ -9,6 +9,7 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
+import VoltaserveCore
 
 public struct AccountEditPassword: View, FormValidatable, ViewDataProvider, LoadStateProvider, ErrorPresentable {
     @ObservedObject private var accountStore: AccountStore

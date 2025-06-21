@@ -11,6 +11,7 @@
 import Combine
 import SwiftUI
 import UIKit
+import VoltaserveCore
 
 public struct FileOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore

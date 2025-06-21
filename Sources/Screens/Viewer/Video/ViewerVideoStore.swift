@@ -10,6 +10,7 @@
 
 import PDFKit
 import SwiftUI
+import VoltaserveCore
 
 public class ViewerVideoStore: ObservableObject {
     @Published public var url: URL?

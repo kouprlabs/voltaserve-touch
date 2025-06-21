@@ -10,6 +10,7 @@
 
 import Foundation
 import SwiftUI
+import VoltaserveCore
 
 public struct InvitationCreate: View, FormValidatable, SessionDistributing, ErrorPresentable {
     @EnvironmentObject private var sessionStore: SessionStore

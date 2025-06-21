@@ -9,6 +9,7 @@
 // AGPL-3.0-only in the root of this repository.
 
 import SwiftUI
+import VoltaserveCore
 
 public struct FileDownload: View {
     @ObservedObject private var fileStore: FileStore

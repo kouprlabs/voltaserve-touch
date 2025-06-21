@@ -10,6 +10,7 @@
 
 import SwiftUI
 import UIKit
+import VoltaserveCore
 
 public struct UserRow: View {
     @StateObject private var userStore = UserStore()

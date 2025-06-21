@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <p align="center">
   <img height="70" src=".assets/brand-20250421130000.svg" />
-  <h1 align="center">Voltaserve for iOS</h1>
+  <h1 align="center">Voltaserve for iOS and iPadOS</h1>
 </p>
 
 <h3 align="center">Cloud Storage for Creators</h2>
@@ -25,7 +25,7 @@
 
 [![Join our Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white&label=Join%20us&style=for-the-badge)](https://discord.gg/qYXtsMpqMR)
 
-This is Voltaserve's iOS app, it’s fully native, optimized for iPad and iPhone, runs beautifully on the Mac, features a slick user interface with real-time updates, and is built using Apple’s flagship framework, SwiftUI.
+This is Voltaserve's iOS and iPadOS app, it’s fully native, optimized for iPad and iPhone, runs beautifully on the Mac, features a slick user interface with real-time updates, and is built using Apple’s flagship framework, SwiftUI.
 
 <img src=".assets/collage-20250528000000.png">
 
@@ -47,19 +47,17 @@ Prerequisites:
 
 This is a Swift package, it can be installed using the [Swift Package Manager](https://www.swift.org/documentation/package-manager/) and imported in your code.
 
-The clients in [Sources/Clients](./Sources/Clients) can be used to communicate with Voltaserve APIs.
-
-The extensible `Voltaserve` SwiftUI view can be used to embed the entire UI in your apps:
+The extensible `VoltaserveTouch` SwiftUI view can be used to embed the entire UI in your apps:
 
 ```swift
 import SwiftUI
-import VoltaserveCore
+import VoltaserveTouch
 
 @main
 struct MyApp: App {
     var body: some Scene {
         WindowGroup {
-            Voltaserve()
+            VoltaserveTouch()
         }
     }
 }
@@ -81,34 +79,6 @@ swift format lint -r .
 swiftlint lint --strict .
 ```
 
-## Tests
-
-The test suite expects the following accounts to exist:
-
-| Email            | Password    |
-| ---------------- | ----------- |
-| test@koupr.com   | `Passw0rd!` |
-| test+1@koupr.com | `Passw0rd!` |
-
-Build and run with Docker:
-
-```shell
-docker build -t voltaserve/ios-tests . && docker run --rm \
-    -e API_HOST=host.docker.internal \
-    -e IDP_HOST=host.docker.internal \
-    -e USERNAME='test@koupr.com' \
-    -e PASSWORD='Passw0rd!' \
-    -e OTHER_USERNAME='test+1@koupr.com' \
-    -e OTHER_PASSWORD='Passw0rd!' \
-    voltaserve/ios-tests
-```
-
-In Linux you should replace `host.docker.internal` with the host IP address, it can be found as follows:
-
-```shell
-ip route | grep default | awk '{print $3}'
-```
-
 ## Licensing
 
-Voltaserve is released under the [Business Source License 1.1](LICENSE).
+Voltaserve Touch is released under the [Business Source License 1.1](LICENSE).

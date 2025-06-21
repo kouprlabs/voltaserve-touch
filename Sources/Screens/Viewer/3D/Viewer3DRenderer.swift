@@ -11,6 +11,7 @@
 import GLTFKit2
 import SceneKit
 import SwiftUI
+import VoltaserveCore
 
 struct Viewer3DRenderer: UIViewRepresentable {
     @State private var isLoading = true

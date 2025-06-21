@@ -10,17 +10,9 @@
 
 import SwiftUI
 import UIKit
+import VoltaserveCore
 
 extension View {
-    @ViewBuilder
-    public func modifierIf(_ condition: Bool, modifier: (Self) -> some View) -> some View {
-        if condition {
-            modifier(self)
-        } else {
-            self
-        }
-    }
-
     @ViewBuilder
     public func modifierIfPad(modifier: (Self) -> some View) -> some View {
         modifierIf(UIDevice.current.userInterfaceIdiom == .pad, modifier: modifier)

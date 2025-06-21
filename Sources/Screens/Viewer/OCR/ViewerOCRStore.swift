@@ -10,6 +10,7 @@
 
 import PDFKit
 import SwiftUI
+import VoltaserveCore
 
 public class ViewerOCRStore: ObservableObject {
     @Published public var url: URL?

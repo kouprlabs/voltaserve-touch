@@ -18,6 +18,7 @@
 		89300BB62D8761AA0083E871 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 89300BB52D8761AA0083E871 /* VoltaserveCore */; };
 		893CA8BF2D876A910003CFC9 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 893CA8BE2D876A910003CFC9 /* VoltaserveCore */; };
 		893CA8CA2D876B300003CFC9 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 893CA8C92D876B300003CFC9 /* VoltaserveCore */; };
+		8987EFF02E073C23009486E7 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8987EFEF2E073C23009486E7 /* VoltaserveCore */; };
 		89FDB5672D87737000EF8593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89FDB5662D87737000EF8593 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +49,7 @@
 				892D8AE72D8763AC00FCA879 /* VoltaserveCore in Frameworks */,
 				892D8B0F2D8765D600FCA879 /* VoltaserveCore in Frameworks */,
 				892D8AEA2D87643100FCA879 /* VoltaserveCore in Frameworks */,
+				8987EFF02E073C23009486E7 /* VoltaserveCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +107,7 @@
 				893CA8BE2D876A910003CFC9 /* VoltaserveCore */,
 				893CA8C92D876B300003CFC9 /* VoltaserveCore */,
 				891C72612D876EC4001A4EBB /* VoltaserveCore */,
+				8987EFEF2E073C23009486E7 /* VoltaserveCore */,
 			);
 			productName = Voltaserve;
 			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
@@ -136,7 +139,7 @@
 			);
 			mainGroup = 649066D52C5E35AD00BA3CCD;
 			packageReferences = (
-				891C72602D876EC4001A4EBB /* XCLocalSwiftPackageReference "../voltaserve-ios" */,
+				8987EFEE2E073C23009486E7 /* XCLocalSwiftPackageReference "../voltaserve-touch" */,
 			);
 			productRefGroup = 649066DF2C5E35AD00BA3CCD /* Products */;
 			projectDirPath = "";
@@ -386,9 +389,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		891C72602D876EC4001A4EBB /* XCLocalSwiftPackageReference "../voltaserve-ios" */ = {
+		8987EFEE2E073C23009486E7 /* XCLocalSwiftPackageReference "../voltaserve-touch" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../voltaserve-ios";
+			relativePath = "../voltaserve-touch";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -430,6 +433,10 @@
 			productName = VoltaserveCore;
 		};
 		893CA8C92D876B300003CFC9 /* VoltaserveCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveCore;
+		};
+		8987EFEF2E073C23009486E7 /* VoltaserveCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = VoltaserveCore;
 		};

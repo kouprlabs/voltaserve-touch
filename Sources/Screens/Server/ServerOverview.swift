@@ -10,6 +10,7 @@
 
 import SwiftData
 import SwiftUI
+import VoltaserveCore
 
 public struct ServerOverview: View {
     @EnvironmentObject private var sessionStore: SessionStore

@@ -11,6 +11,7 @@
 import GLTFKit2
 import SceneKit
 import SwiftUI
+import VoltaserveCore
 
 public struct Viewer3D: View, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore

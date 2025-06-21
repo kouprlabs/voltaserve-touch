@@ -10,6 +10,7 @@
 
 import Kingfisher
 import SwiftUI
+import VoltaserveCore
 
 private let customKingfisherManager: KingfisherManager = {
     let config = URLSessionConfiguration.default

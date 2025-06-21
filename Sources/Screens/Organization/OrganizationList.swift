@@ -10,6 +10,7 @@
 
 import Combine
 import SwiftUI
+import VoltaserveCore
 
 public struct OrganizationList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, SessionDistributing,
     ListItemScrollable

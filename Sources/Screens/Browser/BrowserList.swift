@@ -10,6 +10,7 @@
 
 import Combine
 import SwiftUI
+import VoltaserveCore
 
 public struct BrowserList: View, LoadStateProvider, ViewDataProvider, TimerLifecycle, SessionDistributing,
     ListItemScrollable

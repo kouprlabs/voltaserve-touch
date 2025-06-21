@@ -10,6 +10,7 @@
 
 import Charts
 import SwiftUI
+import VoltaserveCore
 
 public struct InsightsChart: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore

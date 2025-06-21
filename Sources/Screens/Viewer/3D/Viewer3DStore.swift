@@ -10,6 +10,7 @@
 
 import GLTFKit2
 import SwiftUI
+import VoltaserveCore
 
 public class Viewer3DStore: ObservableObject {
     @Published public var url: URL?

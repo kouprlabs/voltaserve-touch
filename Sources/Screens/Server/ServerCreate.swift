@@ -10,6 +10,7 @@
 
 import SwiftData
 import SwiftUI
+import VoltaserveCore
 
 public struct ServerCreate: View, FormValidatable {
     @EnvironmentObject private var sessionStore: SessionStore

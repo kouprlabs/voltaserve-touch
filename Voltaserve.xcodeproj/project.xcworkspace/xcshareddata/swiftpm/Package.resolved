@@ -1,13 +1,22 @@
 {
-  "originHash" : "5ae4da4ceba075aa3a919d52cb3f6e936bbdc18e76ad731b9a2a3a6b55cc6997",
+  "originHash" : "1f99ee1bd55bcdcf5746ffa2182f2ce184e68b0d312ae67d273c171578880ee3",
   "pins" : [
     {
       "identity" : "gltfkit2",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/warrenm/GLTFKit2.git",
       "state" : {
-        "revision" : "0e399286a29580a6f3c0f49aa01075b5c43a9ce2",
-        "version" : "0.5.11"
+        "revision" : "9560ee71d9741429336b19866a242061d65d1afd",
+        "version" : "0.5.13"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "7deda23bbdca612076c5c315003d8638a08ed0f1",
+        "version" : "8.3.2"
       }
     }
   ],

@@ -10,6 +10,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import VoltaserveCore
 
 public struct AccountOverview: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, SessionDistributing {
     @EnvironmentObject private var sessionStore: SessionStore

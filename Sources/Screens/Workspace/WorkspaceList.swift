@@ -10,6 +10,7 @@
 
 import Combine
 import SwiftUI
+import VoltaserveCore
 
 public struct WorkspaceList: View, ViewDataProvider, LoadStateProvider, TimerLifecycle, SessionDistributing,
     ListItemScrollable
