@@ -10,14 +10,15 @@
 
 import SwiftUI
 import VoltaserveCore
+import VoltaserveTouch
 
 @main
-struct VoltaserveApp: App {
+struct VoltaserveTouchApp: App {
     @StateObject private var sessionStore = SessionStore()
 
     var body: some Scene {
         WindowGroup {
-            Voltaserve()
+            VoltaserveTouch()
                 .environmentObject(sessionStore)
         }
     }

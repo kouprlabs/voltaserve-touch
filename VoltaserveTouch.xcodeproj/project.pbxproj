@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8913BC3F2E07570D000D8FE2 /* VoltaserveTouch in Frameworks */ = {isa = PBXBuildFile; productRef = 8913BC3E2E07570D000D8FE2 /* VoltaserveTouch */; };
 		891C72622D876EC4001A4EBB /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 891C72612D876EC4001A4EBB /* VoltaserveCore */; };
 		892D8AE72D8763AC00FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8AE62D8763AC00FCA879 /* VoltaserveCore */; };
 		892D8AEA2D87643100FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8AE92D87643100FCA879 /* VoltaserveCore */; };
 		892D8B0F2D8765D600FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B0E2D8765D600FCA879 /* VoltaserveCore */; };
 		892D8B222D87679E00FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B212D87679E00FCA879 /* VoltaserveCore */; };
 		892D8B252D87680D00FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B242D87680D00FCA879 /* VoltaserveCore */; };
-		892D8B3F2D87684600FCA879 /* VoltaserveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892D8B3E2D87684600FCA879 /* VoltaserveApp.swift */; };
+		892D8B3F2D87684600FCA879 /* VoltaserveTouchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892D8B3E2D87684600FCA879 /* VoltaserveTouchApp.swift */; };
 		892D8B482D87685400FCA879 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 892D8B472D87685400FCA879 /* VoltaserveCore */; };
 		89300BB62D8761AA0083E871 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 89300BB52D8761AA0083E871 /* VoltaserveCore */; };
 		893CA8BF2D876A910003CFC9 /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 893CA8BE2D876A910003CFC9 /* VoltaserveCore */; };
@@ -24,8 +25,8 @@
 
 /* Begin PBXFileReference section */
 		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voltaserve.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		892D8B3E2D87684600FCA879 /* VoltaserveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveApp.swift; sourceTree = "<group>"; };
-		898493C92DA9DC31009946BF /* Voltaserve.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Voltaserve.entitlements; sourceTree = "<group>"; };
+		892D8B3E2D87684600FCA879 /* VoltaserveTouchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveTouchApp.swift; sourceTree = "<group>"; };
+		898493C92DA9DC31009946BF /* VoltaserveTouch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VoltaserveTouch.entitlements; sourceTree = "<group>"; };
 		89FDB5662D87737000EF8593 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -48,6 +49,7 @@
 				891C72622D876EC4001A4EBB /* VoltaserveCore in Frameworks */,
 				892D8AE72D8763AC00FCA879 /* VoltaserveCore in Frameworks */,
 				892D8B0F2D8765D600FCA879 /* VoltaserveCore in Frameworks */,
+				8913BC3F2E07570D000D8FE2 /* VoltaserveTouch in Frameworks */,
 				892D8AEA2D87643100FCA879 /* VoltaserveCore in Frameworks */,
 				8987EFF02E073C23009486E7 /* VoltaserveCore in Frameworks */,
 			);
@@ -59,11 +61,11 @@
 		649066D52C5E35AD00BA3CCD = {
 			isa = PBXGroup;
 			children = (
-				898493C92DA9DC31009946BF /* Voltaserve.entitlements */,
+				898493C92DA9DC31009946BF /* VoltaserveTouch.entitlements */,
 				89695FFB2D8776CA000DE6EA /* Fonts */,
 				89FDB5662D87737000EF8593 /* Assets.xcassets */,
 				89FDB5692D87739100EF8593 /* Preview Content */,
-				892D8B3E2D87684600FCA879 /* VoltaserveApp.swift */,
+				892D8B3E2D87684600FCA879 /* VoltaserveTouchApp.swift */,
 				649066DF2C5E35AD00BA3CCD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,6 +110,7 @@
 				893CA8C92D876B300003CFC9 /* VoltaserveCore */,
 				891C72612D876EC4001A4EBB /* VoltaserveCore */,
 				8987EFEF2E073C23009486E7 /* VoltaserveCore */,
+				8913BC3E2E07570D000D8FE2 /* VoltaserveTouch */,
 			);
 			productName = Voltaserve;
 			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
@@ -129,7 +132,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */;
+			buildConfigurationList = 649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "VoltaserveTouch" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -139,7 +142,7 @@
 			);
 			mainGroup = 649066D52C5E35AD00BA3CCD;
 			packageReferences = (
-				8987EFEE2E073C23009486E7 /* XCLocalSwiftPackageReference "../voltaserve-touch" */,
+				8913BC3D2E07570D000D8FE2 /* XCLocalSwiftPackageReference "../voltaserve-touch" */,
 			);
 			productRefGroup = 649066DF2C5E35AD00BA3CCD /* Products */;
 			projectDirPath = "";
@@ -166,7 +169,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				892D8B3F2D87684600FCA879 /* VoltaserveApp.swift in Sources */,
+				892D8B3F2D87684600FCA879 /* VoltaserveTouchApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,14 +303,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Voltaserve.entitlements;
+				CODE_SIGN_ENTITLEMENTS = VoltaserveTouch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Voltaserve-Info.plist";
+				INFOPLIST_FILE = "VoltaserveTouch-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -336,14 +339,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Voltaserve.entitlements;
+				CODE_SIGN_ENTITLEMENTS = VoltaserveTouch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Voltaserve-Info.plist";
+				INFOPLIST_FILE = "VoltaserveTouch-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Voltaserve;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -368,7 +371,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "Voltaserve" */ = {
+		649066D92C5E35AD00BA3CCD /* Build configuration list for PBXProject "VoltaserveTouch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				649066EA2C5E35AE00BA3CCD /* Debug */,
@@ -389,13 +392,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		8987EFEE2E073C23009486E7 /* XCLocalSwiftPackageReference "../voltaserve-touch" */ = {
+		8913BC3D2E07570D000D8FE2 /* XCLocalSwiftPackageReference "../voltaserve-touch" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../voltaserve-touch";
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8913BC3E2E07570D000D8FE2 /* VoltaserveTouch */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VoltaserveTouch;
+		};
 		891C72612D876EC4001A4EBB /* VoltaserveCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = VoltaserveCore;

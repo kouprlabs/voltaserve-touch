@@ -18,7 +18,7 @@
                BlueprintIdentifier = "649066DD2C5E35AD00BA3CCD"
                BuildableName = "Voltaserve.app"
                BlueprintName = "Voltaserve"
-               ReferencedContainer = "container:Voltaserve.xcodeproj">
+               ReferencedContainer = "container:VoltaserveTouch.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "649066DD2C5E35AD00BA3CCD"
             BuildableName = "Voltaserve.app"
             BlueprintName = "Voltaserve"
-            ReferencedContainer = "container:Voltaserve.xcodeproj">
+            ReferencedContainer = "container:VoltaserveTouch.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "649066DD2C5E35AD00BA3CCD"
             BuildableName = "Voltaserve.app"
             BlueprintName = "Voltaserve"
-            ReferencedContainer = "container:Voltaserve.xcodeproj">
+            ReferencedContainer = "container:VoltaserveTouch.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
