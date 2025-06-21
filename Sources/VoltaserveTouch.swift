@@ -13,7 +13,7 @@ import SwiftData
 import SwiftUI
 import VoltaserveCore
 
-public struct Voltaserve: View {
+public struct VoltaserveTouch: View {
     @EnvironmentObject private var sessionStore: SessionStore
     @StateObject var appearanceStore = AppearanceStore()
     @Environment(\.modelContext) private var context
