@@ -62,7 +62,15 @@ public struct FileGrid: View, ListItemScrollable {
                                     FileOverview(file, workspaceStore: workspaceStore)
                                         .navigationTitle(file.name)
                                 } label: {
-                                    FileCell(file, fileStore: fileStore)
+                                    FileCell(file, fileStore: fileStore) {
+                                        AnyView(
+                                            $0.contentShape(
+                                                .contextMenuPreview,
+                                                RoundedRectangle(cornerRadius: VOMetrics.borderRadiusSm)
+                                            )
+                                            .fileActions(file, fileStore: fileStore)
+                                        )
+                                    }
                                 }
                                 .buttonStyle(PlainButtonStyle())
                                 .onAppear {
