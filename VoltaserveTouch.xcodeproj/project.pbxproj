@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		892D8B3F2D87684600FCA879 /* VoltaserveTouchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892D8B3E2D87684600FCA879 /* VoltaserveTouchApp.swift */; };
-		8998B9DC2E07EED5009B3EC5 /* VoltaserveTouch in Frameworks */ = {isa = PBXBuildFile; productRef = 8998B9DB2E07EED5009B3EC5 /* VoltaserveTouch */; };
+		89B47BD82E07F44E002C5C9C /* VoltaserveCore in Frameworks */ = {isa = PBXBuildFile; productRef = 89300BB52D8761AA0083E871 /* VoltaserveCore */; };
+		89B47BD92E07F44E002C5C9C /* VoltaserveTouch in Frameworks */ = {isa = PBXBuildFile; productRef = 8913BC3E2E07570D000D8FE2 /* VoltaserveTouch */; };
 		89FDB5672D87737000EF8593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89FDB5662D87737000EF8593 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -29,7 +30,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8998B9DC2E07EED5009B3EC5 /* VoltaserveTouch in Frameworks */,
+				89B47BD92E07F44E002C5C9C /* VoltaserveTouch in Frameworks */,
+				89B47BD82E07F44E002C5C9C /* VoltaserveCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,19 +80,7 @@
 			name = Voltaserve;
 			packageProductDependencies = (
 				89300BB52D8761AA0083E871 /* VoltaserveCore */,
-				892D8AE62D8763AC00FCA879 /* VoltaserveCore */,
-				892D8AE92D87643100FCA879 /* VoltaserveCore */,
-				892D8B0E2D8765D600FCA879 /* VoltaserveCore */,
-				892D8B212D87679E00FCA879 /* VoltaserveCore */,
-				892D8B242D87680D00FCA879 /* VoltaserveCore */,
-				892D8B472D87685400FCA879 /* VoltaserveCore */,
-				893CA8BE2D876A910003CFC9 /* VoltaserveCore */,
-				893CA8C92D876B300003CFC9 /* VoltaserveCore */,
-				891C72612D876EC4001A4EBB /* VoltaserveCore */,
-				8987EFEF2E073C23009486E7 /* VoltaserveCore */,
 				8913BC3E2E07570D000D8FE2 /* VoltaserveTouch */,
-				894752422E07EC8E000DCA6D /* VoltaserveTouch */,
-				8998B9DB2E07EED5009B3EC5 /* VoltaserveTouch */,
 			);
 			productName = Voltaserve;
 			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
@@ -383,57 +373,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = VoltaserveTouch;
 		};
-		891C72612D876EC4001A4EBB /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		892D8AE62D8763AC00FCA879 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		892D8AE92D87643100FCA879 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		892D8B0E2D8765D600FCA879 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		892D8B212D87679E00FCA879 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		892D8B242D87680D00FCA879 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		892D8B472D87685400FCA879 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
 		89300BB52D8761AA0083E871 /* VoltaserveCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = VoltaserveCore;
-		};
-		893CA8BE2D876A910003CFC9 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		893CA8C92D876B300003CFC9 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		894752422E07EC8E000DCA6D /* VoltaserveTouch */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveTouch;
-		};
-		8987EFEF2E073C23009486E7 /* VoltaserveCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveCore;
-		};
-		8998B9DB2E07EED5009B3EC5 /* VoltaserveTouch */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VoltaserveTouch;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
