@@ -17,7 +17,6 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/kouprlabs/voltaserve-core.git", branch: "main"),
         .package(url: "https://github.com/warrenm/GLTFKit2.git", from: "0.5.11"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.3.2"),
     ],
     targets: [
         .target(
@@ -25,7 +24,6 @@ let package = Package(
             dependencies: [
                 .product(name: "VoltaserveCore", package: "voltaserve-core"),
                 "GLTFKit2",
-                "Kingfisher",
             ],
             path: "Sources"
         )

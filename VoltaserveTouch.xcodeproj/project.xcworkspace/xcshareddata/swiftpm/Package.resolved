@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "7deda23bbdca612076c5c315003d8638a08ed0f1",
-        "version" : "8.3.2"
+        "revision" : "010a06c4387cea2d13606222b6c08e0454e6dd2d",
+        "version" : "8.3.3"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/kouprlabs/voltaserve-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "2d2faa25eb1cbd1a9c4ac6babc11f69a1118b0e7"
+        "revision" : "c85848d84432c3ad8c318e06bc86720717c4ad16"
       }
     }
   ],

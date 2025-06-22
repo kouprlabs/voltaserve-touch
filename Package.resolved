@@ -1,5 +1,5 @@
 {
-  "originHash" : "137b3b96b22d1baf45c36961126d5ec2b2d4b17165148c5693e644f51e53450f",
+  "originHash" : "d87441dce57472b7737137e4805a114232cf67205670ab323679e0647c5fdd8b",
   "pins" : [
     {
       "identity" : "gltfkit2",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "7deda23bbdca612076c5c315003d8638a08ed0f1",
-        "version" : "8.3.2"
+        "revision" : "010a06c4387cea2d13606222b6c08e0454e6dd2d",
+        "version" : "8.3.3"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/kouprlabs/voltaserve-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "1df75f924047ae0a8ca50aa6de64da085023c177"
+        "revision" : "c85848d84432c3ad8c318e06bc86720717c4ad16"
       }
     }
   ],
