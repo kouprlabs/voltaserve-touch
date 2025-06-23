@@ -128,7 +128,7 @@ public struct VoltaserveTouch: View {
                     signInIsPresented = false
                 }
             }
-            .font(.custom(VOMetrics.bodyFontFamily, size: VOMetrics.bodyFontSizeTouch))
+            .fontSize(.body)
             .environmentObject(extensions)
             .environmentObject(appearanceStore)
             .tint(appearanceStore.accentColor)

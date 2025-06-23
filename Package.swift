@@ -15,15 +15,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/kouprlabs/voltaserve-core.git", branch: "main"),
-        .package(url: "https://github.com/warrenm/GLTFKit2.git", from: "0.5.11"),
+        .package(url: "https://github.com/kouprlabs/voltaserve-core.git", branch: "main")
     ],
     targets: [
         .target(
             name: "VoltaserveTouch",
             dependencies: [
-                .product(name: "VoltaserveCore", package: "voltaserve-core"),
-                "GLTFKit2",
+                .product(name: "VoltaserveCore", package: "voltaserve-core")
             ],
             path: "Sources"
         )

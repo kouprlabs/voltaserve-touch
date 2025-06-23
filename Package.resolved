@@ -1,13 +1,13 @@
 {
-  "originHash" : "d87441dce57472b7737137e4805a114232cf67205670ab323679e0647c5fdd8b",
+  "originHash" : "dc0e12f50f05638be1d9edf51be55e7198c8ac1f9b7d9a9b0ca92b774eb8ae97",
   "pins" : [
     {
       "identity" : "gltfkit2",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/warrenm/GLTFKit2.git",
       "state" : {
-        "revision" : "fb33ea7832e730842522018709ebcf2e3d9dcf44",
-        "version" : "0.5.12"
+        "revision" : "9560ee71d9741429336b19866a242061d65d1afd",
+        "version" : "0.5.13"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/kouprlabs/voltaserve-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "5b6c0c6ff3af78e91b13c41d5268c35a5ef995ad"
+        "revision" : "2f28e3958b2fd6c78b4e11aa60cac573dd9bb7e0"
       }
     }
   ],
