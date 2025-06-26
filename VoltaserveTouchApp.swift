@@ -10,7 +10,6 @@
 
 import SwiftUI
 import VoltaserveCore
-import VoltaserveTouch
 
 @main
 struct VoltaserveTouchApp: App {

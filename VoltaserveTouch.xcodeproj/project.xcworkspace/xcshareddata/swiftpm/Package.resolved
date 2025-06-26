@@ -1,5 +1,5 @@
 {
-  "originHash" : "1f99ee1bd55bcdcf5746ffa2182f2ce184e68b0d312ae67d273c171578880ee3",
+  "originHash" : "5d286d3227d2db2ac9f2cd3b8dd9e60c0414fc87be44c6edfa9aa2499b3124e7",
   "pins" : [
     {
       "identity" : "gltfkit2",
@@ -25,7 +25,7 @@
       "location" : "https://github.com/kouprlabs/voltaserve-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "79d1132286ec457c045a8085607c9080ccc2e5fc"
+        "revision" : "195d48b5726f4c966b9d2f4a4cb4eaeeebda4227"
       }
     }
   ],
