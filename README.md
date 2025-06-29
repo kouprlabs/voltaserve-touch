@@ -10,9 +10,6 @@
   <a href="https://apps.apple.com/app/id6744360805">
     <img height="40" src=".assets/app-store-20250424234000.svg" />
   </a>
-  <a href="https://apps.apple.com/mac/app/id6744360805">
-    <img height="40" src=".assets/mac-app-store-20250424234000.svg" />
-  </a>
 </p>
 
 <p align="center">
@@ -25,7 +22,7 @@
 
 [![Join our Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white&label=Join%20us&style=for-the-badge)](https://discord.gg/qYXtsMpqMR)
 
-This is Voltaserve's iOS and iPadOS app, it’s fully native, optimized for iPad and iPhone, runs beautifully on the Mac, features a slick user interface with real-time updates, and is built using Apple’s flagship framework, SwiftUI.
+This is Voltaserve's iOS and iPadOS app, it’s fully native, optimized for iPad and iPhone, features a slick user interface with real-time updates, and is built using Apple’s flagship framework, SwiftUI.
 
 <img src=".assets/collage-20250528000000.png">
 
