@@ -13,9 +13,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Voltaserve.app; path = "/Users/anass/Developer/source/voltaserve-touch/build/Debug-iphoneos/Voltaserve.app"; sourceTree = "<absolute>"; };
 		892D8B3E2D87684600FCA879 /* VoltaserveTouchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoltaserveTouchApp.swift; sourceTree = "<group>"; };
 		898493C92DA9DC31009946BF /* VoltaserveTouch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VoltaserveTouch.entitlements; sourceTree = "<group>"; };
+		89C4EAF72E1143E000577F2C /* Voltaserve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Voltaserve.app; path = "/Users/anass/Developer/source/voltaserve-touch/build/Debug-iphoneos/Voltaserve.app"; sourceTree = "<absolute>"; };
 		89FDB5662D87737000EF8593 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,7 +71,7 @@
 				89FE5D792E113D8B009AC575 /* VoltaserveCore */,
 			);
 			productName = Voltaserve;
-			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
+			productReference = 89C4EAF72E1143E000577F2C /* Voltaserve.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
