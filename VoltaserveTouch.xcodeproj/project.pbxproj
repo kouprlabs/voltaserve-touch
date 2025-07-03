@@ -13,7 +13,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		649066DE2C5E35AD00BA3CCD /* Voltaserve.app */ = {
+		8900A31B2E1160A2004818BE /* Voltaserve.app */ = {
 			isa = PBXFileReference;
 			explicitFileType = wrapper.application;
 			includeInIndex = 0;
@@ -57,7 +57,7 @@
 		649066DF2C5E35AD00BA3CCD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				649066DE2C5E35AD00BA3CCD /* Voltaserve.app */,
+				8900A31B2E1160A2004818BE /* Voltaserve.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -86,7 +86,7 @@
 				89FE5D792E113D8B009AC575 /* VoltaserveCore */,
 			);
 			productName = Voltaserve;
-			productReference = 649066DE2C5E35AD00BA3CCD /* Voltaserve.app */;
+			productReference = 8900A31B2E1160A2004818BE /* Voltaserve.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
