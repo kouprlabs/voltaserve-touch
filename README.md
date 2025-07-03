@@ -42,24 +42,6 @@ Prerequisites:
 - Install [Xcode](https://developer.apple.com/xcode/).
 - Install [SwiftLint](https://github.com/realm/SwiftLint).
 
-This is a Swift package, it can be installed using the [Swift Package Manager](https://www.swift.org/documentation/package-manager/) and imported in your code.
-
-The extensible `VoltaserveTouch` SwiftUI view can be used to embed the entire UI in your apps:
-
-```swift
-import SwiftUI
-import VoltaserveTouch
-
-@main
-struct MyApp: App {
-    var body: some Scene {
-        WindowGroup {
-            VoltaserveTouch()
-        }
-    }
-}
-```
-
 Format code:
 
 ```shell
