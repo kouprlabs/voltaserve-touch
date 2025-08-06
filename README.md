@@ -1,10 +1,10 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <p align="center">
   <img height="70" src=".assets/brand-20250421130000.svg" />
-  <h1 align="center">Voltaserve for iOS & iPadOS</h1>
+  <h1 align="center">Voltaserve for iOS and iPadOS</h1>
 </p>
 
-<h3 align="center">Cloud Storage for Creators</h2>
+<h3 align="center">Reality OS for Creators</h2>
 
 <p align="center">
   <a href="https://apps.apple.com/app/id6744360805">
